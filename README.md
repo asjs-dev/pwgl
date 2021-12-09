@@ -14,18 +14,16 @@ A JavaScript framework for creating 2D WebGL 2.0 things
 * Dynamic 2.5D lights and shadows
 * Element picker (can click on rendered items)
 * Image filters (Blur, Pixelate, Distortion, etc.)
-    * https://github.com/asjs-dev/pwgl/tree/master/src/filters
+    * https://github.com/asjs-dev/pwgl/blob/main/src/filters
 * Video textures
 * and many other features...
 
 ### Minified version
-* https://github.com/asjs-dev/pwgl/blob/master/dist/pwgl.min.js
-
-Good for single page applications, browser games and other apps.
+* https://github.com/asjs-dev/pwgl/blob/main/dist/pwgl.min.js
 
 ### How to use
 
-* Create your index html ( include pwgl.min.js )
+Create your index html ( include pwgl.min.js )
 
 ```html
 <!DOCTYPE html>
@@ -38,7 +36,7 @@ Good for single page applications, browser games and other apps.
 </html>
 ```
 
-* Add your script
+Add your script
 
 ```javascript
 class Application {
@@ -54,7 +52,7 @@ PWGL.Utils.initApplication(function(isWebGl2Supported) {
 });
 ```
 
-* Create a simple 2d renderer environment
+Create a simple 2d renderer environment
 
 ```javascript
 class Application {
@@ -143,7 +141,7 @@ PWGL.Utils.initApplication(function(isWebGl2Supported) {
 });
 ```
 
-* Add filter renderer
+Add filter renderer
 
 ```javascript
 class Application {
