@@ -1,67 +1,124 @@
-import "./namespace.js";
+import { Context } from "./utils/Context.js";
+import { Buffer } from "./utils/Buffer.js";
+import { Utils, Const } from "./utils/Utils.js";
+import { FPS } from "./utils/FPS.js";
 
-import "./data/BlendMode.js";
+import { BlendMode } from "./data/BlendMode.js";
 
-import "./data/props/BaseProps.js";
-import "./data/props/BasePositioningProps.js";
-import "./data/props/ColorProps.js";
-import "./data/props/ItemProps.js";
-import "./data/props/LightProps.js";
-import "./data/props/TextureCrop.js";
-import "./data/props/TextureProps.js";
-import "./data/props/DistortionProps.js";
-import "./data/props/FilterTextureProps.js";
+import { BaseProps } from "./data/props/BaseProps.js";
+import { BasePositioningProps } from "./data/props/BasePositioningProps.js";
+import { ColorProps } from "./data/props/ColorProps.js";
+import { ItemProps } from "./data/props/ItemProps.js";
+import { LightProps } from "./data/props/LightProps.js";
+import { TextureCrop } from "./data/props/TextureCrop.js";
+import { TextureProps } from "./data/props/TextureProps.js";
+import { DistortionProps } from "./data/props/DistortionProps.js";
+import { FilterTextureProps } from "./data/props/FilterTextureProps.js";
 
-import "./data/texture/TextureInfo.js";
-import "./data/texture/Texture.js";
-import "./data/texture/Framebuffer.js";
+import { TextureInfo } from "./data/texture/TextureInfo.js";
+import { Texture } from "./data/texture/Texture.js";
+import { Framebuffer } from "./data/texture/Framebuffer.js";
 
-import "./utils/helpers.js";
-import "./utils/Context.js";
-import "./utils/Buffer.js";
-import "./utils/Utils.js";
-import "./utils/FPS.js";
+import { Matrix3 } from "./geom/Matrix3.js";
+import { Point } from "./geom/Point.js";
+import { Rect } from "./geom/Rect.js";
 
-import "./geom/Matrix3.js";
-import "./geom/Point.js";
-import "./geom/Rect.js";
+import { BaseItem } from "./display/BaseItem.js";
+import { Item } from "./display/Item.js";
+import { BaseDrawable } from "./display/BaseDrawable.js";
+import { Light } from "./display/Light.js";
+import { AnimatedImage } from "./display/AnimatedImage.js";
+import { Container } from "./display/Container.js";
+import { StageContainer } from "./display/StageContainer.js";
+import { Image } from "./display/Image.js";
+import { SmoothLight } from "./display/SmoothLight.js";
 
-import "./display/BaseItem.js";
-import "./display/Item.js";
-import "./display/BaseDrawable.js";
-import "./display/Light.js";
-import "./display/AnimatedImage.js";
-import "./display/Container.js";
-import "./display/StageContainer.js";
-import "./display/Image.js";
-import "./display/SmoothLight.js";
+import { BaseRenderer } from "./renderer/BaseRenderer.js";
+import { BatchRenderer } from "./renderer/BatchRenderer.js";
+import { FilterRenderer } from "./renderer/FilterRenderer.js";
+import { LightRenderer } from "./renderer/LightRenderer.js";
+import { Stage2D } from "./renderer/Stage2D.js";
 
-import "./renderer/BaseRenderer.js";
-import "./renderer/BatchRenderer.js";
-import "./renderer/FilterRenderer.js";
-import "./renderer/LightRenderer.js";
-import "./renderer/Stage2D.js";
+import { BaseFilter } from "./filters/BaseFilter.js";
+import { DisplacementFilter } from "./filters/DisplacementFilter.js";
+import { MaskFilter } from "./filters/MaskFilter.js";
+import { PixelateFilter } from "./filters/PixelateFilter.js";
+import { EdgeDetectFilter } from "./filters/EdgeDetectFilter.js";
+import { SharpenFilter } from "./filters/SharpenFilter.js";
+import { SaturateFilter } from "./filters/SaturateFilter.js";
+import { GrayscaleFilter } from "./filters/GrayscaleFilter.js";
+import { SepiaFilter } from "./filters/SepiaFilter.js";
+import { InvertFilter } from "./filters/InvertFilter.js";
+import { TintFilter } from "./filters/TintFilter.js";
+import { ColorLimitFilter } from "./filters/ColorLimitFilter.js";
+import { VignetteFilter } from "./filters/VignetteFilter.js";
+import { RainbowFilter } from "./filters/RainbowFilter.js";
+import { BrightnessContrastFilter } from "./filters/BrightnessContrastFilter.js";
+import { GammaFilter } from "./filters/GammaFilter.js";
+import { BlurFilter } from "./filters/BlurFilter.js";
+import { GlowFilter } from "./filters/GlowFilter.js";
 
-import "./filters/BaseFilter.js";
+console.log("PWGL.JS (AGL) 3.0 {{date}}");
 
-import "./filters/DisplacementFilter.js";
-import "./filters/MaskFilter.js";
-import "./filters/PixelateFilter.js";
+window.PWGL = window.AGL = {
+  BlendMode,
 
-import "./filters/EdgeDetectFilter.js";
-import "./filters/SharpenFilter.js";
+  BaseProps,
+  BasePositioningProps,
+  ColorProps,
+  ItemProps,
+  LightProps,
+  TextureCrop,
+  TextureProps,
+  DistortionProps,
+  FilterTextureProps,
 
-import "./filters/SaturateFilter.js";
+  TextureInfo,
+  Texture,
+  Framebuffer,
 
-import "./filters/GrayscaleFilter.js";
-import "./filters/SepiaFilter.js";
-import "./filters/InvertFilter.js";
-import "./filters/TintFilter.js";
-import "./filters/ColorLimitFilter.js";
-import "./filters/VignetteFilter.js";
-import "./filters/RainbowFilter.js";
-import "./filters/BrightnessContrastFilter.js";
-import "./filters/GammaFilter.js";
+  Context,
+  Buffer,
+  Utils,
+  Const,
+  FPS,
 
-import "./filters/BlurFilter.js";
-import "./filters/GlowFilter.js";
+  Matrix3,
+  Point,
+  Rect,
+
+  BaseItem,
+  Item,
+  BaseDrawable,
+  Light,
+  AnimatedImage,
+  Container,
+  StageContainer,
+  Image,
+  SmoothLight,
+
+  BaseRenderer,
+  BatchRenderer,
+  FilterRenderer,
+  LightRenderer,
+  Stage2D,
+
+  BaseFilter,
+  DisplacementFilter,
+  MaskFilter,
+  PixelateFilter,
+  EdgeDetectFilter,
+  SharpenFilter,
+  SaturateFilter,
+  GrayscaleFilter,
+  SepiaFilter,
+  InvertFilter,
+  TintFilter,
+  ColorLimitFilter,
+  VignetteFilter,
+  RainbowFilter,
+  BrightnessContrastFilter,
+  GammaFilter,
+  BlurFilter,
+  GlowFilter
+};

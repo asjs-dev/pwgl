@@ -1,12 +1,14 @@
-import "../namespace.js";
-import "./BaseRenderer.js";
+import { Utils } from "../utils/Utils.js";
+import { BlendMode } from "../data/BlendMode.js";
+import { Framebuffer } from "../data/texture/Framebuffer.js";
+import { BaseRenderer } from "./BaseRenderer.js";
 
-AGL.FilterRenderer = class extends AGL.BaseRenderer {
+export class FilterRenderer extends BaseRenderer {
   constructor(options) {
     options = options || {};
-    options.config = AGL.Utils.initRendererConfig(
+    options.config = Utils.initRendererConfig(
       options.config,
-      AGL.FilterRenderer
+      FilterRenderer
     );
     options.config.locations = options.config.locations.concat([
       "uFTex",
@@ -22,8 +24,8 @@ AGL.FilterRenderer = class extends AGL.BaseRenderer {
     this.texture = options.texture;
 
     this._framebuffers = [
-      new AGL.Framebuffer(),
-      new AGL.Framebuffer()
+      new Framebuffer(),
+      new Framebuffer()
     ];
   }
 
@@ -42,7 +44,7 @@ AGL.FilterRenderer = class extends AGL.BaseRenderer {
     const renderTime = this._renderTime;
     const locations = this._locations;
 
-    context.setBlendMode(AGL.BlendMode.NORMAL);
+    context.setBlendMode(BlendMode.NORMAL);
 
     this._uploadBuffers();
 
@@ -95,7 +97,7 @@ AGL.FilterRenderer = class extends AGL.BaseRenderer {
   }
 
   _createVertexShader(options) {
-    return AGL.Utils.createVersion(options.config.precision) +
+    return Utils.createVersion(options.config.precision) +
     "in vec2 aPos;" +
 
     "uniform float uFlpY;" +
@@ -114,7 +116,7 @@ AGL.FilterRenderer = class extends AGL.BaseRenderer {
   }
 
   _createFragmentShader(options) {
-    return AGL.Utils.createVersion(options.config.precision) +
+    return Utils.createVersion(options.config.precision) +
     "uniform sampler2D " +
       "uTex," +
       "uFTex;" +

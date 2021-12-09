@@ -1,20 +1,20 @@
 import { emptyFunction } from "../utils/helpers.js";
-import "../namespace.js";
-import "../data/props/ItemProps.js";
-import "../data/props/ColorProps.js";
-import "../geom/Rect.js";
-import "./BaseItem.js";
+import { ItemProps } from "../data/props/ItemProps.js";
+import { ColorProps } from "../data/props/ColorProps.js";
+import { Rect } from "../geom/Rect.js";
+import { Matrix3 } from "../geom/Matrix3.js";
+import { BaseItem } from "./BaseItem.js";
 
-AGL.Item = class extends AGL.BaseItem {
+export class Item extends BaseItem {
   constructor() {
     super();
 
-    this.TYPE = AGL.Item.TYPE;
+    this.TYPE = Item.TYPE;
 
     this.renderable = true;
 
-    this.props = new AGL.ItemProps();
-    this.color = new AGL.ColorProps();
+    this.props = new ItemProps();
+    this.color = new ColorProps();
 
     this._currentPropsUpdateId =
     this._currentColorUpdateId =
@@ -24,7 +24,7 @@ AGL.Item = class extends AGL.BaseItem {
 
     this.callback = emptyFunction;
 
-    this._bounds = AGL.Rect.create();
+    this._bounds = Rect.create();
   }
 
   get stage() {
@@ -76,8 +76,8 @@ AGL.Item = class extends AGL.BaseItem {
     this._currentPropsUpdateId = props.updateId;
     ++this.propsUpdateId;
 
-    AGL.Matrix3.transform(parent.matrixCache, props, this.matrixCache);
+    Matrix3.transform(parent.matrixCache, props, this.matrixCache);
   }
 }
 
-AGL.Item.TYPE = "item";
+Item.TYPE = "item";

@@ -1,12 +1,15 @@
-import "../namespace.js";
-import "./BatchRenderer.js";
+import { Utils } from "../utils/Utils.js";
+import { Buffer } from "../utils/Buffer.js";
+import { BlendMode } from "../data/BlendMode.js";
+import { Light } from "../display/Light.js";
+import { BatchRenderer } from "./BatchRenderer.js";
 
-AGL.LightRenderer = class extends AGL.BatchRenderer {
+export class LightRenderer extends BatchRenderer {
   constructor(options) {
     options = options || {};
-    options.config = AGL.Utils.initRendererConfig(
+    options.config = Utils.initRendererConfig(
       options.config,
-      AGL.LightRenderer
+      LightRenderer
     );
     options.config.locations = options.config.locations.concat([
       "aExt",
@@ -21,7 +24,7 @@ AGL.LightRenderer = class extends AGL.BatchRenderer {
 
     this.scale = options.scale || 1;
 
-    this._extensionBuffer = new AGL.Buffer(
+    this._extensionBuffer = new Buffer(
       "aExt", maxBatchItems,
       1, 4
     );
@@ -29,7 +32,7 @@ AGL.LightRenderer = class extends AGL.BatchRenderer {
     this._lights = [];
     for (let i = 0; i < maxBatchItems; ++i)
       this._lights.push(
-        new AGL.Light(
+        new Light(
           i,
           this._matrixBuffer.data,
           this._extensionBuffer.data
@@ -42,7 +45,7 @@ AGL.LightRenderer = class extends AGL.BatchRenderer {
   }
 
   _render() {
-    this._context.setBlendMode(AGL.BlendMode.ADD);
+    this._context.setBlendMode(BlendMode.ADD);
 
     this.heightMap && this._gl.uniform1i(
       this._locations.uTex,
@@ -81,7 +84,7 @@ AGL.LightRenderer = class extends AGL.BatchRenderer {
   }
 
   _createVertexShader(options) {
-    return AGL.Utils.createVersion(options.config.precision) +
+    return Utils.createVersion(options.config.precision) +
     "#define H vec4(1,-1,2,-2)\n" +
     "#define PI radians(180.)\n" +
 
@@ -140,7 +143,7 @@ AGL.LightRenderer = class extends AGL.BatchRenderer {
   }
 
   _createFragmentShader(options) {
-    return AGL.Utils.createVersion(options.config.precision) +
+    return Utils.createVersion(options.config.precision) +
     "#define PI radians(180.)\n" +
     "#define PIH radians(90.)\n" +
 

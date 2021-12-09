@@ -1,4 +1,7 @@
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.RainbowFilter = AGL.BaseFilter.bind({}, 3, 7);
+export class RainbowFilter extends BaseFilter {
+  constructor(intensity) {
+    super(3, 7, intensity);
+  }
+}

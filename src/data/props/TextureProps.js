@@ -1,7 +1,6 @@
-import "../../namespace.js";
-import "./BasePositioningProps.js";
+import { BasePositioningProps } from "./BasePositioningProps.js";
 
-AGL.TextureProps = class extends AGL.BasePositioningProps {
+export class TextureProps extends BasePositioningProps {
   constructor() {
     super();
 

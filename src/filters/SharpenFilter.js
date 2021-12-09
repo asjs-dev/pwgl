@@ -1,8 +1,7 @@
 import { arraySet } from "../utils/helpers.js";
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.SharpenFilter = class extends AGL.BaseFilter {
+export class SharpenFilter extends BaseFilter {
   constructor(intensity) {
     super(1, 0, intensity);
 

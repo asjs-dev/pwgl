@@ -1,13 +1,14 @@
 import { arraySet } from "../utils/helpers.js";
-import "../namespace.js";
-import "../data/props/LightProps.js";
-import "./BaseDrawable.js";
+import { Utils } from "../utils/Utils.js";
+import { LightProps } from "../data/props/LightProps.js";
+import { Matrix3 } from "../geom/Matrix3.js";
+import { BaseDrawable } from "./BaseDrawable.js";
 
-AGL.Light = class extends AGL.BaseDrawable {
+export class Light extends BaseDrawable {
   constructor(id, lightData, extensionData) {
     super();
 
-    this.props = new AGL.LightProps();
+    this.props = new LightProps();
 
     this.color.a = 0;
 
@@ -26,8 +27,8 @@ AGL.Light = class extends AGL.BaseDrawable {
     this.gouraud = true;
 
     this.angle = 0;
-    this.spotAngle = 180 * AGL.Utils.THETA;
-    this.type = AGL.Light.Type.SPOT;
+    this.spotAngle = 180 * Utils.THETA;
+    this.type = Light.Type.SPOT;
     this.precision =
     this.diffuse = 1;
   }
@@ -98,7 +99,7 @@ AGL.Light = class extends AGL.BaseDrawable {
   }
 
   _calcCorners() {
-    AGL.Matrix3.calcCorners(
+    Matrix3.calcCorners(
       this.matrixCache,
       this._corners,
       this.stage.renderer
@@ -144,7 +145,7 @@ AGL.Light = class extends AGL.BaseDrawable {
   }
 }
 
-AGL.Light.Type = {
+Light.Type = {
   SPOT : 0,
   AMBIENT : 1
 };

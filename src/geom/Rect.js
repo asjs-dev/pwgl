@@ -1,6 +1,4 @@
-import "../namespace.js";
-
-AGL.Rect = {
+export const Rect = {
   create : (x, y, width, height) => ({
     x : x || 0,
     y : y || 0,

@@ -1,7 +1,6 @@
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.TintFilter = class extends AGL.BaseFilter {
+export class TintFilter extends BaseFilter {
   constructor(intensity, r, g, b) {
     super(3, 4, intensity);
 

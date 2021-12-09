@@ -1,19 +1,24 @@
 import { arraySet, emptyFunction } from "../utils/helpers.js";
-import "../namespace.js";
-import "../display/Item.js";
-import "../geom/Matrix3.js";
-import "../display/Container.js";
-import "../display/StageContainer.js";
-import "../utils/Utils.js";
-import "./BatchRenderer.js";
+import { Item } from "../display/Item.js";
+import { Image } from "../display/Image.js";
+import { Container } from "../display/Container.js";
+import { StageContainer } from "../display/StageContainer.js";
+import { Matrix3 } from "../geom/Matrix3.js";
+import { Point } from "../geom/Point.js";
+import { Buffer } from "../utils/Buffer.js";
+import { Utils } from "../utils/Utils.js";
+import { BatchRenderer } from "./BatchRenderer.js";
 
-AGL.Stage2D = class extends AGL.BatchRenderer {
+export class Stage2D extends BatchRenderer {
   constructor(options) {
     options = {... {
       useTint : true
     }, ... (options || {})};
 
-    options.config = AGL.Utils.initRendererConfig(options.config, AGL.Stage2D);
+    options.config = Utils.initRendererConfig(
+      options.config,
+      Stage2D
+    );
     options.config.locations = options.config.locations.concat([
       "aDt",
       "aDst",
@@ -25,14 +30,14 @@ AGL.Stage2D = class extends AGL.BatchRenderer {
 
     super(options);
 
-    this._container = new AGL.StageContainer(this);
+    this._container = new StageContainer(this);
 
     this._batchItems = 0;
 
     this._drawFunctionMap = {};
-    this._drawFunctionMap[AGL.Item.TYPE] = emptyFunction;
-    this._drawFunctionMap[AGL.Image.TYPE] = this._drawImage.bind(this);
-    this._drawFunctionMap[AGL.Container.TYPE] = this._drawContainer.bind(this);
+    this._drawFunctionMap[Item.TYPE] = emptyFunction;
+    this._drawFunctionMap[Image.TYPE] = this._drawImage.bind(this);
+    this._drawFunctionMap[Container.TYPE] = this._drawContainer.bind(this);
 
     this._batchDrawBound = this._batchDraw.bind(this);
     this._drawItemBound = this._drawItem.bind(this);
@@ -42,14 +47,14 @@ AGL.Stage2D = class extends AGL.BatchRenderer {
     this._isPickerSet
     */
 
-    this.pickerPoint = AGL.Point.create();
+    this.pickerPoint = Point.create();
 
-    this._dataBuffer = new AGL.Buffer(
+    this._dataBuffer = new Buffer(
       "aDt", maxBatchItems,
       3, 4
     );
 
-    this._distortionBuffer = new AGL.Buffer(
+    this._distortionBuffer = new Buffer(
       "aDst", maxBatchItems,
       4, 2
     );
@@ -155,7 +160,7 @@ AGL.Stage2D = class extends AGL.BatchRenderer {
   }
 
   _customResize() {
-    AGL.Matrix3.projection(
+    Matrix3.projection(
       this._width,
       this._height,
       this._container.parent.matrixCache
@@ -184,7 +189,7 @@ AGL.Stage2D = class extends AGL.BatchRenderer {
   _createVertexShader(options) {
     const useRepeatTextures = options.useRepeatTextures;
 
-    return AGL.Utils.createVersion(options.config.precision) +
+    return Utils.createVersion(options.config.precision) +
     "in vec2 aPos;" +
     "in mat4x2 aDst;" +
     "in mat3x4 aDt;" +
@@ -249,7 +254,7 @@ AGL.Stage2D = class extends AGL.BatchRenderer {
   }
 
   _createFragmentShader(options) {
-    const maxTextureImageUnits = AGL.Utils.INFO.maxTextureImageUnits;
+    const maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
     const useRepeatTextures = options.useRepeatTextures;
     const useTint = options.useTint;
 
@@ -265,7 +270,7 @@ AGL.Stage2D = class extends AGL.BatchRenderer {
     const getSimpleTexColor = (modCoordName) =>
       "gtTexCl(vTId,vTCrop.xy+vTCrop.zw*" + modCoordName + ")";
 
-    return AGL.Utils.createVersion(options.config.precision) +
+    return Utils.createVersion(options.config.precision) +
     "in float " +
       "vACl," +
       "vTId," +
@@ -284,7 +289,7 @@ AGL.Stage2D = class extends AGL.BatchRenderer {
     createGetTextureFunction(maxTextureImageUnits) +
 
     (useRepeatTextures
-      ? AGL.Utils.GLSL_RANDOM +
+      ? Utils.GLSL_RANDOM +
         "vec4 gtClBCrd(vec2 st){" +
           "vec2 tCrd=vTCrd;" +
 

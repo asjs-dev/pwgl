@@ -1,6 +1,4 @@
-import "../namespace.js";
-
-AGL.BaseFilter = class {
+export class BaseFilter {
   constructor(type, subType, intensity) {
     this.TYPE = type;
     this.SUB_TYPE = subType;

@@ -1,11 +1,9 @@
 import { emptyFunction } from "../utils/helpers.js";
-import "../namespace.js";
-import "../utils/Context.js";
-import "../utils/Buffer.js";
-import "../utils/Utils.js";
-import "../data/props/ColorProps.js";
+import { Buffer } from "../utils/Buffer.js";
+import { Utils, Const } from "../utils/Utils.js";
+import { ColorProps } from "../data/props/ColorProps.js";
 
-AGL.BaseRenderer = class {
+export class BaseRenderer {
   constructor(options) {
     /*
     this._program
@@ -20,7 +18,7 @@ AGL.BaseRenderer = class {
 
     this._clearBeforeRenderFunc = emptyFunction;
 
-    this.clearColor = new AGL.ColorProps();
+    this.clearColor = new ColorProps();
 
     this._currentContextId =
     this._renderTime =
@@ -40,16 +38,16 @@ AGL.BaseRenderer = class {
 
     this._enableBuffers = false;
 
-    this._elementArrayBuffer = new AGL.Buffer(
+    this._elementArrayBuffer = new Buffer(
       "", new Uint16Array([
         0, 1, 3, 2
       ]),
       0, 0,
-      AGL.Const.ELEMENT_ARRAY_BUFFER,
-      AGL.Const.STATIC_DRAW
+      Const.ELEMENT_ARRAY_BUFFER,
+      Const.STATIC_DRAW
     );
 
-    this._positionBuffer = new AGL.Buffer(
+    this._positionBuffer = new Buffer(
       "aPos", new Float32Array([
         0, 0,
         1, 0,
@@ -57,8 +55,8 @@ AGL.BaseRenderer = class {
         0, 1
       ]),
       1, 2,
-      AGL.Const.ARRAY_BUFFER,
-      AGL.Const.STATIC_DRAW,
+      Const.ARRAY_BUFFER,
+      Const.STATIC_DRAW,
       0
     );
   }
@@ -150,7 +148,7 @@ AGL.BaseRenderer = class {
       this.clearColor.b,
       this.clearColor.a
     );
-    this._gl.clear(AGL.Const.COLOR_BUFFER_BIT);
+    this._gl.clear(Const.COLOR_BUFFER_BIT);
   }
 
   _resize() {
@@ -166,9 +164,9 @@ AGL.BaseRenderer = class {
 
   _drawInstanced(count) {
     this._gl.drawElementsInstanced(
-      AGL.Const.TRIANGLE_STRIP,
+      Const.TRIANGLE_STRIP,
       4,
-      AGL.Const.UNSIGNED_SHORT,
+      Const.UNSIGNED_SHORT,
       0,
       count
     );
@@ -177,7 +175,7 @@ AGL.BaseRenderer = class {
   _buildProgram() {
     const options = this._options;
 
-    const program = AGL.Utils.createProgram(
+    const program = Utils.createProgram(
       this._gl,
       this._createVertexShader(options),
       this._createFragmentShader(options)
@@ -185,7 +183,7 @@ AGL.BaseRenderer = class {
 
     this._program = program;
 
-    this._locations = AGL.Utils.getLocationsFor(
+    this._locations = Utils.getLocationsFor(
       this._gl,
       program,
       this._config.locations

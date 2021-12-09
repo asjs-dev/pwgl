@@ -1,13 +1,12 @@
-import "../namespace.js";
-import "./Container.js";
-import "./BaseItem.js";
+import { Container } from "./Container.js";
+import { BaseItem } from "./BaseItem.js";
 
-AGL.StageContainer = class extends AGL.Container {
+export class StageContainer extends Container {
   constructor(renderer) {
     super();
 
     this.renderer = renderer;
-    this._parent = new AGL.BaseItem();
+    this._parent = new BaseItem();
   }
 
   get stage() { return this; }

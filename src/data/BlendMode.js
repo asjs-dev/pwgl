@@ -1,124 +1,122 @@
-import "../namespace.js";
-import "../utils/Utils.js";
+import { Const } from "../utils/Utils.js";
 
-(() => {
-  const _createBlendMode = (functions, equations) => {
-    return {
-      functionName : "blendFunc" + (
-        functions.length < 3
-          ? ""
-          : "Separate"
-      ),
-      functions : functions,
-      equationName : "blendEquation" + (
-        !equations || equations.length < 2
-          ? ""
-          : "Separate"
-      ),
-      equations : equations || [AGL.Const.FUNC_ADD]
-    };
-  }
 
-  AGL.BlendMode = {
-    NONE : _createBlendMode([
-      0,
-      0
-    ]),
-
-    SIMPLE : _createBlendMode([
-      AGL.Const.ONE,
-      AGL.Const.ONE
-    ]),
-    NORMAL_PM : _createBlendMode([
-      AGL.Const.ONE,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-    ADD_PM : _createBlendMode([
-      AGL.Const.ONE,
-      AGL.Const.ONE
-    ]),
-    MULTIPLY_PM : _createBlendMode([
-      AGL.Const.DST_COLOR,
-      AGL.Const.ONE_MINUS_SRC_ALPHA,
-      AGL.Const.ONE,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-    SCREEN_PM : _createBlendMode([
-      AGL.Const.ONE,
-      AGL.Const.ONE_MINUS_SRC_COLOR,
-      AGL.Const.ONE,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-
-    ADD_NPM : _createBlendMode([
-      AGL.Const.SRC_ALPHA,
-      AGL.Const.ONE,
-      AGL.Const.ONE,
-      AGL.Const.ONE
-    ]),
-
-    SRC_IN : _createBlendMode([
-      AGL.Const.DST_ALPHA,
-      AGL.Const.ZERO
-    ]),
-    SRC_OUT : _createBlendMode([
-      AGL.Const.ONE_MINUS_DST_ALPHA,
-      AGL.Const.ZERO
-    ]),
-    SRC_ATOP : _createBlendMode([
-      AGL.Const.DST_ALPHA,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-    DST_OVER : _createBlendMode([
-      AGL.Const.ONE_MINUS_DST_ALPHA,
-      AGL.Const.ONE
-    ]),
-    DST_IN : _createBlendMode([
-      AGL.Const.ZERO,
-      AGL.Const.SRC_ALPHA
-    ]),
-    DST_OUT : _createBlendMode([
-      AGL.Const.ZERO,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-    DST_ATOP : _createBlendMode([
-      AGL.Const.ONE_MINUS_DST_ALPHA,
-      AGL.Const.SRC_ALPHA
-    ]),
-    XOR : _createBlendMode([
-      AGL.Const.ONE_MINUS_DST_ALPHA,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-
-    NORMAL : _createBlendMode([
-      AGL.Const.SRC_ALPHA,
-      AGL.Const.ONE_MINUS_SRC_ALPHA,
-      AGL.Const.ONE,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-    ADD : _createBlendMode([
-      AGL.Const.SRC_ALPHA,
-      AGL.Const.DST_ALPHA,
-      AGL.Const.ONE,
-      AGL.Const.DST_ALPHA
-    ]),
-    MULTIPLY : _createBlendMode([
-      AGL.Const.DST_COLOR,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-    SCREEN : _createBlendMode([
-      AGL.Const.SRC_ALPHA,
-      AGL.Const.ONE_MINUS_SRC_COLOR,
-      AGL.Const.ONE,
-      AGL.Const.ONE_MINUS_SRC_COLOR
-    ]),
-    OVERLAY : _createBlendMode([
-      AGL.Const.ONE,
-      AGL.Const.ONE_MINUS_SRC_ALPHA
-    ]),
-    EXCLUSION : _createBlendMode([
-      AGL.Const.ONE_MINUS_DST_COLOR,
-      AGL.Const.ONE_MINUS_SRC_COLOR
-    ])
+const _createBlendMode = (functions, equations) => {
+  return {
+    functionName : "blendFunc" + (
+      functions.length < 3
+        ? ""
+        : "Separate"
+    ),
+    functions : functions,
+    equationName : "blendEquation" + (
+      !equations || equations.length < 2
+        ? ""
+        : "Separate"
+    ),
+    equations : equations || [Const.FUNC_ADD]
   };
-})();
+}
+
+export const BlendMode = {
+  NONE : _createBlendMode([
+    0,
+    0
+  ]),
+
+  SIMPLE : _createBlendMode([
+    Const.ONE,
+    Const.ONE
+  ]),
+  NORMAL_PM : _createBlendMode([
+    Const.ONE,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+  ADD_PM : _createBlendMode([
+    Const.ONE,
+    Const.ONE
+  ]),
+  MULTIPLY_PM : _createBlendMode([
+    Const.DST_COLOR,
+    Const.ONE_MINUS_SRC_ALPHA,
+    Const.ONE,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+  SCREEN_PM : _createBlendMode([
+    Const.ONE,
+    Const.ONE_MINUS_SRC_COLOR,
+    Const.ONE,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+
+  ADD_NPM : _createBlendMode([
+    Const.SRC_ALPHA,
+    Const.ONE,
+    Const.ONE,
+    Const.ONE
+  ]),
+
+  SRC_IN : _createBlendMode([
+    Const.DST_ALPHA,
+    Const.ZERO
+  ]),
+  SRC_OUT : _createBlendMode([
+    Const.ONE_MINUS_DST_ALPHA,
+    Const.ZERO
+  ]),
+  SRC_ATOP : _createBlendMode([
+    Const.DST_ALPHA,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+  DST_OVER : _createBlendMode([
+    Const.ONE_MINUS_DST_ALPHA,
+    Const.ONE
+  ]),
+  DST_IN : _createBlendMode([
+    Const.ZERO,
+    Const.SRC_ALPHA
+  ]),
+  DST_OUT : _createBlendMode([
+    Const.ZERO,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+  DST_ATOP : _createBlendMode([
+    Const.ONE_MINUS_DST_ALPHA,
+    Const.SRC_ALPHA
+  ]),
+  XOR : _createBlendMode([
+    Const.ONE_MINUS_DST_ALPHA,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+
+  NORMAL : _createBlendMode([
+    Const.SRC_ALPHA,
+    Const.ONE_MINUS_SRC_ALPHA,
+    Const.ONE,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+  ADD : _createBlendMode([
+    Const.SRC_ALPHA,
+    Const.DST_ALPHA,
+    Const.ONE,
+    Const.DST_ALPHA
+  ]),
+  MULTIPLY : _createBlendMode([
+    Const.DST_COLOR,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+  SCREEN : _createBlendMode([
+    Const.SRC_ALPHA,
+    Const.ONE_MINUS_SRC_COLOR,
+    Const.ONE,
+    Const.ONE_MINUS_SRC_COLOR
+  ]),
+  OVERLAY : _createBlendMode([
+    Const.ONE,
+    Const.ONE_MINUS_SRC_ALPHA
+  ]),
+  EXCLUSION : _createBlendMode([
+    Const.ONE_MINUS_DST_COLOR,
+    Const.ONE_MINUS_SRC_COLOR
+  ])
+};

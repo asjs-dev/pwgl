@@ -1,11 +1,11 @@
-import "../namespace.js";
-import "../data/BlendMode.js";
-import "../data/props/TextureProps.js";
-import "../data/props/TextureCrop.js";
-import "../data/props/DistortionProps.js";
-import "./BaseDrawable.js";
+import { BlendMode } from "../data/BlendMode.js";
+import { TextureProps } from "../data/props/TextureProps.js";
+import { TextureCrop } from "../data/props/TextureCrop.js";
+import { DistortionProps } from "../data/props/DistortionProps.js";
+import { Matrix3 } from "../geom/Matrix3.js";
+import { BaseDrawable } from "./BaseDrawable.js";
 
-AGL.Image = class extends AGL.BaseDrawable {
+export class Image extends BaseDrawable {
   constructor(texture) {
     super();
 
@@ -13,16 +13,16 @@ AGL.Image = class extends AGL.BaseDrawable {
     this.interactive
     */
 
-    this.TYPE = AGL.Image.TYPE;
+    this.TYPE = Image.TYPE;
 
-    this.textureMatrixCache = AGL.Matrix3.identity();
+    this.textureMatrixCache = Matrix3.identity();
 
-    this.tintType = AGL.Image.TintType.NONE;
-    this.blendMode = AGL.BlendMode.NORMAL;
+    this.tintType = Image.TintType.NONE;
+    this.blendMode = BlendMode.NORMAL;
 
-    this.textureProps = new AGL.TextureProps();
-    this.textureCrop = new AGL.TextureCrop();
-    this.distortionProps = new AGL.DistortionProps();
+    this.textureProps = new TextureProps();
+    this.textureCrop = new TextureCrop();
+    this.distortionProps = new DistortionProps();
 
     this._currentTexturePropsUpdateId = 0;
 
@@ -42,7 +42,7 @@ AGL.Image = class extends AGL.BaseDrawable {
 
   isContainsPoint(point) {
     this._updateAdditionalData();
-    return AGL.Matrix3.isPointInMatrix(this._inverseMatrixCache, point);
+    return Matrix3.isPointInMatrix(this._inverseMatrixCache, point);
   }
 
   _updateTexture() {
@@ -52,14 +52,14 @@ AGL.Image = class extends AGL.BaseDrawable {
     if (this._currentTexturePropsUpdateId < props.updateId) {
       this._currentTexturePropsUpdateId = props.updateId;
 
-      AGL.Matrix3.transformLocal(props, this.textureMatrixCache);
+      Matrix3.transformLocal(props, this.textureMatrixCache);
     }
   }
 }
 
-AGL.Image.TYPE     = "drawable";
+Image.TYPE = "drawable";
 
-AGL.Image.TintType = {
+Image.TintType = {
   NONE : 0,
   NORMAL : 1,
   GRAYSCALE : 2,

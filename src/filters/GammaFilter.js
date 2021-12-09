@@ -1,4 +1,7 @@
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.GammaFilter = AGL.BaseFilter.bind({}, 3, 9);
+export class GammaFilter extends BaseFilter {
+  constructor(intensity) {
+    super(3, 9, intensity);
+  }
+}

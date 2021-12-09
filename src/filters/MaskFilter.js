@@ -1,8 +1,7 @@
-import "../namespace.js";
-import "../data/props/FilterTextureProps.js";
-import "./BaseFilter.js";
+import { FilterTextureProps } from "../data/props/FilterTextureProps.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.MaskFilter = class extends AGL.BaseFilter {
+export class MaskFilter extends BaseFilter {
   constructor(
     texture,
     type,
@@ -15,7 +14,7 @@ AGL.MaskFilter = class extends AGL.BaseFilter {
   ) {
     super(7, 0, type);
 
-    this.textureProps = new AGL.FilterTextureProps(
+    this.textureProps = new FilterTextureProps(
       this,
       texture,
       translateX,
@@ -31,7 +30,7 @@ AGL.MaskFilter = class extends AGL.BaseFilter {
   set type(v) { this.v[0] = v; }
 }
 
-AGL.MaskFilter.Type = {
+MaskFilter.Type = {
   RED   : 0,
   GREEN : 1,
   BLUE  : 2,

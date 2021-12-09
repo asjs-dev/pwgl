@@ -1,4 +1,7 @@
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.PixelateFilter = AGL.BaseFilter.bind({}, 5, 0);
+export class PixelateFilter extends BaseFilter {
+  constructor(intensity) {
+    super(5, 0, intensity);
+  }
+}

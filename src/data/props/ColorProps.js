@@ -1,7 +1,6 @@
-import "../../namespace.js";
-import "./BaseProps.js";
+import { BaseProps } from "./BaseProps.js";
 
-AGL.ColorProps = class extends AGL.BaseProps {
+export class ColorProps extends BaseProps {
   constructor() {
     super();
 

@@ -1,7 +1,4 @@
-import "../../namespace.js";
-import "./BasePositioningProps.js";
-
-AGL.FilterTextureProps = class {
+export class FilterTextureProps {
   constructor(
     filter,
     texture,

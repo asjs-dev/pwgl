@@ -1,6 +1,4 @@
-import "../namespace.js";
-
-AGL.Matrix3 = {
+export const Matrix3 = {
   identity: () => new Float32Array([
     1, 0,
     0, 1,

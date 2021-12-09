@@ -1,6 +1,4 @@
-import "../../namespace.js";
-
-AGL.BaseProps = class {
+export class BaseProps {
   constructor() {
     this.updateId = 0;
   }

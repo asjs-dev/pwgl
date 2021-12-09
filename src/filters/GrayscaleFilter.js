@@ -1,4 +1,7 @@
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.GrayscaleFilter = AGL.BaseFilter.bind({}, 3, 1);
+export class GrayscaleFilter extends BaseFilter {
+  constructor(intensity) {
+    super(3, 1, intensity);
+  }
+}

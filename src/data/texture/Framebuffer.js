@@ -1,7 +1,7 @@
-import "../../namespace.js";
-import "./TextureInfo.js";
+import { TextureInfo } from "./TextureInfo.js";
+import { Const } from "../../utils/Utils.js";
 
-AGL.Framebuffer = class extends AGL.TextureInfo {
+export class Framebuffer extends TextureInfo {
   get width() { return this._width; }
   set width(v) {
     if (this._width !== v && v > 0) {
@@ -24,11 +24,11 @@ AGL.Framebuffer = class extends AGL.TextureInfo {
   }
 
   bind(gl) {
-    gl.bindFramebuffer(AGL.Const.FRAMEBUFFER, this._framebuffer);
+    gl.bindFramebuffer(Const.FRAMEBUFFER, this._framebuffer);
   }
 
   unbind(gl) {
-    gl.bindFramebuffer(AGL.Const.FRAMEBUFFER, null);
+    gl.bindFramebuffer(Const.FRAMEBUFFER, null);
   }
 
   use(gl, id) {
@@ -55,9 +55,9 @@ AGL.Framebuffer = class extends AGL.TextureInfo {
       this.bind(gl);
 
       gl.framebufferTexture2D(
-        AGL.Const.FRAMEBUFFER,
-        AGL.Const.COLOR_ATTACHMENT0,
-        AGL.Const.TEXTURE_2D,
+        Const.FRAMEBUFFER,
+        Const.COLOR_ATTACHMENT0,
+        Const.TEXTURE_2D,
         this._baseTexture,
         0
       );

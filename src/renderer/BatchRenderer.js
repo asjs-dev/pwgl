@@ -1,7 +1,7 @@
-import "../namespace.js";
-import "./BaseRenderer.js";
+import { Buffer } from "../utils/Buffer.js";
+import { BaseRenderer } from "./BaseRenderer.js";
 
-AGL.BatchRenderer = class extends AGL.BaseRenderer {
+export class BatchRenderer extends BaseRenderer {
   constructor(options) {
     options.config.locations = options.config.locations.concat([
       "aMt"
@@ -11,7 +11,7 @@ AGL.BatchRenderer = class extends AGL.BaseRenderer {
 
     this._MAX_BATCH_ITEMS = options.maxBatchItems || 1;
 
-    this._matrixBuffer = new AGL.Buffer(
+    this._matrixBuffer = new Buffer(
       "aMt", this._MAX_BATCH_ITEMS,
       4, 4
     );

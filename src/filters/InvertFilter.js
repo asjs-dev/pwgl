@@ -1,4 +1,7 @@
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.InvertFilter = AGL.BaseFilter.bind({}, 3, 3);
+export class InvertFilter extends BaseFilter {
+  constructor(intensity) {
+    super(3, 3, intensity);
+  }
+}

@@ -1,8 +1,7 @@
 import { arraySet } from "../utils/helpers.js";
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.SaturateFilter = class extends AGL.BaseFilter {
+export class SaturateFilter extends BaseFilter {
   constructor(intensity) {
     super(2, 0, intensity);
   }

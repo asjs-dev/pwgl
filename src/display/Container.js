@@ -1,12 +1,11 @@
 import { removeFromArray } from "../utils/helpers.js";
-import "../namespace.js";
-import "./Item.js";
+import { Item } from "./Item.js";
 
-AGL.Container = class extends AGL.Item {
+export class Container extends Item {
   constructor() {
     super();
 
-    this.TYPE = AGL.Container.TYPE;
+    this.TYPE = Container.TYPE;
 
     this.children = [];
   }
@@ -123,4 +122,4 @@ AGL.Container = class extends AGL.Item {
   }
 }
 
-AGL.Container.TYPE = "container";
+Container.TYPE = "container";

@@ -1,13 +1,9 @@
-import "../namespace.js";
+import { Context } from "./Context.js";
 
-(() => {
-  AGL.Const = {};
+export const Utils = {
+  THETA : Math.PI / 180,
 
-  AGL.Utils = {};
-
-  AGL.Utils.THETA = Math.PI / 180;
-
-  AGL.Utils.GLSL_RANDOM = "float rand(vec2 p,float s){" +
+  GLSL_RANDOM : "float rand(vec2 p,float s){" +
     "p=mod(" +
       "p+floor(p/10000.)," +
       "vec2(10000)" +
@@ -23,27 +19,13 @@ import "../namespace.js";
         ")*s" +
       ")*.5+.5" +
     ");" +
-  "}";
+  "}",
 
-  AGL.Utils.INFO = {
+  INFO : {
     isWebGl2Supported : false
-  };
+  },
 
-  const gl = document.createElement("canvas").getContext("webgl2");
-  if (gl) {
-    for (let key in gl) {
-      const value = gl[key];
-      if (typeof value === "number" && key === key.toUpperCase())
-        AGL.Const[key] = value;
-    }
-
-    AGL.Utils.INFO.isWebGl2Supported = true;
-    AGL.Utils.INFO.maxTextureImageUnits = gl.getParameter(
-      AGL.Const.MAX_TEXTURE_IMAGE_UNITS
-    );
-  }
-
-  AGL.Utils.initContextConfig = (config) => {
+  initContextConfig : (config) => {
     config = config || {};
 
     return {
@@ -53,51 +35,51 @@ import "../namespace.js";
         preserveDrawingBuffer : true,
       }, ... (config.contextAttributes || {})}
     };
-  };
+  },
 
-  AGL.Utils.initRendererConfig = (config) => {
+  initRendererConfig : (config) => {
     config = config || {};
 
     return {
       locations : config.locations || [],
       precision : config.precision || "lowp", /* lowp mediump highp */
-      context : config.context || new AGL.Context()
+      context : config.context || new Context()
     };
-  };
+  },
 
-  AGL.Utils.createVersion = (precision) => "#version 300 es\n" +
-    "precision " + precision + " float;\n";
+  createVersion : (precision) => "#version 300 es\n" +
+    "precision " + precision + " float;\n",
 
-  AGL.Utils.initApplication = (callback) => {
+  initApplication : (callback) => {
     const checkCanvas = () => {
       if (document.readyState === "complete") {
         document.removeEventListener("readystatechange", checkCanvas);
-        callback(AGL.Utils.INFO.isWebGl2Supported);
+        callback(Utils.INFO.isWebGl2Supported);
       } else
         document.addEventListener("readystatechange", checkCanvas);
     };
 
     checkCanvas();
-  }
+  },
 
-  const _createShader = (gl, shaderType, shaderSource) => {
+  createShader : (gl, shaderType, shaderSource) => {
     const shader = gl.createShader(shaderType);
 
     gl.shaderSource(shader, shaderSource);
     gl.compileShader(shader);
 
     return shader;
-  }
+  },
 
-  AGL.Utils.createProgram = (gl, vertexShaderSource, fragmentShaderSource) => {
-    const vertexShader = _createShader(
+  createProgram : (gl, vertexShaderSource, fragmentShaderSource) => {
+    const vertexShader = Utils.createShader(
       gl,
-      AGL.Const.VERTEX_SHADER,
+      Const.VERTEX_SHADER,
       vertexShaderSource
     );
-    const fragmentShader = _createShader(
+    const fragmentShader = Utils.createShader(
       gl,
-      AGL.Const.FRAGMENT_SHADER,
+      Const.FRAGMENT_SHADER,
       fragmentShaderSource
     );
 
@@ -107,12 +89,12 @@ import "../namespace.js";
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
 
-    if (!gl.getProgramParameter(program, AGL.Const.LINK_STATUS)) {
+    if (!gl.getProgramParameter(program, Const.LINK_STATUS)) {
       console.error(
         "Program info:", gl.getProgramInfoLog(program), "\n",
         "Validate status:", gl.getProgramParameter(
           program,
-          AGL.Const.VALIDATE_STATUS
+          Const.VALIDATE_STATUS
         ), "\n",
         "Vertex shader info:", gl.getShaderInfoLog(vertexShader), "\n",
         "Fragment shader info:", gl.getShaderInfoLog(fragmentShader)
@@ -126,23 +108,41 @@ import "../namespace.js";
     };
 
     return program;
-  }
+  },
 
-  const _locationTypes = {
+  locationTypes : {
     a : "Attrib",
     u : "Uniform"
-  };
+  },
 
-  AGL.Utils.getLocationsFor = (gl, program, locationsDescriptor) => {
+  getLocationsFor : (gl, program, locationsDescriptor) => {
     const locations = {};
 
     locationsDescriptor.forEach((name) => {
-      locations[name] = gl["get" + _locationTypes[name[0]] + "Location"](
+      locations[name] = gl["get" + Utils.locationTypes[name[0]] + "Location"](
         program,
         name
       );
     });
 
     return locations;
+  },
+};
+
+export const Const = {};
+
+(() => {
+  const gl = document.createElement("canvas").getContext("webgl2");
+  if (gl) {
+    for (let key in gl) {
+      const value = gl[key];
+      if (typeof value === "number" && key === key.toUpperCase())
+        Const[key] = value;
+    }
+
+    Utils.INFO.isWebGl2Supported = true;
+    Utils.INFO.maxTextureImageUnits = gl.getParameter(
+      Const.MAX_TEXTURE_IMAGE_UNITS
+    );
   }
 })();

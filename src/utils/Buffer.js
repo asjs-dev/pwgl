@@ -1,6 +1,6 @@
-import "../namespace.js";
+import { Const } from "./Utils.js";
 
-AGL.Buffer = class {
+export class Buffer {
   constructor(locationName, data, rows, cols, target, type, divisor) {
     /*
     this._buffer
@@ -14,15 +14,15 @@ AGL.Buffer = class {
     this._locationName = locationName;
     this._rows = rows;
     this._cols = cols;
-    this._target = target || AGL.Const.ARRAY_BUFFER;
-    this._type = type || AGL.Const.DYNAMIC_DRAW;
+    this._target = target || Const.ARRAY_BUFFER;
+    this._type = type || Const.DYNAMIC_DRAW;
     this._length = length * 4;
     this._offset = cols * 4;
     this._divisor = typeof divisor === "number"
       ? divisor
       : 1;
 
-    if (this._type === AGL.Const.STATIC_DRAW)
+    if (this._type === Const.STATIC_DRAW)
       this._length =
       this._offset = 0;
   }
@@ -58,7 +58,7 @@ AGL.Buffer = class {
       gl.vertexAttribPointer(
         loc,
         this._cols,
-        AGL.Const.FLOAT,
+        Const.FLOAT,
         false,
         this._length,
         i * this._offset

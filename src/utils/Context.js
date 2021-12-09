@@ -1,7 +1,7 @@
 import { removeFromArray } from "./helpers.js";
-import "../namespace.js";
+import { Utils, Const } from "./Utils.js";
 
-AGL.Context = class {
+export class Context {
   constructor(config) {
     /*
     this._currentProgram
@@ -12,10 +12,10 @@ AGL.Context = class {
 
     this.contextId = 0;
 
-    this._config = AGL.Utils.initContextConfig(config || {});
+    this._config = Utils.initContextConfig(config || {});
     this.canvas = this._config.canvas;
 
-    this._MAX_TEXTURE_NUM = AGL.Utils.INFO.maxTextureImageUnits;
+    this._MAX_TEXTURE_NUM = Utils.INFO.maxTextureImageUnits;
 
     this._onContextLostBound = this._onContextLost.bind(this);
     this._onContextRestoredBound = this._initContext.bind(this);
@@ -162,9 +162,9 @@ AGL.Context = class {
 
     this._loseContextExt = gl.getExtension('WEBGL_lose_context');
 
-    gl.pixelStorei(AGL.Const.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-    gl.enable(AGL.Const.BLEND);
-    gl.enable(AGL.Const.SCISSOR_TEST);
+    gl.pixelStorei(Const.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.enable(Const.BLEND);
+    gl.enable(Const.SCISSOR_TEST);
 
     this._textureMap = [];
     this._emptyTextureSlots = [];

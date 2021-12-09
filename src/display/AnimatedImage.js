@@ -1,8 +1,7 @@
 import { emptyFunction } from "../utils/helpers.js";
-import "../namespace.js";
-import "./Image.js";
+import { Image } from "./Image.js";
 
-AGL.AnimatedImage = class extends AGL.Image {
+export class AnimatedImage extends Image {
   constructor(texture) {
     super(texture);
 

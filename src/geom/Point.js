@@ -1,6 +1,4 @@
-import "../namespace.js";
-
-AGL.Point = {
+export const Point = {
   create : (x, y) => ({
     x : x || 0,
     y : y || 0

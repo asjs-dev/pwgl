@@ -1,8 +1,8 @@
-import "../namespace.js";
+import { Matrix3 } from "../geom/Matrix3.js";
 
-AGL.BaseItem = class {
+export class BaseItem {
   constructor() {
-    this.matrixCache = AGL.Matrix3.identity();
+    this.matrixCache = Matrix3.identity();
 
     this.colorUpdateId =
     this.propsUpdateId = 0;

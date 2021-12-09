@@ -1,6 +1,4 @@
-import "../../namespace.js";
-
-AGL.DistortionProps = class {
+export class DistortionProps {
   constructor() {
     this.distortTexture = true;
 

@@ -1,17 +1,18 @@
-import "../namespace.js";
-import "./Item.js";
+import { Item } from "./Item.js";
+import { Point } from "../geom/Point.js";
+import { Matrix3 } from "../geom/Matrix3.js";
 
-AGL.BaseDrawable = class extends AGL.Item {
+export class BaseDrawable extends Item {
   constructor(texture) {
     super();
 
     this._inverseMatrixCache = new Float32Array(6);
 
     this._corners = [
-      AGL.Point.create(),
-      AGL.Point.create(),
-      AGL.Point.create(),
-      AGL.Point.create()
+      Point.create(),
+      Point.create(),
+      Point.create(),
+      Point.create()
     ];
   }
 
@@ -26,7 +27,7 @@ AGL.BaseDrawable = class extends AGL.Item {
   }
 
   _calcCorners() {
-    AGL.Matrix3.calcCorners(
+    Matrix3.calcCorners(
       this.matrixCache,
       this._corners,
       this.stage.renderer
@@ -53,7 +54,7 @@ AGL.BaseDrawable = class extends AGL.Item {
   _updateAdditionalData() {
     if (this._currentAdditionalPropsUpdateId < this.propsUpdateId) {
       this._currentAdditionalPropsUpdateId = this.propsUpdateId;
-      AGL.Matrix3.inverse(this.matrixCache, this._inverseMatrixCache);
+      Matrix3.inverse(this.matrixCache, this._inverseMatrixCache);
       this._calcBounds();
     }
   }

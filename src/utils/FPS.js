@@ -1,6 +1,4 @@
-import "../namespace.js";
-
-AGL.FPS = {
+export const FPS = {
   start : function (targetFPS) {
     this._targetMS =
     this._then =

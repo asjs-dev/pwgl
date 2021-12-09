@@ -1,8 +1,7 @@
 import { arraySet } from "../utils/helpers.js";
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.EdgeDetectFilter = class extends AGL.BaseFilter {
+export class EdgeDetectFilter extends BaseFilter {
   constructor(intensity) {
     super(1, 0, intensity);
 

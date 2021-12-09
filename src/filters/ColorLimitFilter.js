@@ -1,4 +1,7 @@
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.ColorLimitFilter = AGL.BaseFilter.bind({}, 3, 5);
+export class ColorLimitFilter extends BaseFilter {
+  constructor(intensity) {
+    super(3, 5, intensity);
+  }
+}

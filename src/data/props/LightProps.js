@@ -1,7 +1,6 @@
-import "../../namespace.js";
-import "./ItemProps.js";
+import { ItemProps } from "./ItemProps.js";
 
-AGL.LightProps = class extends AGL.ItemProps {
+export class LightProps extends ItemProps {
   constructor() {
     super();
 

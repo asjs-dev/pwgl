@@ -1,8 +1,7 @@
-import "../namespace.js";
-import "../data/props/FilterTextureProps.js";
-import "./BaseFilter.js";
+import { FilterTextureProps } from "../data/props/FilterTextureProps.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.DisplacementFilter = class extends AGL.BaseFilter {
+export class DisplacementFilter extends BaseFilter {
   constructor(
     texture,
     intensity,
@@ -15,7 +14,7 @@ AGL.DisplacementFilter = class extends AGL.BaseFilter {
   ) {
     super(6, 0, intensity);
 
-    this.textureProps = new AGL.FilterTextureProps(
+    this.textureProps = new FilterTextureProps(
       this,
       texture,
       translateX,

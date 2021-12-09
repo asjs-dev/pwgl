@@ -1,17 +1,15 @@
-import "../../namespace.js";
-import "./TextureInfo.js";
+import { TextureInfo } from "./TextureInfo.js";
 
-const _placeholderImage = new Image();
-
-AGL.Texture = class extends AGL.TextureInfo {
+export class Texture extends TextureInfo {
   constructor(source, shouldUpdate) {
     super();
 
     /*
-    this._source
     this._loaded
     this.isVideo
     */
+
+    this._source = Texture.placeholderImage;
 
     this._onTextureLoadedBound = this._parseTextureSize.bind(this);
 
@@ -35,29 +33,30 @@ AGL.Texture = class extends AGL.TextureInfo {
     if (value) {
       this._loaded = false;
 
-      this._source && this._source.removeEventListener(
+      this._source.removeEventListener(
         this._eventType,
         this._onTextureLoadedBound
       );
 
+      this._source = value
+        ? value
+        : Texture.placeholderImage;
+
+      this.isVideo = value.tagName
+        ? value.tagName.toLowerCase() === "video"
+        : false;
+      this._eventType = this.isVideo
+        ? "canplay"
+        : "load";
+
       if (value) {
-        this._source = value;
-
-        this.isVideo = value.tagName
-          ? value.tagName.toLowerCase() === "video"
-          : false;
-        this._eventType = this.isVideo
-          ? "canplay"
-          : "load";
-
         this._parseTextureSize();
 
         !this._loaded && value.addEventListener(
           this._eventType,
           this._onTextureLoadedBound
         );
-      } else
-        this._source = _placeholderImage;
+      }
     }
   }
 
@@ -128,16 +127,18 @@ AGL.Texture = class extends AGL.TextureInfo {
   }
 }
 
-AGL.Texture.loadImage = (src, shouldUpdate) => {
+Texture.placeholderImage = document.createElement("img");
+
+Texture.loadImage = (src, shouldUpdate) => {
   const image = document.createElement("img");
-  const texture = new AGL.Texture(image, shouldUpdate);
+  const texture = new Texture(image, shouldUpdate);
   image.src = src;
   return texture;
 };
 
-AGL.Texture.loadVideo = (src, shouldUpdate) => {
+Texture.loadVideo = (src, shouldUpdate) => {
   const video = document.createElement("video");
-  const texture = new AGL.Texture(video, shouldUpdate);
+  const texture = new Texture(video, shouldUpdate);
   video.src = src;
   return texture;
 };

@@ -1,4 +1,7 @@
-import "../namespace.js";
-import "./BaseFilter.js";
+import { BaseFilter } from "./BaseFilter.js";
 
-AGL.SepiaFilter = AGL.BaseFilter.bind({}, 3, 2);
+export class SepiaFilter extends BaseFilter {
+  constructor(intensity) {
+    super(3, 2, intensity);
+  }
+}
