@@ -3,23 +3,23 @@
 A JavaScript framework for creating 2D WebGL 2.0 things
 
 ### Demos:
-- https://codepen.io/iroshan/pen/rNMKbWv
-- https://codepen.io/iroshan/pen/MWEwYww
-- https://codepen.io/iroshan/pen/zYoQgEG
-- https://codepen.io/iroshan/pen/NWbzLaE
-- https://codepen.io/iroshan/pen/VwbxdGw
+- [Game Demo](https://codepen.io/iroshan/pen/rNMKbWv)
+- [Displacement Filter](https://codepen.io/iroshan/pen/MWEwYww)
+- [2D Lights and Shadows](https://codepen.io/iroshan/pen/zYoQgEG)
+- [Lights, Shadows and Filters](https://codepen.io/iroshan/pen/NWbzLaE)
+- [PS1 like fake 3D effect](https://codepen.io/iroshan/pen/VwbxdGw)
 
 ### Features:
 * Batch rendering (10.000 elements - 60fps)
 * Dynamic 2.5D lights and shadows
 * Element picker (can click on rendered items)
 * Image filters (Blur, Pixelate, Distortion, etc.)
-    * https://github.com/asjs-dev/pwgl/blob/main/src/filters
+    * [Filters](https://github.com/asjs-dev/pwgl/blob/main/src/filters)
 * Video textures
 * and many other features...
 
 ### Minified version
-* https://github.com/asjs-dev/pwgl/blob/main/dist/pwgl.min.js
+* [pwgl.min.js](https://github.com/asjs-dev/pwgl/blob/main/dist/pwgl.min.js)
 
 ### How to use
 
