@@ -1,4 +1,4 @@
-![logo](https://github.com/asjs-dev/pwgl/blob/master/docs/logo.png?raw=true)
+![logo](https://github.com/asjs-dev/pwgl/blob/main/docs/logo.png?raw=true)
 
 A JavaScript framework for creating 2D WebGL 2.0 things
 
