@@ -39,27 +39,19 @@ export const Utils = {
     isWebGl2Supported : false
   },
 
-  initContextConfig : (config) => {
-    config = config || {};
+  initContextConfig : (config) => ({
+    canvas : (config = config || {}).canvas || document.createElement("canvas"),
+    contextAttributes : {... {
+      powerPreference : "high-performance",
+      preserveDrawingBuffer : true,
+    }, ... (config.contextAttributes || {})}
+  }),
 
-    return {
-      canvas : config.canvas || document.createElement("canvas"),
-      contextAttributes : {... {
-        powerPreference : "high-performance",
-        preserveDrawingBuffer : true,
-      }, ... (config.contextAttributes || {})}
-    };
-  },
-
-  initRendererConfig : (config) => {
-    config = config || {};
-
-    return {
-      locations : config.locations || [],
-      precision : config.precision || "lowp", /* lowp mediump highp */
-      context : config.context || new Context()
-    };
-  },
+  initRendererConfig : (config) => ({
+    locations : (config = config || {}).locations || [],
+    precision : config.precision || "lowp", /* lowp mediump highp */
+    context : config.context || new Context()
+  }),
 
   createVersion : (precision) => "#version 300 es\n" +
     "precision " + precision + " float;\n",
