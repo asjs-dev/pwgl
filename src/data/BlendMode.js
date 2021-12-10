@@ -1,22 +1,19 @@
 import { Const } from "../utils/Utils.js";
 
-
-const _createBlendMode = (functions, equations) => {
-  return {
-    functionName : "blendFunc" + (
-      functions.length < 3
-        ? ""
-        : "Separate"
-    ),
-    functions : functions,
-    equationName : "blendEquation" + (
-      !equations || equations.length < 2
-        ? ""
-        : "Separate"
-    ),
-    equations : equations || [Const.FUNC_ADD]
-  };
-}
+const _createBlendMode = (functions, equations) => ({
+  functionName : "blendFunc" + (
+    functions.length < 3
+      ? ""
+      : "Separate"
+  ),
+  functions : functions,
+  equationName : "blendEquation" + (
+    !equations || equations.length < 2
+      ? ""
+      : "Separate"
+  ),
+  equations : equations || [Const.FUNC_ADD]
+});
 
 export const BlendMode = {
   NONE : _createBlendMode([

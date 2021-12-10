@@ -1,5 +1,19 @@
 import { Context } from "./Context.js";
 
+const _locationTypes = {
+  a : "Attrib",
+  u : "Uniform"
+};
+
+const _createShader = (gl, shaderType, shaderSource) => {
+  const shader = gl.createShader(shaderType);
+
+  gl.shaderSource(shader, shaderSource);
+  gl.compileShader(shader);
+
+  return shader;
+};
+
 export const Utils = {
   THETA : Math.PI / 180,
 
@@ -62,22 +76,13 @@ export const Utils = {
     checkCanvas();
   },
 
-  createShader : (gl, shaderType, shaderSource) => {
-    const shader = gl.createShader(shaderType);
-
-    gl.shaderSource(shader, shaderSource);
-    gl.compileShader(shader);
-
-    return shader;
-  },
-
   createProgram : (gl, vertexShaderSource, fragmentShaderSource) => {
-    const vertexShader = Utils.createShader(
+    const vertexShader = _createShader(
       gl,
       Const.VERTEX_SHADER,
       vertexShaderSource
     );
-    const fragmentShader = Utils.createShader(
+    const fragmentShader = _createShader(
       gl,
       Const.FRAGMENT_SHADER,
       fragmentShaderSource
@@ -110,16 +115,11 @@ export const Utils = {
     return program;
   },
 
-  locationTypes : {
-    a : "Attrib",
-    u : "Uniform"
-  },
-
   getLocationsFor : (gl, program, locationsDescriptor) => {
     const locations = {};
 
     locationsDescriptor.forEach((name) => {
-      locations[name] = gl["get" + Utils.locationTypes[name[0]] + "Location"](
+      locations[name] = gl["get" + _locationTypes[name[0]] + "Location"](
         program,
         name
       );
@@ -131,18 +131,16 @@ export const Utils = {
 
 export const Const = {};
 
-(() => {
-  const gl = document.createElement("canvas").getContext("webgl2");
-  if (gl) {
-    for (let key in gl) {
-      const value = gl[key];
-      if (typeof value === "number" && key === key.toUpperCase())
-        Const[key] = value;
-    }
-
-    Utils.INFO.isWebGl2Supported = true;
-    Utils.INFO.maxTextureImageUnits = gl.getParameter(
-      Const.MAX_TEXTURE_IMAGE_UNITS
-    );
+const _gl = document.createElement("canvas").getContext("webgl2");
+if (_gl) {
+  for (let key in _gl) {
+    const value = _gl[key];
+    if (typeof value === "number" && key === key.toUpperCase())
+      Const[key] = value;
   }
-})();
+
+  Utils.INFO.isWebGl2Supported = true;
+  Utils.INFO.maxTextureImageUnits = _gl.getParameter(
+    Const.MAX_TEXTURE_IMAGE_UNITS
+  );
+}
