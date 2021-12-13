@@ -102,10 +102,10 @@ export class LightRenderer extends BatchRenderer {
       "vSpt," +
       "vSC;" +
     "out vec2 " +
-      "vTCrd," +
+      "vTUv," +
       "vSln;" +
     "out vec4 " +
-      "vCrd," +
+      "vUv," +
       "vCl," +
       "vDt," +
       "vExt;" +
@@ -118,7 +118,7 @@ export class LightRenderer extends BatchRenderer {
       "vSC=uSC;" +
       "vec3 pos=vec3(aPos*2.-1.,1);" +
 
-      "vCrd.xy=pos.xy*vSC;" +
+      "vUv.xy=pos.xy*vSC;" +
       "vHS=vExt.z*vSC;" +
 
       "mat3 mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1);" +
@@ -127,15 +127,15 @@ export class LightRenderer extends BatchRenderer {
       "vD=aMt[1].z*vSC;" +
       "if(vExt.x<1.){" +
         "gl_Position=vec4(mt*pos,1);" +
-        "vTCrd=(gl_Position.xy+H.xy)/H.zw;" +
-        "vCrd.zw=(aMt[1].xy+H.xy)/H.zw;" +
+        "vTUv=(gl_Position.xy+H.xy)/H.zw;" +
+        "vUv.zw=(aMt[1].xy+H.xy)/H.zw;" +
         "vSpt=PI-aMt[1].w;" +
         "vSln=vec2(sin(vDt.w),cos(vDt.w));" +
       "}else{" +
         "mt[2].xy=vec2(-1,1);" +
         "gl_Position=vec4(pos,1);" +
-        "vTCrd=vec2(aPos.x,1.-aPos.y);" +
-        "vCrd.zw=vTCrd+((mt*vec3(1)).xy+H.xy)/H.zw;" +
+        "vTUv=vec2(aPos.x,1.-aPos.y);" +
+        "vUv.zw=vTUv+((mt*vec3(1)).xy+H.xy)/H.zw;" +
       "}" +
       "gl_Position.y*=uFlpY;" +
       "vSC*=100.;" +
@@ -153,10 +153,10 @@ export class LightRenderer extends BatchRenderer {
       "vSpt," +
       "vSC;" +
     "in vec2 " +
-      "vTCrd," +
+      "vTUv," +
       "vSln;" +
     "in vec4 " +
-      "vCrd," +
+      "vUv," +
       "vCl," +
       "vDt," +
       "vExt;" +
@@ -170,17 +170,17 @@ export class LightRenderer extends BatchRenderer {
       "if(vDt.x>0.){" +
         "bool isl=vExt.x<1.;" +
 
-        "vec4 tc=texture(uTex,vTCrd);" +
+        "vec4 tc=texture(uTex,vTUv);" +
 
         "vec2 " +
-          "tCrd=vTCrd*uS.xy," +
-          "tCnt=vCrd.zw*uS.xy;" +
+          "tUv=vTUv*uS.xy," +
+          "tCnt=vUv.zw*uS.xy;" +
 
         "float " +
           "alp=tc.a," +
           "shn=1.+tc.b," +
           "ph=tc.g*vSC," +
-          "pxDst=distance(vec3(tCnt,vHS),vec3(tCrd,ph))," +
+          "pxDst=distance(vec3(tCnt,vHS),vec3(tUv,ph))," +
           "dst=pxDst/vD," +
           "vol=1.-(" +
             "isl" +
@@ -193,42 +193,38 @@ export class LightRenderer extends BatchRenderer {
 
           "if(isl&&vSpt>0.&&vSpt<PI){" +
             "float slh=(vHS-ph)/100.;" +
-            "vec2 sl=vec2(slh*vSln.y-vCrd.x*vSln.x,slh*vSln.x+vCrd.x*vSln.y);" +
+            "vec2 sl=vec2(slh*vSln.y-vUv.x*vSln.x,slh*vSln.x+vUv.x*vSln.y);" +
 
-            //"if(atan(sl.x,length(vec2(sl.y,vCrd.y)))+PIH<vSpt)vol=0.;" +
+            //"if(atan(sl.x,length(vec2(sl.y,vUv.y)))+PIH<vSpt)vol=0.;" +
 
-            "vol*=(atan(sl.x,length(vec2(sl.y,vCrd.y)))+PIH)-vSpt;" +
+            "vol*=(atan(sl.x,length(vec2(sl.y,vUv.y)))+PIH)-vSpt;" +
           "}" +
 
           "int flg=int(vExt.y);" +
 
           "float " +
-            "fltDst=distance(tCnt,tCrd)," +
+            "fltDst=distance(tCnt,tUv)," +
             "mh=ph-vHS," +
             "pc;" +
 
           "vec2 " +
-            "dsth=vec2(tCrd.x-tCnt.x,tCrd.y-tCnt.y)/fltDst," +
+            "dsth=vec2(tUv.x-tCnt.x,tUv.y-tCnt.y)/fltDst," +
             "p;" +
 
           "float dsthL=length(dsth);" +
 
           "if((flg&2)>0&&alp>0.&&vol>0.){" +
-            "p=tCrd-dsth;" +
+            "float h=texture(uTex,(tUv-dsth)*uS.zw).g*vSC;" +
 
-            "float pl=fltDst-dsthL;" +
-
-            "pc=vHS+(pl/fltDst)*mh;" +
-
-            "tc=texture(uTex,p*uS.zw);" +
-
-            "float " +
-              "h=tc.g*vSC," +
-              "mtp=clamp(0.,1.,pc-h);" +
-
-            "shn+=1.-mtp;" +
-
-            "vol*=((atan(vHS-h,pl)+atan(ph-h,dsthL))/PI)+mtp;" +
+            "vol*=clamp(0.,1.," +
+              "(" +
+                "(" +
+                  "PIH-atan(h-ph,dsthL)" +
+                ")-(" +
+                  "PIH-atan(vHS-h,fltDst-dsthL)" +
+                ")" +
+              ")/PIH" +
+            ");" +
           "}" +
 
           "vol*=shn;" +
@@ -246,7 +242,7 @@ export class LightRenderer extends BatchRenderer {
               "tc=texture(uTex,p*uS.zw);" +
               "tc.rg*=vSC;" +
               "if(tc.r<=pc&&tc.g>=pc){" +
-                "vol*=clamp(0.,1.,distance(tCrd,p)/shl);" +
+                "vol*=clamp(0.,1.,distance(tUv,p)/shl);" +
                 "break;" +
               "}" +
             "}" +

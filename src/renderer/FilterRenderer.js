@@ -103,15 +103,15 @@ export class FilterRenderer extends BaseRenderer {
     "uniform float uFlpY;" +
 
     "out vec2 " +
-      "vCrd," +
-      "vTCrd;" +
+      "vUv," +
+      "vTUv;" +
 
     "void main(void){" +
       "vec4 pos=vec4(aPos*2.-1.,1,1);" +
       "gl_Position=pos;" +
       "gl_Position.y*=uFlpY;" +
-      "vCrd=pos.xy;" +
-      "vTCrd=vec2(aPos.x,1.-aPos.y);" +
+      "vUv=pos.xy;" +
+      "vTUv=vec2(aPos.x,1.-aPos.y);" +
     "}";
   }
 
@@ -125,13 +125,13 @@ export class FilterRenderer extends BaseRenderer {
     "uniform mat4 uFtrK;" +
 
     "in vec2 " +
-      "vCrd," +
-      "vTCrd;" +
+      "vUv," +
+      "vTUv;" +
 
     "out vec4 oCl;" +
 
     "void main(void){" +
-      "oCl=texture(uTex,vTCrd);" +
+      "oCl=texture(uTex,vTUv);" +
       // FILTERS
       "if(uFtrT.x>0){" +
         "float[] vl=uFtrV;" +
@@ -148,15 +148,15 @@ export class FilterRenderer extends BaseRenderer {
         "if(uFtrT.x<2){" +
           "mat4 kr=uFtrK*v;" +
           "oCl=vec4((" +
-            "texture(uTex,vTCrd-oPx)*kr[0].x+" +
-            "texture(uTex,vTCrd+oPx*vec2(0,-1))*kr[0].y+" +
-            "texture(uTex,vTCrd+oPx*vec2(1,-1))*kr[0].z+" +
-            "texture(uTex,vTCrd+oPx*vec2(-1,0))*kr[0].w+" +
+            "texture(uTex,vTUv-oPx)*kr[0].x+" +
+            "texture(uTex,vTUv+oPx*vec2(0,-1))*kr[0].y+" +
+            "texture(uTex,vTUv+oPx*vec2(1,-1))*kr[0].z+" +
+            "texture(uTex,vTUv+oPx*vec2(-1,0))*kr[0].w+" +
             "oCl*kr[1].x+" +
-            "texture(uTex,vTCrd+oPx*vec2(1,0))*kr[1].y+" +
-            "texture(uTex,vTCrd+oPx*vec2(-1,1))*kr[1].z+" +
-            "texture(uTex,vTCrd+oPx*vec2(0,1))*kr[1].w+" +
-            "texture(uTex,vTCrd+oPx)*kr[2].x" +
+            "texture(uTex,vTUv+oPx*vec2(1,0))*kr[1].y+" +
+            "texture(uTex,vTUv+oPx*vec2(-1,1))*kr[1].z+" +
+            "texture(uTex,vTUv+oPx*vec2(0,1))*kr[1].w+" +
+            "texture(uTex,vTUv+oPx)*kr[2].x" +
           ").rgb,oCl.a);" +
         /*
           COLORMATRIX FILTERS:
@@ -190,14 +190,14 @@ export class FilterRenderer extends BaseRenderer {
             "oCl=vec4((round((oCl.rgb*256.)/v)/256.)*v,oCl.a);" +
           // VignetteFilter
           "else if(uFtrT.y<7){" +
-            "vec2 pv=pow(abs(vCrd*v),vec2(vl[1]));" +
+            "vec2 pv=pow(abs(vUv*v),vec2(vl[1]));" +
             "float cv=clamp(min(1.,(1.-length(pv))*vl[5]),0.,1.);" +
             "oCl.rgb=oCl.rgb*vec3(cv)+vec3(vl[2],vl[3],vl[4])*(1.-cv);" +
 
           "}" +
           // RainbowFilter
           "else if(uFtrT.y<8)" +
-            "oCl.rgb+=vec3(vCrd.xy*.15,(vCrd.x*vCrd.y)*.15)*v;" +
+            "oCl.rgb+=vec3(vUv.xy*.15,(vUv.x*vUv.y)*.15)*v;" +
           // BrightnessContrastFilter
           "else if(uFtrT.y<9)" +
             "oCl.rgb=vec3((oCl.rgb-.5)*vl[1]+.5+v);" +
@@ -226,7 +226,7 @@ export class FilterRenderer extends BaseRenderer {
                 "im=1.-(m*.25);" +
                 "tCl=i==0.&&j==0." +
                   "?oCl" +
-                  ":texture(uTex,vTCrd+(wh*vec2(i,j)));" +
+                  ":texture(uTex,vTUv+(wh*vec2(i,j)));" +
                 "cl+=tCl*im;" +
                 "c+=im;" +
               "}" +
@@ -242,7 +242,7 @@ export class FilterRenderer extends BaseRenderer {
                 "im=1.-(m*.25);" +
                 "tCl=i==0.&&j==0." +
                   "?oCl" +
-                  ":texture(uTex,vTCrd+(wh*vec2(i,j)));" +
+                  ":texture(uTex,vTUv+(wh*vec2(i,j)));" +
                 "float avg=(tCl.r+tCl.g+tCl.b+tCl.a)/4.;" +
                 "if(avg-oAvg>=vl[3]*m){" +
                   "cl+=tCl*im*(2.-vl[3]);" +
@@ -255,19 +255,19 @@ export class FilterRenderer extends BaseRenderer {
         "}" +
         // PixelateFilter
         "else if(uFtrT.x<6)" +
-          "oCl=texture(uTex,floor(vTCrd/vol)*vol);" +
+          "oCl=texture(uTex,floor(vTUv/vol)*vol);" +
         // DisplacementFilter
         "else if(uFtrT.x<7){" +
           "vec2 dspMd=vec2(1,-1)*(texture(" +
             "uFTex," +
-            "mod(vec2(vl[1],vl[2])+vTCrd,1.)*vec2(vl[5]-vl[3],vl[6]-vl[4])" +
+            "mod(vec2(vl[1],vl[2])+vTUv,1.)*vec2(vl[5]-vl[3],vl[6]-vl[4])" +
           ").rg-.5)*2.*vol;" +
-          "oCl=texture(uTex,vTCrd+dspMd);" +
+          "oCl=texture(uTex,vTUv+dspMd);" +
         "}" +
         // MaskFilter
         "else if(uFtrT.x<8){" +
           "vec4 mskCl=texture(uFTex," +
-            "mod(vec2(vl[1],vl[2])+vTCrd,1.)*vec2(vl[5]-vl[3],vl[6]-vl[4])" +
+            "mod(vec2(vl[1],vl[2])+vTUv,1.)*vec2(vl[5]-vl[3],vl[6]-vl[4])" +
           ");" +
           "oCl.a*=v<4." +
             "?mskCl[int(v)]" +

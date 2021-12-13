@@ -1,6 +1,7 @@
 import { Context } from "./utils/Context.js";
 import { Buffer } from "./utils/Buffer.js";
 import { Utils, Const } from "./utils/Utils.js";
+import { Parser } from "./utils/Parser.js";
 import { FPS } from "./utils/FPS.js";
 
 import { BlendMode } from "./data/BlendMode.js";
@@ -81,6 +82,7 @@ window.PWGL = window.AGL = {
   Buffer,
   Utils,
   Const,
+  Parser,
   FPS,
 
   Matrix3,

@@ -204,7 +204,7 @@ export class Stage2D extends BatchRenderer {
       "vACl," +
       "vTId," +
       "vTTp;" +
-    "out vec2 vTCrd;" +
+    "out vec2 vTUv;" +
     "out vec4 vTCrop" +
     (useRepeatTextures
       ? ",vRR;"
@@ -237,7 +237,7 @@ export class Stage2D extends BatchRenderer {
       "gl_Position=vec4(mt*tPos,1);" +
       "gl_Position.y*=uFlpY;" +
       "float dt=aDt[1].w;" +
-      "vTCrd=(tMt*((dt*vec3(aPos,1))+((1.-dt)*tPos))).xy;" +
+      "vTUv=(tMt*((dt*vec3(aPos,1))+((1.-dt)*tPos))).xy;" +
       "vTCrop=aMt[3];" +
 
       "vCl=mat2x4(uWCl,aDt[0].rgb*aDt[0].a,1.-aDt[0].a);" +
@@ -275,7 +275,7 @@ export class Stage2D extends BatchRenderer {
       "vACl," +
       "vTId," +
       "vTTp;" +
-    "in vec2 vTCrd;" +
+    "in vec2 vTUv;" +
     "in vec4 vTCrop" +
     (useRepeatTextures
       ? ",vRR;"
@@ -290,50 +290,50 @@ export class Stage2D extends BatchRenderer {
 
     (useRepeatTextures
       ? Utils.GLSL_RANDOM +
-        "vec4 gtClBCrd(vec2 st){" +
-          "vec2 tCrd=vTCrd;" +
+        "vec4 gtClBUv(vec2 st){" +
+          "vec2 uv=vTUv;" +
 
           "float " +
-            "rnd=rand(floor(tCrd+st),1.)," +
+            "rnd=rand(floor(uv+st),1.)," +
             "rndDg=rnd*360.*vRR.x;" +
 
           "if(rndDg>0.){" +
             "vec2 rt=vec2(sin(rndDg),cos(rndDg));" +
-            "tCrd=vec2(tCrd.x*rt.y-tCrd.y*rt.x,tCrd.x*rt.x+tCrd.y*rt.y);" +
+            "uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);" +
           "}" +
 
-          "return " + getSimpleTexColor("mod(tCrd,1.)") + ";" +
+          "return " + getSimpleTexColor("mod(uv,1.)") + ";" +
         "}" +
-        "float gtRClBCrd(vec2 st,vec2 crd){" +
-          "float rnd=rand(floor(vTCrd+st),1.);" +
+        "float gtRClBUv(vec2 st,vec2 uv){" +
+          "float rnd=rand(floor(vTUv+st),1.);" +
           "return (1.-(2.*rnd-1.)*vRR.y)*" +
-            "abs((1.-st.x-crd.x)*(1.-st.y-crd.y));" +
+            "abs((1.-st.x-uv.x)*(1.-st.y-uv.y));" +
         "}"
       : "") +
 
     "void main(void){" +
       "if(vTId>-1.){" +
-        "vec2 crd=mod(vTCrd,1.);" +
+        "vec2 uv=mod(vTUv,1.);" +
 
         (useRepeatTextures
           ? "if(vRR.w>0.){" +
               "vec2 zr=vec2(0,1);" +
               "oCl=vRR.z>0." +
                 "?(" +
-                  "gtClBCrd(zr.xx)+" +
-                  "gtClBCrd(zr.yx)+" +
-                  "gtClBCrd(zr.xy)+" +
-                  "gtClBCrd(zr.yy)" +
+                  "gtClBUv(zr.xx)+" +
+                  "gtClBUv(zr.yx)+" +
+                  "gtClBUv(zr.xy)+" +
+                  "gtClBUv(zr.yy)" +
                 ")/vec4(4)" +
-                ":gtClBCrd(zr);" +
+                ":gtClBUv(zr);" +
               "if(vRR.y>0.)oCl.rgb*=(" +
-                "gtRClBCrd(zr.xx,crd)+" +
-                "gtRClBCrd(zr.yx,crd)+" +
-                "gtRClBCrd(zr.xy,crd)+" +
-                "gtRClBCrd(zr.yy,crd)" +
+                "gtRClBUv(zr.xx,uv)+" +
+                "gtRClBUv(zr.yx,uv)+" +
+                "gtRClBUv(zr.xy,uv)+" +
+                "gtRClBUv(zr.yy,uv)" +
               ");" +
-            "}else oCl=" + getSimpleTexColor("crd") + ";"
-          : "oCl=" + getSimpleTexColor("crd") + ";") +
+            "}else oCl=" + getSimpleTexColor("uv") + ";"
+          : "oCl=" + getSimpleTexColor("uv") + ";") +
       "}else oCl+=1.;" +
 
       "oCl.a*=vACl;" +
