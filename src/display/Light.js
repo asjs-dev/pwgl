@@ -14,9 +14,9 @@ export class Light extends BaseDrawable {
 
     this._id = id;
     this._matId = id * 16;
-    this._colId = this._matId + 8;
+    this._quadId = this._matId + 4;
+    this._octId = this._matId + 8;
     this._datId = this._matId + 12;
-    this._extId = id * 4;
 
     this._lightData = lightData;
     this._extensionData = extensionData;
@@ -31,10 +31,11 @@ export class Light extends BaseDrawable {
     this.type = Light.Type.SPOT;
     this.precision =
     this.diffuse = 1;
+    this.maxShadowStep = 128;
   }
 
-  get type() { return this._extensionData[this._extId]; }
-  set type(v) { this._extensionData[this._extId] = v; }
+  get type() { return this._extensionData[this._matId]; }
+  set type(v) { this._extensionData[this._matId] = v; }
 
   get castShadow() { return this._castShadow; }
   set castShadow(v) {
@@ -48,8 +49,11 @@ export class Light extends BaseDrawable {
     this._updateShadowProps();
   }
 
-  get precision() { return this._extensionData[this._extId + 3]; }
-  set precision(v) { this._extensionData[this._extId + 3] = Math.max(1, v); }
+  get maxShadowStep() { return this._extensionData[this._quadId]; }
+  set maxShadowStep(v) { this._extensionData[this._quadId] = v; }
+
+  get precision() { return this._extensionData[this._matId + 3]; }
+  set precision(v) { this._extensionData[this._matId + 3] = Math.max(1, v); }
 
   get angle() { return this._lightData[this._datId + 3]; }
   set angle(v) { this._lightData[this._datId + 3] = v; }
@@ -77,13 +81,13 @@ export class Light extends BaseDrawable {
 
       lightData[this._matId + 6] = this.props.width;
 
-      this._extensionData[this._extId + 2] = this.props.z;
+      this._extensionData[this._matId + 2] = this.props.z;
     } else
       lightData[datId] = 0;
   }
 
   _updateShadowProps() {
-    this._extensionData[this._extId + 1] =
+    this._extensionData[this._matId + 1] =
       this._castShadow * 1 |
       this._gouraud * 2;
   }
@@ -135,7 +139,7 @@ export class Light extends BaseDrawable {
       const lightData = this._lightData;
       const parentColorCache = this._parent.colorCache;
 
-      const colId = this._colId;
+      const colId = this._octId;
 
       lightData[colId] = parentColorCache[0] * color.r;
       lightData[colId + 1] = parentColorCache[1] * color.g;
