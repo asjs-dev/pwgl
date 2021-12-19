@@ -139,7 +139,7 @@ export class LightRenderer extends BatchRenderer {
         "vUv.zw=vTUv+((mt*vec3(1)).xy+H.xy)/H.zw;" +
       "}" +
       "gl_Position.y*=uFlpY;" +
-      "vSC*=255.;" +
+      "vSC*=100.;" +
     "}";
   }
 
