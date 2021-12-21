@@ -7,8 +7,10 @@ import { FilterRenderer } from "../renderer/FilterRenderer.js";
 import { LightRenderer } from "../renderer/LightRenderer.js";
 import { Image } from "./Image.js";
 
-export class SmoothLight {
+export class SmoothLight extends Image {
   constructor(options) {
+    super();
+    
     options = options || {};
 
     this._framebuffer = new Framebuffer();
@@ -31,18 +33,17 @@ export class SmoothLight {
     this.filterRenderer.clearColor.set(0, 0, 0, 0);
     this.filterRenderer.clearBeforeRender = true;
 
-    this.image = new Image();
-    this.image.blendMode = BlendMode.MULTIPLY;
+    this.blendMode = BlendMode.MULTIPLY;
 
     if (!options.config.context) {
-      this.image.texture = new Texture(
+      this.texture = new Texture(
         this.filterRenderer.context.canvas,
         true
       );
       this._renderFilterFuncBound = this._renderFilter.bind(this);
     } else {
       this._filterFramebuffer = new Framebuffer();
-      this.image.texture = this._filterFramebuffer;
+      this.texture = this._filterFramebuffer;
       this._renderFilterFuncBound = this._renderFilterToFramebuffer.bind(this);
     }
 
@@ -82,7 +83,7 @@ export class SmoothLight {
   destruct() {
     this.lightRenderer.destruct();
     this.filterRenderer.destruct();
-    this.image.destruct();
+    super.destruct();
   }
 
   _renderFilter() {
@@ -99,8 +100,8 @@ export class SmoothLight {
     const scaledWidth = this._width * this.lightRenderer.scale;
     const scaledHeight = this._height * this.lightRenderer.scale;
 
-    this.image.props.width = this._width;
-    this.image.props.height = this._height;
+    this.props.width = this._width;
+    this.props.height = this._height;
 
     this.lightRenderer.setSize(scaledWidth, scaledHeight);
     this.filterRenderer.setSize(scaledWidth, scaledHeight);

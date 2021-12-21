@@ -22,9 +22,9 @@ export class Light extends BaseDrawable {
     this._extensionData = extensionData;
 
     this._castShadow =
-    this._gouraud =
+    this._shading =
     this.castShadow =
-    this.gouraud = true;
+    this.shading = true;
 
     this.angle = 0;
     this.spotAngle = 180 * Utils.THETA;
@@ -43,9 +43,9 @@ export class Light extends BaseDrawable {
     this._updateShadowProps();
   }
 
-  get gouraud() { return this._gouraud; }
-  set gouraud(v) {
-    this._gouraud = v;
+  get shading() { return this._shading; }
+  set shading(v) {
+    this._shading = v;
     this._updateShadowProps();
   }
 
@@ -89,7 +89,7 @@ export class Light extends BaseDrawable {
   _updateShadowProps() {
     this._extensionData[this._matId + 1] =
       this._castShadow * 1 |
-      this._gouraud * 2;
+      this._shading * 2;
   }
 
   _updateAdditionalData() {
