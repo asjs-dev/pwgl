@@ -27,14 +27,14 @@ export class BaseRenderer {
 
     this._options = options;
     this._config = this._options.config;
-    this._context = this._config.context;
+    this.context = this._config.context;
     this._config.locations = this._config.locations.concat([
       "uFlpY",
       "aPos",
       "uTex"
     ]);
 
-    this._vao = this._context.gl.createVertexArray();
+    this._vao = this.context.gl.createVertexArray();
 
     this._enableBuffers = false;
 
@@ -60,8 +60,6 @@ export class BaseRenderer {
       0
     );
   }
-
-  get context() { return this._context; }
 
   get width() { return this._width; }
   set width(v) {
@@ -94,7 +92,7 @@ export class BaseRenderer {
   }
 
   renderToFramebuffer(framebuffer) {
-    if (!this._context.isLost()) {
+    if (!this.context.isLost()) {
       this._switchToProgram();
       this._attachFramebufferAlias(framebuffer);
       this._renderBatch(framebuffer);
@@ -103,7 +101,7 @@ export class BaseRenderer {
   }
 
   render() {
-    if (!this._context.isLost()) {
+    if (!this.context.isLost()) {
       this._switchToProgram();
       this._gl.uniform1f(this._locations.uFlpY, 1);
       this._renderBatch();
@@ -120,13 +118,13 @@ export class BaseRenderer {
   }
 
   _switchToProgram() {
-    this._gl = this._context.gl;
+    this._gl = this.context.gl;
 
-    if (this._currentContextId < this._context.contextId) {
-      this._currentContextId = this._context.contextId;
+    if (this._currentContextId < this.context.contextId) {
+      this._currentContextId = this.context.contextId;
       this._buildProgram();
       this._enableBuffers = true;
-    } else if (this._context.useProgram(this._program, this._vao))
+    } else if (this.context.useProgram(this._program, this._vao))
       this._enableBuffers = true;
 
     this._resize();
@@ -134,8 +132,8 @@ export class BaseRenderer {
 
   _attachFramebuffer(framebuffer) {
     framebuffer.setSize(this._width, this._height);
-    this._context.useTexture(framebuffer, this._renderTime);
-    this._context.deactivateTexture(framebuffer);
+    this.context.useTexture(framebuffer, this._renderTime);
+    this.context.deactivateTexture(framebuffer);
     framebuffer.bind(this._gl);
     this._clearBeforeRenderFunc();
     this._gl.uniform1f(this._locations.uFlpY, -1);
@@ -152,8 +150,7 @@ export class BaseRenderer {
   }
 
   _resize() {
-    if (this._context.setSize(this._width, this._height))
-      ++this._resizeId;
+    this.context.setSize(this._width, this._height) && ++this._resizeId;
     if (this._currentResizeId < this._resizeId) {
       this._currentResizeId = this._resizeId;
       this._customResize();
@@ -189,7 +186,7 @@ export class BaseRenderer {
       this._config.locations
     );
 
-    this._context.useProgram(program, this._vao);
+    this.context.useProgram(program, this._vao);
 
     this._createBuffers();
   }

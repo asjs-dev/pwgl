@@ -7,10 +7,7 @@ import { BatchRenderer } from "./BatchRenderer.js";
 export class LightRenderer extends BatchRenderer {
   constructor(options) {
     options = options || {};
-    options.config = Utils.initRendererConfig(
-      options.config,
-      LightRenderer
-    );
+    options.config = Utils.initRendererConfig(options.config);
     options.config.locations = options.config.locations.concat([
       "aExt",
       "uS",
@@ -19,6 +16,9 @@ export class LightRenderer extends BatchRenderer {
     const maxBatchItems = options.maxBatchItems = options.lightNum || 1;
 
     super(options);
+
+    this.clearBeforeRender = true;
+    this.clearColor.set(0, 0, 0, 1);
 
     this.heightMap = options.heightMap;
 
@@ -45,11 +45,11 @@ export class LightRenderer extends BatchRenderer {
   }
 
   _render() {
-    this._context.setBlendMode(BlendMode.ADD);
+    this.context.setBlendMode(BlendMode.ADD);
 
     this.heightMap && this._gl.uniform1i(
       this._locations.uTex,
-      this._context.useTexture(this.heightMap, this._renderTime, true)
+      this.context.useTexture(this.heightMap, this._renderTime, true)
     );
 
     this._gl.uniform1f(this._locations.uSC, this.scale);

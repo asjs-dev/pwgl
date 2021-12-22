@@ -135,8 +135,8 @@ export class Context {
       this.width = width;
       this.height = height;
 
-      this.gl.scissor(0, 0, width, height);
       this.gl.viewport(0, 0, width, height);
+      this.gl.scissor(0, 0, width, height);
 
       return true;
     }

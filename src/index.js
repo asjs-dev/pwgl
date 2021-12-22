@@ -31,7 +31,6 @@ import { AnimatedImage } from "./display/AnimatedImage.js";
 import { Container } from "./display/Container.js";
 import { StageContainer } from "./display/StageContainer.js";
 import { Image } from "./display/Image.js";
-import { SmoothLight } from "./display/SmoothLight.js";
 
 import { BaseRenderer } from "./renderer/BaseRenderer.js";
 import { BatchRenderer } from "./renderer/BatchRenderer.js";
@@ -95,7 +94,6 @@ window.PWGL = window.AGL = {
   Container,
   StageContainer,
   Image,
-  SmoothLight,
 
   BaseRenderer,
   BatchRenderer,

@@ -10,14 +10,12 @@ import { Image } from "./Image.js";
 export class SmoothLight extends Image {
   constructor(options) {
     super();
-    
+
     options = options || {};
 
     this._framebuffer = new Framebuffer();
 
     this.lightRenderer = new LightRenderer(options);
-    this.lightRenderer.clearColor.set(0, 0, 0, 1);
-    this.lightRenderer.clearBeforeRender = true;
 
     this._blurFilter = new BlurFilter();
 

@@ -6,10 +6,7 @@ import { BaseRenderer } from "./BaseRenderer.js";
 export class FilterRenderer extends BaseRenderer {
   constructor(options) {
     options = options || {};
-    options.config = Utils.initRendererConfig(
-      options.config,
-      FilterRenderer
-    );
+    options.config = Utils.initRendererConfig(options.config);
     options.config.locations = options.config.locations.concat([
       "uFTex",
       "uFtrT",
@@ -39,7 +36,7 @@ export class FilterRenderer extends BaseRenderer {
   _attachFramebufferAlias() {};
 
   _render(framebuffer) {
-    const context = this._context;
+    const context = this.context;
     const gl = this._gl;
     const renderTime = this._renderTime;
     const locations = this._locations;

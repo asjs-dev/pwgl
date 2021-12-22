@@ -15,10 +15,7 @@ export class Stage2D extends BatchRenderer {
       useTint : true
     }, ... (options || {})};
 
-    options.config = Utils.initRendererConfig(
-      options.config,
-      Stage2D
-    );
+    options.config = Utils.initRendererConfig(options.config);
     options.config.locations = options.config.locations.concat([
       "aDt",
       "aDst",
@@ -30,7 +27,7 @@ export class Stage2D extends BatchRenderer {
 
     super(options);
 
-    this._container = new StageContainer(this);
+    this.container = new StageContainer(this);
 
     this._batchItems = 0;
 
@@ -60,8 +57,6 @@ export class Stage2D extends BatchRenderer {
     );
   }
 
-  get container() { return this._container; }
-
   render() {
     this.picked = null;
 
@@ -78,7 +73,7 @@ export class Stage2D extends BatchRenderer {
   }
 
   _render() {
-    this._drawItem(this._container);
+    this._drawItem(this.container);
     this._batchDraw();
   }
 
@@ -98,7 +93,7 @@ export class Stage2D extends BatchRenderer {
   }
 
   _drawImage(item) {
-    this._context.setBlendMode(item.blendMode, this._batchDrawBound);
+    this.context.setBlendMode(item.blendMode, this._batchDrawBound);
 
     if (
       this._isPickerSet &&
@@ -118,7 +113,7 @@ export class Stage2D extends BatchRenderer {
 
     this._dataBuffer.data[twId + 4] = item.props.alpha;
     this._dataBuffer.data[twId + 5] = item.tintType;
-    this._dataBuffer.data[twId + 6] = this._context.useTexture(
+    this._dataBuffer.data[twId + 6] = this.context.useTexture(
       item.texture,
       this._renderTime,
       false,
@@ -151,7 +146,7 @@ export class Stage2D extends BatchRenderer {
     if (this._batchItems > 0) {
       this._uploadBuffers();
 
-      this._gl.uniform1iv(this._locations.uTex, this._context.textureIds);
+      this._gl.uniform1iv(this._locations.uTex, this.context.textureIds);
 
       this._drawInstanced(this._batchItems);
 
@@ -163,9 +158,9 @@ export class Stage2D extends BatchRenderer {
     Matrix3.projection(
       this._width,
       this._height,
-      this._container.parent.matrixCache
+      this.container.parent.matrixCache
     );
-    ++this._container.parent.propsUpdateId;
+    ++this.container.parent.propsUpdateId;
   }
 
   _uploadBuffers() {
