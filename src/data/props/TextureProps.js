@@ -33,8 +33,8 @@ export class TextureProps extends BasePositioningProps {
   get repeatRandomRotation() { return this.items[0]; }
   set repeatRandomRotation(v) { this.items[0] = v; }
 
-  get repeatRandomColorization() { return this.items[1]; }
-  set repeatRandomColorization(v) { this.items[1] = v; }
+  get repeatRandomAlpha() { return this.items[1]; }
+  set repeatRandomAlpha(v) { this.items[1] = v; }
 
   get repeatRandomBlur() { return this.items[2]; }
   set repeatRandomBlur(v) { this.items[2] = v; }

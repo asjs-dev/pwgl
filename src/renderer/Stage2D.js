@@ -313,20 +313,29 @@ export class Stage2D extends BatchRenderer {
         (useRepeatTextures
           ? "if(vRR.w>0.){" +
               "vec2 zr=vec2(0,1);" +
+              "float " +
+                "rca,rcb,rcc,rcd;" +
+              "if(vRR.y+vRR.z>0.){" +
+                "rca=gtRClBUv(zr.xx,uv);" +
+                "rcb=gtRClBUv(zr.yx,uv);" +
+                "rcc=gtRClBUv(zr.xy,uv);" +
+                "rcd=gtRClBUv(zr.yy,uv);" +
+              "}" +
               "oCl=vRR.z>0." +
-                "?(" +
-                  "gtClBUv(zr.xx)+" +
-                  "gtClBUv(zr.yx)+" +
-                  "gtClBUv(zr.xy)+" +
-                  "gtClBUv(zr.yy)" +
-                ")/vec4(4)" +
+                "?clamp((" +
+                  "gtClBUv(zr.xx)*rca+" +
+                  "gtClBUv(zr.yx)*rcb+" +
+                  "gtClBUv(zr.xy)*rcc+" +
+                  "gtClBUv(zr.yy)*rcd" +
+                ")/vec4(1),vec4(0),vec4(1))" +
                 ":gtClBUv(zr);" +
-              "if(vRR.y>0.)oCl.rgb*=(" +
-                "gtRClBUv(zr.xx,uv)+" +
-                "gtRClBUv(zr.yx,uv)+" +
-                "gtRClBUv(zr.xy,uv)+" +
-                "gtRClBUv(zr.yy,uv)" +
-              ");" +
+              "if(vRR.y>0.)oCl.a=clamp(" +
+                "oCl.a*(" +
+                  "rca+" +
+                  "rcb+" +
+                  "rcc+" +
+                  "rcd" +
+                "),0.,1.);" +
             "}else oCl=" + getSimpleTexColor("uv") + ";"
           : "oCl=" + getSimpleTexColor("uv") + ";") +
       "}else oCl+=1.;" +
