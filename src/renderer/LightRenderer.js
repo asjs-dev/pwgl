@@ -105,8 +105,6 @@ export class LightRenderer extends BatchRenderer {
     "out vec2 " +
       "vTUv," +
       "vSln;" +
-    "out vec3 " +
-      "vNm;" +
     "out vec4 " +
       "vUv," +
       "vCl," +
@@ -125,7 +123,6 @@ export class LightRenderer extends BatchRenderer {
       "vHS=vExt[0].z*vSC;" +
 
       "mat3 mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1);" +
-      "vNm=normalize(pos);" +
       "vExt[0].w*=vSC;" +
       "vDt.y*=vSC;" +
       "vD=aMt[1].z*vSC;" +
@@ -159,8 +156,6 @@ export class LightRenderer extends BatchRenderer {
     "in vec2 " +
       "vTUv," +
       "vSln;" +
-    "in vec3 " +
-      "vNm;" +
     "in vec4 " +
       "vUv," +
       "vCl," +
@@ -185,7 +180,7 @@ export class LightRenderer extends BatchRenderer {
           "tCnt=vUv.zw*uS.xy;" +
 
         "vec3 " +
-          "nm=normalize(vNm)," +
+          "nm=vec3(0,0,1)," +
           "lp=vec3(tCnt,vHS)," +
           "tp=vec3(tUv,ph)," +
           "nlptp=normalize(lp-tp);" +
@@ -230,19 +225,15 @@ export class LightRenderer extends BatchRenderer {
           "float opdL=length(opd);" +
 
           "if((flg&2)>0&&tc.a>0.&&vol>0.){" +
-            "vec2 pp=tUv-opd;" +
+            "vec2 pp=tUv-(tUv-tCnt);" +
             "float h=texture(uTex,pp*uS.zw).g*vSC;" +
-            "lg=dot(" +
-              "nm," +
-              "nlptp+" +
-              "normalize(" +
-                "tp-vec3(pp,h)" +
-              ")" +
-            ");" +
-            "spc=pow(" +
-              "lg," +
-              "shn" +
-            ");" +
+            "vec3 " +
+              "nstl=normalize(nlptp+normalize(tp-vec3(pp,h)))," +
+              "hv=normalize(nstl+normalize(vec3(tUv,vHS)-tp));" +
+            "float il=clamp(dot(nstl,nm)/2.,0.,1.);" +
+
+            "lg=il*dot(nm,nstl);" +
+            "spc=il*pow(dot(nm,hv),shn);" +
           "}" +
 
           "if((flg&1)>0&&vol>0.){" +
@@ -268,13 +259,8 @@ export class LightRenderer extends BatchRenderer {
         "}" +
 
         "oCl=vec4(" +
-          "vCl.rgb*" +
-            "clamp(" +
-              "(lg+spc)*vol,+" +
-              "0.,1." +
-            ")," +
-          "1" +
-        ");" +
+          "vCl.rgb*(lg+spc)*vol" +
+        ",1);" +
 
       "}" +
     "}";
