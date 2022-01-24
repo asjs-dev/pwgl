@@ -167,7 +167,15 @@ export class BaseRenderer {
 
   _customResize() {
     this._resizeFunc = emptyFunction;
-    this._calcScale = this._scale * window.devicePixelRatio;
+    this._updateScale();
+    this._updateSize();
+  }
+
+  _updateScale() {
+    this._calcScale = this._scale;
+  }
+
+  _updateSize() {
     this._calcWidth = this._width * this._calcScale;
     this._calcHeight = this._height * this._calcScale;
     this.widthHalf = this._calcWidth * .5;

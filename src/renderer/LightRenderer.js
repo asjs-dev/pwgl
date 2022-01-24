@@ -50,7 +50,7 @@ export class LightRenderer extends BatchRenderer {
       this.context.useTexture(this.heightMap, this._renderTime, true)
     );
 
-    this._gl.uniform1f(this._locations.uSC, this._scale);
+    this._gl.uniform1f(this._locations.uSC, this._calcScale);
 
     this._uploadBuffers();
 
@@ -64,6 +64,10 @@ export class LightRenderer extends BatchRenderer {
       this._calcWidth, this._calcHeight,
       1 / this._calcWidth, 1 / this._calcHeight
     );
+  }
+
+  _updateScale() {
+    this._calcScale = this._scale / window.devicePixelRatio;
   }
 
   _uploadBuffers() {
