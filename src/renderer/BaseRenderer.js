@@ -7,8 +7,12 @@ export class BaseRenderer {
   constructor(options) {
     /*
     this._program
+    this._scale
     this._width
     this._height
+    this._calcScale
+    this._calcWidth
+    this._calcHeight
     this.widthHalf
     this.heightHalf
     this._gl
@@ -16,14 +20,15 @@ export class BaseRenderer {
 
     this._attachFramebufferAlias = this._attachFramebuffer;
 
-    this._clearBeforeRenderFunc = emptyFunction;
+    this._clearBeforeRenderFunc =
+    this._resizeFunc = emptyFunction;
 
     this.clearColor = new ColorProps();
 
     this._currentContextId =
-    this._renderTime =
-    this._resizeId =
-    this._currentResizeId = 0;
+    this._renderTime = 0;
+
+    this.scale = options.scale || 1;
 
     this._options = options;
     this._config = this._options.config;
@@ -61,12 +66,19 @@ export class BaseRenderer {
     );
   }
 
+  get scale() { return this._scale; }
+  set scale(v) {
+    if (this._scale !== v) {
+      this._scale = v;
+      this._resizeFunc = this._customResize;
+    }
+  }
+
   get width() { return this._width; }
   set width(v) {
     if (this._width !== v) {
       this._width = v;
-      this.widthHalf = v * .5;
-      ++this._resizeId;
+      this._resizeFunc = this._customResize;
     }
   }
 
@@ -74,8 +86,7 @@ export class BaseRenderer {
   set height(v) {
     if (this._height !== v) {
       this._height = v;
-      this.heightHalf = v * .5;
-      ++this._resizeId;
+      this._resizeFunc = this._customResize;
     }
   }
 
@@ -131,7 +142,7 @@ export class BaseRenderer {
   }
 
   _attachFramebuffer(framebuffer) {
-    framebuffer.setSize(this._width, this._height);
+    framebuffer.setSize(this._calcWidth, this._calcHeight);
     this.context.useTexture(framebuffer, this._renderTime);
     this.context.deactivateTexture(framebuffer);
     framebuffer.bind(this._gl);
@@ -150,14 +161,18 @@ export class BaseRenderer {
   }
 
   _resize() {
-    this.context.setSize(this._width, this._height) && ++this._resizeId;
-    if (this._currentResizeId < this._resizeId) {
-      this._currentResizeId = this._resizeId;
-      this._customResize();
-    }
+    this._resizeFunc();
+    this.context.setSize(this._calcWidth, this._calcHeight);
   }
 
-  _customResize() {}
+  _customResize() {
+    this._resizeFunc = emptyFunction;
+    this._calcScale = this._scale * window.devicePixelRatio;
+    this._calcWidth = this._width * this._calcScale;
+    this._calcHeight = this._height * this._calcScale;
+    this.widthHalf = this._calcWidth * .5;
+    this.heightHalf = this._calcHeight * .5;
+  }
 
   _drawInstanced(count) {
     this._gl.drawElementsInstanced(

@@ -101,7 +101,6 @@ export class SmoothLight extends Image {
     this.props.width = this._width;
     this.props.height = this._height;
 
-    this.lightRenderer.setSize(scaledWidth, scaledHeight);
     this.filterRenderer.setSize(scaledWidth, scaledHeight);
   }
 }

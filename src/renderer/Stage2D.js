@@ -155,9 +155,10 @@ export class Stage2D extends BatchRenderer {
   }
 
   _customResize() {
+    super._customResize();
     Matrix3.projection(
-      this._width,
-      this._height,
+      this._calcWidth,
+      this._calcHeight,
       this.container.parent.matrixCache
     );
     ++this.container.parent.propsUpdateId;

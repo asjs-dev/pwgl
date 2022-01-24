@@ -126,21 +126,18 @@ export class Context {
   }
 
   setCanvasSize(width, height) {
-    this.canvas.width !== width && (this.canvas.width = width);
-    this.canvas.height !== height && (this.canvas.height = height);
+    this.canvas.width = width;
+    this.canvas.height = height;
   }
 
   setSize(width, height) {
-    if (this.width !== width || this.height !== height) {
-      this.width = width;
-      this.height = height;
+    if (this._width !== width || this._height !== height) {
+      this._width = width;
+      this._height = height;
 
       this.gl.viewport(0, 0, width, height);
       this.gl.scissor(0, 0, width, height);
-
-      return true;
     }
-    return false;
   }
 
   _onContextLost(event) {
