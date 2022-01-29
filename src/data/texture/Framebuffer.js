@@ -31,16 +31,15 @@ export class Framebuffer extends TextureInfo {
     gl.bindFramebuffer(Const.FRAMEBUFFER, null);
   }
 
-  use(gl, id) {
-    !this._update(gl, id) && this._currenActivetId !== id && this._use(gl, id);
+  use(gl, id, forceBind) {
+    if (
+      this._isNeedToDraw(gl, id) ||
+      this._currenActivetId !== id ||
+      forceBind
+    ) this.bindActiveTexture(gl, id);
   }
 
-  _use(gl, id) {
-    this.activeTexture(gl, id);
-    gl.bindTexture(this.target, this._baseTexture);
-  }
-
-  _update(gl, id) {
+  _isNeedToDraw(gl, id) {
     let result = false;
 
     if (this._currentAglId < gl.agl_id) {

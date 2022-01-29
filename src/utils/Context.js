@@ -93,7 +93,7 @@ export class Context {
   }
 
   useTextureAt(textureInfo, textureId, renderTime, forceBind) {
-    textureInfo.use(this.gl, textureId, renderTime, forceBind);
+    textureInfo.use(this.gl, textureId, forceBind, renderTime);
 
     this._textureMap[textureId] = textureInfo;
 

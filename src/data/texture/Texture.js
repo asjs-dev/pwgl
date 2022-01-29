@@ -60,7 +60,7 @@ export class Texture extends TextureInfo {
     }
   }
 
-  use(gl, id, renderTime, forceBind) {
+  use(gl, id, forceBind, renderTime) {
     if (this._isNeedToDraw(gl, renderTime))
       this.useActiveTexture(gl, id);
     else if (this._currenActivetId !== id || forceBind)

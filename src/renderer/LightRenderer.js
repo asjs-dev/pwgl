@@ -268,7 +268,7 @@ export class LightRenderer extends BatchRenderer {
           "}" +
         "}" +
 
-        "oCl=vec4(vCl.rgb*vol,1);" +
+        "oCl=vec4(vCl.rgb,vol);" +
 
       "}" +
     "}";
