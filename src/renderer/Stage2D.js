@@ -285,7 +285,7 @@ export class Stage2D extends BatchRenderer {
     createGetTextureFunction(maxTextureImageUnits) +
 
     (useRepeatTextures
-      ? Utils.GLSL_RANDOM +
+      ? Utils.GLSL.RANDOM +
         "vec4 gtClBUv(vec2 st){" +
           "vec2 uv=vTUv;" +
 
@@ -298,7 +298,7 @@ export class Stage2D extends BatchRenderer {
             "uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);" +
           "}" +
 
-          "return " + getSimpleTexColor("mod(uv,1.)") + ";" +
+          "return " + getSimpleTexColor("mod(uv,vec2(1))") + ";" +
         "}" +
         "float gtRClBUv(vec2 st,vec2 uv){" +
           "float rnd=rand(floor(vTUv+st),1.);" +
@@ -309,7 +309,7 @@ export class Stage2D extends BatchRenderer {
 
     "void main(void){" +
       "if(vTId>-1.){" +
-        "vec2 uv=mod(vTUv,1.);" +
+        "vec2 uv=mod(vTUv,vec2(1));" +
 
         (useRepeatTextures
           ? "if(vRR.w>0.){" +
@@ -328,7 +328,7 @@ export class Stage2D extends BatchRenderer {
                   "gtClBUv(zr.yx)*rcb+" +
                   "gtClBUv(zr.xy)*rcc+" +
                   "gtClBUv(zr.yy)*rcd" +
-                ")/vec4(1),vec4(0),vec4(1))" +
+                ")/1.,0.,1.)" +
                 ":gtClBUv(zr);" +
               "if(vRR.y>0.)oCl.a=clamp(" +
                 "oCl.a*(" +

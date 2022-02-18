@@ -10,7 +10,6 @@ export class BaseRenderer {
     this._scale
     this._width
     this._height
-    this._calcScale
     this._calcWidth
     this._calcHeight
     this.widthHalf
@@ -167,17 +166,8 @@ export class BaseRenderer {
 
   _customResize() {
     this._resizeFunc = emptyFunction;
-    this._updateScale();
-    this._updateSize();
-  }
-
-  _updateScale() {
-    this._calcScale = this._scale;
-  }
-
-  _updateSize() {
-    this._calcWidth = this._width * this._calcScale;
-    this._calcHeight = this._height * this._calcScale;
+    this._calcWidth = this._width * this._scale;
+    this._calcHeight = this._height * this._scale;
     this.widthHalf = this._calcWidth * .5;
     this.heightHalf = this._calcHeight * .5;
   }

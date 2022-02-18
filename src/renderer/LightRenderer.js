@@ -59,15 +59,17 @@ export class LightRenderer extends BatchRenderer {
 
   _customResize() {
     super._customResize();
+
+    const dpr = window.devicePixelRatio;
+    this._calcScale = this._scale / dpr;
+    const calcWidth = this._calcWidth / dpr;
+    const calcHeight = this._calcHeight / dpr;
+
     this._gl.uniform4f(
       this._locations.uS,
-      this._calcWidth, this._calcHeight,
-      1 / this._calcWidth, 1 / this._calcHeight
+      calcWidth, calcHeight,
+      1 / calcWidth, 1 / calcHeight
     );
-  }
-
-  _updateScale() {
-    this._calcScale = this._scale / window.devicePixelRatio;
   }
 
   _uploadBuffers() {
@@ -140,7 +142,7 @@ export class LightRenderer extends BatchRenderer {
         "vUv.zw=vTUv+((mt*vec3(1)).xy+H.xy)/H.zw;" +
       "}" +
       "gl_Position.y*=uFlpY;" +
-      "vSC*=100.;" +
+      "vSC*=255.;" +
     "}";
   }
 
@@ -176,7 +178,7 @@ export class LightRenderer extends BatchRenderer {
 
         "float " +
           "ph=tc.g*vSC," +
-          "shn=tc.b;" +
+          "shn=1.+tc.b;" +
 
         "vec2 " +
           "tUv=vTUv*uS.xy," +
@@ -233,16 +235,16 @@ export class LightRenderer extends BatchRenderer {
               ")," +
               "sftl=normalize(lp-sf);" +
 
-            "vol*=dot(nm,sftl)*" +
-              "pow(" +
-                "dot(" +
-                  "nm," +
-                  "normalize(" +
-                    "sftl+normalize(vec3(tUv,vSC)-sf)" +
-                  ")" +
-                ")," +
-                "shn" +
-              ");" +
+            "vol*=pow(" +
+              "dot(nm,sftl)*" +
+              "dot(" +
+                "nm," +
+                "normalize(" +
+                  "sftl+normalize(vec3(tUv,vSC)-sf)" +
+                ")" +
+              ")," +
+              "shn" +
+            ");" +
           "}" +
 
           "if((flg&1)>0&&vol>0.){" +
@@ -268,7 +270,7 @@ export class LightRenderer extends BatchRenderer {
           "}" +
         "}" +
 
-        "oCl=vec4(vCl.rgb,vol);" +
+        "oCl=vec4(vCl.rgb*vol,1);" +
 
       "}" +
     "}";

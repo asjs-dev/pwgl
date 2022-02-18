@@ -17,23 +17,21 @@ const _createShader = (gl, shaderType, shaderSource) => {
 export const Utils = {
   THETA : Math.PI / 180,
 
-  GLSL_RANDOM : "float rand(vec2 p,float s){" +
-    "p=mod(" +
-      "p+floor(p/10000.)," +
-      "vec2(10000)" +
-    ");" +
-    "return fract(" +
-      "sin(" +
-        "dot(" +
-          "p," +
-          "vec2(" +
-            "sin(p.x+p.y)," +
-            "cos(p.y-p.x)" +
-          ")" +
-        ")*s" +
-      ")*.5+.5" +
-    ");" +
-  "}",
+  GLSL : {
+    RANDOM : "float rand(vec2 p,float s){" +
+      "return fract(" +
+        "sin(" +
+          "dot(" +
+            "p," +
+            "vec2(" +
+              "sin(p.x+p.y)," +
+              "cos(p.y-p.x)" +
+            ")" +
+          ")*s" +
+        ")*.5+.5" +
+      ");" +
+    "}"
+  },
 
   INFO : {
     isWebGl2Supported : false

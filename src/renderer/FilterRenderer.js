@@ -104,10 +104,9 @@ export class FilterRenderer extends BaseRenderer {
       "vTUv;" +
 
     "void main(void){" +
-      "vec4 pos=vec4(aPos*2.-1.,1,1);" +
-      "gl_Position=pos;" +
+      "gl_Position=vec4(aPos*2.-1.,1,1);" +
+      "vUv=gl_Position.xy;" +
       "gl_Position.y*=uFlpY;" +
-      "vUv=pos.xy;" +
       "vTUv=vec2(aPos.x,1.-aPos.y);" +
     "}";
   }
@@ -188,9 +187,8 @@ export class FilterRenderer extends BaseRenderer {
           // VignetteFilter
           "else if(uFtrT.y<7){" +
             "vec2 pv=pow(abs(vUv*v),vec2(vl[1]));" +
-            "float cv=clamp(min(1.,(1.-length(pv))*vl[5]),0.,1.);" +
-            "oCl.rgb=oCl.rgb*vec3(cv)+vec3(vl[2],vl[3],vl[4])*(1.-cv);" +
-
+            "float cv=clamp((1.-length(pv))*vl[5],0.,1.);" +
+            "oCl.rgb=oCl.rgb*cv+vec3(vl[2],vl[3],vl[4])*(1.-cv);" +
           "}" +
           // RainbowFilter
           "else if(uFtrT.y<8)" +
@@ -200,7 +198,7 @@ export class FilterRenderer extends BaseRenderer {
             "oCl.rgb=vec3((oCl.rgb-.5)*vl[1]+.5+v);" +
           // GammaFilter
           "else if(uFtrT.y<10)" +
-            "oCl.rgb=vec3(pow(oCl.rgb,vec3(v)));" +
+            "oCl.rgb=pow(oCl.rgb,vec3(v));" +
         "}" +
         // SAMPLING FILTERS
         "else if(uFtrT.x<5){" +
