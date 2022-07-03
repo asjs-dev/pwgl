@@ -4,6 +4,7 @@ export class Buffer {
   constructor(locationName, data, rows, cols, target, type, divisor) {
     /*
     this._buffer
+    this._location
     */
 
     const length = rows * cols;
@@ -27,7 +28,8 @@ export class Buffer {
       this._offset = 0;
   }
 
-  create(gl) {
+  create(gl, locations) {
+    this._location = locations[this._locationName];
     this._buffer = gl.createBuffer();
     this.bind(gl);
   }
@@ -36,24 +38,20 @@ export class Buffer {
     gl.bindBuffer(this._target, this._buffer);
   }
 
-  upload(gl, enable, locations) {
+  upload(gl, enable) {
     this.bind(gl);
-    enable && this._enable(gl, locations);
+    enable && this._enable(gl);
 		gl.bufferData(this._target, this.data, this._type);
   }
 
-  enable(gl, locations) {
-    this.bind(gl);
-    this._enable(gl, locations);
+  destruct() {
+    this.data = null;
   }
 
-  destruct() {}
-
-  _enable(gl, locations) {
-    const location = locations[this._locationName];
+  _enable(gl) {
     let i = -1;
     while (++i < this._rows) {
-      const loc = location + i;
+      const loc = this._location + i;
       gl.enableVertexAttribArray(loc);
       gl.vertexAttribPointer(
         loc,

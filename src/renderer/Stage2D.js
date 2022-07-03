@@ -154,23 +154,19 @@ export class Stage2D extends BatchRenderer {
     }
   }
 
-  _customResize() {
-    super._customResize();
+  _resize() {
+    super._resize();
     Matrix3.projection(
-      this._calcWidth,
-      this._calcHeight,
+      this._width,
+      this._height,
       this.container.parent.matrixCache
     );
     ++this.container.parent.propsUpdateId;
   }
 
   _uploadBuffers() {
-    this._dataBuffer.upload(this._gl, this._enableBuffers, this._locations);
-    this._distortionBuffer.upload(
-      this._gl,
-      this._enableBuffers,
-      this._locations
-    );
+    this._dataBuffer.upload(this._gl, this._enableBuffers);
+    this._distortionBuffer.upload(this._gl, this._enableBuffers);
 
     super._uploadBuffers();
   }
@@ -178,8 +174,8 @@ export class Stage2D extends BatchRenderer {
   _createBuffers() {
     super._createBuffers();
 
-    this._dataBuffer.create(this._gl);
-    this._distortionBuffer.create(this._gl);
+    this._dataBuffer.create(this._gl, this._locations);
+    this._distortionBuffer.create(this._gl, this._locations);
   }
 
   _createVertexShader(options) {

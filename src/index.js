@@ -35,6 +35,7 @@ import { Image } from "./display/Image.js";
 import { BaseRenderer } from "./renderer/BaseRenderer.js";
 import { BatchRenderer } from "./renderer/BatchRenderer.js";
 import { FilterRenderer } from "./renderer/FilterRenderer.js";
+import { NormalMapRenderer } from "./renderer/NormalMapRenderer.js";
 import { LightRenderer } from "./renderer/LightRenderer.js";
 import { Stage2D } from "./renderer/Stage2D.js";
 
@@ -98,6 +99,7 @@ window.PWGL = window.AGL = {
   BaseRenderer,
   BatchRenderer,
   FilterRenderer,
+  NormalMapRenderer,
   LightRenderer,
   Stage2D,
 

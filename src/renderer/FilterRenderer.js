@@ -1,3 +1,4 @@
+import { emptyFunction } from "../utils/helpers.js";
 import { Utils } from "../utils/Utils.js";
 import { BlendMode } from "../data/BlendMode.js";
 import { Framebuffer } from "../data/texture/Framebuffer.js";
@@ -13,9 +14,10 @@ export class FilterRenderer extends BaseRenderer {
       "uFtrV",
       "uFtrK"
     ]);
-    options.maxBatchItems = 1;
 
     super(options);
+
+    this._attachFramebufferCustom = emptyFunction;
 
     this.filters = options.filters || [];
     this.texture = options.texture;
@@ -25,15 +27,6 @@ export class FilterRenderer extends BaseRenderer {
       new Framebuffer()
     ];
   }
-
-  destruct() {
-    this._framebuffers[0].destruct();
-    this._framebuffers[1].destruct();
-
-    super.destruct();
-  }
-
-  _attachFramebufferAlias() {};
 
   _render(framebuffer) {
     const context = this.context;
@@ -210,13 +203,15 @@ export class FilterRenderer extends BaseRenderer {
 
           "float " +
             "c," +
+            "i," +
+            "j," +
             "m," +
             "im;" +
 
           "if(uFtrT.y<2)" +
             // BlurFilter
-            "for(float i=-2.;i<3.;++i){" +
-              "for(float j=-2.;j<3.;++j){" +
+            "for(i=-2.;i<3.;++i){" +
+              "for(j=-2.;j<3.;++j){" +
                 "m=abs(i)+abs(j);" +
                 "im=1.-(m*.25);" +
                 "tCl=i==0.&&j==0." +
@@ -231,16 +226,16 @@ export class FilterRenderer extends BaseRenderer {
             "float oAvg=uFtrT.y==2" +
               "?(oCl.r+oCl.g+oCl.b+oCl.a)/4." +
               ":0.;" +
-            "for(float i=-2.;i<3.;++i){" +
-              "for(float j=-2.;j<3.;++j){" +
+            "for(i=-2.;i<3.;++i){" +
+              "for(j=-2.;j<3.;++j){" +
                 "m=abs(i)+abs(j);" +
                 "im=1.-(m*.25);" +
                 "tCl=i==0.&&j==0." +
                   "?oCl" +
                   ":texture(uTex,vTUv+(wh*vec2(i,j)));" +
                 "float avg=(tCl.r+tCl.g+tCl.b+tCl.a)/4.;" +
-                "if(avg-oAvg>=vl[3]*m){" +
-                  "cl+=tCl*im*(2.-vl[3]);" +
+                "if(avg-oAvg>=vl[2]*m){" +
+                  "cl+=tCl*im*(2.-vl[2]);" +
                   "c+=im;" +
                 "}" +
               "}" +

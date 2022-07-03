@@ -8,6 +8,6 @@ export class GlowFilter extends BaseFilter {
     this.volume = volume;
   }
 
-  get volume() { return this.v[3]; }
-  set volume(v) { this.v[3] = v; }
+  get volume() { return this.v[2]; }
+  set volume(v) { this.v[2] = v; }
 }

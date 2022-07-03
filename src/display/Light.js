@@ -8,6 +8,12 @@ export class Light extends BaseDrawable {
   constructor(id, lightData, extensionData) {
     super();
 
+    /*
+    this._castShadow
+    this._shading
+    this._flattenShadow
+    */
+
     this.props = new LightProps();
 
     this.color.a = 0;
@@ -21,14 +27,13 @@ export class Light extends BaseDrawable {
     this._lightData = lightData;
     this._extensionData = extensionData;
 
-    this._castShadow =
-    this._shading =
     this.castShadow =
     this.shading = true;
+    this.flattenShadow = false;
 
     this.angle = 0;
     this.spotAngle = 180 * Utils.THETA;
-    this.type = Light.Type.SPOT;
+    this.type = Light.Type.POINT;
     this.precision =
     this.diffuse = 1;
     this.maxShadowStep = 128;
@@ -46,6 +51,12 @@ export class Light extends BaseDrawable {
   get shading() { return this._shading; }
   set shading(v) {
     this._shading = v;
+    this._updateShadowProps();
+  }
+
+  get flattenShadow() { return this._flattenShadow; }
+  set flattenShadow(v) {
+    this._flattenShadow = v;
     this._updateShadowProps();
   }
 
@@ -89,7 +100,8 @@ export class Light extends BaseDrawable {
   _updateShadowProps() {
     this._extensionData[this._matId + 1] =
       this._castShadow * 1 |
-      this._shading * 2;
+      this._shading * 2 |
+      this._flattenShadow * 4;
   }
 
   _updateAdditionalData() {
@@ -150,6 +162,6 @@ export class Light extends BaseDrawable {
 }
 
 Light.Type = {
-  SPOT : 0,
-  AMBIENT : 1
+  POINT : 0,
+  DIRECTIONAL : 1
 };

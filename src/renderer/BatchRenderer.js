@@ -18,12 +18,12 @@ export class BatchRenderer extends BaseRenderer {
   }
 
   _uploadBuffers() {
-    this._matrixBuffer.upload(this._gl, this._enableBuffers, this._locations);
+    this._matrixBuffer.upload(this._gl, this._enableBuffers);
     super._uploadBuffers();
   }
 
   _createBuffers() {
     super._createBuffers();
-    this._matrixBuffer.create(this._gl);
+    this._matrixBuffer.create(this._gl, this._locations);
   }
 }

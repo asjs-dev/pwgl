@@ -39,6 +39,7 @@ export const Utils = {
 
   initContextConfig : (config) => ({
     canvas : (config = config || {}).canvas || document.createElement("canvas"),
+    initCallback: config.initCallback,
     contextAttributes : {... {
       powerPreference : "high-performance",
       preserveDrawingBuffer : true,
@@ -47,7 +48,7 @@ export const Utils = {
 
   initRendererConfig : (config) => ({
     locations : (config = config || {}).locations || [],
-    precision : config.precision || "lowp", /* lowp mediump highp */
+    precision : config.precision || "highp", /* lowp mediump highp */
     context : config.context || new Context()
   }),
 

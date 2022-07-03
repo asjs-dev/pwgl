@@ -7,27 +7,22 @@ export class BaseRenderer {
   constructor(options) {
     /*
     this._program
-    this._scale
     this._width
     this._height
-    this._calcWidth
-    this._calcHeight
     this.widthHalf
     this.heightHalf
     this._gl
+    this._vao;
     */
 
-    this._attachFramebufferAlias = this._attachFramebuffer;
+    this._attachFramebufferCustom = this._attachFramebuffer;
 
-    this._clearBeforeRenderFunc =
-    this._resizeFunc = emptyFunction;
+    this._clearBeforeRenderFunc = emptyFunction;
 
     this.clearColor = new ColorProps();
 
     this._currentContextId =
     this._renderTime = 0;
-
-    this.scale = options.scale || 1;
 
     this._options = options;
     this._config = this._options.config;
@@ -37,8 +32,6 @@ export class BaseRenderer {
       "aPos",
       "uTex"
     ]);
-
-    this._vao = this.context.gl.createVertexArray();
 
     this._enableBuffers = false;
 
@@ -65,19 +58,10 @@ export class BaseRenderer {
     );
   }
 
-  get scale() { return this._scale; }
-  set scale(v) {
-    if (this._scale !== v) {
-      this._scale = v;
-      this._resizeFunc = this._customResize;
-    }
-  }
-
   get width() { return this._width; }
   set width(v) {
     if (this._width !== v) {
       this._width = v;
-      this._resizeFunc = this._customResize;
     }
   }
 
@@ -85,7 +69,6 @@ export class BaseRenderer {
   set height(v) {
     if (this._height !== v) {
       this._height = v;
-      this._resizeFunc = this._customResize;
     }
   }
 
@@ -104,7 +87,7 @@ export class BaseRenderer {
   renderToFramebuffer(framebuffer) {
     if (!this.context.isLost()) {
       this._switchToProgram();
-      this._attachFramebufferAlias(framebuffer);
+      this._attachFramebufferCustom(framebuffer);
       this._renderBatch(framebuffer);
       framebuffer.unbind(this._gl);
     }
@@ -117,8 +100,6 @@ export class BaseRenderer {
       this._renderBatch();
     }
   }
-
-  destruct() {}
 
   _renderBatch(framebuffer) {
     this._renderTime = Date.now();
@@ -141,7 +122,7 @@ export class BaseRenderer {
   }
 
   _attachFramebuffer(framebuffer) {
-    framebuffer.setSize(this._calcWidth, this._calcHeight);
+    framebuffer.setSize(this._width, this._height);
     this.context.useTexture(framebuffer, this._renderTime);
     this.context.deactivateTexture(framebuffer);
     framebuffer.bind(this._gl);
@@ -160,16 +141,9 @@ export class BaseRenderer {
   }
 
   _resize() {
-    this._resizeFunc();
-    this.context.setSize(this._calcWidth, this._calcHeight);
-  }
-
-  _customResize() {
-    this._resizeFunc = emptyFunction;
-    this._calcWidth = this._width * this._scale;
-    this._calcHeight = this._height * this._scale;
-    this.widthHalf = this._calcWidth * .5;
-    this.heightHalf = this._calcHeight * .5;
+    this.widthHalf = this._width * .5;
+    this.heightHalf = this._height * .5;
+    this.context.setSize(this._width, this._height);
   }
 
   _drawInstanced(count) {
@@ -185,34 +159,34 @@ export class BaseRenderer {
   _buildProgram() {
     const options = this._options;
 
-    const program = Utils.createProgram(
+    this._program = Utils.createProgram(
       this._gl,
       this._createVertexShader(options),
       this._createFragmentShader(options)
     );
 
-    this._program = program;
-
     this._locations = Utils.getLocationsFor(
       this._gl,
-      program,
+      this._program,
       this._config.locations
     );
 
-    this.context.useProgram(program, this._vao);
+    this._vao = this._gl.createVertexArray();
+
+    this.context.useProgram(this._program, this._vao);
 
     this._createBuffers();
   }
 
   _uploadBuffers() {
-    this._positionBuffer.upload(this._gl, true, this._locations);
+    this._positionBuffer.upload(this._gl, this._enableBuffers);
     this._elementArrayBuffer.upload(this._gl);
 
     this._enableBuffers = false;
   }
 
   _createBuffers() {
-    this._elementArrayBuffer.create(this._gl);
-    this._positionBuffer.create(this._gl);
+    this._elementArrayBuffer.create(this._gl, this._locations);
+    this._positionBuffer.create(this._gl, this._locations);
   }
 }

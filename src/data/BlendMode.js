@@ -21,10 +21,6 @@ export const BlendMode = {
     0
   ]),
 
-  SIMPLE : _createBlendMode([
-    Const.ONE,
-    Const.ONE
-  ]),
   NORMAL_PM : _createBlendMode([
     Const.ONE,
     Const.ONE_MINUS_SRC_ALPHA
@@ -115,5 +111,17 @@ export const BlendMode = {
   EXCLUSION : _createBlendMode([
     Const.ONE_MINUS_DST_COLOR,
     Const.ONE_MINUS_SRC_COLOR
+  ]),
+  LIGHTEN : _createBlendMode([
+    Const.ONE,
+    Const.ONE
+  ],[
+    Const.MAX
+  ]),
+  DARKEN : _createBlendMode([
+    Const.ONE,
+    Const.ONE
+  ],[
+    Const.MIN
   ])
 };

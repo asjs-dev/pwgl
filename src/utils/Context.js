@@ -6,8 +6,8 @@ export class Context {
     /*
     this._currentProgram
     this._currentBlendMode
-    this.width
-    this.height
+    this._width
+    this._height
     */
 
     this.contextId = 0;
@@ -150,12 +150,10 @@ export class Context {
   }
 
   _initContext() {
-    ++this.contextId;
-
     const gl =
     this.gl = this.canvas.getContext("webgl2", this._config.contextAttributes);
 
-    gl.agl_id = this.contextId;
+    gl.agl_id = ++this.contextId;
 
     this._loseContextExt = gl.getExtension('WEBGL_lose_context');
 
@@ -163,10 +161,19 @@ export class Context {
     gl.enable(Const.BLEND);
     gl.enable(Const.SCISSOR_TEST);
 
+    this._width =
+    this._height =
+    this._currentProgram =
+    this._currentBlendMode = null;
+
     this._textureMap = [];
     this._emptyTextureSlots = [];
     this.textureIds = [];
 
     this.clearTextures();
+
+    this.setCanvasSize(1, 1);
+
+    this._config.initCallback && setTimeout(this._config.initCallback, 1);
   }
 }
