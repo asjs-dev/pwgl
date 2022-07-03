@@ -174,7 +174,7 @@ export class LightRenderer extends BatchRenderer {
 
         "float " +
           "ph=tc.g*H," +
-          "shn=tc.b*128.;" +
+          "shn=1.+tc.b*256.;" +
 
         "vec2 " +
           "tUv=vTUv*uTS," +
@@ -190,10 +190,9 @@ export class LightRenderer extends BatchRenderer {
           "spc=0.;" +
 
         "if(isl){" +
-          "if(dst<0.)discard;" +
           "vol*=dst;" +
-          "spc=dst;" +
-        "}else spc=1.;" +
+          "if(vol<=0.)discard;" +
+        "}" +
 
         "if(vol>0.){" +
           "if(isl){" +
@@ -220,7 +219,8 @@ export class LightRenderer extends BatchRenderer {
               "nm=texture(uNMTex,vTUv).rgb*2.-1.," +
               "sftl=normalize(lp-sf);" +
 
-            "spc*=pow(" +
+            "vol*=dot(nm,sftl);" +
+            "spc=(isl?dst:1.)*pow(" +
               "dot(" +
                 "nm," +
                 "normalize(" +
@@ -260,7 +260,7 @@ export class LightRenderer extends BatchRenderer {
           "}" +
         "}" +
 
-        "oCl=vec4(vCl.rgb*vol*spc,1);" +
+        "oCl=vec4(vCl.rgb,vol*(1.+spc));" +
       "}" +
     "}";
   }
