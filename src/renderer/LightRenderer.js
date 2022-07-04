@@ -174,7 +174,7 @@ export class LightRenderer extends BatchRenderer {
 
         "float " +
           "ph=tc.g*H," +
-          "shn=1.+tc.b*256.;" +
+          "shn=1.+tc.b*H;" +
 
         "vec2 " +
           "tUv=vTUv*uTS," +
@@ -192,75 +192,71 @@ export class LightRenderer extends BatchRenderer {
         "if(isl){" +
           "vol*=dst;" +
           "if(vol<=0.)discard;" +
+          
+          "float slh=(vHS-ph)/H;" +
+          "vec2 sl=vec2(" +
+            "slh*vSln.y-vUv.x*vSln.x," +
+            "slh*vSln.x+vUv.x*vSln.y" +
+          ");" +
+
+          "if((" +
+            "atan(" +
+              "sl.x," +
+              "length(vec2(sl.y,vUv.y))" +
+            ")+PIH" +
+          ")-vSpt<0.)discard;" +
         "}" +
 
-        "if(vol>0.){" +
-          "if(isl){" +
-            "float slh=(vHS-ph)/H;" +
-            "vec2 sl=vec2(" +
-              "slh*vSln.y-vUv.x*vSln.x," +
-              "slh*vSln.x+vUv.x*vSln.y" +
-            ");" +
+        "int flg=int(vExt[0].y);" +
 
-            "if((" +
-              "atan(" +
-                "sl.x," +
-                "length(vec2(sl.y,vUv.y))" +
-              ")+PIH" +
-            ")-vSpt<0.)discard;" +
-          "}" +
+        "float " +
+          "fltDst=distance(tCnt,tUv)," +
+          "shdw=1.;" +
 
-          "int flg=int(vExt[0].y);" +
+        "if((flg&2)>0){" +
+          "vec3 " +
+            "nm=texture(uNMTex,vTUv).rgb*2.-1.," +
+            "sftl=normalize(lp-sf);" +
 
-          "float fltDst=distance(tCnt,tUv);" +
-
-          "if((flg&2)>0){" +
-            "vec3 " +
-              "nm=texture(uNMTex,vTUv).rgb*2.-1.," +
-              "sftl=normalize(lp-sf);" +
-
-            "vol*=dot(nm,sftl);" +
-            "spc=(isl?dst:1.)*pow(" +
+          "vol*=dot(nm,sftl);" +
+          "spc=(isl?dst:1.)*" +
+            "pow(" +
               "dot(" +
                 "nm," +
                 "normalize(" +
                   "vec3(sftl.xy,1)" +
                 ")" +
-              ")," +
-              "shn" +
-            ");" +
-          "}" +
+              "),shn);" +
+          "if(vol+spc<=0.)discard;" +
+        "}" +
 
-          "if((flg&1)>0&&vol>0.){" +
-            "vec2 opd=(tUv-tCnt)/fltDst;" +
-            "float " +
-              "shl=vD/vDt.y," +
-              "st=max(ceil(fltDst/vExt[1].x),vExt[0].w)," +
-              "hst=(ph-vHS)/fltDst," +
-              "l=fltDst-st," +
-              "m=max(st,l-shl)," +
-              "i," +
-              "pc," +
-              "opdL=length(opd);" +
+        "if((flg&1)>0){" +
+          "vec2 opd=(tUv-tCnt)/fltDst;" +
+          "float " +
+            "shl=vD/vDt.y," +
+            "st=max(ceil(fltDst/vExt[1].x),vExt[0].w)," +
+            "hst=(ph-vHS)/fltDst," +
+            "l=fltDst-st," +
+            "m=max(st,l-shl)," +
+            "i," +
+            "pc," +
+            "opdL=length(opd);" +
 
-            "vec2 p;" +
+          "vec2 p;" +
 
-            "for(i=l;i>m;i-=st){" +
-              "p=tCnt+i*opd;" +
-              "pc=vHS+i*hst;" +
-              "tc=texture(uTex,p/uTS)*H;" +
+          "for(i=l;i>m;i-=st){" +
+            "p=tCnt+i*opd;" +
+            "pc=vHS+i*hst;" +
+            "tc=texture(uTex,p/uTS)*H;" +
 
-              "if((flg&4)>0&&tc.g>0.)tc.rg=vec2(0.,vHS);" +
-
-              "if(tc.r<=pc&&tc.g>=pc){" +
-                "vol*=(fltDst-i*opdL)/shl;" +
-                "break;" +
-              "}" +
+            "if((flg&4)>0&&tc.g>0.||tc.r<=pc&&tc.g>=pc){" +
+              "shdw*=(fltDst-i*opdL)/shl;" +
+              "if(shdw<=0.)discard;" +
             "}" +
           "}" +
         "}" +
 
-        "oCl=vec4(vCl.rgb,vol*(1.+spc));" +
+        "oCl=vec4(vCl.rgb,shdw*(vol+spc));" +
       "}" +
     "}";
   }
