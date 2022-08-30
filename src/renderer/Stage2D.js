@@ -31,13 +31,12 @@ export class Stage2D extends BatchRenderer {
 
     this._batchItems = 0;
 
-    this._drawFunctionMap = {};
-    this._drawFunctionMap[Item.TYPE] = emptyFunction;
-    this._drawFunctionMap[Image.TYPE] = this._drawImage.bind(this);
-    this._drawFunctionMap[Container.TYPE] = this._drawContainer.bind(this);
+    this["_draw" + Item.TYPE] = emptyFunction;
+    this["_draw" + Image.TYPE] = this._drawImage.bind(this);
+    this["_draw" + Container.TYPE] = this._drawContainer.bind(this);
 
-    this._batchDrawBound = this._batchDraw.bind(this);
-    this._drawItemBound = this._drawItem.bind(this);
+    this._batchDraw = this._batchDraw.bind(this);
+    this._drawItem = this._drawItem.bind(this);
 
     /*
     this.picked
@@ -80,7 +79,7 @@ export class Stage2D extends BatchRenderer {
   _drawItem(item) {
     item.update(this._renderTime);
     item.callback(item, this._renderTime);
-    item.renderable && this._drawFunctionMap[item.TYPE](item);
+    item.renderable && this["_draw" + item.TYPE](item);
   }
 
   _drawContainer(container) {
@@ -93,7 +92,7 @@ export class Stage2D extends BatchRenderer {
   }
 
   _drawImage(item) {
-    this.context.setBlendMode(item.blendMode, this._batchDrawBound);
+    this.context.setBlendMode(item.blendMode, this._batchDraw);
 
     if (
       this._isPickerSet &&
@@ -117,7 +116,7 @@ export class Stage2D extends BatchRenderer {
       item.texture,
       this._renderTime,
       false,
-      this._batchDrawBound
+      this._batchDraw
     );
     this._dataBuffer.data[twId + 7] = item.distortionProps.distortTexture;
 

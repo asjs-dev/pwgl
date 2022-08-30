@@ -208,40 +208,23 @@ export class FilterRenderer extends BaseRenderer {
             "m," +
             "im;" +
 
-          "if(uFtrT.y<2)" +
-            // BlurFilter
-            "for(i=-2.;i<3.;++i){" +
-              "for(j=-2.;j<3.;++j){" +
-                "m=abs(i)+abs(j);" +
-                "im=1.-(m*.25);" +
-                "tCl=i==0.&&j==0." +
-                  "?oCl" +
-                  ":texture(uTex,vTUv+(wh*vec2(i,j)));" +
-                "cl+=tCl*im;" +
-                "c+=im;" +
-              "}" +
-            "}" +
-          "else{" +
-            // GlowFilter
-            "float oAvg=uFtrT.y==2" +
-              "?(oCl.r+oCl.g+oCl.b+oCl.a)/4." +
-              ":0.;" +
-            "for(i=-2.;i<3.;++i){" +
-              "for(j=-2.;j<3.;++j){" +
-                "m=abs(i)+abs(j);" +
-                "im=1.-(m*.25);" +
-                "tCl=i==0.&&j==0." +
-                  "?oCl" +
-                  ":texture(uTex,vTUv+(wh*vec2(i,j)));" +
-                "float avg=(tCl.r+tCl.g+tCl.b+tCl.a)/4.;" +
-                "if(avg-oAvg>=vl[2]*m){" +
-                  "cl+=tCl*im*(2.-vl[2]);" +
-                  "c+=im;" +
-                "}" +
-              "}" +
+          "for(i=-2.;i<3.;++i){" +
+            "for(j=-2.;j<3.;++j){" +
+              "m=abs(i)+abs(j);" +
+              "im=1.-(m*.25);" +
+              "tCl=i==0.&&j==0." +
+                "?oCl" +
+                ":texture(uTex,vTUv+(wh*vec2(i,j)));" +
+              "cl+=tCl*im;" +
+              "c+=im;" +
             "}" +
           "}" +
-          "oCl=cl/c;" +
+
+          "oCl=uFtrT.y<2" +
+            // BlurFilter
+            "?cl/c" +
+            // GlowFilter
+            ":max(oCl,cl/c);" +
         "}" +
         // PixelateFilter
         "else if(uFtrT.x<6)" +

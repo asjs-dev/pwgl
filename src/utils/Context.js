@@ -17,14 +17,14 @@ export class Context {
 
     this._MAX_TEXTURE_NUM = Utils.INFO.maxTextureImageUnits;
 
-    this._onContextLostBound = this._onContextLost.bind(this);
-    this._onContextRestoredBound = this._initContext.bind(this);
-    this._restoreContextBound = this._restoreContext.bind(this);
+    this._onContextLost = this._onContextLost.bind(this);
+    this._initContext = this._initContext.bind(this);
+    this._restoreContext = this._restoreContext.bind(this);
 
-    this.canvas.addEventListener("webglcontextlost", this._onContextLostBound);
+    this.canvas.addEventListener("webglcontextlost", this._onContextLost);
     this.canvas.addEventListener(
       "webglcontextrestored",
-      this._onContextRestoredBound
+      this._initContext
     );
 
     this._initContext();
@@ -53,11 +53,11 @@ export class Context {
 
     this.canvas.removeEventListener(
       "webglcontextlost",
-      this._onContextLostBound
+      this._onContextLost
     );
     this.canvas.removeEventListener(
       "webglcontextrestored",
-      this._onContextRestoredBound
+      this._initContext
     );
 
     this._loseContextExt && this._loseContextExt.loseContext();
@@ -142,7 +142,7 @@ export class Context {
 
   _onContextLost(event) {
     event.preventDefault();
-    this._loseContextExt && setTimeout(this._restoreContextBound, 1);
+    this._loseContextExt && setTimeout(this._restoreContext, 1);
   }
 
   _restoreContext() {

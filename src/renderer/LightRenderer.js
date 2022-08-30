@@ -192,7 +192,7 @@ export class LightRenderer extends BatchRenderer {
         "if(isl){" +
           "vol*=dst;" +
           "if(vol<=0.)discard;" +
-          
+
           "float slh=(vHS-ph)/H;" +
           "vec2 sl=vec2(" +
             "slh*vSln.y-vUv.x*vSln.x," +
@@ -231,7 +231,10 @@ export class LightRenderer extends BatchRenderer {
         "}" +
 
         "if((flg&1)>0){" +
-          "vec2 opd=(tUv-tCnt)/fltDst;" +
+          "vec2 " +
+            "p," +
+            "opd=(tUv-tCnt)/fltDst;" +
+
           "float " +
             "shl=vD/vDt.y," +
             "st=max(ceil(fltDst/vExt[1].x),vExt[0].w)," +
@@ -241,8 +244,6 @@ export class LightRenderer extends BatchRenderer {
             "i," +
             "pc," +
             "opdL=length(opd);" +
-
-          "vec2 p;" +
 
           "for(i=l;i>m;i-=st){" +
             "p=tCnt+i*opd;" +
@@ -256,7 +257,7 @@ export class LightRenderer extends BatchRenderer {
           "}" +
         "}" +
 
-        "oCl=vec4(vCl.rgb,shdw*(vol+spc));" +
+        "oCl=vec4(vCl.rgb,shdw*vol+spc);" +
       "}" +
     "}";
   }

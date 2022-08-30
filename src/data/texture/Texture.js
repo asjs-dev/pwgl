@@ -11,7 +11,7 @@ export class Texture extends TextureInfo {
 
     this._source = Texture.placeholderImage;
 
-    this._onTextureLoadedBound = this._parseTextureSize.bind(this);
+    this._parseTextureSize = this._parseTextureSize.bind(this);
 
     this.source = source;
     this.shouldUpdate = shouldUpdate;
@@ -35,7 +35,7 @@ export class Texture extends TextureInfo {
 
       this._source.removeEventListener(
         this._eventType,
-        this._onTextureLoadedBound
+        this._parseTextureSize
       );
 
       this._source = value
@@ -54,7 +54,7 @@ export class Texture extends TextureInfo {
 
         !this._loaded && value.addEventListener(
           this._eventType,
-          this._onTextureLoadedBound
+          this._parseTextureSize
         );
       }
     }
@@ -70,7 +70,7 @@ export class Texture extends TextureInfo {
   destruct() {
     this._source.removeEventListener(
       this._eventType,
-      this._onTextureLoadedBound
+      this._parseTextureSize
     );
   }
 
