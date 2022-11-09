@@ -122,6 +122,7 @@ export class Context {
 
       return true;
     }
+
     return false;
   }
 
@@ -159,6 +160,7 @@ export class Context {
 
     gl.pixelStorei(Const.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.enable(Const.BLEND);
+    gl.blendColor(1, 1, 1, 1);
     gl.enable(Const.SCISSOR_TEST);
 
     this._width =

@@ -16,6 +16,7 @@ export class BaseRenderer {
     */
 
     this._attachFramebufferCustom = this._attachFramebuffer;
+    this._attachFramebufferAndClearCustom = this._attachFramebufferAndClear;
 
     this._clearBeforeRenderFunc = emptyFunction;
 
@@ -59,18 +60,10 @@ export class BaseRenderer {
   }
 
   get width() { return this._width; }
-  set width(v) {
-    if (this._width !== v) {
-      this._width = v;
-    }
-  }
+  set width(v) { this._width = v; }
 
   get height() { return this._height; }
-  set height(v) {
-    if (this._height !== v) {
-      this._height = v;
-    }
-  }
+  set height(v) { this._height = v; }
 
   get clearBeforeRender() { return this._clearBeforeRenderFunc === this._clear; }
   set clearBeforeRender(v) {
@@ -87,7 +80,7 @@ export class BaseRenderer {
   renderToFramebuffer(framebuffer) {
     if (!this.context.isLost()) {
       this._switchToProgram();
-      this._attachFramebufferCustom(framebuffer);
+      this._attachFramebufferAndClearCustom(framebuffer);
       this._renderBatch(framebuffer);
       framebuffer.unbind(this._gl);
     }
@@ -97,13 +90,13 @@ export class BaseRenderer {
     if (!this.context.isLost()) {
       this._switchToProgram();
       this._gl.uniform1f(this._locations.uFlpY, 1);
+      this._clearBeforeRenderFunc();
       this._renderBatch();
     }
   }
 
   _renderBatch(framebuffer) {
     this._renderTime = Date.now();
-    this._clearBeforeRenderFunc();
     this._render(framebuffer);
     this._gl.flush();
   }
@@ -122,12 +115,16 @@ export class BaseRenderer {
   }
 
   _attachFramebuffer(framebuffer) {
+    framebuffer.bind(this._gl);
     framebuffer.setSize(this._width, this._height);
     this.context.useTexture(framebuffer, this._renderTime);
     this.context.deactivateTexture(framebuffer);
-    framebuffer.bind(this._gl);
-    this._clearBeforeRenderFunc();
     this._gl.uniform1f(this._locations.uFlpY, -1);
+  }
+
+  _attachFramebufferAndClear(framebuffer) {
+    this._attachFramebuffer(framebuffer);
+    this._clearBeforeRenderFunc();
   }
 
   _clear() {

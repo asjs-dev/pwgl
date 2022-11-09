@@ -42,7 +42,8 @@ export const Utils = {
     initCallback: config.initCallback,
     contextAttributes : {... {
       powerPreference : "high-performance",
-      preserveDrawingBuffer : true,
+      preserveDrawingBuffer : false,
+      premultipliedAlpha: false,
     }, ... (config.contextAttributes || {})}
   }),
 

@@ -24,7 +24,7 @@ export class SmoothLight extends AGL.Image {
 
     this.getLight = this.lightRenderer.getLight.bind(this.lightRenderer);
 
-    this.blendMode = AGL.BlendMode.MULTIPLY;
+    this.blendMode = AGL.BlendMode.SHADOW;
 
     this._filterFramebuffer = new AGL.Framebuffer();
     this.texture = this._filterFramebuffer;

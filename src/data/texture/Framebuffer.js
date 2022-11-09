@@ -2,11 +2,18 @@ import { TextureInfo } from "./TextureInfo.js";
 import { Const } from "../../utils/Utils.js";
 
 export class Framebuffer extends TextureInfo {
+  constructor() {
+    super();
+
+    this._resizeUpdateId =
+    this._currentResizeUpdateId = 0;
+  }
+
   get width() { return this._width; }
   set width(v) {
     if (this._width !== v && v > 0) {
       this._width = v;
-      ++this._updateId;
+      ++this._resizeUpdateId;
     }
   }
 
@@ -14,7 +21,7 @@ export class Framebuffer extends TextureInfo {
   set height(v) {
     if (this._height !== v && v > 0) {
       this._height = v;
-      ++this._updateId;
+      ++this._resizeUpdateId;
     }
   }
 
@@ -31,25 +38,13 @@ export class Framebuffer extends TextureInfo {
     gl.bindFramebuffer(Const.FRAMEBUFFER, null);
   }
 
-  use(gl, id, forceBind) {
-    if (
-      this._isNeedToDraw(gl, id) ||
-      this._currenActivetId !== id ||
-      forceBind
-    ) this.bindActiveTexture(gl, id);
-  }
-
   _isNeedToDraw(gl, id) {
-    let result = false;
-
     if (this._currentAglId < gl.agl_id) {
       this._currentAglId = gl.agl_id;
+      this._baseTexture = gl.createTexture();
+      this.useActiveTexture(gl, id);
 
       this._framebuffer = gl.createFramebuffer();
-
-      this._baseTexture = gl.createTexture();
-
-      this.useActiveTexture(gl, id);
 
       this.bind(gl);
 
@@ -63,15 +58,21 @@ export class Framebuffer extends TextureInfo {
 
       this.unbind(gl);
 
-      result = true;
+      return true;
     }
 
     if (this._currentUpdateId < this._updateId) {
       this._currentUpdateId = this._updateId;
-      this.useActiveTexture(gl, id);
-      result = true;
+      this.useActiveTextureAfterUpdate(gl, id);
+      return true;
     }
 
-    return result;
+    if (this._currentResizeUpdateId < this._resizeUpdateId) {
+      this._currentResizeUpdateId = this._resizeUpdateId;
+      this.useActiveTexture(gl, id);
+      return true;
+    }
+
+    return false;
   }
 }

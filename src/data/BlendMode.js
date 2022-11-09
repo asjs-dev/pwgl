@@ -96,7 +96,7 @@ export const BlendMode = {
   ]),
   MULTIPLY : _createBlendMode([
     Const.DST_COLOR,
-    Const.ONE_MINUS_SRC_ALPHA
+    Const.ZERO
   ]),
   SCREEN : _createBlendMode([
     Const.SRC_ALPHA,
@@ -123,5 +123,9 @@ export const BlendMode = {
     Const.ONE
   ],[
     Const.MIN
+  ]),
+  SHADOW : _createBlendMode([
+    Const.DST_COLOR,
+    Const.SRC_COLOR
   ])
 };

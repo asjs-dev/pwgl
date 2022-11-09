@@ -1,4 +1,5 @@
 import { TextureInfo } from "./TextureInfo.js";
+import { emptyFunction } from "../../utils/helpers.js";
 
 export class Texture extends TextureInfo {
   constructor(source, shouldUpdate) {
@@ -19,7 +20,9 @@ export class Texture extends TextureInfo {
     this._dimensionWidthName = "width";
     this._dimensionHeightName = "height";
 
-    this._currentRenderTime = 0;
+    this._currentRenderTime =
+    this._loadUpdateId =
+    this._currentLoadUpdateId = 0;
 
     this._eventType;
   }
@@ -60,13 +63,6 @@ export class Texture extends TextureInfo {
     }
   }
 
-  use(gl, id, forceBind, renderTime) {
-    if (this._isNeedToDraw(gl, renderTime))
-      this.useActiveTexture(gl, id);
-    else if (this._currenActivetId !== id || forceBind)
-      this.bindActiveTexture(gl, id);
-  }
-
   destruct() {
     this._source.removeEventListener(
       this._eventType,
@@ -74,27 +70,36 @@ export class Texture extends TextureInfo {
     );
   }
 
-  _isNeedToDraw(gl, renderTime) {
+  _isNeedToDraw(gl, id, renderTime) {
     if (this._currentAglId < gl.agl_id) {
       this._currentAglId = gl.agl_id;
-
       this._baseTexture = gl.createTexture();
-
-      return true;
-    }
-
-    if (this.shouldUpdate && this._currentRenderTime < renderTime) {
-      this._currentRenderTime = renderTime;
+      this.useActiveTexture(gl, id);
       return true;
     }
 
     if (this._currentUpdateId < this._updateId) {
       this._currentUpdateId = this._updateId;
+      this.useActiveTexture(gl, id);
       return true;
     }
 
-    if (this.isVideo && !this._source.paused)
+    if (this._currentLoadUpdateId < this._loadUpdateId) {
+      this._currentLoadUpdateId = this._loadUpdateId;
+      this.useActiveTexture(gl, id);
       return true;
+    }
+
+    if (this.shouldUpdate && this._currentRenderTime < renderTime) {
+      this._currentRenderTime = renderTime;
+      this.useActiveTexture(gl, id);
+      return true;
+    }
+
+    if (this.isVideo && !this._source.paused) {
+      this.useActiveTexture(gl, id);
+      return true;
+    }
 
     return false;
   }
@@ -121,7 +126,7 @@ export class Texture extends TextureInfo {
     this._loaded = this._sourceWidth * this._sourceHeight > 0;
     if (this._loaded) {
       this._renderSource = this._source;
-      ++this._updateId;
+      ++this._loadUpdateId;
     } else
       this._renderSource = null;
   }

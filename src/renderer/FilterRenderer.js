@@ -17,7 +17,8 @@ export class FilterRenderer extends BaseRenderer {
 
     super(options);
 
-    this._attachFramebufferCustom = emptyFunction;
+    this._attachFramebufferCustom =
+    this._attachFramebufferAndClearCustom = emptyFunction;
 
     this.filters = options.filters || [];
     this.texture = options.texture;
@@ -62,11 +63,11 @@ export class FilterRenderer extends BaseRenderer {
 
       if (isLast)
         framebuffer
-          ? this._attachFramebuffer(framebuffer)
+          ? this._attachFramebufferAndClear(framebuffer)
           : gl.uniform1f(locations.uFlpY, 1);
       else if (useFilter) {
         filterFramebuffer = this._framebuffers[i & 1];
-        this._attachFramebuffer(filterFramebuffer);
+        this._attachFramebufferAndClear(filterFramebuffer);
       }
 
       if (useFilter) {
@@ -118,6 +119,14 @@ export class FilterRenderer extends BaseRenderer {
       "vTUv;" +
 
     "out vec4 oCl;" +
+
+    "float mx(float x,float y){" +
+      "return x>y?x:y;" +
+    "}" +
+
+    "float mn(float x,float y){" +
+      "return x<y?x:y;" +
+    "}" +
 
     "void main(void){" +
       "oCl=texture(uTex,vTUv);" +
@@ -220,11 +229,25 @@ export class FilterRenderer extends BaseRenderer {
             "}" +
           "}" +
 
-          "oCl=uFtrT.y<2" +
-            // BlurFilter
-            "?cl/c" +
+          "vec4 pcl=cl/c;" +
+          // BlurFilter
+          "if(uFtrT.y<2)oCl=pcl;" +
+          "else{" +
             // GlowFilter
-            ":max(oCl,cl/c);" +
+            "if(uFtrT.y<3)oCl=vec4(" +
+              "mx(oCl.r,pcl.r)," +
+              "mx(oCl.g,pcl.g)," +
+              "mx(oCl.b,pcl.b)," +
+              "mx(oCl.a,pcl.a)" +
+            ");" +
+            // ComicFilter
+            "else if(uFtrT.y<4)oCl=vec4(" +
+              "mn(oCl.r,pcl.r)," +
+              "mn(oCl.g,pcl.g)," +
+              "mn(oCl.b,pcl.b)," +
+              "mn(oCl.a,pcl.a)" +
+            ");" +
+          "}" +
         "}" +
         // PixelateFilter
         "else if(uFtrT.x<6)" +

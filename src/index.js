@@ -57,6 +57,7 @@ import { BrightnessContrastFilter } from "./filters/BrightnessContrastFilter.js"
 import { GammaFilter } from "./filters/GammaFilter.js";
 import { BlurFilter } from "./filters/BlurFilter.js";
 import { GlowFilter } from "./filters/GlowFilter.js";
+import { ComicFilter } from "./filters/ComicFilter.js";
 
 console.log("PWGL.JS (AGL) 3.0 {{date}}");
 
@@ -120,5 +121,6 @@ window.PWGL = window.AGL = {
   BrightnessContrastFilter,
   GammaFilter,
   BlurFilter,
-  GlowFilter
+  GlowFilter,
+  ComicFilter
 };

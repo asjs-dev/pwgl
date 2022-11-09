@@ -37,6 +37,7 @@ export class Light extends BaseDrawable {
     this.precision =
     this.diffuse = 1;
     this.maxShadowStep = 128;
+    this.shadeSize = 1;
   }
 
   get type() { return this._extensionData[this._matId]; }
@@ -62,6 +63,9 @@ export class Light extends BaseDrawable {
 
   get maxShadowStep() { return this._extensionData[this._quadId]; }
   set maxShadowStep(v) { this._extensionData[this._quadId] = v; }
+
+  get shadeSize() { return this._extensionData[this._quadId + 1]; }
+  set shadeSize(v) { this._extensionData[this._quadId + 1] = v; }
 
   get precision() { return this._extensionData[this._matId + 3]; }
   set precision(v) { this._extensionData[this._matId + 3] = Math.max(1, v); }

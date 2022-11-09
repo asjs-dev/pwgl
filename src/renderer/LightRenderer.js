@@ -167,6 +167,7 @@ export class LightRenderer extends BatchRenderer {
     "out vec4 oCl;" +
 
     "void main(void){" +
+      "oCl=vec4(0);" +
       "if(vDt.x>0.){" +
         "bool isl=vExt[0].x<1.;" +
 
@@ -174,7 +175,8 @@ export class LightRenderer extends BatchRenderer {
 
         "float " +
           "ph=tc.g*H," +
-          "shn=1.+tc.b*H;" +
+          "shnv=tc.b," +
+          "shn=(1.+shnv)*H;" +
 
         "vec2 " +
           "tUv=vTUv*uTS," +
@@ -216,24 +218,22 @@ export class LightRenderer extends BatchRenderer {
         "if((flg&2)>0){" +
           "vec3 " +
             "nm=texture(uNMTex,vTUv).rgb*2.-1.," +
-            "sftl=normalize(lp-sf);" +
+            "sftl=normalize(lp-sf)," +
+            "sftv=normalize(vec3(tUv,H)-sf)," +
+            "hlf=normalize(sftl+sftv);" +
+
+            "nm.y*=-1.;" +
+            "nm=normalize(nm);" +
 
           "vol*=dot(nm,sftl);" +
-          "spc=(isl?dst:1.)*" +
-            "pow(" +
-              "dot(" +
-                "nm," +
-                "normalize(" +
-                  "vec3(sftl.xy,1)" +
-                ")" +
-              "),shn);" +
-          "if(vol+spc<=0.)discard;" +
+          "spc=pow(dot(nm,hlf),shn)*vExt[1].y*shnv;" +
         "}" +
 
         "if((flg&1)>0){" +
           "vec2 " +
             "p," +
-            "opd=(tUv-tCnt)/fltDst;" +
+            "opd=(tUv-tCnt)/fltDst," +
+            "opdm=opd/uTS;" +
 
           "float " +
             "shl=vD/vDt.y," +
@@ -246,9 +246,9 @@ export class LightRenderer extends BatchRenderer {
             "opdL=length(opd);" +
 
           "for(i=l;i>m;i-=st){" +
-            "p=tCnt+i*opd;" +
+            "p=vUv.zw+i*opdm;" +
             "pc=vHS+i*hst;" +
-            "tc=texture(uTex,p/uTS)*H;" +
+            "tc=texture(uTex,p)*H;" +
 
             "if((flg&4)>0&&tc.g>0.||tc.r<=pc&&tc.g>=pc){" +
               "shdw*=(fltDst-i*opdL)/shl;" +
@@ -257,7 +257,7 @@ export class LightRenderer extends BatchRenderer {
           "}" +
         "}" +
 
-        "oCl=vec4(vCl.rgb,shdw*vol+spc);" +
+        "oCl=vec4(vCl.rgb+spc,shdw*vol);" +
       "}" +
     "}";
   }
