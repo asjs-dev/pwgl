@@ -20,7 +20,7 @@ export class TextureInfo {
     this.internalFormat =
     this.format = Const.RGBA;
 
-    this.minFilter = Const.NEAREST_MIPMAP_NEAREST;
+    this.minFilter = Const.LINEAR_MIPMAP_LINEAR;
     this.magFilter = Const.NEAREST;
 
     this._width =

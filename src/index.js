@@ -59,7 +59,7 @@ import { BlurFilter } from "./filters/BlurFilter.js";
 import { GlowFilter } from "./filters/GlowFilter.js";
 import { ComicFilter } from "./filters/ComicFilter.js";
 
-console.log("PWGL.JS (AGL) 3.0 {{date}}");
+console.log("PWGL.JS (AGL) {{appVersion}} {{date}}");
 
 window.PWGL = window.AGL = {
   BlendMode,

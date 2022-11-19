@@ -58,26 +58,19 @@ export class NormalMapRenderer extends BaseRenderer {
 
     "void main(void){" +
       "vec2 ts=1./vec2(textureSize(uTex,0));" +
+
       "vec2 " +
-        "p1=vTUv+vec2(-1.2247,-0.7071)*ts," +
-        "p2=vTUv+vec2(1.2247,-0.7071)*ts," +
-        "p3=vTUv+vec2(1.1102,1.4142)*ts;" +
+        "p1=vTUv+vec2(1.,0.)*ts," +
+        "p2=vTUv+vec2(0.,1.)*ts;" +
+
+      "float " +
+        "sf0=texture(uTex,vTUv).g," +
+        "sf1=texture(uTex,p1).g," +
+        "sf2=texture(uTex,p2).g;" +
 
       "vec3 " +
-        "sf0=vec3(vTUv,texture(uTex,vTUv).g)," +
-        "sf1=vec3(p1,texture(uTex,p1).g)," +
-        "sf2=vec3(p2,texture(uTex,p2).g)," +
-        "sf3=vec3(p3,texture(uTex,p3).g)," +
+        "nm=normalize(vec3(sf0-sf1,sf0-sf2,.01));" +
 
-        "l0=sf1-sf0," +
-        "l1=sf2-sf0," +
-        "l2=sf3-sf0;" +
-
-      "vec3 nm=normalize(" +
-        "cross(l0,l1)+" +
-        "cross(l1,l2)+" +
-        "cross(l2,l0)" +
-      ");" +
       "nm.y*=-1.;" +
       "oCl=vec4(nm*.5+.5,1);" +
     "}";
