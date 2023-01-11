@@ -2,17 +2,23 @@ import { Utils } from "../utils/Utils.js";
 import { BlendMode } from "../data/BlendMode.js";
 import { BaseRenderer } from "./BaseRenderer.js";
 
-export class NormalMapRenderer extends BaseRenderer {
+export class AmbientOcclusionMapRenderer extends BaseRenderer {
   constructor(options) {
     options = options || {};
     options.config = Utils.initRendererConfig(options.config);
-
+    options.config.locations = options.config.locations.concat([
+      "uM",
+      "uDM"
+    ]);
     super(options);
 
     this.clearBeforeRender = true;
     this.clearColor.set(0, 0, 0, 1);
 
     this.heightMap = options.heightMap;
+
+    this.multiplier = 10;
+    this.depthMultiplier = 2;
   }
 
   _render() {
@@ -22,6 +28,9 @@ export class NormalMapRenderer extends BaseRenderer {
       this._locations.uTex,
       this.context.useTexture(this.heightMap, this._renderTime, true)
     );
+
+    this._gl.uniform1f(this._locations.uM, this.multiplier);
+    this._gl.uniform1f(this._locations.uDM, this.depthMultiplier);
 
     this._uploadBuffers();
 
@@ -48,11 +57,18 @@ export class NormalMapRenderer extends BaseRenderer {
 
   _createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
+    "#define H 255.\n" +
+
     "in vec2 " +
       "vTUv;" +
 
     "uniform sampler2D " +
       "uTex;" +
+
+    "uniform float " +
+      "uFlpY," +
+      "uM," +
+      "uDM;" +
 
     "out vec4 " +
       "oCl;" +
@@ -60,22 +76,25 @@ export class NormalMapRenderer extends BaseRenderer {
     "void main(void){" +
       "ivec2 " +
         "ts=textureSize(uTex,0)," +
-        "f=ivec2(floor(vTUv*vec2(ts)));" +
-
-      "ivec2 " +
-        "p1=f+ivec2(1,0)," +
-        "p2=f+ivec2(0,1);" +
+        "f=ivec2(floor(vTUv*vec2(ts))),"+
+        "p=ivec2(0);" +
 
       "float " +
-        "sf0=texelFetch(uTex,f,0).g," +
-        "sf1=texelFetch(uTex,p1,0).g," +
-        "sf2=texelFetch(uTex,p2,0).g;" +
+        "tx=texelFetch(uTex,f,0).g," +
+        "v=0.," +
+        "z," +
+        "h;" +
 
-      "vec3 " +
-        "nm=normalize(vec3(sf0-sf1,sf0-sf2,.01));" +
+      "for(p.x=-2;p.x<3;++p.x)" +
+        "for(p.y=-2;p.y<3;++p.y)" +
+          "if(p.x!=0&&p.y!=0){" +
+            "h=texelFetch(uTex,f+p*2,0).g;" +
+            "z=clamp(h-tx,0.,.1);" +
+            "v+=z*uM*(3./length(vec2(p)));" +
+          "}" +
+      "v/=24.;" +
 
-      "nm.y*=-1.;" +
-      "oCl=vec4(nm*.5+.5,1);" +
+      "oCl=vec4(vec3(((1.-uDM)*.5+tx*uDM))+(1.-max(0.,v)),1);" +
     "}";
   }
 }

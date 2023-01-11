@@ -11,7 +11,7 @@ export class LightRenderer extends BatchRenderer {
     options.config.locations = options.config.locations.concat([
       "uNMTex",
       "aExt",
-      "uTS",
+      "uTS"
     ]);
     const maxBatchItems = options.maxBatchItems = options.lightNum || 1;
 
@@ -86,7 +86,8 @@ export class LightRenderer extends BatchRenderer {
     "#define H vec4(1,-1,2,-2)\n" +
     "#define PI radians(180.)\n" +
 
-    "in vec2 aPos;" +
+    "in vec2 " +
+      "aPos;" +
     "in mat4 " +
       "aExt," +
       "aMt;" +
@@ -155,7 +156,8 @@ export class LightRenderer extends BatchRenderer {
       "vUv," +
       "vCl," +
       "vDt;" +
-    "in mat4 vExt;" +
+    "in mat4 " +
+      "vExt;" +
 
     "uniform sampler2D " +
       "uNMTex," +
@@ -164,14 +166,17 @@ export class LightRenderer extends BatchRenderer {
     "uniform vec2 " +
       "uTS;" +
 
-    "out vec4 oCl;" +
+    "out vec4 " +
+      "oCl;" +
 
     "void main(void){" +
       "oCl=vec4(0);" +
       "if(vDt.x>0.){" +
-        "bool isl=vExt[0].x<1.;" +
+        "bool " +
+          "isl=vExt[0].x<1.;" +
 
-        "vec4 tc=texture(uTex,vTUv);" +
+        "vec4 " +
+          "tc=texture(uTex,vTUv);" +
 
         "float " +
           "ph=tc.g*H," +
@@ -195,11 +200,14 @@ export class LightRenderer extends BatchRenderer {
           "vol*=dst;" +
           "if(vol<=0.)discard;" +
 
-          "float slh=(vHS-ph)/H;" +
-          "vec2 sl=vec2(" +
-            "slh*vSln.y-vUv.x*vSln.x," +
-            "slh*vSln.x+vUv.x*vSln.y" +
-          ");" +
+          "float " +
+            "slh=(vHS-ph)/H;" +
+
+          "vec2 " +
+            "sl=vec2(" +
+              "slh*vSln.y-vUv.x*vSln.x," +
+              "slh*vSln.x+vUv.x*vSln.y" +
+            ");" +
 
           "if((" +
             "atan(" +
@@ -209,7 +217,8 @@ export class LightRenderer extends BatchRenderer {
           ")-vSpt<0.)discard;" +
         "}" +
 
-        "int flg=int(vExt[0].y);" +
+        "int " +
+          "flg=int(vExt[0].y);" +
 
         "float " +
           "fltDst=distance(tCnt,tUv)," +
@@ -237,7 +246,7 @@ export class LightRenderer extends BatchRenderer {
 
           "float " +
             "shl=vD/vDt.y," +
-            "st=max(ceil(fltDst/vExt[1].x),vExt[0].w)," +
+            "st=ceil(max(1.,max(fltDst/vExt[1].x,vExt[0].w)))," +
             "hst=(ph-vHS)/fltDst," +
             "l=fltDst-st," +
             "m=max(st,l-shl)," +
@@ -250,14 +259,14 @@ export class LightRenderer extends BatchRenderer {
             "pc=vHS+i*hst;" +
             "tc=texture(uTex,p)*H;" +
 
-            "if((flg&4)>0&&tc.g>0.||tc.r<=pc&&tc.g>=pc){" +
+            "if((flg&4)>0&&tc.g>=pc||tc.r<=pc&&tc.g>=pc){" +
               "shdw*=(fltDst-i*opdL)/shl;" +
               "if(shdw<=0.)discard;" +
             "}" +
           "}" +
         "}" +
 
-        "oCl=vec4(vCl.rgb+spc,shdw*vol);" +
+        "oCl=vec4(vCl.rgb+vCl.rgb*spc,shdw*vol);" +
       "}" +
     "}";
   }

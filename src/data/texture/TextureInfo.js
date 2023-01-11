@@ -20,7 +20,7 @@ export class TextureInfo {
     this.internalFormat =
     this.format = Const.RGBA;
 
-    this.minFilter = Const.LINEAR_MIPMAP_LINEAR;
+    this.minFilter = Const.NEAREST_MIPMAP_LINEAR;
     this.magFilter = Const.NEAREST;
 
     this._width =
@@ -149,13 +149,12 @@ export class TextureInfo {
   }
 
   uploadTextureInfo(gl) {
-    gl.texParameteri(this.target, Const.TEXTURE_MAX_LEVEL, 0);
-    gl.generateMipmap(this.target);
-
     gl.texParameteri(this.target, Const.TEXTURE_WRAP_S, this._wrapS);
     gl.texParameteri(this.target, Const.TEXTURE_WRAP_T, this._wrapT);
     gl.texParameteri(this.target, Const.TEXTURE_MIN_FILTER, this._minFilter);
     gl.texParameteri(this.target, Const.TEXTURE_MAG_FILTER, this._magFilter);
+    gl.texParameteri(this.target, Const.TEXTURE_MAX_LEVEL, 0);
+    gl.generateMipmap(this.target);
   }
 
   destruct() {}

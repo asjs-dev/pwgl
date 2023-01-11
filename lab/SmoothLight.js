@@ -8,7 +8,7 @@ export class SmoothLight extends AGL.Image {
 
     this.lightRenderer = new AGL.LightRenderer(options);
 
-    this._blurFilter = new AGL.BlurFilter();
+    this._filter = new AGL.BlurFilter();
 
     this.filterRenderer = new AGL.FilterRenderer({
       config : {
@@ -16,7 +16,7 @@ export class SmoothLight extends AGL.Image {
       },
       texture : this._framebuffer,
       filters : [
-        this._blurFilter
+        this._filter
       ]
     });
     this.filterRenderer.clearColor.set(0, 0, 0, 0);
@@ -37,8 +37,8 @@ export class SmoothLight extends AGL.Image {
   get blur() { return this._blur; }
   set blur(v) {
     this._blur =
-    this._blurFilter.intensityX =
-    this._blurFilter.intensityY = v;
+    this._filter.intensityX =
+    this._filter.intensityY = v;
   }
 
   render() {

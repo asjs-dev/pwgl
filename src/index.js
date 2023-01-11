@@ -36,6 +36,7 @@ import { BaseRenderer } from "./renderer/BaseRenderer.js";
 import { BatchRenderer } from "./renderer/BatchRenderer.js";
 import { FilterRenderer } from "./renderer/FilterRenderer.js";
 import { NormalMapRenderer } from "./renderer/NormalMapRenderer.js";
+import { AmbientOcclusionMapRenderer } from "./renderer/AmbientOcclusionMapRenderer.js";
 import { LightRenderer } from "./renderer/LightRenderer.js";
 import { Stage2D } from "./renderer/Stage2D.js";
 
@@ -57,7 +58,7 @@ import { BrightnessContrastFilter } from "./filters/BrightnessContrastFilter.js"
 import { GammaFilter } from "./filters/GammaFilter.js";
 import { BlurFilter } from "./filters/BlurFilter.js";
 import { GlowFilter } from "./filters/GlowFilter.js";
-import { ComicFilter } from "./filters/ComicFilter.js";
+import { ChromaticAberrationFilter } from "./filters/ChromaticAberrationFilter.js";
 
 console.log("PWGL.JS (AGL) {{appVersion}} {{date}}");
 
@@ -101,6 +102,7 @@ window.PWGL = window.AGL = {
   BatchRenderer,
   FilterRenderer,
   NormalMapRenderer,
+  AmbientOcclusionMapRenderer,
   LightRenderer,
   Stage2D,
 
@@ -122,5 +124,5 @@ window.PWGL = window.AGL = {
   GammaFilter,
   BlurFilter,
   GlowFilter,
-  ComicFilter
+  ChromaticAberrationFilter
 };

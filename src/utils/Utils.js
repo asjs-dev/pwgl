@@ -25,11 +25,14 @@ export const Utils = {
             "p," +
             "vec2(" +
               "sin(p.x+p.y)," +
-              "cos(p.y-p.x)" +
+              "cos(p.y-p.x)*s" +
             ")" +
           ")*s" +
         ")*.5+.5" +
       ");" +
+    "}" +
+    "float rand(vec2 p){" +
+      "return rand(p,1.);" +
     "}"
   },
 
