@@ -63,5 +63,6 @@ Image.TintType = {
   NONE : 0,
   NORMAL : 1,
   GRAYSCALE : 2,
-  OVERRIDE : 3
+  OVERRIDE : 3,
+  ADD : 4
 };

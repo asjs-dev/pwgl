@@ -109,20 +109,18 @@ export class FilterRenderer extends BaseRenderer {
 
   _createFragmentShader(options) {
     const blurFunc = (core) =>
-      "ivec2 " +
-        "z=ivec2(0)," +
-        "poft;" +
-
       "for(oft.x=-2.;oft.x<3.;++oft.x)" +
         "for(oft.y=-2.;oft.y<3.;++oft.y)" +
           "if(oft.x!=0.&&oft.y!=0.){" +
-            "poft=clamp(f+ivec2(floor(wh*oft)),z,ts-1);" +
+            "poft=clamp(f+ivec2(floor(wh*oft)),P.xx,ts-1);" +
             "clg=texelFetch(uTex,poft,0);" +
             core +
           "}" +
       "pcl=cl/c;";
 
     return Utils.createVersion(options.config.precision) +
+    "#define P ivec2(0,1)\n" +
+
     "uniform sampler2D " +
       "uTex," +
       "uFTex;" +
@@ -144,9 +142,8 @@ export class FilterRenderer extends BaseRenderer {
       "oCl=texture(uTex,vTUv);" +
       // FILTERS
       "if(uFtrT.x>0){" +
-        "float[] " +
-          "vl=uFtrV;" +
         "float " +
+          "vl[]=uFtrV," +
           "v=vl[0];" +
 
         "ivec2 " +
@@ -154,7 +151,7 @@ export class FilterRenderer extends BaseRenderer {
           "f=ivec2(floor(vTUv*vec2(ts)));" +
 
         "vec2 " +
-          "vol=v*(1./vec2(textureSize(uTex,0)));" +
+          "vol=v*(1./vec2(ts));" +
 
         "vec3 " +
           "rgb=vec3(vl[2],vl[3],vl[4]);" +
@@ -232,6 +229,9 @@ export class FilterRenderer extends BaseRenderer {
           "vec2 " +
             "oft," +
             "wh=vec2(v,vl[1]);" +
+
+          "ivec2 " +
+            "poft;" +
 
           "vec4 " +
             "pcl," +

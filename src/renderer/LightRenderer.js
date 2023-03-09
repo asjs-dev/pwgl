@@ -10,8 +10,10 @@ export class LightRenderer extends BatchRenderer {
     options.config = Utils.initRendererConfig(options.config);
     options.config.locations = options.config.locations.concat([
       "uNMTex",
+      "uSITex",
       "aExt",
-      "uTS"
+      "uTS",
+      "uUSIT"
     ]);
     const maxBatchItems = options.maxBatchItems = options.lightNum || 1;
 
@@ -20,6 +22,7 @@ export class LightRenderer extends BatchRenderer {
     this.clearBeforeRender = true;
     this.clearColor.set(0, 0, 0, 1);
 
+    this.sourceImage = options.sourceImage;
     this.normalMap = options.normalMap;
     this.heightMap = options.heightMap;
 
@@ -43,22 +46,28 @@ export class LightRenderer extends BatchRenderer {
     return this._lights[id];
   }
 
+  _useTexture(sourceTexture, location) {
+    this._gl.uniform1i(
+      location,
+      this.context.useTexture(sourceTexture, this._renderTime, true)
+    );
+  }
+
   _render() {
     this.context.setBlendMode(BlendMode.ADD);
 
     let width = this._width;
     let height = this._height;
 
-    this.normalMap && this._gl.uniform1i(
-      this._locations.uNMTex,
-      this.context.useTexture(this.normalMap, this._renderTime, true)
-    );
+    if (this.sourceImage) {
+      this._useTexture(this.sourceImage, this._locations.uSITex);
+      this._gl.uniform1f(this._locations.uUSIT, 1);
+    } else this._gl.uniform1f(this._locations.uUSIT, 0);
+
+    this.normalMap && this._useTexture(this.normalMap, this._locations.uNMTex);
 
     if (this.heightMap) {
-      this._gl.uniform1i(
-        this._locations.uTex,
-        this.context.useTexture(this.heightMap, this._renderTime, true)
-      );
+      this._useTexture(this.heightMap, this._locations.uTex);
 
       width = this.heightMap.width;
       height = this.heightMap.height;
@@ -110,11 +119,11 @@ export class LightRenderer extends BatchRenderer {
       "vExt;" +
 
     "void main(void){" +
+      "vec3 pos=vec3(aPos*2.-1.,1);" +
+
       "vExt=aExt;" +
       "vCl=aMt[2];" +
       "vDt=aMt[3];" +
-
-      "vec3 pos=vec3(aPos*2.-1.,1);" +
 
       "vUv.xy=pos.xy;" +
       "vHS=vExt[0].z;" +
@@ -161,8 +170,10 @@ export class LightRenderer extends BatchRenderer {
 
     "uniform sampler2D " +
       "uNMTex," +
+      "uSITex," +
       "uTex;" +
-
+    "uniform float " +
+      "uUSIT;" +
     "uniform vec2 " +
       "uTS;" +
 
@@ -266,7 +277,8 @@ export class LightRenderer extends BatchRenderer {
           "}" +
         "}" +
 
-        "oCl=vec4(vCl.rgb+vCl.rgb*spc,shdw*vol);" +
+        "vec4 stCl=uUSIT<1.?vec4(1):texture(uSITex,vTUv);" +
+        "oCl=vec4((stCl.rgb*vCl.rgb+spc)*shdw*vol,1);" +
       "}" +
     "}";
   }

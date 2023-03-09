@@ -376,10 +376,12 @@ export class Stage2D extends BatchRenderer {
       (useTint
         ? "if(vTTp>0.){" +
             "vec3 cl=vCl[1].rgb+oCl.rgb*vCl[1].a;" +
-            "if(vTTp<2.||(vTTp<3.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
-              "oCl.rgb*=cl;" +
-            "else if(vTTp<4.)" +
+            "if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
+              "oCl.rgb*=cl+oCl.rgb*vCl[1].a;" +
+            "else if(vTTp==3.)" +
               "oCl.rgb=cl;" +
+            "else if(vTTp==4.)" +
+              "oCl.rgb+=cl;" +
           "}"
         : "") +
 
