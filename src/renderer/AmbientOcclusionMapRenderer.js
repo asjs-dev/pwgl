@@ -74,22 +74,23 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "oCl;" +
 
     "void main(void){" +
-      "ivec2 " +
-        "ts=textureSize(uTex,0)," +
-        "f=ivec2(floor(vTUv*vec2(ts))),"+
-        "p=ivec2(0);" +
+      "vec2 " +
+        "its=vec2(textureSize(uTex,0))," +
+        "ts=1./its," +
+        "f=floor(vTUv*its),"+
+        "p;" +
 
       "float " +
-        "tx=texelFetch(uTex,f,0).g," +
+        "tx=texture(uTex,f*ts).g," +
         "v=0.," +
         "z," +
         "h;" +
 
-      "for(p.x=-2;p.x<3;++p.x)" +
-        "for(p.y=-2;p.y<3;++p.y)" +
-          "if(p.x!=0&&p.y!=0){" +
-            "h=texelFetch(uTex,f+p*2,0).g;" +
-            "z=clamp(h-tx,0.,.1);" +
+      "for(p.x=-2.;p.x<3.;++p.x)" +
+        "for(p.y=-2.;p.y<3.;++p.y)" +
+          "if(p.x!=0.&&p.y!=0.){" +
+            "h=texture(uTex,(f+p*2.)*ts).g;" +
+            "z=clamp(h-tx,0.,1.);" +
             "v+=z*uM*(3./length(vec2(p)));" +
           "}" +
       "v/=24.;" +

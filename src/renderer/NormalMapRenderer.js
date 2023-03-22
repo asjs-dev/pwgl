@@ -48,6 +48,7 @@ export class NormalMapRenderer extends BaseRenderer {
 
   _createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
+    "#define H 256.\n" +
     "in vec2 " +
       "vTUv;" +
 
@@ -58,23 +59,21 @@ export class NormalMapRenderer extends BaseRenderer {
       "oCl;" +
 
     "void main(void){" +
-      "ivec2 " +
-        "ts=textureSize(uTex,0)," +
-        "f=ivec2(floor(vTUv*vec2(ts)));" +
-
-      "ivec2 " +
-        "p1=f+ivec2(1,0)," +
-        "p2=f+ivec2(0,1);" +
-
-      "float " +
-        "sf0=texelFetch(uTex,f,0).g," +
-        "sf1=texelFetch(uTex,p1,0).g," +
-        "sf2=texelFetch(uTex,p2,0).g;" +
+      "vec2 " +
+        "its=vec2(textureSize(uTex,0))," +
+        "ts=1./its," +
+        "p0=floor(vTUv*its)," +
+        "p1=p0+vec2(1,0)," +
+        "p2=p0+vec2(0,1);" +
 
       "vec3 " +
-        "nm=normalize(vec3(sf0-sf1,sf0-sf2,.01));" +
+        "A=vec3(p0,texture(uTex,p0*ts).g*H)," +
+        "B=vec3(p1,texture(uTex,p1*ts).g*H)," +
+        "C=vec3(p2,texture(uTex,p2*ts).g*H)," +
+        "nm=normalize(cross(B-A,C-A));" +
 
       "nm.y*=-1.;" +
+
       "oCl=vec4(nm*.5+.5,1);" +
     "}";
   }
