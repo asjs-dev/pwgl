@@ -12,6 +12,7 @@ export class Light extends BaseDrawable {
     this._castShadow
     this._shading
     this._flattenShadow
+    this._colorProofReflection
     */
 
     this.props = new LightProps();
@@ -46,19 +47,25 @@ export class Light extends BaseDrawable {
   get castShadow() { return this._castShadow; }
   set castShadow(v) {
     this._castShadow = v;
-    this._updateShadowProps();
+    this._updateLightProps();
   }
 
   get shading() { return this._shading; }
   set shading(v) {
     this._shading = v;
-    this._updateShadowProps();
+    this._updateLightProps();
   }
 
   get flattenShadow() { return this._flattenShadow; }
   set flattenShadow(v) {
     this._flattenShadow = v;
-    this._updateShadowProps();
+    this._updateLightProps();
+  }
+
+  get colorProofReflection() { return this._colorProofReflection; }
+  set colorProofReflection(v) {
+    this._colorProofReflection = v;
+    this._updateLightProps();
   }
 
   get maxShadowStep() { return this._extensionData[this._quadId]; }
@@ -101,11 +108,12 @@ export class Light extends BaseDrawable {
       lightData[datId] = 0;
   }
 
-  _updateShadowProps() {
+  _updateLightProps() {
     this._extensionData[this._matId + 1] =
       this._castShadow * 1 |
       this._shading * 2 |
-      this._flattenShadow * 4;
+      this._flattenShadow * 4 |
+      this._colorProofReflection * 8;
   }
 
   _updateAdditionalData() {

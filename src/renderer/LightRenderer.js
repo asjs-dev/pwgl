@@ -276,8 +276,10 @@ export class LightRenderer extends BatchRenderer {
           "}" +
         "}" +
 
-        "vec4 stCl=uUSIT<1.?vec4(1):texture(uSITex,vTUv);" +
-        "oCl=vec4((stCl.rgb*vCl.rgb+spc)*shdw*vol,1);" +
+        "vec3 " +
+          "stCl=uUSIT<1.?vec3(1):texture(uSITex,vTUv).rgb," +
+          "rCl=(flg&8)>0?vCl.rgb:vec3(1);" +
+        "oCl=vec4((stCl*vCl.rgb+rCl*spc)*shdw*vol,1);" +
       "}" +
     "}";
   }
