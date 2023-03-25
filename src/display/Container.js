@@ -16,8 +16,7 @@ export class Container extends Item {
   }
 
   empty() {
-    while (this.children.length)
-      this.removeChildAt(0);
+    while (this.children.length) this.removeChildAt(0);
   }
 
   contains(child) {
@@ -73,10 +72,8 @@ export class Container extends Item {
   getBounds() {
     const bounds = this._bounds;
 
-    bounds.x =
-    bounds.y =  1/0;
-    bounds.width =
-    bounds.height = -1/0;
+    bounds.x = bounds.y = 1 / 0;
+    bounds.width = bounds.height = -1 / 0;
 
     for (let i = 0, l = this.children.length; i < l; ++i) {
       const childBounds = this.children[i].getBounds();

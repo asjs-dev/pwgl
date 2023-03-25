@@ -26,14 +26,18 @@ export class MaskFilter extends BaseFilter {
     );
   }
 
-  get type() { return this.v[0]; }
-  set type(v) { this.v[0] = v; }
+  get type() {
+    return this.v[0];
+  }
+  set type(v) {
+    this.v[0] = v;
+  }
 }
 
 MaskFilter.Type = {
-  RED   : 0,
-  GREEN : 1,
-  BLUE  : 2,
-  ALPHA : 3,
-  AVG   : 4
+  RED: 0,
+  GREEN: 1,
+  BLUE: 2,
+  ALPHA: 3,
+  AVG: 4,
 };

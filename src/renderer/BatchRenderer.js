@@ -3,6 +3,7 @@ import { BaseRenderer } from "./BaseRenderer.js";
 
 export class BatchRenderer extends BaseRenderer {
   constructor(options) {
+    // prettier-ignore
     options.config.locations = options.config.locations.concat([
       "aMt"
     ]);
@@ -11,10 +12,7 @@ export class BatchRenderer extends BaseRenderer {
 
     this._MAX_BATCH_ITEMS = options.maxBatchItems || 1;
 
-    this._matrixBuffer = new Buffer(
-      "aMt", this._MAX_BATCH_ITEMS,
-      4, 4
-    );
+    this._matrixBuffer = new Buffer("aMt", this._MAX_BATCH_ITEMS, 4, 4);
   }
 
   _uploadBuffers() {

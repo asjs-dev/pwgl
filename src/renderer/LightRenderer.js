@@ -8,6 +8,8 @@ export class LightRenderer extends BatchRenderer {
   constructor(options) {
     options = options || {};
     options.config = Utils.initRendererConfig(options.config);
+
+    // prettier-ignore
     options.config.locations = options.config.locations.concat([
       "uNMTex",
       "uSITex",
@@ -15,7 +17,8 @@ export class LightRenderer extends BatchRenderer {
       "uTS",
       "uUSIT"
     ]);
-    const maxBatchItems = options.maxBatchItems = options.lightNum || 1;
+
+    const maxBatchItems = (options.maxBatchItems = options.lightNum || 1);
 
     super(options);
 
@@ -26,19 +29,12 @@ export class LightRenderer extends BatchRenderer {
     this.normalMap = options.normalMap;
     this.heightMap = options.heightMap;
 
-    this._extensionBuffer = new Buffer(
-      "aExt", maxBatchItems,
-      4, 4
-    );
+    this._extensionBuffer = new Buffer("aExt", maxBatchItems, 4, 4);
 
     this._lights = [];
     for (let i = 0; i < maxBatchItems; ++i)
       this._lights.push(
-        new Light(
-          i,
-          this._matrixBuffer.data,
-          this._extensionBuffer.data
-        )
+        new Light(i, this._matrixBuffer.data, this._extensionBuffer.data)
       );
   }
 
@@ -90,6 +86,7 @@ export class LightRenderer extends BatchRenderer {
     this._extensionBuffer.create(this._gl, this._locations);
   }
 
+  // prettier-ignore
   _createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H vec4(1,-1,2,-2)\n" +
@@ -148,6 +145,7 @@ export class LightRenderer extends BatchRenderer {
     "}";
   }
 
+  // prettier-ignore
   _createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H 256.\n" +

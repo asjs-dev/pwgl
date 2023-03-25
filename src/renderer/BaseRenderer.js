@@ -20,12 +20,13 @@ export class BaseRenderer {
 
     this.clearColor = new ColorProps();
 
-    this._currentContextId =
-    this._renderTime = 0;
+    this._currentContextId = this._renderTime = 0;
 
     this._options = options;
     this._config = this._options.config;
     this.context = this._config.context;
+
+    // prettier-ignore
     this._config.locations = this._config.locations.concat([
       "uFlpY",
       "aPos",
@@ -35,14 +36,15 @@ export class BaseRenderer {
     this._enableBuffers = false;
 
     this._elementArrayBuffer = new Buffer(
-      "", new Uint16Array([
-        0, 1, 3, 2
-      ]),
-      0, 0,
+      "",
+      new Uint16Array([0, 1, 3, 2]),
+      0,
+      0,
       Const.ELEMENT_ARRAY_BUFFER,
       Const.STATIC_DRAW
     );
 
+    // prettier-ignore
     this._positionBuffer = new Buffer(
       "aPos", new Float32Array([
         0, 0,
@@ -57,11 +59,11 @@ export class BaseRenderer {
     );
   }
 
-  get clearBeforeRender() { return this._clearBeforeRenderFunc === this._clear; }
+  get clearBeforeRender() {
+    return this._clearBeforeRenderFunc === this._clear;
+  }
   set clearBeforeRender(v) {
-    this._clearBeforeRenderFunc = v
-      ? this._clear
-      : emptyFunction;
+    this._clearBeforeRenderFunc = v ? this._clear : emptyFunction;
   }
 
   setSize(width, height) {
@@ -130,8 +132,8 @@ export class BaseRenderer {
   }
 
   _resize() {
-    this.widthHalf = this.width * .5;
-    this.heightHalf = this.height * .5;
+    this.widthHalf = this.width / 2;
+    this.heightHalf = this.height / 2;
     this.context.setSize(this.width, this.height);
   }
 

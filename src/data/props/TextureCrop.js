@@ -8,11 +8,12 @@ export class TextureCrop extends BaseProps {
 
     this.items = [0, 0, 1, 1];
 
-    this._width =
-    this._height = 1;
+    this._width = this._height = 1;
   }
 
-  get x() { return this.items[0]; }
+  get x() {
+    return this.items[0];
+  }
   set x(v) {
     if (this.items[0] !== v) {
       this.items[0] = v;
@@ -20,7 +21,9 @@ export class TextureCrop extends BaseProps {
     }
   }
 
-  get y() { return this.items[1]; }
+  get y() {
+    return this.items[1];
+  }
   set y(v) {
     if (this.items[1] !== v) {
       this.items[1] = v;
@@ -28,7 +31,9 @@ export class TextureCrop extends BaseProps {
     }
   }
 
-  get width() { return this._width; }
+  get width() {
+    return this._width;
+  }
   set width(v) {
     if (this._width !== v) {
       this._width = v;
@@ -36,7 +41,9 @@ export class TextureCrop extends BaseProps {
     }
   }
 
-  get height() { return this._height; }
+  get height() {
+    return this._height;
+  }
   set height(v) {
     if (this._height !== v) {
       this._height = v;

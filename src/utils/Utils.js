@@ -1,8 +1,8 @@
 import { Context } from "./Context.js";
 
 const _locationTypes = {
-  a : "Attrib",
-  u : "Uniform"
+  a: "Attrib",
+  u: "Uniform",
 };
 
 const _createShader = (gl, shaderType, shaderSource) => {
@@ -15,8 +15,9 @@ const _createShader = (gl, shaderType, shaderSource) => {
 };
 
 export const Utils = {
-  THETA : Math.PI / 180,
+  THETA: Math.PI / 180,
 
+  // prettier-ignore
   GLSL : {
     RANDOM : "float rand(vec2 p,float s){" +
       "return fract(" +
@@ -36,42 +37,44 @@ export const Utils = {
     "}"
   },
 
-  INFO : {
-    isWebGl2Supported : false
+  INFO: {
+    isWebGl2Supported: false,
   },
 
-  initContextConfig : (config) => ({
-    canvas : (config = config || {}).canvas || document.createElement("canvas"),
+  initContextConfig: (config) => ({
+    canvas: (config = config || {}).canvas || document.createElement("canvas"),
     initCallback: config.initCallback,
-    contextAttributes : {... {
-      powerPreference : "high-performance",
-      preserveDrawingBuffer : false,
-      premultipliedAlpha: false,
-    }, ... (config.contextAttributes || {})}
+    contextAttributes: {
+      ...{
+        powerPreference: "high-performance",
+        preserveDrawingBuffer: false,
+        premultipliedAlpha: false,
+      },
+      ...(config.contextAttributes || {}),
+    },
   }),
 
-  initRendererConfig : (config) => ({
-    locations : (config = config || {}).locations || [],
-    precision : config.precision || "highp", /* lowp mediump highp */
-    context : config.context || new Context()
+  initRendererConfig: (config) => ({
+    locations: (config = config || {}).locations || [],
+    precision: config.precision || "highp" /* lowp mediump highp */,
+    context: config.context || new Context(),
   }),
 
-  createVersion : (precision) => "#version 300 es\n" +
-    "precision " + precision + " float;\n",
+  createVersion: (precision) =>
+    "#version 300 es\n" + "precision " + precision + " float;\n",
 
-  initApplication : (callback) => {
+  initApplication: (callback) => {
     const checkCanvas = () => {
       if (document.readyState === "complete") {
         document.removeEventListener("readystatechange", checkCanvas);
         callback(Utils.INFO.isWebGl2Supported);
-      } else
-        document.addEventListener("readystatechange", checkCanvas);
+      } else document.addEventListener("readystatechange", checkCanvas);
     };
 
     checkCanvas();
   },
 
-  createProgram : (gl, vertexShaderSource, fragmentShaderSource) => {
+  createProgram: (gl, vertexShaderSource, fragmentShaderSource) => {
     const vertexShader = _createShader(
       gl,
       Const.VERTEX_SHADER,
@@ -91,13 +94,17 @@ export const Utils = {
 
     if (!gl.getProgramParameter(program, Const.LINK_STATUS)) {
       console.error(
-        "Program info:", gl.getProgramInfoLog(program), "\n",
-        "Validate status:", gl.getProgramParameter(
-          program,
-          Const.VALIDATE_STATUS
-        ), "\n",
-        "Vertex shader info:", gl.getShaderInfoLog(vertexShader), "\n",
-        "Fragment shader info:", gl.getShaderInfoLog(fragmentShader)
+        "Program info:",
+        gl.getProgramInfoLog(program),
+        "\n",
+        "Validate status:",
+        gl.getProgramParameter(program, Const.VALIDATE_STATUS),
+        "\n",
+        "Vertex shader info:",
+        gl.getShaderInfoLog(vertexShader),
+        "\n",
+        "Fragment shader info:",
+        gl.getShaderInfoLog(fragmentShader)
       );
 
       gl.deleteShader(vertexShader);
@@ -105,12 +112,12 @@ export const Utils = {
       gl.deleteProgram(program);
 
       throw "WebGL application stoped";
-    };
+    }
 
     return program;
   },
 
-  getLocationsFor : (gl, program, locationsDescriptor) => {
+  getLocationsFor: (gl, program, locationsDescriptor) => {
     const locations = {};
 
     locationsDescriptor.forEach((name) => {

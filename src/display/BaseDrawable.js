@@ -12,7 +12,7 @@ export class BaseDrawable extends Item {
       Point.create(),
       Point.create(),
       Point.create(),
-      Point.create()
+      Point.create(),
     ];
   }
 
@@ -27,11 +27,7 @@ export class BaseDrawable extends Item {
   }
 
   _calcCorners() {
-    Matrix3.calcCorners(
-      this.matrixCache,
-      this._corners,
-      this.stage.renderer
-    );
+    Matrix3.calcCorners(this.matrixCache, this._corners, this.stage.renderer);
   }
 
   _calcBounds() {

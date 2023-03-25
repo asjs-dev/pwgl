@@ -9,9 +9,15 @@ export class StageContainer extends Container {
     this._parent = new BaseItem();
   }
 
-  get stage() { return this; }
+  get stage() {
+    return this;
+  }
 
-  get parent() { return this._parent; }
+  get parent() {
+    return this._parent;
+  }
 
-  get premultipliedAlpha() { return this.props.alpha; }
+  get premultipliedAlpha() {
+    return this.props.alpha;
+  }
 }

@@ -22,10 +22,7 @@ export class Context {
     this._restoreContext = this._restoreContext.bind(this);
 
     this.canvas.addEventListener("webglcontextlost", this._onContextLost);
-    this.canvas.addEventListener(
-      "webglcontextrestored",
-      this._initContext
-    );
+    this.canvas.addEventListener("webglcontextrestored", this._initContext);
 
     this._initContext();
   }
@@ -51,14 +48,8 @@ export class Context {
   destruct() {
     this.gl.useProgram(null);
 
-    this.canvas.removeEventListener(
-      "webglcontextlost",
-      this._onContextLost
-    );
-    this.canvas.removeEventListener(
-      "webglcontextrestored",
-      this._initContext
-    );
+    this.canvas.removeEventListener("webglcontextlost", this._onContextLost);
+    this.canvas.removeEventListener("webglcontextrestored", this._initContext);
 
     this._loseContextExt && this._loseContextExt.loseContext();
   }
@@ -73,8 +64,7 @@ export class Context {
   }
 
   useTexture(textureInfo, renderTime, forceBind, callback) {
-    if (!textureInfo)
-      return -1;
+    if (!textureInfo) return -1;
 
     let textureId = this._textureMap.indexOf(textureInfo);
     if (textureId < 0) {
@@ -151,12 +141,14 @@ export class Context {
   }
 
   _initContext() {
-    const gl =
-    this.gl = this.canvas.getContext("webgl2", this._config.contextAttributes);
+    const gl = (this.gl = this.canvas.getContext(
+      "webgl2",
+      this._config.contextAttributes
+    ));
 
     gl.agl_id = ++this.contextId;
 
-    this._loseContextExt = gl.getExtension('WEBGL_lose_context');
+    this._loseContextExt = gl.getExtension("WEBGL_lose_context");
 
     gl.pixelStorei(Const.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.enable(Const.BLEND);
@@ -164,9 +156,10 @@ export class Context {
     gl.enable(Const.SCISSOR_TEST);
 
     this._width =
-    this._height =
-    this._currentProgram =
-    this._currentBlendMode = null;
+      this._height =
+      this._currentProgram =
+      this._currentBlendMode =
+        null;
 
     this._textureMap = [];
     this._emptyTextureSlots = [];

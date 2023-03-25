@@ -6,10 +6,13 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
   constructor(options) {
     options = options || {};
     options.config = Utils.initRendererConfig(options.config);
+
+    // prettier-ignore
     options.config.locations = options.config.locations.concat([
       "uM",
       "uDM"
     ]);
+
     super(options);
 
     this.clearBeforeRender = true;
@@ -37,6 +40,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     this._drawInstanced(1);
   }
 
+  // prettier-ignore
   _createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "in vec2 " +
@@ -55,6 +59,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "}";
   }
 
+  // prettier-ignore
   _createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H 255.\n" +

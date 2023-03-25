@@ -5,11 +5,12 @@ export class Framebuffer extends TextureInfo {
   constructor() {
     super();
 
-    this._resizeUpdateId =
-    this._currentResizeUpdateId = 0;
+    this._resizeUpdateId = this._currentResizeUpdateId = 0;
   }
 
-  get width() { return this._width; }
+  get width() {
+    return this._width;
+  }
   set width(v) {
     if (this._width !== v && v > 0) {
       this._width = v;
@@ -17,7 +18,9 @@ export class Framebuffer extends TextureInfo {
     }
   }
 
-  get height() { return this._height; }
+  get height() {
+    return this._height;
+  }
   set height(v) {
     if (this._height !== v && v > 0) {
       this._height = v;
@@ -26,7 +29,7 @@ export class Framebuffer extends TextureInfo {
   }
 
   setSize(w, h) {
-    this.width  = w;
+    this.width = w;
     this.height = h;
   }
 

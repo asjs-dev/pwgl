@@ -60,9 +60,9 @@ export class Image extends BaseDrawable {
 Image.TYPE = "drawable";
 
 Image.TintType = {
-  NONE : 0,
-  NORMAL : 1,
-  GRAYSCALE : 2,
-  OVERRIDE : 3,
-  ADD : 4
+  NONE: 0,
+  NORMAL: 1,
+  GRAYSCALE: 2,
+  OVERRIDE: 3,
+  ADD: 4,
 };

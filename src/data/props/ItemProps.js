@@ -4,20 +4,21 @@ export class ItemProps extends BasePositioningProps {
   constructor() {
     super();
 
-    this._scaleUpdateId =
-    this._currentScaleUpdateId = 0;
+    this._scaleUpdateId = this._currentScaleUpdateId = 0;
 
     this.scaledWidth =
-    this.scaledHeight =
-
-    this._scaleX =
-    this._scaleY =
-    this._width =
-    this._height =
-    this.alpha = 1;
+      this.scaledHeight =
+      this._scaleX =
+      this._scaleY =
+      this._width =
+      this._height =
+      this.alpha =
+        1;
   }
 
-  get scaleX() { return this._scaleX; }
+  get scaleX() {
+    return this._scaleX;
+  }
   set scaleX(v) {
     if (this._scaleX !== v) {
       this._scaleX = v;
@@ -25,7 +26,9 @@ export class ItemProps extends BasePositioningProps {
     }
   }
 
-  get scaleY() { return this._scaleY; }
+  get scaleY() {
+    return this._scaleY;
+  }
   set scaleY(v) {
     if (this._scaleY !== v) {
       this._scaleY = v;
@@ -33,7 +36,9 @@ export class ItemProps extends BasePositioningProps {
     }
   }
 
-  get width() { return this._width; }
+  get width() {
+    return this._width;
+  }
   set width(v) {
     if (this._width !== v) {
       this._width = v;
@@ -41,7 +46,9 @@ export class ItemProps extends BasePositioningProps {
     }
   }
 
-  get height() { return this._height; }
+  get height() {
+    return this._height;
+  }
   set height(v) {
     if (this._height !== v) {
       this._height = v;

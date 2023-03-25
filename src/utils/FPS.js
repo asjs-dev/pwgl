@@ -1,24 +1,24 @@
 export const FPS = {
-  start : function (targetFPS) {
+  start: function (targetFPS) {
     this._targetMS =
-    this._then =
-    this._frames =
-    this._prevTime =
-
-    this.fps =
-    this.delay = 0;
+      this._then =
+      this._frames =
+      this._prevTime =
+      this.fps =
+      this.delay =
+        0;
 
     this._then = Date.now();
     this._targetMS = 1e3 / (targetFPS || 60);
   },
-  update : function() {
+  update: function () {
     this._frames++;
 
     const now = Date.now();
 
     this.delay = (now - this._then) / this._targetMS;
 
-    if (now >= this._prevTime + 1e3 ) {
+    if (now >= this._prevTime + 1e3) {
       this.fps = (this._frames * 1e3) / (now - this._prevTime);
 
       this._prevTime = now;
@@ -26,5 +26,5 @@ export const FPS = {
     }
 
     this._then = now;
-  }
+  },
 };

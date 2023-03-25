@@ -1,6 +1,6 @@
 export const Point = {
-  create : (x, y) => ({
-    x : x || 0,
-    y : y || 0
-  })
+  create: (x, y) => ({
+    x: x || 0,
+    y: y || 0,
+  }),
 };

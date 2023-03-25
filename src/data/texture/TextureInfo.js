@@ -10,30 +10,31 @@ export class TextureInfo {
 
     this._currenActiveId = -1;
 
-    this._currentAglId =
-    this._updateId =
-    this._currentUpdateId = 0;
+    this._currentAglId = this._updateId = this._currentUpdateId = 0;
 
-    this.wrapS =
-    this.wrapT = Const.CLAMP_TO_EDGE;
+    this.wrapS = this.wrapT = Const.CLAMP_TO_EDGE;
 
-    this.internalFormat =
-    this.format = Const.RGBA;
+    this.internalFormat = this.format = Const.RGBA;
 
     this.minFilter = Const.NEAREST_MIPMAP_LINEAR;
     this.magFilter = Const.NEAREST;
 
-    this._width =
-    this._height = 1;
+    this._width = this._height = 1;
 
     this.type = Const.UNSIGNED_BYTE;
   }
 
-  get width() { return this._width; }
+  get width() {
+    return this._width;
+  }
 
-  get height() { return this._height; }
+  get height() {
+    return this._height;
+  }
 
-  get wrapS() { return this._wrapS; }
+  get wrapS() {
+    return this._wrapS;
+  }
   set wrapS(v) {
     if (this._wrapS !== v) {
       this._wrapS = v;
@@ -41,7 +42,9 @@ export class TextureInfo {
     }
   }
 
-  get wrapT() { return this._wrapT; }
+  get wrapT() {
+    return this._wrapT;
+  }
   set wrapT(v) {
     if (this._wrapT !== v) {
       this._wrapT = v;
@@ -49,7 +52,9 @@ export class TextureInfo {
     }
   }
 
-  get internalFormat() { return this._internalFormat; }
+  get internalFormat() {
+    return this._internalFormat;
+  }
   set internalFormat(v) {
     if (this._internalFormat !== v) {
       this._internalFormat = v;
@@ -57,7 +62,9 @@ export class TextureInfo {
     }
   }
 
-  get format() { return this._format; }
+  get format() {
+    return this._format;
+  }
   set format(v) {
     if (this._format !== v) {
       this._format = v;
@@ -65,7 +72,9 @@ export class TextureInfo {
     }
   }
 
-  get minFilter() { return this._minFilter; }
+  get minFilter() {
+    return this._minFilter;
+  }
   set minFilter(v) {
     if (this._minFilter !== v) {
       this._minFilter = v;
@@ -73,7 +82,9 @@ export class TextureInfo {
     }
   }
 
-  get magFilter() { return this._magFilter; }
+  get magFilter() {
+    return this._magFilter;
+  }
   set magFilter(v) {
     if (this._magFilter !== v) {
       this._magFilter = v;
@@ -81,7 +92,9 @@ export class TextureInfo {
     }
   }
 
-  get type() { return this._type; }
+  get type() {
+    return this._type;
+  }
   set type(v) {
     if (this._type !== v) {
       this._type = v;
@@ -93,7 +106,8 @@ export class TextureInfo {
     if (
       !this._isNeedToDraw(gl, id, renderTime) &&
       (this._currenActiveId !== id || forceBind)
-    ) this.bindActiveTexture(gl, id);
+    )
+      this.bindActiveTexture(gl, id);
   }
 
   useActiveTexture(gl, id) {

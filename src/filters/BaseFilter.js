@@ -11,21 +11,45 @@ export class BaseFilter {
     this.intensity = intensity || 0;
   }
 
-  get intensity() { return this.v[0]; }
-  set intensity(v) { this.v[0] = v; }
+  get intensity() {
+    return this.v[0];
+  }
+  set intensity(v) {
+    this.v[0] = v;
+  }
 
-  get intensityX() { return this.v[0]; }
-  set intensityX(v) { this.v[0] = v; }
+  get intensityX() {
+    return this.v[0];
+  }
+  set intensityX(v) {
+    this.v[0] = v;
+  }
 
-  get intensityY() { return this.v[1]; }
-  set intensityY(v) { this.v[1] = v; }
+  get intensityY() {
+    return this.v[1];
+  }
+  set intensityY(v) {
+    this.v[1] = v;
+  }
 
-  get r() { return this.v[2]; }
-  set r(v) { this.v[2] = v; }
+  get r() {
+    return this.v[2];
+  }
+  set r(v) {
+    this.v[2] = v;
+  }
 
-  get g() { return this.v[3]; }
-  set g(v) { this.v[3] = v; }
+  get g() {
+    return this.v[3];
+  }
+  set g(v) {
+    this.v[3] = v;
+  }
 
-  get b() { return this.v[4]; }
-  set b(v) { this.v[4] = v; }
+  get b() {
+    return this.v[4];
+  }
+  set b(v) {
+    this.v[4] = v;
+  }
 }

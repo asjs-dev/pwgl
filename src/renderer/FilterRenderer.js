@@ -8,6 +8,8 @@ export class FilterRenderer extends BaseRenderer {
   constructor(options) {
     options = options || {};
     options.config = Utils.initRendererConfig(options.config);
+
+    // prettier-ignore
     options.config.locations = options.config.locations.concat([
       "uFTex",
       "uFtrT",
@@ -17,16 +19,13 @@ export class FilterRenderer extends BaseRenderer {
 
     super(options);
 
-    this._attachFramebufferCustom =
-    this._attachFramebufferAndClearCustom = emptyFunction;
+    this._attachFramebufferCustom = this._attachFramebufferAndClearCustom =
+      emptyFunction;
 
     this.filters = options.filters || [];
     this.texture = options.texture;
 
-    this._framebuffers = [
-      new Framebuffer(),
-      new Framebuffer()
-    ];
+    this._framebuffers = [new Framebuffer(), new Framebuffer()];
   }
 
   _render(framebuffer) {
@@ -53,9 +52,8 @@ export class FilterRenderer extends BaseRenderer {
 
       const isLast = i > minL;
 
-      const filterTexture = useFilter &&
-        filter.textureProps &&
-        filter.textureProps.texture;
+      const filterTexture =
+        useFilter && filter.textureProps && filter.textureProps.texture;
       if (filterTexture) {
         context.useTextureAt(filterTexture, 1, renderTime, true);
         gl.uniform1i(locations.uFTex, 1);
@@ -87,6 +85,7 @@ export class FilterRenderer extends BaseRenderer {
     }
   }
 
+  // prettier-ignore
   _createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "in vec2 " +
@@ -107,6 +106,7 @@ export class FilterRenderer extends BaseRenderer {
     "}";
   }
 
+  // prettier-ignore
   _createFragmentShader(options) {
     const blurFunc = (core) =>
       "for(oft.x=-2.;oft.x<3.;++oft.x)" +

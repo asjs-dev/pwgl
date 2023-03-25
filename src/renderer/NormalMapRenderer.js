@@ -28,6 +28,7 @@ export class NormalMapRenderer extends BaseRenderer {
     this._drawInstanced(1);
   }
 
+  // prettier-ignore
   _createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "in vec2 " +
@@ -46,6 +47,7 @@ export class NormalMapRenderer extends BaseRenderer {
     "}";
   }
 
+  // prettier-ignore
   _createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H 256.\n" +

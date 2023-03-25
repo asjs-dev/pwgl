@@ -5,6 +5,7 @@ export class SharpenFilter extends BaseFilter {
   constructor(intensity) {
     super(1, 0, intensity);
 
+    // prettier-ignore
     arraySet(this.kernels, [
       -1,  -1,  -1,
       -1,  16,  -1,

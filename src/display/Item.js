@@ -17,10 +17,11 @@ export class Item extends BaseItem {
     this.color = new ColorProps();
 
     this._currentPropsUpdateId =
-    this._currentColorUpdateId =
-    this._currentParentPropsUpdateId =
-    this._currentParentColorUpdateId =
-    this._currentAdditionalPropsUpdateId = 0;
+      this._currentColorUpdateId =
+      this._currentParentPropsUpdateId =
+      this._currentParentColorUpdateId =
+      this._currentAdditionalPropsUpdateId =
+        0;
 
     this.callback = emptyFunction;
 
@@ -28,23 +29,28 @@ export class Item extends BaseItem {
   }
 
   get stage() {
-    return this._parent
-      ? this._parent.stage
-      : null;
+    return this._parent ? this._parent.stage : null;
   }
 
-  get parent() { return this._parent; }
+  get parent() {
+    return this._parent;
+  }
   set parent(v) {
     if (this._parent !== v) {
       this._parent = v;
       this._currentParentPropsUpdateId =
-      this._currentParentColorUpdateId =
-      this._currentAdditionalPropsUpdateId = 0;
+        this._currentParentColorUpdateId =
+        this._currentAdditionalPropsUpdateId =
+          0;
     }
   }
 
-  get callback() { return this._callback; }
-  set callback(v) { this._callback = v || emptyFunction; }
+  get callback() {
+    return this._callback;
+  }
+  set callback(v) {
+    this._callback = v || emptyFunction;
+  }
 
   getBounds() {
     return this._bounds;
@@ -65,10 +71,9 @@ export class Item extends BaseItem {
     props.updateScale();
     const parent = this._parent;
 
-    (
-      this._currentParentPropsUpdateId < parent.propsUpdateId ||
-      this._currentPropsUpdateId < props.updateId
-    ) && this._updateTransform(props, parent);
+    (this._currentParentPropsUpdateId < parent.propsUpdateId ||
+      this._currentPropsUpdateId < props.updateId) &&
+      this._updateTransform(props, parent);
   }
 
   _updateTransform(props, parent) {

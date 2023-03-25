@@ -15,7 +15,9 @@ export class AnimatedImage extends Image {
     this.stop();
   }
 
-  get isPlaying() { return this.updateAnimation === this._updateAnimation; }
+  get isPlaying() {
+    return this.updateAnimation === this._updateAnimation;
+  }
 
   gotoAndStop(frame) {
     this.stop();

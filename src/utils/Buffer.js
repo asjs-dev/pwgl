@@ -9,9 +9,8 @@ export class Buffer {
 
     const length = rows * cols;
 
-    this.data = typeof data === "number"
-      ? new Float32Array(data * length)
-      : data;
+    this.data =
+      typeof data === "number" ? new Float32Array(data * length) : data;
     this._locationName = locationName;
     this._rows = rows;
     this._cols = cols;
@@ -19,13 +18,9 @@ export class Buffer {
     this._type = type || Const.DYNAMIC_DRAW;
     this._length = length * 4;
     this._offset = cols * 4;
-    this._divisor = typeof divisor === "number"
-      ? divisor
-      : 1;
+    this._divisor = typeof divisor === "number" ? divisor : 1;
 
-    if (this._type === Const.STATIC_DRAW)
-      this._length =
-      this._offset = 0;
+    if (this._type === Const.STATIC_DRAW) this._length = this._offset = 0;
   }
 
   create(gl, locations) {
@@ -41,7 +36,7 @@ export class Buffer {
   upload(gl, enable) {
     this.bind(gl);
     enable && this._enable(gl);
-		gl.bufferData(this._target, this.data, this._type);
+    gl.bufferData(this._target, this.data, this._type);
   }
 
   destruct() {

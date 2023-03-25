@@ -11,19 +11,25 @@ import { BatchRenderer } from "./BatchRenderer.js";
 
 export class Stage2D extends BatchRenderer {
   constructor(options) {
-    options = {... {
-      useTint : true
-    }, ... (options || {})};
+    options = {
+      ...{
+        useTint: true,
+      },
+      ...(options || {}),
+    };
 
     options.config = Utils.initRendererConfig(options.config);
+
+    // prettier-ignore
     options.config.locations = options.config.locations.concat([
       "aDt",
       "aDst",
       "uWCl",
       "uWA"
     ]);
-    const maxBatchItems =
-    options.maxBatchItems = options.maxBatchItems || 1e4;
+
+    const maxBatchItems = (options.maxBatchItems =
+      options.maxBatchItems || 1e4);
 
     super(options);
 
@@ -45,15 +51,9 @@ export class Stage2D extends BatchRenderer {
 
     this.pickerPoint = Point.create();
 
-    this._dataBuffer = new Buffer(
-      "aDt", maxBatchItems,
-      3, 4
-    );
+    this._dataBuffer = new Buffer("aDt", maxBatchItems, 3, 4);
 
-    this._distortionBuffer = new Buffer(
-      "aDst", maxBatchItems,
-      4, 2
-    );
+    this._distortionBuffer = new Buffer("aDst", maxBatchItems, 4, 2);
   }
 
   render() {
@@ -98,17 +98,14 @@ export class Stage2D extends BatchRenderer {
       this._isPickerSet &&
       item.interactive &&
       item.isContainsPoint(this.pickerPoint)
-    ) this.picked = item;
+    )
+      this.picked = item;
 
-    const twId  = this._batchItems * 12;
+    const twId = this._batchItems * 12;
     const matId = this._batchItems * 16;
 
     arraySet(this._dataBuffer.data, item.colorCache, twId);
-    arraySet(
-      this._dataBuffer.data,
-      item.textureRepeatRandomCache,
-      twId + 8
-    );
+    arraySet(this._dataBuffer.data, item.textureRepeatRandomCache, twId + 8);
 
     this._dataBuffer.data[twId + 4] = item.props.alpha;
     this._dataBuffer.data[twId + 5] = item.tintType;
@@ -121,16 +118,8 @@ export class Stage2D extends BatchRenderer {
     this._dataBuffer.data[twId + 7] = item.distortionProps.distortTexture;
 
     arraySet(this._matrixBuffer.data, item.matrixCache, matId);
-    arraySet(
-      this._matrixBuffer.data,
-      item.textureMatrixCache,
-      matId + 6
-    );
-    arraySet(
-      this._matrixBuffer.data,
-      item.textureCropCache,
-      matId + 12
-    );
+    arraySet(this._matrixBuffer.data, item.textureMatrixCache, matId + 6);
+    arraySet(this._matrixBuffer.data, item.textureCropCache, matId + 12);
 
     arraySet(
       this._distortionBuffer.data,
@@ -177,6 +166,7 @@ export class Stage2D extends BatchRenderer {
     this._distortionBuffer.create(this._gl, this._locations);
   }
 
+  // prettier-ignore
   _createVertexShader(options) {
     const useRepeatTextures = options.useRepeatTextures;
 
@@ -254,6 +244,7 @@ export class Stage2D extends BatchRenderer {
     "}";
   }
 
+  // prettier-ignore
   _createFragmentShader(options) {
     const maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
     const useRepeatTextures = options.useRepeatTextures;
