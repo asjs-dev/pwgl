@@ -56,8 +56,8 @@ export class LightRenderer extends BatchRenderer {
   _render() {
     this.context.setBlendMode(BlendMode.ADD);
 
-    let width = this._width;
-    let height = this._height;
+    let width = this.width;
+    let height = this.height;
 
     if (this.sourceImage) {
       this._useTexture(this.sourceImage, this._locations.uSITex);

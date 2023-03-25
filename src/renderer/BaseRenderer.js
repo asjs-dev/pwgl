@@ -7,8 +7,6 @@ export class BaseRenderer {
   constructor(options) {
     /*
     this._program
-    this._width
-    this._height
     this.widthHalf
     this.heightHalf
     this._gl
@@ -58,12 +56,6 @@ export class BaseRenderer {
       0
     );
   }
-
-  get width() { return this._width; }
-  set width(v) { this._width = v; }
-
-  get height() { return this._height; }
-  set height(v) { this._height = v; }
 
   get clearBeforeRender() { return this._clearBeforeRenderFunc === this._clear; }
   set clearBeforeRender(v) {
@@ -116,7 +108,7 @@ export class BaseRenderer {
 
   _attachFramebuffer(framebuffer) {
     framebuffer.bind(this._gl);
-    framebuffer.setSize(this._width, this._height);
+    framebuffer.setSize(this.width, this.height);
     this.context.useTexture(framebuffer, this._renderTime);
     this.context.deactivateTexture(framebuffer);
     this._gl.uniform1f(this._locations.uFlpY, -1);
@@ -138,9 +130,9 @@ export class BaseRenderer {
   }
 
   _resize() {
-    this.widthHalf = this._width * .5;
-    this.heightHalf = this._height * .5;
-    this.context.setSize(this._width, this._height);
+    this.widthHalf = this.width * .5;
+    this.heightHalf = this.height * .5;
+    this.context.setSize(this.width, this.height);
   }
 
   _drawInstanced(count) {

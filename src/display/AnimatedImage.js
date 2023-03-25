@@ -8,8 +8,8 @@ export class AnimatedImage extends Image {
     this.frameLength = 120;
     this.frames = [];
 
-    this.frame =
-    this._currentRenderTime = 0;
+    this.frame = 0;
+    this._currentRenderTime = Date.now();
 
     this.updateAnimation;
     this.stop();
