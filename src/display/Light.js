@@ -13,6 +13,7 @@ export class Light extends BaseDrawable {
     this._shading
     this._flattenShadow
     this._colorProofReflection
+    this._centerReflection
     */
 
     this.props = new LightProps();
@@ -31,6 +32,7 @@ export class Light extends BaseDrawable {
     this.castShadow =
     this.shading = true;
     this.flattenShadow = false;
+    this.centerReflection = true;
 
     this.angle = 0;
     this.spotAngle = 180 * Utils.THETA;
@@ -38,7 +40,7 @@ export class Light extends BaseDrawable {
     this.precision =
     this.diffuse = 1;
     this.maxShadowStep = 128;
-    this.shadeSize = 1;
+    this.reflectionSize = 1;
   }
 
   get type() { return this._extensionData[this._matId]; }
@@ -68,14 +70,20 @@ export class Light extends BaseDrawable {
     this._updateLightProps();
   }
 
+  get centerReflection() { return this._centerReflection; }
+  set centerReflection(v) {
+    this._centerReflection = v;
+    this._updateLightProps();
+  }
+
   get maxShadowStep() { return this._extensionData[this._quadId]; }
   set maxShadowStep(v) { this._extensionData[this._quadId] = v; }
 
-  get shadeSize() { return this._extensionData[this._quadId + 1]; }
-  set shadeSize(v) { this._extensionData[this._quadId + 1] = v; }
+  get reflectionSize() { return this._extensionData[this._quadId + 1]; }
+  set reflectionSize(v) { this._extensionData[this._quadId + 1] = v; }
 
   get precision() { return this._extensionData[this._matId + 3]; }
-  set precision(v) { this._extensionData[this._matId + 3] = Math.max(1, v); }
+  set precision(v) { this._extensionData[this._matId + 3] = v; }
 
   get angle() { return this._lightData[this._datId + 3]; }
   set angle(v) { this._lightData[this._datId + 3] = v; }
@@ -113,7 +121,8 @@ export class Light extends BaseDrawable {
       this._castShadow * 1 |
       this._shading * 2 |
       this._flattenShadow * 4 |
-      this._colorProofReflection * 8;
+      this._colorProofReflection * 8 |
+      this._centerReflection * 16;
   }
 
   _updateAdditionalData() {

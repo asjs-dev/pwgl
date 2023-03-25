@@ -239,7 +239,12 @@ export class LightRenderer extends BatchRenderer {
           "vec3 " +
             "nm=normalize((texture(uNMTex,vTUv).rgb*2.-1.)*vec3(1,-1,1))," +
             "sftl=normalize(sftla)," +
-            "sftv=normalize(vec3(uTS*.5,H)-sf)," +
+            "sftv=normalize(vec3(" +
+              "(flg&16)>0" +
+                "?uTS*.5" +
+                ":tUv," +
+              "H" +
+            ")-sf)," +
             "hlf=normalize(sftl+sftv);" +
 
           "vol*=dot(nm,sftl);" +
@@ -266,10 +271,12 @@ export class LightRenderer extends BatchRenderer {
 
           "for(i=l;i>m;i-=st){" +
             "p=vUv.zw+i*opdm;" +
-            "pc=vHS+i*hst;" +
             "tc=texture(uTex,p)*H;" +
 
-            "if((flg&4)>0&&tc.g>=pc||tc.r<=pc&&tc.g>=pc){" +
+            "if((flg&4)>0&&tc.g>=vHS)discard;" +
+
+            "pc=vHS+i*hst;" +
+            "if(tc.r<=pc&&tc.g>=pc){" +
               "shdw*=(fltDst-i*opdL)/shl;" +
               "if(shdw<=0.)discard;" +
             "}" +
