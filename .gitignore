@@ -1,3 +1,4 @@
-builder_config/build.pwgl.min.config.json
 build.sh
+build.js
+package-lock.json
 node_modules

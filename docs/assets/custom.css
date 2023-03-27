@@ -1,0 +1,128 @@
+html,
+body,
+section {
+  background: #09101a;
+}
+
+body {
+  color: #a6afb0;
+}
+
+h1 {
+  color: white;
+}
+
+h2 {
+  font-size: 24px;
+}
+
+h4 {
+  color: #03a9f4;
+}
+
+.source code {
+  background-color: transparent;
+}
+
+.prettyprint.linenums li {
+  border: none;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.page-title {
+  font-size: 22px;
+  letter-spacing: 0px;
+  word-break: break-word;
+  font-weight: bold;
+}
+
+.prettyprint.linenums li.selected {
+  background-color: transparent;
+}
+
+.prettyprint.linenums li.selected code,
+.prettyprint.linenums li.selected code * {
+  background-color: #0f192c;
+}
+
+.prettyprint.linenums li.selected {
+  padding-top: 100px;
+  margin-top: -100px;
+}
+
+.source {
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+nav ul a,
+nav ul a:visited,
+nav ul a:active {
+  color: #607d8b;
+}
+
+thead {
+  color: #090e1a;
+}
+
+header.docs-header {
+  padding: 10px;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
+  position: fixed;
+  width: 100vw;
+  background: #09101a;
+  top: 0;
+  left: 0;
+  height: 60px;
+}
+
+header.docs-header img {
+  height: 60px;
+  position: absolute;
+  top: 10px;
+  left: 8px;
+}
+
+header.docs-header label {
+  font-size: 20px;
+  margin-left: 130px;
+  line-height: 60px;
+  color: #2196f3;
+}
+
+header.docs-header a#github-link,
+header.docs-header a#codepen-link {
+  float: right;
+  display: inline-block;
+  width: 25px;
+  height: 25px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin: 36px 5px 0;
+}
+
+header.docs-header a#github-link {
+  margin-right: 32px;
+}
+
+.container {
+  margin-top: 100px;
+}
+
+nav {
+  position: fixed;
+  right: 8px;
+  top: 100px;
+  max-height: calc(100vh - 151px);
+  overflow: auto;
+}
+
+.params .name,
+.props .name,
+.name code {
+  color: #e91e63;
+}
+
+#main {
+  min-height: calc(100vh - 151px);
+}

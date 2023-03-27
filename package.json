@@ -1,0 +1,16 @@
+{
+  "name": "PWGL",
+  "version": "1.1.0",
+  "main": "./dist/pwgl.min.js",
+  "description": "WebGL2 2D framework",
+  "keywords": [
+    "javascript",
+    "webgl"
+  ],
+  "scripts": {
+    "docs": "./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json -R README.md"
+  },
+  "devDependencies": {
+    "jsdoc": "^4.0.2"
+  }
+}

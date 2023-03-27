@@ -1,12 +1,24 @@
-import { BaseProps } from "./BaseProps.js";
+import { BaseProps } from "./BaseProps";
 
+/**
+ * Class for color properties
+ * @extends {BaseProps}
+ */
 export class ColorProps extends BaseProps {
+  /**
+   * Creates an instance of ColorProps.
+   * @constructor
+   */
   constructor() {
     super();
 
     this.items = [1, 1, 1, 1];
   }
 
+  /**
+   * Set/Get red value
+   * @type {number}
+   */
   get r() {
     return this.items[0];
   }
@@ -17,6 +29,10 @@ export class ColorProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get green value
+   * @type {number}
+   */
   get g() {
     return this.items[1];
   }
@@ -27,6 +43,10 @@ export class ColorProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get blue value
+   * @type {number}
+   */
   get b() {
     return this.items[2];
   }
@@ -37,6 +57,10 @@ export class ColorProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get alpha value
+   * @type {number}
+   */
   get a() {
     return this.items[3];
   }
@@ -47,6 +71,13 @@ export class ColorProps extends BaseProps {
     }
   }
 
+  /**
+   * Set all color values
+   * @param {number} r
+   * @param {number} g
+   * @param {number} b
+   * @param {number} a
+   */
   set(r, g, b, a) {
     this.r = r;
     this.g = g;

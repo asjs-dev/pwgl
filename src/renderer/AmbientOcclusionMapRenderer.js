@@ -1,8 +1,24 @@
-import { Utils } from "../utils/Utils.js";
-import { BlendMode } from "../data/BlendMode.js";
-import { BaseRenderer } from "./BaseRenderer.js";
+import { Utils } from "../utils/Utils";
+import { BlendMode } from "../data/BlendMode";
+import { BaseRenderer } from "./BaseRenderer";
 
+/**
+ * @typedef {Object} AmbientOcclusionMapRendererConfig
+ * @extends {RendererConfig}
+ * @property {TextureInfo} heightMap
+ */
+
+/**
+ * Ambient occlusion map renderer
+ *  - Creates an ambient occlusion texture from a height map texture
+ * @extends {BaseRenderer}
+ */
 export class AmbientOcclusionMapRenderer extends BaseRenderer {
+  /**
+   * Creates an instance of AmbientOcclusionMapRenderer.
+   * @constructor
+   * @param {AmbientOcclusionMapRendererConfig} options
+   */
   constructor(options) {
     options = options || {};
     options.config = Utils.initRendererConfig(options.config);
@@ -24,6 +40,9 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     this.depthMultiplier = 2;
   }
 
+  /**
+   * @ignore
+   */
   _render() {
     this.context.setBlendMode(BlendMode.NORMAL);
 
@@ -41,6 +60,11 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {AmbientOcclusionMapRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "in vec2 " +
@@ -60,6 +84,11 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {AmbientOcclusionMapRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H 255.\n" +

@@ -1,9 +1,26 @@
-import { emptyFunction } from "../utils/helpers.js";
-import { Buffer } from "../utils/Buffer.js";
-import { Utils, Const } from "../utils/Utils.js";
-import { ColorProps } from "../data/props/ColorProps.js";
+import { noop } from "../utils/helpers";
+import { Buffer } from "../utils/Buffer";
+import { Utils, Const } from "../utils/Utils";
+import { ColorProps } from "../data/props/ColorProps";
+import { Framebuffer } from "../data/texture/Framebuffer";
 
+/**
+ * @typedef {Object} BaseRendererConfig
+ * @extends {RendererConfig}
+ * @property {Object} config
+ * @property {WebGlContext} config.context
+ * @property {Array<string>} config.locations
+ */
+
+/**
+ * Base renderer
+ */
 export class BaseRenderer {
+  /**
+   * Creates an instance of BaseRenderer.
+   * @constructor
+   * @param {BaseRendererConfig} options
+   */
   constructor(options) {
     /*
     this._program
@@ -16,7 +33,7 @@ export class BaseRenderer {
     this._attachFramebufferCustom = this._attachFramebuffer;
     this._attachFramebufferAndClearCustom = this._attachFramebufferAndClear;
 
-    this._clearBeforeRenderFunc = emptyFunction;
+    this._clearBeforeRenderFunc = noop;
 
     this.clearColor = new ColorProps();
 
@@ -59,18 +76,31 @@ export class BaseRenderer {
     );
   }
 
+  /**
+   * Set/Get clear before render
+   * @type {boolean}
+   */
   get clearBeforeRender() {
     return this._clearBeforeRenderFunc === this._clear;
   }
   set clearBeforeRender(v) {
-    this._clearBeforeRenderFunc = v ? this._clear : emptyFunction;
+    this._clearBeforeRenderFunc = v ? this._clear : noop;
   }
 
+  /**
+   * Set size
+   * @param {number} width
+   * @param {number} height
+   */
   setSize(width, height) {
     this.width = width;
     this.height = height;
   }
 
+  /**
+   * Render to framebuffer
+   * @param {Framebuffer} framebuffer
+   */
   renderToFramebuffer(framebuffer) {
     if (!this.context.isLost()) {
       this._switchToProgram();
@@ -80,6 +110,9 @@ export class BaseRenderer {
     }
   }
 
+  /**
+   * Render
+   */
   render() {
     if (!this.context.isLost()) {
       this._switchToProgram();
@@ -89,12 +122,19 @@ export class BaseRenderer {
     }
   }
 
+  /**
+   * @param {Framebuffer} framebuffer
+   * @ignore
+   */
   _renderBatch(framebuffer) {
     this._renderTime = Date.now();
     this._render(framebuffer);
     this._gl.flush();
   }
 
+  /**
+   * @ignore
+   */
   _switchToProgram() {
     this._gl = this.context.gl;
 
@@ -108,6 +148,10 @@ export class BaseRenderer {
     this._resize();
   }
 
+  /**
+   * @param {Framebuffer} framebuffer
+   * @ignore
+   */
   _attachFramebuffer(framebuffer) {
     framebuffer.bind(this._gl);
     framebuffer.setSize(this.width, this.height);
@@ -116,11 +160,18 @@ export class BaseRenderer {
     this._gl.uniform1f(this._locations.uFlpY, -1);
   }
 
+  /**
+   * @param {Framebuffer} framebuffer
+   * @ignore
+   */
   _attachFramebufferAndClear(framebuffer) {
     this._attachFramebuffer(framebuffer);
     this._clearBeforeRenderFunc();
   }
 
+  /**
+   * @ignore
+   */
   _clear() {
     this._gl.clearColor(
       this.clearColor.r,
@@ -131,12 +182,19 @@ export class BaseRenderer {
     this._gl.clear(Const.COLOR_BUFFER_BIT);
   }
 
+  /**
+   * @ignore
+   */
   _resize() {
     this.widthHalf = this.width / 2;
     this.heightHalf = this.height / 2;
     this.context.setSize(this.width, this.height);
   }
 
+  /**
+   * @param {number} count
+   * @ignore
+   */
   _drawInstanced(count) {
     this._gl.drawElementsInstanced(
       Const.TRIANGLE_STRIP,
@@ -147,6 +205,9 @@ export class BaseRenderer {
     );
   }
 
+  /**
+   * @ignore
+   */
   _buildProgram() {
     const options = this._options;
 
@@ -169,6 +230,9 @@ export class BaseRenderer {
     this._createBuffers();
   }
 
+  /**
+   * @ignore
+   */
   _uploadBuffers() {
     this._positionBuffer.upload(this._gl, this._enableBuffers);
     this._elementArrayBuffer.upload(this._gl);
@@ -176,6 +240,9 @@ export class BaseRenderer {
     this._enableBuffers = false;
   }
 
+  /**
+   * @ignore
+   */
   _createBuffers() {
     this._elementArrayBuffer.create(this._gl, this._locations);
     this._positionBuffer.create(this._gl, this._locations);

@@ -1,6 +1,14 @@
-import { BaseProps } from "./BaseProps.js";
+import { BaseProps } from "./BaseProps";
 
+/**
+ * Base class for positioning elements
+ * @extends {BaseProps}
+ */
 export class BasePositioningProps extends BaseProps {
+  /**
+   * Creates an instance of BasePositioningProps.
+   * @constructor
+   */
   constructor() {
     super();
 
@@ -20,6 +28,10 @@ export class BasePositioningProps extends BaseProps {
     this.cosRotationA = this.cosRotationB = 1;
   }
 
+  /**
+   * Set/Get position x
+   * @type {number}
+   */
   get x() {
     return this._x;
   }
@@ -30,6 +42,10 @@ export class BasePositioningProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get position y
+   * @type {number}
+   */
   get y() {
     return this._y;
   }
@@ -40,6 +56,10 @@ export class BasePositioningProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get rotation
+   * @type {number}
+   */
   get rotation() {
     return this._rotation;
   }
@@ -50,6 +70,10 @@ export class BasePositioningProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get anchor x
+   * @type {number}
+   */
   get anchorX() {
     return this._anchorX;
   }
@@ -60,6 +84,10 @@ export class BasePositioningProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get anchor y
+   * @type {number}
+   */
   get anchorY() {
     return this._anchorY;
   }
@@ -70,6 +98,10 @@ export class BasePositioningProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get skew x
+   * @type {number}
+   */
   get skewX() {
     return this._skewX;
   }
@@ -80,6 +112,10 @@ export class BasePositioningProps extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get skew y
+   * @type {number}
+   */
   get skewY() {
     return this._skewY;
   }
@@ -90,6 +126,9 @@ export class BasePositioningProps extends BaseProps {
     }
   }
 
+  /**
+   * Update calculated rotation values
+   */
   updateRotation() {
     if (this._currentRotationUpdateId < this._rotationUpdateId) {
       this._currentRotationUpdateId = this._rotationUpdateId;

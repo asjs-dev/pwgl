@@ -1,4 +1,12 @@
+/**
+ * Class for distortion properties
+ * It distorts the corners of the elements
+ */
 export class DistortionProps {
+  /**
+   * Creates an instance of DistortionProps.
+   * @constructor
+   */
   constructor() {
     this.distortTexture = true;
 
@@ -11,6 +19,13 @@ export class DistortionProps {
     ];
   }
 
+  /**
+   * Set/Get top left x value
+   * Examples:
+   *  - 0 - no distortion
+   *  - 0.5 - push the top left corners x position with the half of the element width
+   * @type {number}
+   */
   get topLeftX() {
     return this.items[0];
   }
@@ -18,6 +33,13 @@ export class DistortionProps {
     this.items[0] = v;
   }
 
+  /**
+   * Set/Get top left y value
+   * Examples:
+   *  - 0 - no distortion
+   *  - 0.5 - push the top left corners y position with the half of the element height
+   * @type {number}
+   */
   get topLeftY() {
     return this.items[1];
   }
@@ -25,6 +47,13 @@ export class DistortionProps {
     this.items[1] = v;
   }
 
+  /**
+   * Set/Get top right x value
+   * Examples:
+   *  - -0 - no distortion
+   *  - -0.5 - push the top right corners x position with the half of the element width
+   * @type {number}
+   */
   get topRightX() {
     return this.items[2];
   }
@@ -32,6 +61,13 @@ export class DistortionProps {
     this.items[2] = v;
   }
 
+  /**
+   * Set/Get top right y value
+   * Examples:
+   *  - 0 - no distortion
+   *  - 0.5 - push the top right corners y position with the half of the element height
+   * @type {number}
+   */
   get topRightY() {
     return this.items[3];
   }
@@ -39,6 +75,13 @@ export class DistortionProps {
     this.items[3] = v;
   }
 
+  /**
+   * Set/Get bottom right x value
+   * Examples:
+   *  - -0 - no distortion
+   *  - -0.5 - push the bottom right corners x position with the half of the element width
+   * @type {number}
+   */
   get bottomRightX() {
     return this.items[4];
   }
@@ -46,6 +89,13 @@ export class DistortionProps {
     this.items[4] = v;
   }
 
+  /**
+   * Set/Get bottom right y value
+   * Examples:
+   *  - -0 - no distortion
+   *  - -0.5 - push the bottom right corners y position with the half of the element height
+   * @type {number}
+   */
   get bottomRightY() {
     return this.items[5];
   }
@@ -53,6 +103,13 @@ export class DistortionProps {
     this.items[5] = v;
   }
 
+  /**
+   * Set/Get bottom left x value
+   * Examples:
+   *  - 0 - no distortion
+   *  - 0.5 - push the bottom left corners x position with the half of the element width
+   * @type {number}
+   */
   get bottomLeftX() {
     return this.items[6];
   }
@@ -60,6 +117,13 @@ export class DistortionProps {
     this.items[6] = v;
   }
 
+  /**
+   * Set/Get bottom left y value
+   * Examples:
+   *  - -0 - no distortion
+   *  - -0.5 - push the bottom left corners y position with the half of the element height
+   * @type {number}
+   */
   get bottomLeftY() {
     return this.items[7];
   }

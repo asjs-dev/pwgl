@@ -1,10 +1,33 @@
-import { Utils } from "../utils/Utils.js";
-import { Buffer } from "../utils/Buffer.js";
-import { BlendMode } from "../data/BlendMode.js";
-import { Light } from "../display/Light.js";
-import { BatchRenderer } from "./BatchRenderer.js";
+import { Utils } from "../utils/Utils";
+import { Buffer } from "../utils/Buffer";
+import { BlendMode } from "../data/BlendMode";
+import { Light } from "../display/Light";
+import { BatchRenderer } from "./BatchRenderer";
+import { TextureInfo } from "../data/texture/TextureInfo";
 
+/**
+ * @typedef {Object} LightRendererConfig
+ * @extends {RendererConfig}
+ * @property {number} lightNum
+ * @property {TextureInfo} sourceImage
+ * @property {TextureInfo} normalMap
+ * @property {TextureInfo} heightMap
+ */
+
+/**
+ * Light renderer
+ *  - Renders lights and shadows based on height and normal map
+ *  - Red channel: start of a vertical object
+ *  - Green channel: end of a vertical object
+ *  - Blue channel: shiness of the surface
+ * @extends {BatchRenderer}
+ */
 export class LightRenderer extends BatchRenderer {
+  /**
+   * Creates an instance of LightRenderer.
+   * @constructor
+   * @param {LightRendererConfig} options
+   */
   constructor(options) {
     options = options || {};
     options.config = Utils.initRendererConfig(options.config);
@@ -38,10 +61,20 @@ export class LightRenderer extends BatchRenderer {
       );
   }
 
+  /**
+   * Returns with a Light instance
+   * @param {number} id
+   * @returns {Light}
+   */
   getLight(id) {
     return this._lights[id];
   }
 
+  /**
+   * @param {TextureInfo} sourceTexture
+   * @param {number} location
+   * @ignore
+   */
   _useTexture(sourceTexture, location) {
     this._gl.uniform1i(
       location,
@@ -49,6 +82,9 @@ export class LightRenderer extends BatchRenderer {
     );
   }
 
+  /**
+   * @ignore
+   */
   _render() {
     this.context.setBlendMode(BlendMode.ADD);
 
@@ -76,17 +112,28 @@ export class LightRenderer extends BatchRenderer {
     this._drawInstanced(this._lights.length);
   }
 
+  /**
+   * @ignore
+   */
   _uploadBuffers() {
     this._extensionBuffer.upload(this._gl, this._enableBuffers);
     super._uploadBuffers();
   }
 
+  /**
+   * @ignore
+   */
   _createBuffers() {
     super._createBuffers();
     this._extensionBuffer.create(this._gl, this._locations);
   }
 
   // prettier-ignore
+  /**
+   * @param {LightRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H vec4(1,-1,2,-2)\n" +
@@ -146,6 +193,11 @@ export class LightRenderer extends BatchRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {LightRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H 256.\n" +

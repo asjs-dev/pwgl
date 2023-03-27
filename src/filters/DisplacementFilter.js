@@ -1,7 +1,23 @@
-import { FilterTextureProps } from "../data/props/FilterTextureProps.js";
-import { BaseFilter } from "./BaseFilter.js";
+import { FilterTextureProps } from "../data/props/FilterTextureProps";
+import { BaseFilter } from "./BaseFilter";
 
+/**
+ * Displacement filter
+ * @extends {BaseFilter}
+ */
 export class DisplacementFilter extends BaseFilter {
+  /**
+   * Creates an instance of DisplacementFilter.
+   * @constructor
+   * @param {number} texture
+   * @param {number} intensity
+   * @param {number} translateX
+   * @param {number} translateY
+   * @param {number} cropX
+   * @param {number} cropY
+   * @param {number} cropWidth
+   * @param {number} cropHeight
+   */
   constructor(
     texture,
     intensity,

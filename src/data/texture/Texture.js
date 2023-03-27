@@ -1,6 +1,17 @@
-import { TextureInfo } from "./TextureInfo.js";
+import { TextureInfo } from "./TextureInfo";
+import "../../utils/Utils";
 
+/**
+ * Texture
+ * @extends {TextureInfo}
+ */
 export class Texture extends TextureInfo {
+  /**
+   * Creates an instance of Texture.
+   * @constructor
+   * @param {HTMLElement} source
+   * @param {boolean} shouldUpdate
+   */
   constructor(source, shouldUpdate) {
     super();
 
@@ -27,14 +38,28 @@ export class Texture extends TextureInfo {
     this._eventType;
   }
 
+  /**
+   * Get width
+   * @readonly
+   * @type {number}
+   */
   get width() {
     return this._sourceWidth || 1;
   }
 
+  /**
+   * Get height
+   * @readonly
+   * @type {number}
+   */
   get height() {
     return this._sourceHeight || 1;
   }
 
+  /**
+   * Set/Get source of the texture
+   * @type {HTMLElement}
+   */
   get source() {
     return this._source;
   }
@@ -60,11 +85,21 @@ export class Texture extends TextureInfo {
     }
   }
 
+  /**
+   * Destruct the class
+   */
   destruct() {
     this._source.removeEventListener(this._eventType, this._parseTextureSize);
   }
 
-  _isNeedToDraw(gl, id, renderTime) {
+  /**
+   * @param {WebGL2Context} gl
+   * @param {number} id
+   * @param {number} renderTime
+   * @returns {boolean}
+   * @ignore
+   */
+  _hasNeedToDraw(gl, id, renderTime) {
     if (this._currentAglId < gl.agl_id) {
       this._currentAglId = gl.agl_id;
       this._baseTexture = gl.createTexture();
@@ -98,14 +133,27 @@ export class Texture extends TextureInfo {
     return false;
   }
 
+  /**
+   * @readonly
+   * @type {number}
+   * @ignore
+   */
   get _sourceWidth() {
     return this._source[this._dimensionWidthName];
   }
 
+  /**
+   * @readonly
+   * @type {number}
+   * @ignore
+   */
   get _sourceHeight() {
     return this._source[this._dimensionHeightName];
   }
 
+  /**
+   * @ignore
+   */
   _parseTextureSize() {
     this._dimensionWidthName = "width";
     this._dimensionHeightName = "height";
@@ -127,6 +175,13 @@ export class Texture extends TextureInfo {
 
 Texture.placeholderImage = document.createElement("img");
 
+/**
+ * Create a new Texture from an image source 
+ * @function
+ * @param {HTMLElement} src 
+ * @param {boolean} shouldUpdate 
+ * @returns {Texture}
+ */
 Texture.loadImage = (src, shouldUpdate) => {
   const image = document.createElement("img");
   const texture = new Texture(image, shouldUpdate);
@@ -134,6 +189,13 @@ Texture.loadImage = (src, shouldUpdate) => {
   return texture;
 };
 
+/**
+ * Create a new Texture from a video source 
+ * @function
+ * @param {HTMLVideoElement} src 
+ * @param {boolean} shouldUpdate 
+ * @returns {Texture}
+ */
 Texture.loadVideo = (src, shouldUpdate) => {
   const video = document.createElement("video");
   const texture = new Texture(video, shouldUpdate);

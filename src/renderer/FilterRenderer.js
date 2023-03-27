@@ -1,10 +1,27 @@
-import { emptyFunction } from "../utils/helpers.js";
-import { Utils } from "../utils/Utils.js";
-import { BlendMode } from "../data/BlendMode.js";
-import { Framebuffer } from "../data/texture/Framebuffer.js";
-import { BaseRenderer } from "./BaseRenderer.js";
+import { noop } from "../utils/helpers";
+import { Utils } from "../utils/Utils";
+import { BlendMode } from "../data/BlendMode";
+import { Framebuffer } from "../data/texture/Framebuffer";
+import { BaseRenderer } from "./BaseRenderer";
 
+/**
+ * @typedef {Object} FilterRendererConfig
+ * @extends {RendererConfig}
+ * @property {Array<BaseFilter>} filters
+ * @property {TextureInfo} texture
+ */
+
+/**
+ * Filter renderer
+ *  - Renders filters to a source texture
+ * @extends {BaseRenderer}
+ */
 export class FilterRenderer extends BaseRenderer {
+  /**
+   * Creates an instance of FilterRenderer.
+   * @constructor
+   * @param {FilterRendererConfig} options
+   */
   constructor(options) {
     options = options || {};
     options.config = Utils.initRendererConfig(options.config);
@@ -20,7 +37,7 @@ export class FilterRenderer extends BaseRenderer {
     super(options);
 
     this._attachFramebufferCustom = this._attachFramebufferAndClearCustom =
-      emptyFunction;
+      noop;
 
     this.filters = options.filters || [];
     this.texture = options.texture;
@@ -28,6 +45,10 @@ export class FilterRenderer extends BaseRenderer {
     this._framebuffers = [new Framebuffer(), new Framebuffer()];
   }
 
+  /**
+   * @param {Framebuffer} framebuffer
+   * @ignore
+   */
   _render(framebuffer) {
     const context = this.context;
     const gl = this._gl;
@@ -86,6 +107,11 @@ export class FilterRenderer extends BaseRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {FilterRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "in vec2 " +
@@ -107,6 +133,11 @@ export class FilterRenderer extends BaseRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {FilterRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createFragmentShader(options) {
     const blurFunc = (core) =>
       "for(oft.x=-2.;oft.x<3.;++oft.x)" +

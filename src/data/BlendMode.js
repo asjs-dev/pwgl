@@ -1,5 +1,20 @@
-import { Const } from "../utils/Utils.js";
+import { Const } from "../utils/Utils";
 
+/**
+ * @typedef {Object} BlendModeInfo
+ * @property {string} functionName
+ * @property {Array<number>} functions
+ * @property {string} equationName
+ * @property {Array<number>} equations
+*/
+
+/**
+ * Create new blend mode
+ * @param {Array<number>} functions
+ * @param {Array<number>} equations
+ * @returns {BlendModeInfo}
+ * @ignore
+ */
 const _createBlendMode = (functions, equations) => ({
   functionName: "blendFunc" + (functions.length < 3 ? "" : "Separate"),
   functions: functions,
@@ -8,6 +23,32 @@ const _createBlendMode = (functions, equations) => ({
   equations: equations || [Const.FUNC_ADD],
 });
 
+/**
+ * @typedef {Object} BlendMode
+ * @property {BlendModeInfo} NONE
+ * @property {BlendModeInfo} NORMAL_PM
+ * @property {BlendModeInfo} ADD_PM
+ * @property {BlendModeInfo} MULTIPLY_PM
+ * @property {BlendModeInfo} SCREEN_PM
+ * @property {BlendModeInfo} ADD_NPM
+ * @property {BlendModeInfo} SRC_IN
+ * @property {BlendModeInfo} SRC_OUT
+ * @property {BlendModeInfo} SRC_ATOP
+ * @property {BlendModeInfo} DST_OVER
+ * @property {BlendModeInfo} DST_IN
+ * @property {BlendModeInfo} DST_OUT
+ * @property {BlendModeInfo} DST_ATOP
+ * @property {BlendModeInfo} XOR
+ * @property {BlendModeInfo} NORMAL
+ * @property {BlendModeInfo} ADD
+ * @property {BlendModeInfo} MULTIPLY
+ * @property {BlendModeInfo} SCREEN
+ * @property {BlendModeInfo} OVERLAY
+ * @property {BlendModeInfo} EXCLUSION
+ * @property {BlendModeInfo} LIGHTEN
+ * @property {BlendModeInfo} DARKEN
+ * @property {BlendModeInfo} SHADOW
+ */
 export const BlendMode = {
   NONE: _createBlendMode([0, 0]),
 

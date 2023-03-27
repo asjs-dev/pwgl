@@ -1,8 +1,24 @@
-import { Utils } from "../utils/Utils.js";
-import { BlendMode } from "../data/BlendMode.js";
-import { BaseRenderer } from "./BaseRenderer.js";
+import { Utils } from "../utils/Utils";
+import { BlendMode } from "../data/BlendMode";
+import { BaseRenderer } from "./BaseRenderer";
 
+/**
+ * @typedef {Object} NormalMapRendererConfig
+ * @extends {RendererConfig}
+ * @property {TextureInfo} heightMap
+ */
+
+/**
+ * Normal map renderer
+ *  - Renders a normal map from height map texture
+ * @extends {BaseRenderer}
+ */
 export class NormalMapRenderer extends BaseRenderer {
+  /**
+   * Creates an instance of NormalMapRenderer.
+   * @constructor
+   * @param {NormalMapRendererConfig} options
+   */
   constructor(options) {
     options = options || {};
     options.config = Utils.initRendererConfig(options.config);
@@ -15,6 +31,9 @@ export class NormalMapRenderer extends BaseRenderer {
     this.heightMap = options.heightMap;
   }
 
+  /**
+   * @ignore
+   */
   _render() {
     this.context.setBlendMode(BlendMode.NORMAL);
 
@@ -29,6 +48,11 @@ export class NormalMapRenderer extends BaseRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {NormalMapRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "in vec2 " +
@@ -48,6 +72,11 @@ export class NormalMapRenderer extends BaseRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {NormalMapRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H 256.\n" +

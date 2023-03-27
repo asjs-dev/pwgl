@@ -1,13 +1,26 @@
-import { TextureInfo } from "./TextureInfo.js";
-import { Const } from "../../utils/Utils.js";
+import { TextureInfo } from "./TextureInfo";
+import { Const } from "../../utils/Utils";
+import "../../utils/Utils";
 
+/**
+ * Framebuffer
+ * @extends {TextureInfo}
+ */
 export class Framebuffer extends TextureInfo {
+  /**
+   * Creates an instance of Framebuffer.
+   * @constructor
+   */
   constructor() {
     super();
 
     this._resizeUpdateId = this._currentResizeUpdateId = 0;
   }
 
+  /**
+   * Set/Get width
+   * @type {number}
+   */
   get width() {
     return this._width;
   }
@@ -18,6 +31,10 @@ export class Framebuffer extends TextureInfo {
     }
   }
 
+  /**
+   * Set/Get height
+   * @type {number}
+   */
   get height() {
     return this._height;
   }
@@ -28,20 +45,39 @@ export class Framebuffer extends TextureInfo {
     }
   }
 
+  /**
+   * Set size
+   * @param {number} w
+   * @param {number} h
+   */
   setSize(w, h) {
     this.width = w;
     this.height = h;
   }
 
+  /**
+   * Bind to WebGlContext
+   * @param {WebGLContext} gl
+   */
   bind(gl) {
     gl.bindFramebuffer(Const.FRAMEBUFFER, this._framebuffer);
   }
 
+  /**
+   * Unbind from WebGLContext
+   * @param {WebGLContext} gl
+   */
   unbind(gl) {
     gl.bindFramebuffer(Const.FRAMEBUFFER, null);
   }
 
-  _isNeedToDraw(gl, id) {
+  /**
+   * @param {WebGLContext} gl
+   * @param {number} id
+   * @returns {boolean}
+   * @ignore
+   */
+  _hasNeedToDraw(gl, id) {
     if (this._currentAglId < gl.agl_id) {
       this._currentAglId = gl.agl_id;
       this._baseTexture = gl.createTexture();

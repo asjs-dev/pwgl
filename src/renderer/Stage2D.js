@@ -1,15 +1,32 @@
-import { arraySet, emptyFunction } from "../utils/helpers.js";
-import { Item } from "../display/Item.js";
-import { Image } from "../display/Image.js";
-import { Container } from "../display/Container.js";
-import { StageContainer } from "../display/StageContainer.js";
-import { Matrix3 } from "../geom/Matrix3.js";
-import { Point } from "../geom/Point.js";
-import { Buffer } from "../utils/Buffer.js";
-import { Utils } from "../utils/Utils.js";
-import { BatchRenderer } from "./BatchRenderer.js";
+import { arraySet, noop } from "../utils/helpers";
+import { Item } from "../display/Item";
+import { Image } from "../display/Image";
+import { Container } from "../display/Container";
+import { StageContainer } from "../display/StageContainer";
+import { Matrix3Utilities } from "../geom/Matrix3Utilities";
+import { PointUtilities } from "../geom/PointUtilities";
+import { Buffer } from "../utils/Buffer";
+import { Utils } from "../utils/Utils";
+import { BatchRenderer } from "./BatchRenderer";
+import { BaseItem } from "../display/BaseItem";
+import { BaseDrawable } from "../display/BaseDrawable";
 
+/**
+ * @typedef {Object} Stage2DRendererConfig
+ * @extends {RendererConfig}
+ */
+
+/**
+ * Stage2D renderer
+ *  - Renders multiple textures
+ * @extends {BatchRenderer}
+ */
 export class Stage2D extends BatchRenderer {
+  /**
+   * Creates an instance of Stage2D.
+   * @constructor
+   * @param {Stage2DRendererConfig} options
+   */
   constructor(options) {
     options = {
       ...{
@@ -29,7 +46,7 @@ export class Stage2D extends BatchRenderer {
     ]);
 
     const maxBatchItems = (options.maxBatchItems =
-      options.maxBatchItems || 1e4);
+      options.maxBatchItems || 10000);
 
     super(options);
 
@@ -37,7 +54,7 @@ export class Stage2D extends BatchRenderer {
 
     this._batchItems = 0;
 
-    this["_draw" + Item.TYPE] = emptyFunction;
+    this["_draw" + Item.TYPE] = noop;
     this["_draw" + Image.TYPE] = this._drawImage.bind(this);
     this["_draw" + Container.TYPE] = this._drawContainer.bind(this);
 
@@ -49,13 +66,16 @@ export class Stage2D extends BatchRenderer {
     this._isPickerSet
     */
 
-    this.pickerPoint = Point.create();
+    this.pickerPoint = PointUtilities.create();
 
     this._dataBuffer = new Buffer("aDt", maxBatchItems, 3, 4);
 
     this._distortionBuffer = new Buffer("aDst", maxBatchItems, 4, 2);
   }
 
+  /**
+   * Renders the scene
+   */
   render() {
     this.picked = null;
 
@@ -64,6 +84,10 @@ export class Stage2D extends BatchRenderer {
     this._isPickerSet = false;
   }
 
+  /**
+   * Set point for detect an item under it
+   * @param {Point} point
+   */
   setPickerPoint(point) {
     this._isPickerSet = true;
 
@@ -71,17 +95,28 @@ export class Stage2D extends BatchRenderer {
     this.pickerPoint.y = (point.y - this.heightHalf) * this.matrixCache[4];
   }
 
+  /**
+   * @ignore
+   */
   _render() {
     this._drawItem(this.container);
     this._batchDraw();
   }
 
+  /**
+   * @param {BaseItem} item
+   * @ignore
+   */
   _drawItem(item) {
     item.update(this._renderTime);
     item.callback(item, this._renderTime);
     item.renderable && this["_draw" + item.TYPE](item);
   }
 
+  /**
+   * @param {Container} container
+   * @ignore
+   */
   _drawContainer(container) {
     this._gl.uniform4fv(this._locations.uWCl, container.colorCache);
     this._gl.uniform1f(this._locations.uWA, container.premultipliedAlpha);
@@ -91,6 +126,10 @@ export class Stage2D extends BatchRenderer {
       this._drawItem(children[i]);
   }
 
+  /**
+   * @param {BaseDrawable} item
+   * @ignore
+   */
   _drawImage(item) {
     this.context.setBlendMode(item.blendMode, this._batchDraw);
 
@@ -130,6 +169,9 @@ export class Stage2D extends BatchRenderer {
     ++this._batchItems === this._MAX_BATCH_ITEMS && this._batchDraw();
   }
 
+  /**
+   * @ignore
+   */
   _batchDraw() {
     if (this._batchItems > 0) {
       this._uploadBuffers();
@@ -142,16 +184,18 @@ export class Stage2D extends BatchRenderer {
     }
   }
 
+  /**
+   * @ignore
+   */
   _resize() {
     super._resize();
-    Matrix3.projection(
-      this.width,
-      this.height,
-      this.container.parent.matrixCache
-    );
+    Matrix3Utilities.projection(this.container.parent.matrixCache, this);
     ++this.container.parent.propsUpdateId;
   }
 
+  /**
+   * @ignore
+   */
   _uploadBuffers() {
     this._dataBuffer.upload(this._gl, this._enableBuffers);
     this._distortionBuffer.upload(this._gl, this._enableBuffers);
@@ -159,6 +203,9 @@ export class Stage2D extends BatchRenderer {
     super._uploadBuffers();
   }
 
+  /**
+   * @ignore
+   */
   _createBuffers() {
     super._createBuffers();
 
@@ -167,6 +214,11 @@ export class Stage2D extends BatchRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {Stage2DRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createVertexShader(options) {
     const useRepeatTextures = options.useRepeatTextures;
 
@@ -245,6 +297,11 @@ export class Stage2D extends BatchRenderer {
   }
 
   // prettier-ignore
+  /**
+   * @param {Stage2DRendererConfig} options
+   * @returns {string}
+   * @ignore
+   */
   _createFragmentShader(options) {
     const maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
     const useRepeatTextures = options.useRepeatTextures;
