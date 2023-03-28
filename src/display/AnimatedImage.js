@@ -1,7 +1,17 @@
-import { emptyFunction } from "../utils/helpers.js";
-import { Image } from "./Image.js";
+import { TextureInfo } from "../data/texture/TextureInfo";
+import { noop } from "../utils/helpers";
+import { Image } from "./Image";
 
+/**
+ * Animated Image
+ * @extends {Image}
+ */
 export class AnimatedImage extends Image {
+  /**
+   * Creates an instance of AnimatedImage.
+   * @constructor
+   * @param {TextureInfo} texture
+   */
   constructor(texture) {
     super(texture);
 
@@ -15,39 +25,69 @@ export class AnimatedImage extends Image {
     this.stop();
   }
 
+  /**
+   * Returns is animation playing
+   * @readonly
+   * @type {boolean}
+   */
   get isPlaying() {
     return this.updateAnimation === this._updateAnimation;
   }
 
+  /**
+   * Go to a frame and stop
+   * @param {number} frame
+   */
   gotoAndStop(frame) {
     this.stop();
     this.frame = frame;
     this._useTextureFrame();
   }
 
+  /**
+   * Go to a frame and play
+   * @param {number} frame
+   */
   gotoAndPlay(frame) {
     this.frame = frame;
     this.play();
   }
 
+  /**
+   * Stop the animation
+   */
   stop() {
-    this.updateAnimation = emptyFunction;
+    this.updateAnimation = noop;
   }
 
+  /**
+   * Play the animation
+   */
   play() {
     this.updateAnimation = this._updateAnimation;
   }
 
+  /**
+   * Update the animation
+   * @param {number} renderTime
+   */
   update(renderTime) {
     super.update();
     this.updateAnimation(renderTime);
   }
 
+  /**
+   * Destruct class
+   */
   destruct() {
     this.stop();
     super.destruct();
   }
 
+  /**
+   * @param {number} renderTime
+   * @ignore
+   */
   _updateAnimation(renderTime) {
     const ellapsedTime = renderTime - this._currentRenderTime;
     if (ellapsedTime > this.frameLength) {
@@ -59,6 +99,9 @@ export class AnimatedImage extends Image {
     }
   }
 
+  /**
+   * @ignore
+   */
   _useTextureFrame() {
     this.textureCrop.setRect(this.frames[this.frame]);
   }

@@ -1,6 +1,15 @@
-import { BaseProps } from "./BaseProps.js";
+import { BaseProps } from "./BaseProps";
+import "../../geom/RectangleUtilities";
 
+/**
+ * Class for texture crop properties
+ * @extends {BaseProps}
+ */
 export class TextureCrop extends BaseProps {
+  /**
+   * Creates an instance of TextureCrop.
+   * @constructor
+   */
   constructor() {
     super();
 
@@ -11,6 +20,10 @@ export class TextureCrop extends BaseProps {
     this._width = this._height = 1;
   }
 
+  /**
+   * Set/Get x
+   * @type {number}
+   */
   get x() {
     return this.items[0];
   }
@@ -21,6 +34,10 @@ export class TextureCrop extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get y
+   * @type {number}
+   */
   get y() {
     return this.items[1];
   }
@@ -31,6 +48,10 @@ export class TextureCrop extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get width
+   * @type {number}
+   */
   get width() {
     return this._width;
   }
@@ -41,6 +62,10 @@ export class TextureCrop extends BaseProps {
     }
   }
 
+  /**
+   * Set/Get height
+   * @type {number}
+   */
   get height() {
     return this._height;
   }
@@ -51,6 +76,9 @@ export class TextureCrop extends BaseProps {
     }
   }
 
+  /**
+   * Update calculated crop values
+   */
   updateCrop() {
     if (this._currentUpdateId < this.updateId) {
       this._currentUpdateId = this.updateId;
@@ -60,6 +88,10 @@ export class TextureCrop extends BaseProps {
     }
   }
 
+  /**
+   * Set all values with a rectangle
+   * @param {Rectangle} rect
+   */
   setRect(rect) {
     this.x = rect.x;
     this.y = rect.y;

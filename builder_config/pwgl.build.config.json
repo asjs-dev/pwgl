@@ -1,0 +1,21 @@
+{
+  "js": {
+    "files": ["./src/index.js"],
+    "lzw": false,
+    "wrapped": true,
+    "minify": true,
+    "compress": true,
+    "variables": {
+      "{{appVersion}}": "json.version",
+      "{{date}}": "date"
+    },
+    "replaceTexts": {
+      "removeFromArray": "$rfa",
+      "arraySet": "$as"
+    },
+    "output": "dist/pwgl.min.js"
+  },
+  "copyAssets": {
+    "./dist/pwgl.min.js": "./docs/assets/pwgl.min.js"
+  }
+}

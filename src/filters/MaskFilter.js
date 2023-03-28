@@ -1,7 +1,23 @@
-import { FilterTextureProps } from "../data/props/FilterTextureProps.js";
-import { BaseFilter } from "./BaseFilter.js";
+import { FilterTextureProps } from "../data/props/FilterTextureProps";
+import { BaseFilter } from "./BaseFilter";
 
+/**
+ * Mask filter
+ * @extends {BaseFilter}
+ */
 export class MaskFilter extends BaseFilter {
+  /**
+   * Creates an instance of MaskFilter.
+   * @constructor
+   * @param {number} texture
+   * @param {number} type
+   * @param {number} translateX
+   * @param {number} translateY
+   * @param {number} cropX
+   * @param {number} cropY
+   * @param {number} cropWidth
+   * @param {number} cropHeight
+   */
   constructor(
     texture,
     type,
@@ -26,6 +42,10 @@ export class MaskFilter extends BaseFilter {
     );
   }
 
+  /**
+   * Set/Get type
+   * @type {number}
+   */
   get type() {
     return this.v[0];
   }
@@ -34,6 +54,14 @@ export class MaskFilter extends BaseFilter {
   }
 }
 
+/**
+ * Mask channel type
+ * @member
+ * @property {number} RED
+ * @property {number} GREEN
+ * @property {number} BLUE
+ * @property {number} ALPHA
+ */
 MaskFilter.Type = {
   RED: 0,
   GREEN: 1,

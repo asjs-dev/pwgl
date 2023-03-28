@@ -1,7 +1,17 @@
-import { removeFromArray } from "./helpers.js";
-import { Utils, Const } from "./Utils.js";
+import { removeFromArray } from "./helpers";
+import { Utils, Const } from "./Utils";
+import "../data/BlendMode";
+import { TextureInfo } from "../data/texture/TextureInfo";
 
+/**
+ * Context
+ */
 export class Context {
+  /**
+   * Creates an instance of Context.
+   * @constructor
+   * @param {ContextConfig} config
+   */
   constructor(config) {
     /*
     this._currentProgram
@@ -27,10 +37,18 @@ export class Context {
     this._initContext();
   }
 
+  /**
+   * Returns context lost state
+   * @returns {boolean}
+   */
   isLost() {
     return this.gl && this.gl.isContextLost && this.gl.isContextLost();
   }
 
+  /**
+   * Use BlendModeInfo
+   * @param {BlendModeInfo} blendMode
+   */
   useBlendMode(blendMode) {
     this._currentBlendMode = blendMode;
 
@@ -38,6 +56,11 @@ export class Context {
     this.gl[blendMode.functionName].apply(this.gl, blendMode.functions);
   }
 
+  /**
+   * Set BlendModeInfo
+   * @param {BlendModeInfo} blendMode
+   * @param {function} drawCallback
+   */
   setBlendMode(blendMode, drawCallback) {
     if (this._currentBlendMode !== blendMode) {
       drawCallback && drawCallback();
@@ -45,6 +68,9 @@ export class Context {
     }
   }
 
+  /**
+   * Destruct class
+   */
   destruct() {
     this.gl.useProgram(null);
 
@@ -54,6 +80,9 @@ export class Context {
     this._loseContextExt && this._loseContextExt.loseContext();
   }
 
+  /**
+   * Clear textures
+   */
   clearTextures() {
     for (let i = 0; i < this._MAX_TEXTURE_NUM; ++i) {
       this._textureMap[i] = null;
@@ -63,6 +92,14 @@ export class Context {
     this.textureIds.length = 0;
   }
 
+  /**
+   * Use TextureInfo
+   * @param {TextureInfo} textureInfo
+   * @param {number} renderTime
+   * @param {boolean} forceBind
+   * @param {function} callback
+   * @returns {number}
+   */
   useTexture(textureInfo, renderTime, forceBind, callback) {
     if (!textureInfo) return -1;
 
@@ -82,6 +119,14 @@ export class Context {
     return this.useTextureAt(textureInfo, textureId, renderTime, forceBind);
   }
 
+  /**
+   * Use TextureInfo at
+   * @param {TextureInfo} textureInfo
+   * @param {number} textureId
+   * @param {number} renderTime
+   * @param {boolean} forceBind
+   * @returns {number}
+   */
   useTextureAt(textureInfo, textureId, renderTime, forceBind) {
     textureInfo.use(this.gl, textureId, forceBind, renderTime);
 
@@ -94,11 +139,21 @@ export class Context {
     return textureId;
   }
 
+  /**
+   * Deactivate TextureInfo
+   * @param {TextureInfo} textureInfo
+   */
   deactivateTexture(textureInfo) {
     const textureId = this._textureMap.indexOf(textureInfo);
     textureId > -1 && textureInfo.unbindTexture(this.gl, textureId);
   }
 
+  /**
+   * Use WebGLProgram
+   * @param {WebGLProgram} program
+   * @param {Float32Array} vao
+   * @returns {boolean}
+   */
   useProgram(program, vao) {
     if (this._currentProgram !== program) {
       this._currentProgram = program;
@@ -116,11 +171,21 @@ export class Context {
     return false;
   }
 
+  /**
+   * Set canvas size
+   * @param {number} width
+   * @param {number} height
+   */
   setCanvasSize(width, height) {
     this.canvas.width = width;
     this.canvas.height = height;
   }
 
+  /**
+   * Set context size
+   * @param {number} width
+   * @param {number} height
+   */
   setSize(width, height) {
     if (this._width !== width || this._height !== height) {
       this._width = width;
@@ -131,15 +196,25 @@ export class Context {
     }
   }
 
+  /**
+   * @param {Object} event
+   * @ignore
+   */
   _onContextLost(event) {
     event.preventDefault();
     this._loseContextExt && setTimeout(this._restoreContext, 1);
   }
 
+  /**
+   * @ignore
+   */
   _restoreContext() {
     this._loseContextExt.restoreContext();
   }
 
+  /**
+   * @ignore
+   */
   _initContext() {
     const gl = (this.gl = this.canvas.getContext(
       "webgl2",

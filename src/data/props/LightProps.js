@@ -1,12 +1,25 @@
-import { ItemProps } from "./ItemProps.js";
+import { ItemProps } from "./ItemProps";
 
+/**
+ * Class for light properties
+ * @extends {ItemProps}
+ */
 export class LightProps extends ItemProps {
+  /**
+   * Creates an instance of LightProps.
+   * @constructor
+   */
   constructor() {
     super();
 
     this.z = 0;
   }
 
+  /**
+   * Set/Get width
+   *  - In the case of lights, the height value is the same as the width value
+   * @type {number}
+   */
   get width() {
     return this._width;
   }
@@ -17,6 +30,10 @@ export class LightProps extends ItemProps {
     }
   }
 
+  /**
+   * Set/Get height
+   * @type {number}
+   */
   get height() {
     return this._height;
   }

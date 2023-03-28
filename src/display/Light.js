@@ -1,10 +1,23 @@
-import { arraySet } from "../utils/helpers.js";
-import { Utils } from "../utils/Utils.js";
-import { LightProps } from "../data/props/LightProps.js";
-import { Matrix3 } from "../geom/Matrix3.js";
-import { BaseDrawable } from "./BaseDrawable.js";
+import { arraySet } from "../utils/helpers";
+import { Utils } from "../utils/Utils";
+import { LightProps } from "../data/props/LightProps";
+import { Matrix3Utilities } from "../geom/Matrix3Utilities";
+import { BaseDrawable } from "./BaseDrawable";
+import { Container } from "./Container";
 
+/**
+ * Light
+ *  - Use LightRenderer.getLight() instead of new Light()
+ * @extends {BaseDrawable}
+ */
 export class Light extends BaseDrawable {
+  /**
+   * Creates an instance of Light.
+   * @constructor
+   * @param {number} id
+   * @param {Float32Array} lightData
+   * @param {Float32Array} extensionData
+   */
   constructor(id, lightData, extensionData) {
     super();
 
@@ -36,11 +49,14 @@ export class Light extends BaseDrawable {
     this.angle = 0;
     this.spotAngle = 180 * Utils.THETA;
     this.type = Light.Type.POINT;
-    this.precision = this.diffuse = 1;
+    this.precision = this.diffuse = this.reflectionSize = 1;
     this.maxShadowStep = 128;
-    this.reflectionSize = 1;
   }
 
+  /**
+   * Set/Get type of the Light
+   * @type {number}
+   */
   get type() {
     return this._extensionData[this._matId];
   }
@@ -48,6 +64,10 @@ export class Light extends BaseDrawable {
     this._extensionData[this._matId] = v;
   }
 
+  /**
+   * Set/Get shadow casting
+   * @type {boolean}
+   */
   get castShadow() {
     return this._castShadow;
   }
@@ -56,6 +76,10 @@ export class Light extends BaseDrawable {
     this._updateLightProps();
   }
 
+  /**
+   * Set/Get shading
+   * @type {boolean}
+   */
   get shading() {
     return this._shading;
   }
@@ -64,6 +88,12 @@ export class Light extends BaseDrawable {
     this._updateLightProps();
   }
 
+  /**
+   * Set/Get flatten the shadow
+   *  - Cast shadow if true and a pixel is higher or equal than the light z position
+   *  - Cast shadow if false and a pixel is higher than the light z position
+   * @type {boolean}
+   */
   get flattenShadow() {
     return this._flattenShadow;
   }
@@ -72,6 +102,11 @@ export class Light extends BaseDrawable {
     this._updateLightProps();
   }
 
+  /**
+   * Set/Get the surface reflects the color of the light
+   *  - If it is false the surface reflects white color
+   * @type {boolean}
+   */
   get colorProofReflection() {
     return this._colorProofReflection;
   }
@@ -80,6 +115,10 @@ export class Light extends BaseDrawable {
     this._updateLightProps();
   }
 
+  /**
+   * Set/Get is the reflection moves towards the center of the screen
+   * @type {boolean}
+   */
   get centerReflection() {
     return this._centerReflection;
   }
@@ -88,6 +127,11 @@ export class Light extends BaseDrawable {
     this._updateLightProps();
   }
 
+  /**
+   * Set/Get the maximum step of shadow caster per pixel
+   *  - Default value is 128
+   * @type {number}
+   */
   get maxShadowStep() {
     return this._extensionData[this._quadId];
   }
@@ -95,6 +139,10 @@ export class Light extends BaseDrawable {
     this._extensionData[this._quadId] = v;
   }
 
+  /**
+   * Set/Get reflection size
+   * @type {number}
+   */
   get reflectionSize() {
     return this._extensionData[this._quadId + 1];
   }
@@ -102,6 +150,11 @@ export class Light extends BaseDrawable {
     this._extensionData[this._quadId + 1] = v;
   }
 
+  /**
+   * Set/Get shadow precision
+   *  - Default value is 1
+   * @type {number}
+   */
   get precision() {
     return this._extensionData[this._matId + 3];
   }
@@ -109,6 +162,10 @@ export class Light extends BaseDrawable {
     this._extensionData[this._matId + 3] = v;
   }
 
+  /**
+   * Set/Get rotation of the light
+   * @type {number}
+   */
   get angle() {
     return this._lightData[this._datId + 3];
   }
@@ -116,6 +173,12 @@ export class Light extends BaseDrawable {
     this._lightData[this._datId + 3] = v;
   }
 
+  /**
+   * Set/Get angle of the light source
+   *  - Default value is 180deg - hemisphere
+   *  - 360deg - sphere
+   * @type {number}
+   */
   get spotAngle() {
     return this._lightData[this._matId + 7];
   }
@@ -123,10 +186,17 @@ export class Light extends BaseDrawable {
     this._lightData[this._matId + 7] = v;
   }
 
+  /**
+   * Returns true if the light is renderable
+   * @returns {boolean}
+   */
   isOn() {
     return this.renderable && this.stage !== null;
   }
 
+  /**
+   * Update Light properties
+   */
   update() {
     const lightData = this._lightData;
     const datId = this._datId;
@@ -145,6 +215,9 @@ export class Light extends BaseDrawable {
     } else lightData[datId] = 0;
   }
 
+  /**
+   * @ignore
+   */
   _updateLightProps() {
     this._extensionData[this._matId + 1] =
       (this._castShadow * 1) |
@@ -154,6 +227,9 @@ export class Light extends BaseDrawable {
       (this._centerReflection * 16);
   }
 
+  /**
+   * @ignore
+   */
   _updateAdditionalData() {
     if (
       this.isOn() &&
@@ -164,8 +240,15 @@ export class Light extends BaseDrawable {
     }
   }
 
+  /**
+   * @ignore
+   */
   _calcCorners() {
-    Matrix3.calcCorners(this.matrixCache, this._corners, this.stage.renderer);
+    Matrix3Utilities.calcCorners(
+      this.matrixCache,
+      this._corners,
+      this.stage.renderer
+    );
 
     const corners = this._corners;
 
@@ -182,12 +265,20 @@ export class Light extends BaseDrawable {
     d.y += d.y - b.y;
   }
 
+  /**
+   * @param {LightProps} props
+   * @param {Container} parent
+   * @ignore
+   */
   _updateTransform(props, parent) {
     super._updateTransform(props, parent);
 
     arraySet(this._lightData, this.matrixCache, this._matId);
   }
 
+  /**
+   * @ignore
+   */
   _updateColor() {
     const color = this.color;
 
@@ -207,6 +298,12 @@ export class Light extends BaseDrawable {
   }
 }
 
+/**
+ * Light type
+ * @member
+ * @property {number} POINT Like a lamp light source
+ * @property {number} DIRECTIONAL Like sunlight
+ */
 Light.Type = {
   POINT: 0,
   DIRECTIONAL: 1,

@@ -1,7 +1,16 @@
-import { removeFromArray } from "../utils/helpers.js";
-import { Item } from "./Item.js";
+import { removeFromArray } from "../utils/helpers";
+import { BaseItem } from "./BaseItem";
+import { Item } from "./Item";
 
+/**
+ * Container
+ * @extends {Item}
+ */
 export class Container extends Item {
+  /**
+   * Creates an instance of Container.
+   * @constructor
+   */
   constructor() {
     super();
 
@@ -10,23 +19,43 @@ export class Container extends Item {
     this.children = [];
   }
 
+  /**
+   * Destruct class
+   */
   destruct() {
     this.empty();
     super.destruct();
   }
 
+  /**
+   * Emptying the container
+   */
   empty() {
     while (this.children.length) this.removeChildAt(0);
   }
 
+  /**
+   * Returns true, if the container contains the BaseItem
+   * @param {BaseItem} child
+   * @returns {boolean}
+   */
   contains(child) {
     return this.getChildIndex(child) > -1;
   }
 
+  /**
+   * Add BaseItem to the container
+   * @param {BaseItem} child
+   */
   addChild(child) {
     this.addChildAt(child, this.children.length);
   }
 
+  /**
+   * Add BaseItem to a specific index
+   * @param {BaseItem} child
+   * @param {number} index
+   */
   addChildAt(child, index) {
     if (child) {
       child.parent && child.parent.removeChild(child);
@@ -36,6 +65,10 @@ export class Container extends Item {
     }
   }
 
+  /**
+   * Removes the BaseItem from the container 
+   * @param {BaseItem} child
+   */
   removeChild(child) {
     if (child) {
       removeFromArray(this.children, child);
@@ -43,23 +76,47 @@ export class Container extends Item {
     }
   }
 
+  /**
+   * Removes BaseItem from index
+   * @param {number} index
+   */
   removeChildAt(index) {
     this.removeChild(this.getChildAt(index));
   }
 
+  /**
+   * Returns with a BaseItem from a specific index
+   * @param {number} index
+   * @returns {BaseItem}
+   */
   getChildAt(index) {
     return this.children[index];
   }
 
+  /**
+   * Set child element index
+   * @param {BaseItem} child
+   * @param {number} index
+   */
   setChildIndex(child, index) {
     removeFromArray(this.children, child);
     this.children.splice(index, 0, child);
   }
 
+  /**
+   * Returns with the child element index
+   * @param {BaseItem} child
+   * @returns {number}
+   */
   getChildIndex(child) {
     return this.children.indexOf(child);
   }
 
+  /**
+   * Swap two children
+   * @param {BaseItem} childA
+   * @param {BaseItem} childB
+   */
   swapChildren(childA, childB) {
     const childAIndex = this.getChildIndex(childA);
     const childBIndex = this.getChildIndex(childB);
@@ -69,6 +126,10 @@ export class Container extends Item {
     }
   }
 
+  /**
+   * Returns with the bounds of the container
+   * @returns {Rectangle}
+   */
   getBounds() {
     const bounds = this._bounds;
 
@@ -87,15 +148,26 @@ export class Container extends Item {
     return bounds;
   }
 
+  /**
+   * Update container data
+   */
   update() {
     this._updateProps();
     this._updateColor();
   }
 
+  /**
+   * Returns with the permultiplied alpha
+   * @readonly
+   * @type {number}
+   */
   get premultipliedAlpha() {
     return this.props.alpha * this._parent.premultipliedAlpha;
   }
 
+  /**
+   * @ignore
+   */
   _updateColor() {
     const parent = this._parent;
     const color = this.color;
@@ -119,4 +191,8 @@ export class Container extends Item {
   }
 }
 
+/**
+ * Type "container"
+ * @string
+ */
 Container.TYPE = "container";

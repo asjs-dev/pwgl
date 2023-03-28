@@ -1,6 +1,14 @@
-import { Const } from "../../utils/Utils.js";
+import { Const } from "../../utils/Utils";
+import "../../utils/Utils";
 
+/**
+ * TextureInfo
+ */
 export class TextureInfo {
+  /**
+   * Creates an instance of TextureInfo.
+   * @constructor
+   */
   constructor() {
     /*
     this._baseTexture
@@ -24,14 +32,28 @@ export class TextureInfo {
     this.type = Const.UNSIGNED_BYTE;
   }
 
+  /**
+   * Get width
+   * @readonly
+   * @type {number}
+   */
   get width() {
     return this._width;
   }
 
+  /**
+   * Get height
+   * @readonly
+   * @type {number}
+   */
   get height() {
     return this._height;
   }
 
+  /**
+   * Set/Get wrapS
+   * @type {number}
+   */
   get wrapS() {
     return this._wrapS;
   }
@@ -42,6 +64,10 @@ export class TextureInfo {
     }
   }
 
+  /**
+   * Set/Get wrapT
+   * @type {number}
+   */
   get wrapT() {
     return this._wrapT;
   }
@@ -52,6 +78,10 @@ export class TextureInfo {
     }
   }
 
+  /**
+   * Set/Get internal format
+   * @type {number}
+   */
   get internalFormat() {
     return this._internalFormat;
   }
@@ -62,6 +92,10 @@ export class TextureInfo {
     }
   }
 
+  /**
+   * Set/Get format
+   * @type {number}
+   */
   get format() {
     return this._format;
   }
@@ -72,6 +106,10 @@ export class TextureInfo {
     }
   }
 
+  /**
+   * Set/Get minFilter
+   * @type {number}
+   */
   get minFilter() {
     return this._minFilter;
   }
@@ -82,6 +120,10 @@ export class TextureInfo {
     }
   }
 
+  /**
+   * Set/Get magFilter
+   * @type {number}
+   */
   get magFilter() {
     return this._magFilter;
   }
@@ -92,6 +134,10 @@ export class TextureInfo {
     }
   }
 
+  /**
+   * Set/Get type
+   * @type {number}
+   */
   get type() {
     return this._type;
   }
@@ -102,51 +148,95 @@ export class TextureInfo {
     }
   }
 
+  /**
+   * Use TextureInfo
+   * @param {WebGLContext} gl
+   * @param {number} id
+   * @param {boolean} forceBind
+   * @param {number} renderTime
+   */
   use(gl, id, forceBind, renderTime) {
     if (
-      !this._isNeedToDraw(gl, id, renderTime) &&
+      !this._hasNeedToDraw(gl, id, renderTime) &&
       (this._currenActiveId !== id || forceBind)
     )
       this.bindActiveTexture(gl, id);
   }
 
+  /**
+   * Use active TextureInfo
+   * @param {WebGLContext} gl
+   * @param {number} id
+   */
   useActiveTexture(gl, id) {
     this.activeTexture(gl, id);
     this.useTexture(gl);
   }
 
+  /**
+   * Use active TextureInfo after update
+   * @param {WebGLContext} gl
+   * @param {number} id
+   */
   useActiveTextureAfterUpdate(gl, id) {
     this.activeTexture(gl, id);
     this.useTextureAfterUpdate(gl);
   }
 
+  /**
+   * Unbind TextureInfo
+   * @param {WebGLContext} gl
+   * @param {number} id
+   */
   unbindTexture(gl, id) {
     this.activeTexture(gl, id);
     this._currenActiveId = -1;
     gl.bindTexture(this.target, null);
   }
 
+  /**
+   * Active TextureInfo
+   * @param {WebGLContext} gl
+   * @param {number} id
+   */
   activeTexture(gl, id) {
     this._currenActiveId = id;
     gl.activeTexture(Const.TEXTURE0 + id);
   }
 
+  /**
+   * Binf active TextureInfo
+   * @param {WebGLContext} gl
+   * @param {number} id
+   */
   bindActiveTexture(gl, id) {
     this.activeTexture(gl, id);
     gl.bindTexture(this.target, this._baseTexture);
   }
 
+  /**
+   * Use TextureInfo
+   * @param {WebGLContext} gl
+   */
   useTexture(gl) {
     gl.bindTexture(this.target, this._baseTexture);
-    this.uploadTexture(gl);
+    this.createTexImage2D(gl);
   }
 
+  /**
+   * Use TextureInfo after update
+   * @param {WebGLContext} gl
+   */
   useTextureAfterUpdate(gl) {
     gl.bindTexture(this.target, this._baseTexture);
     this.uploadTextureInfo(gl);
   }
 
-  uploadTexture(gl) {
+  /**
+   * Create TexImage2D
+   * @param {WebGLContext} gl
+   */
+  createTexImage2D(gl) {
     gl.texImage2D(
       this.target,
       0,
@@ -162,6 +252,10 @@ export class TextureInfo {
     this.uploadTextureInfo(gl);
   }
 
+  /**
+   * Upload TextureInfo
+   * @param {WebGLContext} gl
+   */
   uploadTextureInfo(gl) {
     gl.texParameteri(this.target, Const.TEXTURE_WRAP_S, this._wrapS);
     gl.texParameteri(this.target, Const.TEXTURE_WRAP_T, this._wrapT);
@@ -171,7 +265,13 @@ export class TextureInfo {
     gl.generateMipmap(this.target);
   }
 
+  /**
+   * Destruct class
+   */
   destruct() {}
 
-  _isNeedToDraw() {}
+  /**
+   * @ignore
+   */
+  _hasNeedToDraw() {}
 }

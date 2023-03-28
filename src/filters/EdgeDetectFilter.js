@@ -1,7 +1,16 @@
-import { arraySet } from "../utils/helpers.js";
-import { BaseFilter } from "./BaseFilter.js";
+import { arraySet } from "../utils/helpers";
+import { BaseFilter } from "./BaseFilter";
 
+/**
+ * Edge detect filter
+ * @extends {BaseFilter}
+ */
 export class EdgeDetectFilter extends BaseFilter {
+  /**
+   * Creates an instance of EdgeDetectFilter.
+   * @constructor
+   * @param {number} intensity
+   */
   constructor(intensity) {
     super(1, 0, intensity);
 

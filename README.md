@@ -1,6 +1,8 @@
 ![logo](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/logo.png?raw=true)
 
-A JavaScript framework for creating 2D WebGL 2.0 things
+A JavaScript framework for creating 2D WebGL2 applications
+
+![Game Demo](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/game.jpg?raw=true)
 
 ### Demos:
 - [Game Demo](https://codepen.io/iroshan/pen/rNMKbWv)
@@ -11,7 +13,7 @@ A JavaScript framework for creating 2D WebGL 2.0 things
 
 ### Features:
 * Batch rendering (10.000 elements - 60fps)
-* Dynamic 2.5D lights and shadows
+* Dynamic 2D lights and shadows
 * Element picker (can click on rendered items)
 * Image filters (Blur, Pixelate, Distortion, etc.)
     * [Filters](https://github.com/asjs-dev/pwgl/blob/main/src/filters)

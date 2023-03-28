@@ -1,4 +1,22 @@
+import { BaseFilter } from "../../filters/BaseFilter";
+import { TextureInfo } from "../texture/TextureInfo";
+
+/**
+ * Class for texture properties of filters
+ */
 export class FilterTextureProps {
+  /**
+   * Creates an instance of FilterTextureProps.
+   * @constructor
+   * @param {BaseFilter} filter
+   * @param {TextureInfo} texture
+   * @param {number} translateX
+   * @param {number} translateY
+   * @param {number} cropX
+   * @param {number} cropY
+   * @param {number} cropWidth
+   * @param {number} cropHeight
+   */
   constructor(
     filter,
     texture,
@@ -19,6 +37,10 @@ export class FilterTextureProps {
     this.cropHeight = cropHeight || 1;
   }
 
+  /**
+   * Set/Get translate x
+   * @type {number}
+   */
   get translateX() {
     return this._filter.v[1];
   }
@@ -26,6 +48,10 @@ export class FilterTextureProps {
     this._filter.v[1] = v;
   }
 
+  /**
+   * Set/Get translate y
+   * @type {number}
+   */
   get translateY() {
     return this._filter.v[2];
   }
@@ -33,6 +59,10 @@ export class FilterTextureProps {
     this._filter.v[2] = v;
   }
 
+  /**
+   * Set/Get crop x
+   * @type {number}
+   */
   get cropX() {
     return this._filter.v[3];
   }
@@ -40,6 +70,10 @@ export class FilterTextureProps {
     this._filter.v[3] = v;
   }
 
+  /**
+   * Set/Get crop y
+   * @type {number}
+   */
   get cropY() {
     return this._filter.v[4];
   }
@@ -47,6 +81,10 @@ export class FilterTextureProps {
     this._filter.v[4] = v;
   }
 
+  /**
+   * Set/Get crop width
+   * @type {number}
+   */
   get cropWidth() {
     return this._filter.v[5];
   }
@@ -54,6 +92,10 @@ export class FilterTextureProps {
     this._filter.v[5] = v;
   }
 
+  /**
+   * Set/Get crop height
+   * @type {number}
+   */
   get cropHeight() {
     return this._filter.v[6];
   }

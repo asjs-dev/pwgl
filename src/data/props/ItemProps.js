@@ -1,6 +1,14 @@
-import { BasePositioningProps } from "./BasePositioningProps.js";
+import { BasePositioningProps } from "./BasePositioningProps";
 
+/**
+ * Class for element properties
+ * @extends {BasePositioningProps}
+ */
 export class ItemProps extends BasePositioningProps {
+  /**
+   * Creates an instance of ItemProps.
+   * @constructor
+   */
   constructor() {
     super();
 
@@ -16,6 +24,10 @@ export class ItemProps extends BasePositioningProps {
         1;
   }
 
+  /**
+   * Set/Get scale x
+   * @type {number}
+   */
   get scaleX() {
     return this._scaleX;
   }
@@ -26,6 +38,10 @@ export class ItemProps extends BasePositioningProps {
     }
   }
 
+  /**
+   * Set/Get scale y
+   * @type {number}
+   */
   get scaleY() {
     return this._scaleY;
   }
@@ -36,6 +52,10 @@ export class ItemProps extends BasePositioningProps {
     }
   }
 
+  /**
+   * Set/Get width
+   * @type {number}
+   */
   get width() {
     return this._width;
   }
@@ -46,6 +66,10 @@ export class ItemProps extends BasePositioningProps {
     }
   }
 
+  /**
+   * Set/Get height
+   * @type {number}
+   */
   get height() {
     return this._height;
   }
@@ -56,6 +80,9 @@ export class ItemProps extends BasePositioningProps {
     }
   }
 
+  /**
+   * Update calculated scale values
+   */
   updateScale() {
     if (this._currentScaleUpdateId < this._scaleUpdateId) {
       this._currentScaleUpdateId = this._scaleUpdateId;
