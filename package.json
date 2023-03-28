@@ -3,6 +3,11 @@
   "version": "1.1.0",
   "main": "./dist/pwgl.min.js",
   "description": "WebGL2 2D framework",
+  "homepage": "https://asjs-dev.github.io/pwgl/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asjs-dev/pwgl.git"
+  },
   "keywords": [
     "javascript",
     "webgl"
