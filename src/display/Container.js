@@ -20,6 +20,21 @@ export class Container extends Item {
   }
 
   /**
+   * Set/Get interactive
+   *
+   * @type {*}
+   */
+  get interactive() {
+    return this._interactive;
+  }
+  set interactive(v) {
+    this._interactive = v;
+
+    for (let i = 0, l = this.children.length; i < l; ++i)
+      this.children[i].interactive = v;
+  }
+
+  /**
    * Destruct class
    */
   destruct() {
@@ -62,11 +77,12 @@ export class Container extends Item {
       this.children.push(child);
       this.setChildIndex(child, index);
       child.parent = this;
+      child.interactive = this._interactive;
     }
   }
 
   /**
-   * Removes the BaseItem from the container 
+   * Removes the BaseItem from the container
    * @param {BaseItem} child
    */
   removeChild(child) {
@@ -131,7 +147,7 @@ export class Container extends Item {
    * @returns {Rectangle}
    */
   getBounds() {
-    const bounds = this._bounds;
+    const bounds = this.$bounds;
 
     bounds.x = bounds.y = 1 / 0;
     bounds.width = bounds.height = -1 / 0;
@@ -152,7 +168,7 @@ export class Container extends Item {
    * Update container data
    */
   update() {
-    this._updateProps();
+    this.$updateProps();
     this._updateColor();
   }
 
@@ -162,22 +178,22 @@ export class Container extends Item {
    * @type {number}
    */
   get premultipliedAlpha() {
-    return this.props.alpha * this._parent.premultipliedAlpha;
+    return this.props.alpha * this.$parent.premultipliedAlpha;
   }
 
   /**
    * @ignore
    */
   _updateColor() {
-    const parent = this._parent;
+    const parent = this.$parent;
     const color = this.color;
 
     if (
-      this._currentParentColorUpdateId < parent.colorUpdateId ||
-      this._currentColorUpdateId < color.updateId
+      this.$currentParentColorUpdateId < parent.colorUpdateId ||
+      this.$currentColorUpdateId < color.updateId
     ) {
-      this._currentColorUpdateId = color.updateId;
-      this._currentParentColorUpdateId = parent.colorUpdateId;
+      this.$currentColorUpdateId = color.updateId;
+      this.$currentParentColorUpdateId = parent.colorUpdateId;
       ++this.colorUpdateId;
 
       const colorCache = this.colorCache;

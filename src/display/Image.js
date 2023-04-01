@@ -20,10 +20,6 @@ export class Image extends BaseDrawable {
   constructor(texture) {
     super();
 
-    /*
-    this.interactive
-    */
-
     this.TYPE = Image.TYPE;
 
     this.textureMatrixCache = Matrix3Utilities.identity();
@@ -49,7 +45,7 @@ export class Image extends BaseDrawable {
    * Update Image
    */
   update() {
-    this._updateProps();
+    this.$updateProps();
     this._updateTexture();
     this.textureCrop.updateCrop();
   }
@@ -60,8 +56,8 @@ export class Image extends BaseDrawable {
    * @returns {boolean}
    */
   isContainsPoint(point) {
-    this._updateAdditionalData();
-    return Matrix3Utilities.isPointInMatrix(this._inverseMatrixCache, point);
+    this.$updateAdditionalData();
+    return Matrix3Utilities.isPointInMatrix(this.$inverseMatrixCache, point);
   }
 
   /**

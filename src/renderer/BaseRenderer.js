@@ -26,18 +26,18 @@ export class BaseRenderer {
     this._program
     this.widthHalf
     this.heightHalf
-    this._gl
+    this.$gl
     this._vao;
     */
 
-    this._attachFramebufferCustom = this._attachFramebuffer;
-    this._attachFramebufferAndClearCustom = this._attachFramebufferAndClear;
+    this.$attachFramebufferCustom = this._attachFramebuffer;
+    this.$attachFramebufferAndClearCustom = this.$attachFramebufferAndClear;
 
     this._clearBeforeRenderFunc = noop;
 
     this.clearColor = new ColorProps();
 
-    this._currentContextId = this._renderTime = 0;
+    this._currentContextId = this.$renderTime = 0;
 
     this._options = options;
     this._config = this._options.config;
@@ -50,7 +50,7 @@ export class BaseRenderer {
       "uTex"
     ]);
 
-    this._enableBuffers = false;
+    this.$enableBuffers = false;
 
     this._elementArrayBuffer = new Buffer(
       "",
@@ -83,6 +83,9 @@ export class BaseRenderer {
   get clearBeforeRender() {
     return this._clearBeforeRenderFunc === this._clear;
   }
+  /**
+   * Set/Get clear before render
+   */
   set clearBeforeRender(v) {
     this._clearBeforeRenderFunc = v ? this._clear : noop;
   }
@@ -104,9 +107,9 @@ export class BaseRenderer {
   renderToFramebuffer(framebuffer) {
     if (!this.context.isLost()) {
       this._switchToProgram();
-      this._attachFramebufferAndClearCustom(framebuffer);
+      this.$attachFramebufferAndClearCustom(framebuffer);
       this._renderBatch(framebuffer);
-      framebuffer.unbind(this._gl);
+      framebuffer.unbind(this.$gl);
     }
   }
 
@@ -116,36 +119,41 @@ export class BaseRenderer {
   render() {
     if (!this.context.isLost()) {
       this._switchToProgram();
-      this._gl.uniform1f(this._locations.uFlpY, 1);
+      this.$gl.uniform1f(this._locations.uFlpY, 1);
       this._clearBeforeRenderFunc();
       this._renderBatch();
     }
   }
 
   /**
+   * Destruct class
+   */
+  destruct() {}
+
+  /**
    * @param {Framebuffer} framebuffer
    * @ignore
    */
   _renderBatch(framebuffer) {
-    this._renderTime = Date.now();
-    this._render(framebuffer);
-    this._gl.flush();
+    this.$renderTime = Date.now();
+    this.$render(framebuffer);
+    this.$gl.flush();
   }
 
   /**
    * @ignore
    */
   _switchToProgram() {
-    this._gl = this.context.gl;
+    this.$gl = this.context.gl;
 
     if (this._currentContextId < this.context.contextId) {
       this._currentContextId = this.context.contextId;
       this._buildProgram();
-      this._enableBuffers = true;
+      this.$enableBuffers = true;
     } else if (this.context.useProgram(this._program, this._vao))
-      this._enableBuffers = true;
+      this.$enableBuffers = true;
 
-    this._resize();
+    this.$resize();
   }
 
   /**
@@ -153,18 +161,18 @@ export class BaseRenderer {
    * @ignore
    */
   _attachFramebuffer(framebuffer) {
-    framebuffer.bind(this._gl);
+    framebuffer.bind(this.$gl);
     framebuffer.setSize(this.width, this.height);
-    this.context.useTexture(framebuffer, this._renderTime);
+    this.context.useTexture(framebuffer, this.$renderTime);
     this.context.deactivateTexture(framebuffer);
-    this._gl.uniform1f(this._locations.uFlpY, -1);
+    this.$gl.uniform1f(this._locations.uFlpY, -1);
   }
 
   /**
    * @param {Framebuffer} framebuffer
    * @ignore
    */
-  _attachFramebufferAndClear(framebuffer) {
+  $attachFramebufferAndClear(framebuffer) {
     this._attachFramebuffer(framebuffer);
     this._clearBeforeRenderFunc();
   }
@@ -173,19 +181,19 @@ export class BaseRenderer {
    * @ignore
    */
   _clear() {
-    this._gl.clearColor(
+    this.$gl.clearColor(
       this.clearColor.r,
       this.clearColor.g,
       this.clearColor.b,
       this.clearColor.a
     );
-    this._gl.clear(Const.COLOR_BUFFER_BIT);
+    this.$gl.clear(Const.COLOR_BUFFER_BIT);
   }
 
   /**
    * @ignore
    */
-  _resize() {
+  $resize() {
     this.widthHalf = this.width / 2;
     this.heightHalf = this.height / 2;
     this.context.setSize(this.width, this.height);
@@ -195,8 +203,8 @@ export class BaseRenderer {
    * @param {number} count
    * @ignore
    */
-  _drawInstanced(count) {
-    this._gl.drawElementsInstanced(
+  $drawInstanced(count) {
+    this.$gl.drawElementsInstanced(
       Const.TRIANGLE_STRIP,
       4,
       Const.UNSIGNED_SHORT,
@@ -212,39 +220,39 @@ export class BaseRenderer {
     const options = this._options;
 
     this._program = Utils.createProgram(
-      this._gl,
-      this._createVertexShader(options),
-      this._createFragmentShader(options)
+      this.$gl,
+      this.$createVertexShader(options),
+      this.$createFragmentShader(options)
     );
 
     this._locations = Utils.getLocationsFor(
-      this._gl,
+      this.$gl,
       this._program,
       this._config.locations
     );
 
-    this._vao = this._gl.createVertexArray();
+    this._vao = this.$gl.createVertexArray();
 
     this.context.useProgram(this._program, this._vao);
 
-    this._createBuffers();
+    this.$createBuffers();
   }
 
   /**
    * @ignore
    */
-  _uploadBuffers() {
-    this._positionBuffer.upload(this._gl, this._enableBuffers);
-    this._elementArrayBuffer.upload(this._gl);
+  $uploadBuffers() {
+    this._positionBuffer.upload(this.$gl, this.$enableBuffers);
+    this._elementArrayBuffer.upload(this.$gl);
 
-    this._enableBuffers = false;
+    this.$enableBuffers = false;
   }
 
   /**
    * @ignore
    */
-  _createBuffers() {
-    this._elementArrayBuffer.create(this._gl, this._locations);
-    this._positionBuffer.create(this._gl, this._locations);
+  $createBuffers() {
+    this._elementArrayBuffer.create(this.$gl, this._locations);
+    this._positionBuffer.create(this.$gl, this._locations);
   }
 }

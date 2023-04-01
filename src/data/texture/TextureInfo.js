@@ -18,7 +18,7 @@ export class TextureInfo {
 
     this._currenActiveId = -1;
 
-    this._currentAglId = this._updateId = this._currentUpdateId = 0;
+    this.$currentAglId = this.$updateId = this.$currentUpdateId = 0;
 
     this.wrapS = this.wrapT = Const.CLAMP_TO_EDGE;
 
@@ -27,7 +27,7 @@ export class TextureInfo {
     this.minFilter = Const.NEAREST_MIPMAP_LINEAR;
     this.magFilter = Const.NEAREST;
 
-    this._width = this._height = 1;
+    this.$width = this.$height = 1;
 
     this.type = Const.UNSIGNED_BYTE;
   }
@@ -38,7 +38,7 @@ export class TextureInfo {
    * @type {number}
    */
   get width() {
-    return this._width;
+    return this.$width;
   }
 
   /**
@@ -47,7 +47,7 @@ export class TextureInfo {
    * @type {number}
    */
   get height() {
-    return this._height;
+    return this.$height;
   }
 
   /**
@@ -60,7 +60,7 @@ export class TextureInfo {
   set wrapS(v) {
     if (this._wrapS !== v) {
       this._wrapS = v;
-      ++this._updateId;
+      ++this.$updateId;
     }
   }
 
@@ -74,7 +74,7 @@ export class TextureInfo {
   set wrapT(v) {
     if (this._wrapT !== v) {
       this._wrapT = v;
-      ++this._updateId;
+      ++this.$updateId;
     }
   }
 
@@ -88,7 +88,7 @@ export class TextureInfo {
   set internalFormat(v) {
     if (this._internalFormat !== v) {
       this._internalFormat = v;
-      ++this._updateId;
+      ++this.$updateId;
     }
   }
 
@@ -102,7 +102,7 @@ export class TextureInfo {
   set format(v) {
     if (this._format !== v) {
       this._format = v;
-      ++this._updateId;
+      ++this.$updateId;
     }
   }
 
@@ -116,7 +116,7 @@ export class TextureInfo {
   set minFilter(v) {
     if (this._minFilter !== v) {
       this._minFilter = v;
-      ++this._updateId;
+      ++this.$updateId;
     }
   }
 
@@ -130,7 +130,7 @@ export class TextureInfo {
   set magFilter(v) {
     if (this._magFilter !== v) {
       this._magFilter = v;
-      ++this._updateId;
+      ++this.$updateId;
     }
   }
 
@@ -144,7 +144,7 @@ export class TextureInfo {
   set type(v) {
     if (this._type !== v) {
       this._type = v;
-      ++this._updateId;
+      ++this.$updateId;
     }
   }
 
@@ -157,7 +157,7 @@ export class TextureInfo {
    */
   use(gl, id, forceBind, renderTime) {
     if (
-      !this._hasNeedToDraw(gl, id, renderTime) &&
+      !this.$hasNeedToDraw(gl, id, renderTime) &&
       (this._currenActiveId !== id || forceBind)
     )
       this.bindActiveTexture(gl, id);
@@ -273,5 +273,5 @@ export class TextureInfo {
   /**
    * @ignore
    */
-  _hasNeedToDraw() {}
+  $hasNeedToDraw() {}
 }

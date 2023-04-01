@@ -16,7 +16,7 @@ export class StageContainer extends Container {
     super();
 
     this.renderer = renderer;
-    this._parent = new BaseItem();
+    this.$parent = new BaseItem();
   }
 
   /**
@@ -34,7 +34,7 @@ export class StageContainer extends Container {
    * @type {BaseItem}
    */
   get parent() {
-    return this._parent;
+    return this.$parent;
   }
 
   /**

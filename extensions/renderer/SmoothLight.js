@@ -1,4 +1,19 @@
+/**
+ * @typedef {Object} SmoothLightRendererConfig
+ * @extends {LightRendererConfig}
+ * @property {number} blur
+ */
+
+/**
+ * SmoothLight
+ * @extends {AGL.Image}
+ */
 export class SmoothLight extends AGL.Image {
+  /**
+   * Creates an instance of SmoothLight.
+   * @constructor
+   * @param {SmoothLightRendererConfig} options
+   */
   constructor(options) {
     super();
 
@@ -11,13 +26,11 @@ export class SmoothLight extends AGL.Image {
     this._filter = new AGL.BlurFilter();
 
     this.filterRenderer = new AGL.FilterRenderer({
-      config : {
-        context : this.lightRenderer.context,
+      config: {
+        context: this.lightRenderer.context,
       },
-      texture : this._framebuffer,
-      filters : [
-        this._filter
-      ]
+      texture: this._framebuffer,
+      filters: [this._filter],
     });
     this.filterRenderer.clearColor.set(0, 0, 0, 0);
     this.filterRenderer.clearBeforeRender = true;
@@ -29,24 +42,34 @@ export class SmoothLight extends AGL.Image {
     this._filterFramebuffer = new AGL.Framebuffer();
     this.texture = this._filterFramebuffer;
 
-    this.blur = typeof options.blur === "number"
-      ? options.blur
-      : 1;
+    this.blur = typeof options.blur === "number" ? options.blur : 1;
   }
 
-  get blur() { return this._blur; }
+  /**
+   * Set/Get blur value
+   * @type {number}
+   */
+  get blur() {
+    return this._blur;
+  }
   set blur(v) {
-    this._blur =
-    this._filter.intensityX =
-    this._filter.intensityY = v;
+    this._blur = this._filter.intensityX = this._filter.intensityY = v;
   }
 
+  /**
+   * Render
+   */
   render() {
     this._resizeFunc();
     this.lightRenderer.renderToFramebuffer(this._framebuffer);
     this.filterRenderer.renderToFramebuffer(this._filterFramebuffer);
   }
 
+  /**
+   * Set Renderer Size
+   * @param {number} w
+   * @param {number} h
+   */
   setSize(w, h) {
     this._width = w;
     this._height = h;
@@ -54,11 +77,11 @@ export class SmoothLight extends AGL.Image {
     this._resizeFunc = this._resize;
   }
 
+  /**
+   * @ignore
+   */
   _resize() {
     this._resizeFunc = () => {};
-
-    this.props.width = this._width;
-    this.props.height = this._height;
 
     this.lightRenderer.setSize(this._width, this._height);
     this.filterRenderer.setSize(this._width, this._height);

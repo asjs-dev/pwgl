@@ -57,7 +57,7 @@ export class LightRenderer extends BatchRenderer {
     this._lights = [];
     for (let i = 0; i < maxBatchItems; ++i)
       this._lights.push(
-        new Light(i, this._matrixBuffer.data, this._extensionBuffer.data)
+        new Light(i, this.$matrixBuffer.data, this._extensionBuffer.data)
       );
   }
 
@@ -76,16 +76,16 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   _useTexture(sourceTexture, location) {
-    this._gl.uniform1i(
+    this.$gl.uniform1i(
       location,
-      this.context.useTexture(sourceTexture, this._renderTime, true)
+      this.context.useTexture(sourceTexture, this.$renderTime, true)
     );
   }
 
   /**
    * @ignore
    */
-  _render() {
+  $render() {
     this.context.setBlendMode(BlendMode.ADD);
 
     let width = this.width;
@@ -93,8 +93,8 @@ export class LightRenderer extends BatchRenderer {
 
     if (this.sourceImage) {
       this._useTexture(this.sourceImage, this._locations.uSITex);
-      this._gl.uniform1f(this._locations.uUSIT, 1);
-    } else this._gl.uniform1f(this._locations.uUSIT, 0);
+      this.$gl.uniform1f(this._locations.uUSIT, 1);
+    } else this.$gl.uniform1f(this._locations.uUSIT, 0);
 
     this.normalMap && this._useTexture(this.normalMap, this._locations.uNMTex);
 
@@ -105,27 +105,27 @@ export class LightRenderer extends BatchRenderer {
       height = this.heightMap.height;
     }
 
-    this._gl.uniform2f(this._locations.uTS, width, height);
+    this.$gl.uniform2f(this._locations.uTS, width, height);
 
-    this._uploadBuffers();
+    this.$uploadBuffers();
 
-    this._drawInstanced(this._lights.length);
+    this.$drawInstanced(this._lights.length);
   }
 
   /**
    * @ignore
    */
-  _uploadBuffers() {
-    this._extensionBuffer.upload(this._gl, this._enableBuffers);
-    super._uploadBuffers();
+  $uploadBuffers() {
+    this._extensionBuffer.upload(this.$gl, this.$enableBuffers);
+    super.$uploadBuffers();
   }
 
   /**
    * @ignore
    */
-  _createBuffers() {
-    super._createBuffers();
-    this._extensionBuffer.create(this._gl, this._locations);
+  $createBuffers() {
+    super.$createBuffers();
+    this._extensionBuffer.create(this.$gl, this._locations);
   }
 
   // prettier-ignore
@@ -134,7 +134,7 @@ export class LightRenderer extends BatchRenderer {
    * @returns {string}
    * @ignore
    */
-  _createVertexShader(options) {
+  $createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H vec4(1,-1,2,-2)\n" +
     "#define PI radians(180.)\n" +
@@ -198,7 +198,7 @@ export class LightRenderer extends BatchRenderer {
    * @returns {string}
    * @ignore
    */
-  _createFragmentShader(options) {
+  $createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H 256.\n" +
     "#define PI radians(180.)\n" +

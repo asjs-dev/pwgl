@@ -202,7 +202,7 @@ export class Light extends BaseDrawable {
     const datId = this._datId;
 
     if (this.isOn()) {
-      this._updateProps();
+      this.$updateProps();
       this._updateColor();
 
       lightData[datId] = lightData[datId - 1] > 0 ? 1 : 0;
@@ -230,27 +230,27 @@ export class Light extends BaseDrawable {
   /**
    * @ignore
    */
-  _updateAdditionalData() {
+  $updateAdditionalData() {
     if (
       this.isOn() &&
-      this._currentAdditionalPropsUpdateId < this.propsUpdateId
+      this.$currentAdditionalPropsUpdateId < this.propsUpdateId
     ) {
-      this._currentAdditionalPropsUpdateId = this.propsUpdateId;
-      this._calcBounds();
+      this.$currentAdditionalPropsUpdateId = this.propsUpdateId;
+      this.$calcBounds();
     }
   }
 
   /**
    * @ignore
    */
-  _calcCorners() {
+  $calcCorners() {
     Matrix3Utilities.calcCorners(
       this.matrixCache,
-      this._corners,
+      this.$corners,
       this.stage.renderer
     );
 
-    const corners = this._corners;
+    const corners = this.$corners;
 
     const a = corners[0];
     const b = corners[1];
@@ -270,8 +270,8 @@ export class Light extends BaseDrawable {
    * @param {Container} parent
    * @ignore
    */
-  _updateTransform(props, parent) {
-    super._updateTransform(props, parent);
+  $updateTransform(props, parent) {
+    super.$updateTransform(props, parent);
 
     arraySet(this._lightData, this.matrixCache, this._matId);
   }
@@ -282,11 +282,11 @@ export class Light extends BaseDrawable {
   _updateColor() {
     const color = this.color;
 
-    if (this._currentColorUpdateId < color.updateId) {
-      this._currentColorUpdateId = color.updateId;
+    if (this.$currentColorUpdateId < color.updateId) {
+      this.$currentColorUpdateId = color.updateId;
 
       const lightData = this._lightData;
-      const parentColorCache = this._parent.colorCache;
+      const parentColorCache = this.$parent.colorCache;
 
       const colId = this._octId;
 

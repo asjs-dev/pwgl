@@ -99,16 +99,16 @@ export class Texture extends TextureInfo {
    * @returns {boolean}
    * @ignore
    */
-  _hasNeedToDraw(gl, id, renderTime) {
-    if (this._currentAglId < gl.agl_id) {
-      this._currentAglId = gl.agl_id;
+  $hasNeedToDraw(gl, id, renderTime) {
+    if (this.$currentAglId < gl.agl_id) {
+      this.$currentAglId = gl.agl_id;
       this._baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
       return true;
     }
 
-    if (this._currentUpdateId < this._updateId) {
-      this._currentUpdateId = this._updateId;
+    if (this.$currentUpdateId < this.$updateId) {
+      this.$currentUpdateId = this.$updateId;
       this.useActiveTexture(gl, id);
       return true;
     }

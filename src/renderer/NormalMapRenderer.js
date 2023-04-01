@@ -34,17 +34,17 @@ export class NormalMapRenderer extends BaseRenderer {
   /**
    * @ignore
    */
-  _render() {
+  $render() {
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this._gl.uniform1i(
+    this.$gl.uniform1i(
       this._locations.uTex,
-      this.context.useTexture(this.heightMap, this._renderTime, true)
+      this.context.useTexture(this.heightMap, this.$renderTime, true)
     );
 
-    this._uploadBuffers();
+    this.$uploadBuffers();
 
-    this._drawInstanced(1);
+    this.$drawInstanced(1);
   }
 
   // prettier-ignore
@@ -53,7 +53,7 @@ export class NormalMapRenderer extends BaseRenderer {
    * @returns {string}
    * @ignore
    */
-  _createVertexShader(options) {
+  $createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "in vec2 " +
       "aPos;" +
@@ -77,7 +77,7 @@ export class NormalMapRenderer extends BaseRenderer {
    * @returns {string}
    * @ignore
    */
-  _createFragmentShader(options) {
+  $createFragmentShader(options) {
     return Utils.createVersion(options.config.precision) +
     "#define H 256.\n" +
     "in vec2 " +

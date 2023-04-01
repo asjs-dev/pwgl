@@ -1,7 +1,6 @@
 import { Item } from "./Item";
 import { PointUtilities } from "../geom/PointUtilities";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
-import { TextureInfo } from "../data/texture/TextureInfo";
 import "../geom/RectangleUtilities";
 
 /**
@@ -12,14 +11,13 @@ export class BaseDrawable extends Item {
   /**
    * Creates an instance of BaseDrawable.
    * @constructor
-   * @param {TextureInfo} texture
    */
-  constructor(texture) {
+  constructor() {
     super();
 
-    this._inverseMatrixCache = new Float32Array(6);
+    this.$inverseMatrixCache = new Float32Array(6);
 
-    this._corners = [
+    this.$corners = [
       PointUtilities.create(),
       PointUtilities.create(),
       PointUtilities.create(),
@@ -32,8 +30,8 @@ export class BaseDrawable extends Item {
    * @returns {Array<Point>}
    */
   getCorners() {
-    this._updateAdditionalData();
-    return this._corners;
+    this.$updateAdditionalData();
+    return this.$corners;
   }
 
   /**
@@ -41,25 +39,25 @@ export class BaseDrawable extends Item {
    * @returns {Rectangle}
    */
   getBounds() {
-    this._updateAdditionalData();
-    return this._bounds;
+    this.$updateAdditionalData();
+    return this.$bounds;
   }
 
   /**
    * @ignore
    */
-  _calcCorners() {
-    Matrix3Utilities.calcCorners(this.matrixCache, this._corners, this.stage.renderer);
+  $calcCorners() {
+    Matrix3Utilities.calcCorners(this.matrixCache, this.$corners, this.stage.renderer);
   }
 
   /**
    * @ignore
    */
-  _calcBounds() {
-    this._calcCorners();
+  $calcBounds() {
+    this.$calcCorners();
 
-    const corners = this._corners;
-    const bounds = this._bounds;
+    const corners = this.$corners;
+    const bounds = this.$bounds;
 
     const a = corners[0];
     const b = corners[1];
@@ -75,11 +73,11 @@ export class BaseDrawable extends Item {
   /**
    * @ignore
    */
-  _updateAdditionalData() {
-    if (this._currentAdditionalPropsUpdateId < this.propsUpdateId) {
-      this._currentAdditionalPropsUpdateId = this.propsUpdateId;
-      Matrix3Utilities.inverse(this.matrixCache, this._inverseMatrixCache);
-      this._calcBounds();
+  $updateAdditionalData() {
+    if (this.$currentAdditionalPropsUpdateId < this.propsUpdateId) {
+      this.$currentAdditionalPropsUpdateId = this.propsUpdateId;
+      Matrix3Utilities.inverse(this.matrixCache, this.$inverseMatrixCache);
+      this.$calcBounds();
     }
   }
 }

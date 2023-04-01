@@ -27,24 +27,24 @@ export class BatchRenderer extends BaseRenderer {
 
     super(options);
 
-    this._MAX_BATCH_ITEMS = options.maxBatchItems || 1;
+    this.$MAX_BATCH_ITEMS = options.maxBatchItems || 1;
 
-    this._matrixBuffer = new Buffer("aMt", this._MAX_BATCH_ITEMS, 4, 4);
+    this.$matrixBuffer = new Buffer("aMt", this.$MAX_BATCH_ITEMS, 4, 4);
   }
 
   /**
    * @ignore
    */
-  _uploadBuffers() {
-    this._matrixBuffer.upload(this._gl, this._enableBuffers);
-    super._uploadBuffers();
+  $uploadBuffers() {
+    this.$matrixBuffer.upload(this.$gl, this.$enableBuffers);
+    super.$uploadBuffers();
   }
 
   /**
    * @ignore
    */
-  _createBuffers() {
-    super._createBuffers();
-    this._matrixBuffer.create(this._gl, this._locations);
+  $createBuffers() {
+    super.$createBuffers();
+    this.$matrixBuffer.create(this.$gl, this._locations);
   }
 }

@@ -25,15 +25,15 @@ export class Item extends BaseItem {
     this.color = new ColorProps();
 
     this._currentPropsUpdateId =
-      this._currentColorUpdateId =
+      this.$currentColorUpdateId =
       this._currentParentPropsUpdateId =
-      this._currentParentColorUpdateId =
-      this._currentAdditionalPropsUpdateId =
+      this.$currentParentColorUpdateId =
+      this.$currentAdditionalPropsUpdateId =
         0;
 
     this.callback = noop;
 
-    this._bounds = RectangleUtilities.create();
+    this.$bounds = RectangleUtilities.create();
   }
 
   /**
@@ -42,7 +42,7 @@ export class Item extends BaseItem {
    * @type {StageContainer}
    */
   get stage() {
-    return this._parent ? this._parent.stage : null;
+    return this.$parent ? this.$parent.stage : null;
   }
 
   /**
@@ -50,14 +50,17 @@ export class Item extends BaseItem {
    * @type {Container}
    */
   get parent() {
-    return this._parent;
+    return this.$parent;
   }
+  /**
+   * Set/Get parent
+   */
   set parent(v) {
-    if (this._parent !== v) {
-      this._parent = v;
+    if (this.$parent !== v) {
+      this.$parent = v;
       this._currentParentPropsUpdateId =
-        this._currentParentColorUpdateId =
-        this._currentAdditionalPropsUpdateId =
+        this.$currentParentColorUpdateId =
+        this.$currentAdditionalPropsUpdateId =
           0;
     }
   }
@@ -70,6 +73,10 @@ export class Item extends BaseItem {
   get callback() {
     return this._callback;
   }
+  /**
+   * Set/Get render callback
+   - It will be called when the Item is rendered
+   */
   set callback(v) {
     this._callback = v || noop;
   }
@@ -79,14 +86,14 @@ export class Item extends BaseItem {
    * @returns {Rectangle}
    */
   getBounds() {
-    return this._bounds;
+    return this.$bounds;
   }
 
   /**
    * Destruct class
    */
   destruct() {
-    this._parent && this._parent.removeChild && this._parent.removeChild(this);
+    this.$parent && this.$parent.removeChild && this.$parent.removeChild(this);
     super.destruct();
   }
 
@@ -94,21 +101,21 @@ export class Item extends BaseItem {
    * Update ItemProps
    */
   update() {
-    this._updateProps();
+    this.$updateProps();
   }
 
   /**
    * @ignore
    */
-  _updateProps() {
+  $updateProps() {
     const props = this.props;
     props.updateRotation();
     props.updateScale();
-    const parent = this._parent;
+    const parent = this.$parent;
 
     (this._currentParentPropsUpdateId < parent.propsUpdateId ||
       this._currentPropsUpdateId < props.updateId) &&
-      this._updateTransform(props, parent);
+      this.$updateTransform(props, parent);
   }
 
   /**
@@ -116,7 +123,7 @@ export class Item extends BaseItem {
    * @param {Container} parent
    * @ignore
    */
-  _updateTransform(props, parent) {
+  $updateTransform(props, parent) {
     this._currentParentPropsUpdateId = parent.propsUpdateId;
     this._currentPropsUpdateId = props.updateId;
     ++this.propsUpdateId;

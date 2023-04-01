@@ -36,7 +36,7 @@ export class FilterRenderer extends BaseRenderer {
 
     super(options);
 
-    this._attachFramebufferCustom = this._attachFramebufferAndClearCustom =
+    this.$attachFramebufferCustom = this.$attachFramebufferAndClearCustom =
       noop;
 
     this.filters = options.filters || [];
@@ -49,15 +49,15 @@ export class FilterRenderer extends BaseRenderer {
    * @param {Framebuffer} framebuffer
    * @ignore
    */
-  _render(framebuffer) {
+  $render(framebuffer) {
     const context = this.context;
-    const gl = this._gl;
-    const renderTime = this._renderTime;
+    const gl = this.$gl;
+    const renderTime = this.$renderTime;
     const locations = this._locations;
 
     context.setBlendMode(BlendMode.NORMAL);
 
-    this._uploadBuffers();
+    this.$uploadBuffers();
 
     context.useTextureAt(this.texture, 0, renderTime, true);
     gl.uniform1i(locations.uTex, 0);
@@ -82,11 +82,11 @@ export class FilterRenderer extends BaseRenderer {
 
       if (isLast)
         framebuffer
-          ? this._attachFramebufferAndClear(framebuffer)
+          ? this.$attachFramebufferAndClear(framebuffer)
           : gl.uniform1f(locations.uFlpY, 1);
       else if (useFilter) {
         filterFramebuffer = this._framebuffers[i & 1];
-        this._attachFramebufferAndClear(filterFramebuffer);
+        this.$attachFramebufferAndClear(filterFramebuffer);
       }
 
       if (useFilter) {
@@ -95,7 +95,7 @@ export class FilterRenderer extends BaseRenderer {
         gl.uniform2i(locations.uFtrT, filter.TYPE, filter.SUB_TYPE);
       }
 
-      (useFilter || isLast) && this._drawInstanced(1);
+      (useFilter || isLast) && this.$drawInstanced(1);
 
       filterTexture && context.deactivateTexture(filterTexture);
 
@@ -112,7 +112,7 @@ export class FilterRenderer extends BaseRenderer {
    * @returns {string}
    * @ignore
    */
-  _createVertexShader(options) {
+  $createVertexShader(options) {
     return Utils.createVersion(options.config.precision) +
     "in vec2 " +
       "aPos;" +
@@ -138,7 +138,7 @@ export class FilterRenderer extends BaseRenderer {
    * @returns {string}
    * @ignore
    */
-  _createFragmentShader(options) {
+  $createFragmentShader(options) {
     const blurFunc = (core) =>
       "for(oft.x=-2.;oft.x<3.;++oft.x)" +
         "for(oft.y=-2.;oft.y<3.;++oft.y)" +

@@ -22,11 +22,11 @@ export class Framebuffer extends TextureInfo {
    * @type {number}
    */
   get width() {
-    return this._width;
+    return this.$width;
   }
   set width(v) {
-    if (this._width !== v && v > 0) {
-      this._width = v;
+    if (this.$width !== v && v > 0) {
+      this.$width = v;
       ++this._resizeUpdateId;
     }
   }
@@ -36,11 +36,11 @@ export class Framebuffer extends TextureInfo {
    * @type {number}
    */
   get height() {
-    return this._height;
+    return this.$height;
   }
   set height(v) {
-    if (this._height !== v && v > 0) {
-      this._height = v;
+    if (this.$height !== v && v > 0) {
+      this.$height = v;
       ++this._resizeUpdateId;
     }
   }
@@ -77,9 +77,9 @@ export class Framebuffer extends TextureInfo {
    * @returns {boolean}
    * @ignore
    */
-  _hasNeedToDraw(gl, id) {
-    if (this._currentAglId < gl.agl_id) {
-      this._currentAglId = gl.agl_id;
+  $hasNeedToDraw(gl, id) {
+    if (this.$currentAglId < gl.agl_id) {
+      this.$currentAglId = gl.agl_id;
       this._baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
 
@@ -100,8 +100,8 @@ export class Framebuffer extends TextureInfo {
       return true;
     }
 
-    if (this._currentUpdateId < this._updateId) {
-      this._currentUpdateId = this._updateId;
+    if (this.$currentUpdateId < this.$updateId) {
+      this.$currentUpdateId = this.$updateId;
       this.useActiveTextureAfterUpdate(gl, id);
       return true;
     }

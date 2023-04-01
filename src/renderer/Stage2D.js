@@ -62,43 +62,79 @@ export class Stage2D extends BatchRenderer {
     this._drawItem = this._drawItem.bind(this);
 
     /*
-    this.picked
+    this._picked
     this._isPickerSet
     */
 
-    this.pickerPoint = PointUtilities.create();
+    this._pickerPoint = PointUtilities.create();
 
     this._dataBuffer = new Buffer("aDt", maxBatchItems, 3, 4);
 
     this._distortionBuffer = new Buffer("aDst", maxBatchItems, 4, 2);
+
+    this._onMouseEventHandler = this._onMouseEventHandler.bind(this);
+    const body = document.body;
+    body.addEventListener("mousemove", this._onMouseEventHandler);
+    body.addEventListener("mousedown", this._onMouseEventHandler);
+    body.addEventListener("mouseup", this._onMouseEventHandler);
+    body.addEventListener("click", this._onMouseEventHandler);
+    body.addEventListener("touchstart", this._onMouseEventHandler);
+    body.addEventListener("touchmove", this._onMouseEventHandler);
+    body.addEventListener("touchend", this._onMouseEventHandler);
   }
 
   /**
    * Renders the scene
    */
   render() {
-    this.picked = null;
+    this._picked = null;
 
     super.render();
 
     this._isPickerSet = false;
+
+    this._handleMouseEvent();
   }
 
   /**
-   * Set point for detect an item under it
-   * @param {Point} point
+   * Description placeholder
    */
-  setPickerPoint(point) {
-    this._isPickerSet = true;
-
-    this.pickerPoint.x = (point.x - this.widthHalf) * this.matrixCache[0];
-    this.pickerPoint.y = (point.y - this.heightHalf) * this.matrixCache[4];
+  destruct() {
+    const body = document.body;
+    body.removeEventListener("mousemove", this._onMouseEventHandler);
+    body.removeEventListener("mousedown", this._onMouseEventHandler);
+    body.removeEventListener("mouseup", this._onMouseEventHandler);
+    body.removeEventListener("click", this._onMouseEventHandler);
+    body.removeEventListener("touchstart", this._onMouseEventHandler);
+    body.removeEventListener("touchmove", this._onMouseEventHandler);
+    body.removeEventListener("touchend", this._onMouseEventHandler);
   }
 
   /**
    * @ignore
    */
-  _render() {
+  _handleMouseEvent() {
+    this._picked && this._picked.handleEvent(this._picked, this._latestEvent);
+  }
+
+  /**
+   * @param {*} x
+   * @param {*} y
+   * @ignore
+   */
+  _setPickerPoint(x, y) {
+    this._isPickerSet = true;
+
+    const matrixCache = this.container.parent.matrixCache;
+
+    this._pickerPoint.x = (x - this.widthHalf) * matrixCache[0];
+    this._pickerPoint.y = (y - this.heightHalf) * matrixCache[3];
+  }
+
+  /**
+   * @ignore
+   */
+  $render() {
     this._drawItem(this.container);
     this._batchDraw();
   }
@@ -108,8 +144,8 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawItem(item) {
-    item.update(this._renderTime);
-    item.callback(item, this._renderTime);
+    item.update(this.$renderTime);
+    item.callback(item, this.$renderTime);
     item.renderable && this["_draw" + item.TYPE](item);
   }
 
@@ -118,8 +154,8 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawContainer(container) {
-    this._gl.uniform4fv(this._locations.uWCl, container.colorCache);
-    this._gl.uniform1f(this._locations.uWA, container.premultipliedAlpha);
+    this.$gl.uniform4fv(this._locations.uWCl, container.colorCache);
+    this.$gl.uniform1f(this._locations.uWA, container.premultipliedAlpha);
 
     const children = container.children;
     for (let i = 0, l = children.length; i < l; ++i)
@@ -136,9 +172,9 @@ export class Stage2D extends BatchRenderer {
     if (
       this._isPickerSet &&
       item.interactive &&
-      item.isContainsPoint(this.pickerPoint)
+      item.isContainsPoint(this._pickerPoint)
     )
-      this.picked = item;
+      this._picked = item;
 
     const twId = this._batchItems * 12;
     const matId = this._batchItems * 16;
@@ -150,15 +186,15 @@ export class Stage2D extends BatchRenderer {
     this._dataBuffer.data[twId + 5] = item.tintType;
     this._dataBuffer.data[twId + 6] = this.context.useTexture(
       item.texture,
-      this._renderTime,
+      this.$renderTime,
       false,
       this._batchDraw
     );
     this._dataBuffer.data[twId + 7] = item.distortionProps.distortTexture;
 
-    arraySet(this._matrixBuffer.data, item.matrixCache, matId);
-    arraySet(this._matrixBuffer.data, item.textureMatrixCache, matId + 6);
-    arraySet(this._matrixBuffer.data, item.textureCropCache, matId + 12);
+    arraySet(this.$matrixBuffer.data, item.matrixCache, matId);
+    arraySet(this.$matrixBuffer.data, item.textureMatrixCache, matId + 6);
+    arraySet(this.$matrixBuffer.data, item.textureCropCache, matId + 12);
 
     arraySet(
       this._distortionBuffer.data,
@@ -166,7 +202,7 @@ export class Stage2D extends BatchRenderer {
       this._batchItems * 8
     );
 
-    ++this._batchItems === this._MAX_BATCH_ITEMS && this._batchDraw();
+    ++this._batchItems === this.$MAX_BATCH_ITEMS && this._batchDraw();
   }
 
   /**
@@ -174,11 +210,11 @@ export class Stage2D extends BatchRenderer {
    */
   _batchDraw() {
     if (this._batchItems > 0) {
-      this._uploadBuffers();
+      this.$uploadBuffers();
 
-      this._gl.uniform1iv(this._locations.uTex, this.context.textureIds);
+      this.$gl.uniform1iv(this._locations.uTex, this.context.textureIds);
 
-      this._drawInstanced(this._batchItems);
+      this.$drawInstanced(this._batchItems);
 
       this._batchItems = 0;
     }
@@ -187,8 +223,8 @@ export class Stage2D extends BatchRenderer {
   /**
    * @ignore
    */
-  _resize() {
-    super._resize();
+  $resize() {
+    super.$resize();
     Matrix3Utilities.projection(this.container.parent.matrixCache, this);
     ++this.container.parent.propsUpdateId;
   }
@@ -196,21 +232,37 @@ export class Stage2D extends BatchRenderer {
   /**
    * @ignore
    */
-  _uploadBuffers() {
-    this._dataBuffer.upload(this._gl, this._enableBuffers);
-    this._distortionBuffer.upload(this._gl, this._enableBuffers);
+  $uploadBuffers() {
+    this._dataBuffer.upload(this.$gl, this.$enableBuffers);
+    this._distortionBuffer.upload(this.$gl, this.$enableBuffers);
 
-    super._uploadBuffers();
+    super.$uploadBuffers();
   }
 
   /**
    * @ignore
    */
-  _createBuffers() {
-    super._createBuffers();
+  $createBuffers() {
+    super.$createBuffers();
 
-    this._dataBuffer.create(this._gl, this._locations);
-    this._distortionBuffer.create(this._gl, this._locations);
+    this._dataBuffer.create(this.$gl, this._locations);
+    this._distortionBuffer.create(this.$gl, this._locations);
+  }
+
+  /**
+   * @param {*} event
+   * @ignore
+   */
+  _onMouseEventHandler(event) {
+    const canvas = this.context.canvas;
+    if (event.target === canvas) {
+      this._latestEvent = event;
+      const scaleX = canvas.width / canvas.offsetWidth;
+      const scaleY = canvas.height / canvas.offsetHeight;
+      const offsetX = scaleX * event.offsetX;
+      const offsetY = scaleY * event.offsetY;
+      this._setPickerPoint(offsetX, offsetY);
+    }
   }
 
   // prettier-ignore
@@ -219,7 +271,7 @@ export class Stage2D extends BatchRenderer {
    * @returns {string}
    * @ignore
    */
-  _createVertexShader(options) {
+  $createVertexShader(options) {
     const useRepeatTextures = options.useRepeatTextures;
 
     return Utils.createVersion(options.config.precision) +
@@ -302,7 +354,7 @@ export class Stage2D extends BatchRenderer {
    * @returns {string}
    * @ignore
    */
-  _createFragmentShader(options) {
+  $createFragmentShader(options) {
     const maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
     const useRepeatTextures = options.useRepeatTextures;
     const useTint = options.useTint;

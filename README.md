@@ -1,5 +1,3 @@
-![logo](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/logo.png?raw=true)
-
 A JavaScript framework for creating 2D WebGL2 applications
 
 ![Game Demo](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/game.jpg?raw=true)
