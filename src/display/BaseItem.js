@@ -20,7 +20,7 @@ export class BaseItem {
 
   /**
    * Handle event
-   *  - It can handle mouse events if the item is interactive and has [onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
+   *  - It can handle mouse events if the item is interactive and has [onmouseover, onmouseout, onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
    * @param {*} event
    */
   handleEvent(target, event) {

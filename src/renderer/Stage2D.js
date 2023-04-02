@@ -114,7 +114,29 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _handleMouseEvent() {
-    this._picked && this._picked.handleEvent(this._picked, this._latestEvent);
+    if (this._latestEvent) {
+      if (this._picked !== this._previousTarget) {
+        const newEvent = {};
+        for (let key in this._latestEvent)
+          newEvent[key] = this._latestEvent[key];
+
+        this._previousTarget &&
+          this._previousTarget.handleEvent(this._previousTarget, {
+            ...newEvent,
+            type: "mouseout",
+          });
+
+        this._picked &&
+          this._picked.handleEvent(this._picked, {
+            ...newEvent,
+            type: "mouseover",
+          });
+      }
+
+      this._picked && this._picked.handleEvent(this._picked, this._latestEvent);
+      this._previousTarget = this._picked;
+    }
+    this._latestEvent = null;
   }
 
   /**
