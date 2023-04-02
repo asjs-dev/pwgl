@@ -20,21 +20,6 @@ export class Container extends Item {
   }
 
   /**
-   * Set/Get interactive
-   *
-   * @type {*}
-   */
-  get interactive() {
-    return this._interactive;
-  }
-  set interactive(v) {
-    this._interactive = v;
-
-    for (let i = 0, l = this.children.length; i < l; ++i)
-      this.children[i].interactive = v;
-  }
-
-  /**
    * Destruct class
    */
   destruct() {
@@ -77,7 +62,6 @@ export class Container extends Item {
       this.children.push(child);
       this.setChildIndex(child, index);
       child.parent = this;
-      child.interactive = this._interactive;
     }
   }
 

@@ -24,9 +24,11 @@ export class BaseItem {
    * @param {*} event
    */
   handleEvent(target, event) {
-    const functionName = event.type;
-    const callback = this["on" + functionName];
-    callback && callback(this, target, event);
+    if (this.interactive) {
+      const functionName = event.type;
+      const callback = this["on" + functionName];
+      callback && callback(this, target, event);
+    }
     if (this.$parent) this.$parent.handleEvent(target, event);
   }
 
