@@ -38,7 +38,8 @@ export class LightRenderer extends BatchRenderer {
       "uSITex",
       "aExt",
       "uTS",
-      "uUSIT"
+      "uUSIT",
+      "uUNMT"
     ]);
 
     const maxBatchItems = (options.maxBatchItems = options.lightNum || 1);
@@ -96,7 +97,10 @@ export class LightRenderer extends BatchRenderer {
       this.$gl.uniform1f(this.$locations.uUSIT, 1);
     } else this.$gl.uniform1f(this.$locations.uUSIT, 0);
 
-    this.normalMap && this._useTexture(this.normalMap, this.$locations.uNMTex);
+    if (this.normalMap) {
+      this._useTexture(this.normalMap, this.$locations.uNMTex);
+      this.$gl.uniform1f(this.$locations.uUNMT, 1);
+    } else this.$gl.uniform1f(this.$locations.uUNMT, 0);
 
     if (this.heightMap) {
       this._useTexture(this.heightMap, this.$locations.uTex);
@@ -223,7 +227,8 @@ export class LightRenderer extends BatchRenderer {
       "uSITex," +
       "uTex;" +
     "uniform float " +
-      "uUSIT;" +
+      "uUSIT," +
+      "uUNMT;" +
     "uniform vec2 " +
       "uTS;" +
 
@@ -287,7 +292,9 @@ export class LightRenderer extends BatchRenderer {
 
         "if((flg&2)>0){" +
           "vec3 " +
-            "nm=normalize((texture(uNMTex,vTUv).rgb*2.-1.)*vec3(1,-1,1))," +
+            "nm=uUSIT<1." + 
+              "?vec3(0,0,1.)" + 
+              ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*vec3(1,-1,1))," +
             "sftl=normalize(sftla)," +
             "sftv=normalize(vec3(" +
               "(flg&16)>0" +

@@ -30,7 +30,7 @@ export class BaseRenderer {
     this._vao;
     */
 
-    this.$attachFramebufferCustom = this._attachFramebuffer;
+    this.$attachFramebufferCustom = this.$attachFramebuffer;
     this.$attachFramebufferAndClearCustom = this.$attachFramebufferAndClear;
 
     this._clearBeforeRenderFunc = noop;
@@ -160,7 +160,7 @@ export class BaseRenderer {
    * @param {Framebuffer} framebuffer
    * @ignore
    */
-  _attachFramebuffer(framebuffer) {
+  $attachFramebuffer(framebuffer) {
     framebuffer.bind(this.$gl);
     framebuffer.setSize(this.width, this.height);
     this.context.useTexture(framebuffer, this.$renderTime);
@@ -173,7 +173,7 @@ export class BaseRenderer {
    * @ignore
    */
   $attachFramebufferAndClear(framebuffer) {
-    this._attachFramebuffer(framebuffer);
+    this.$attachFramebuffer(framebuffer);
     this._clearBeforeRenderFunc();
   }
 
