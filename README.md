@@ -7,7 +7,7 @@ A JavaScript framework for creating 2D WebGL2 applications
 - [Card Game Demo](https://asjs-dev.github.io/pwgl/example/cardGameDemo.html)
 - [Displacement Filter](https://asjs-dev.github.io/pwgl/example/rainDropsDemo.html)
 - [2D Lights and Shadows](https://asjs-dev.github.io/pwgl/example/lightDemo.html)
-- [Lights, Shadows and Filters](hhttps://asjs-dev.github.io/pwgl/example/boatDemo.html)
+- [Lights, Shadows and Filters](https://asjs-dev.github.io/pwgl/example/boatDemo.html)
 - [Journey](https://asjs-dev.github.io/pwgl/example/journeyDemo.html)
 
 ### Features:
