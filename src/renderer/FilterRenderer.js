@@ -53,7 +53,7 @@ export class FilterRenderer extends BaseRenderer {
     const context = this.context;
     const gl = this.$gl;
     const renderTime = this.$renderTime;
-    const locations = this._locations;
+    const locations = this.$locations;
 
     context.setBlendMode(BlendMode.NORMAL);
 

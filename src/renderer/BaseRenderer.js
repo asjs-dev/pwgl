@@ -119,7 +119,7 @@ export class BaseRenderer {
   render() {
     if (!this.context.isLost()) {
       this._switchToProgram();
-      this.$gl.uniform1f(this._locations.uFlpY, 1);
+      this.$gl.uniform1f(this.$locations.uFlpY, 1);
       this._clearBeforeRenderFunc();
       this._renderBatch();
     }
@@ -165,7 +165,7 @@ export class BaseRenderer {
     framebuffer.setSize(this.width, this.height);
     this.context.useTexture(framebuffer, this.$renderTime);
     this.context.deactivateTexture(framebuffer);
-    this.$gl.uniform1f(this._locations.uFlpY, -1);
+    this.$gl.uniform1f(this.$locations.uFlpY, -1);
   }
 
   /**
@@ -225,7 +225,7 @@ export class BaseRenderer {
       this.$createFragmentShader(options)
     );
 
-    this._locations = Utils.getLocationsFor(
+    this.$locations = Utils.getLocationsFor(
       this.$gl,
       this._program,
       this._config.locations
@@ -252,7 +252,7 @@ export class BaseRenderer {
    * @ignore
    */
   $createBuffers() {
-    this._elementArrayBuffer.create(this.$gl, this._locations);
-    this._positionBuffer.create(this.$gl, this._locations);
+    this._elementArrayBuffer.create(this.$gl, this.$locations);
+    this._positionBuffer.create(this.$gl, this.$locations);
   }
 }

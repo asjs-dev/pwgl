@@ -92,20 +92,20 @@ export class LightRenderer extends BatchRenderer {
     let height = this.height;
 
     if (this.sourceImage) {
-      this._useTexture(this.sourceImage, this._locations.uSITex);
-      this.$gl.uniform1f(this._locations.uUSIT, 1);
-    } else this.$gl.uniform1f(this._locations.uUSIT, 0);
+      this._useTexture(this.sourceImage, this.$locations.uSITex);
+      this.$gl.uniform1f(this.$locations.uUSIT, 1);
+    } else this.$gl.uniform1f(this.$locations.uUSIT, 0);
 
-    this.normalMap && this._useTexture(this.normalMap, this._locations.uNMTex);
+    this.normalMap && this._useTexture(this.normalMap, this.$locations.uNMTex);
 
     if (this.heightMap) {
-      this._useTexture(this.heightMap, this._locations.uTex);
+      this._useTexture(this.heightMap, this.$locations.uTex);
 
       width = this.heightMap.width;
       height = this.heightMap.height;
     }
 
-    this.$gl.uniform2f(this._locations.uTS, width, height);
+    this.$gl.uniform2f(this.$locations.uTS, width, height);
 
     this.$uploadBuffers();
 
@@ -125,7 +125,7 @@ export class LightRenderer extends BatchRenderer {
    */
   $createBuffers() {
     super.$createBuffers();
-    this._extensionBuffer.create(this.$gl, this._locations);
+    this._extensionBuffer.create(this.$gl, this.$locations);
   }
 
   // prettier-ignore

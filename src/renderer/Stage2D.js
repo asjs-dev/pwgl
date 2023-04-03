@@ -182,8 +182,8 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawContainer(container) {
-    this.$gl.uniform4fv(this._locations.uWCl, container.colorCache);
-    this.$gl.uniform1f(this._locations.uWA, container.premultipliedAlpha);
+    this.$gl.uniform4fv(this.$locations.uWCl, container.colorCache);
+    this.$gl.uniform1f(this.$locations.uWA, container.premultipliedAlpha);
 
     const children = container.children;
     for (let i = 0, l = children.length; i < l; ++i)
@@ -239,7 +239,7 @@ export class Stage2D extends BatchRenderer {
   _batchDraw() {
     if (this._batchItems > 0) {
       this.$uploadBuffers();
-      this.$gl.uniform1iv(this._locations.uTex, this.context.textureIds);
+      this.$gl.uniform1iv(this.$locations.uTex, this.context.textureIds);
       this.$drawInstanced(this._batchItems);
       this._batchItems = 0;
     }
@@ -268,8 +268,8 @@ export class Stage2D extends BatchRenderer {
    */
   $createBuffers() {
     super.$createBuffers();
-    this._dataBuffer.create(this.$gl, this._locations);
-    this._distortionBuffer.create(this.$gl, this._locations);
+    this._dataBuffer.create(this.$gl, this.$locations);
+    this._distortionBuffer.create(this.$gl, this.$locations);
   }
 
   /**

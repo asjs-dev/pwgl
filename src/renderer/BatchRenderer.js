@@ -45,6 +45,6 @@ export class BatchRenderer extends BaseRenderer {
    */
   $createBuffers() {
     super.$createBuffers();
-    this.$matrixBuffer.create(this.$gl, this._locations);
+    this.$matrixBuffer.create(this.$gl, this.$locations);
   }
 }

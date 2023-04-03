@@ -38,7 +38,7 @@ export class NormalMapRenderer extends BaseRenderer {
     this.context.setBlendMode(BlendMode.NORMAL);
 
     this.$gl.uniform1i(
-      this._locations.uTex,
+      this.$locations.uTex,
       this.context.useTexture(this.heightMap, this.$renderTime, true)
     );
 

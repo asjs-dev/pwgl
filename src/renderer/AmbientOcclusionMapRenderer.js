@@ -47,12 +47,12 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     this.context.setBlendMode(BlendMode.NORMAL);
 
     this.$gl.uniform1i(
-      this._locations.uTex,
+      this.$locations.uTex,
       this.context.useTexture(this.heightMap, this.$renderTime, true)
     );
 
-    this.$gl.uniform1f(this._locations.uM, this.multiplier);
-    this.$gl.uniform1f(this._locations.uDM, this.depthMultiplier);
+    this.$gl.uniform1f(this.$locations.uM, this.multiplier);
+    this.$gl.uniform1f(this.$locations.uDM, this.depthMultiplier);
 
     this.$uploadBuffers();
 
