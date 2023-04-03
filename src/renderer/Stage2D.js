@@ -28,6 +28,12 @@ export class Stage2D extends BatchRenderer {
    * @param {Stage2DRendererConfig} options
    */
   constructor(options) {
+    /*
+    this._eventTarget
+    this._isMousePositionSet
+    this._previousEventTarget
+    */
+
     options = {
       ...{
         useTint: true,
@@ -61,12 +67,7 @@ export class Stage2D extends BatchRenderer {
     this._batchDraw = this._batchDraw.bind(this);
     this._drawItem = this._drawItem.bind(this);
 
-    /*
-    this._picked
-    this._isPickerSet
-    */
-
-    this._pickerPoint = PointUtilities.create();
+    this._mousePosition = PointUtilities.create();
 
     this._dataBuffer = new Buffer("aDt", maxBatchItems, 3, 4);
 
@@ -87,12 +88,9 @@ export class Stage2D extends BatchRenderer {
    * Renders the scene
    */
   render() {
-    this._picked = null;
-
+    this._eventTarget = null;
     super.render();
-
-    this._isPickerSet = false;
-
+    this._isMousePositionSet = false;
     this._handleMouseEvent();
   }
 
@@ -115,26 +113,34 @@ export class Stage2D extends BatchRenderer {
    */
   _handleMouseEvent() {
     if (this._latestEvent) {
-      if (this._picked !== this._previousTarget) {
+      if (this._eventTarget !== this._previousEventTarget) {
         const newEvent = {};
         for (let key in this._latestEvent)
           newEvent[key] = this._latestEvent[key];
 
-        this._previousTarget &&
-          this._previousTarget.handleEvent(this._previousTarget, {
-            ...newEvent,
-            type: "mouseout",
-          });
+        this._previousEventTarget &&
+          this._previousEventTarget.callEventHandler(
+            this._previousEventTarget,
+            {
+              ...newEvent,
+              type: "mouseout",
+            }
+          );
 
-        this._picked &&
-          this._picked.handleEvent(this._picked, {
+        this._eventTarget &&
+          this._eventTarget.callEventHandler(this._eventTarget, {
             ...newEvent,
             type: "mouseover",
           });
       }
 
-      this._picked && this._picked.handleEvent(this._picked, this._latestEvent);
-      this._previousTarget = this._picked;
+      this._eventTarget &&
+        this._eventTarget.callEventHandler(
+          this._eventTarget,
+          this._latestEvent
+        );
+
+      this._previousEventTarget = this._eventTarget;
     }
     this._latestEvent = null;
   }
@@ -144,13 +150,13 @@ export class Stage2D extends BatchRenderer {
    * @param {*} y
    * @ignore
    */
-  _setPickerPoint(x, y) {
-    this._isPickerSet = true;
+  _setMousePosition(x, y) {
+    this._isMousePositionSet = true;
 
     const matrixCache = this.container.parent.matrixCache;
 
-    this._pickerPoint.x = (x - this.widthHalf) * matrixCache[0];
-    this._pickerPoint.y = (y - this.heightHalf) * matrixCache[3];
+    this._mousePosition.x = (x - this.widthHalf) * matrixCache[0];
+    this._mousePosition.y = (y - this.heightHalf) * matrixCache[3];
   }
 
   /**
@@ -192,11 +198,11 @@ export class Stage2D extends BatchRenderer {
     this.context.setBlendMode(item.blendMode, this._batchDraw);
 
     if (
-      this._isPickerSet &&
+      this._isMousePositionSet &&
       item.interactive &&
-      item.isContainsPoint(this._pickerPoint)
+      item.isContainsPoint(this._mousePosition)
     )
-      this._picked = item;
+      this._eventTarget = item;
 
     const twId = this._batchItems * 12;
     const matId = this._batchItems * 16;
@@ -233,11 +239,8 @@ export class Stage2D extends BatchRenderer {
   _batchDraw() {
     if (this._batchItems > 0) {
       this.$uploadBuffers();
-
       this.$gl.uniform1iv(this._locations.uTex, this.context.textureIds);
-
       this.$drawInstanced(this._batchItems);
-
       this._batchItems = 0;
     }
   }
@@ -257,7 +260,6 @@ export class Stage2D extends BatchRenderer {
   $uploadBuffers() {
     this._dataBuffer.upload(this.$gl, this.$enableBuffers);
     this._distortionBuffer.upload(this.$gl, this.$enableBuffers);
-
     super.$uploadBuffers();
   }
 
@@ -266,7 +268,6 @@ export class Stage2D extends BatchRenderer {
    */
   $createBuffers() {
     super.$createBuffers();
-
     this._dataBuffer.create(this.$gl, this._locations);
     this._distortionBuffer.create(this.$gl, this._locations);
   }
@@ -283,7 +284,7 @@ export class Stage2D extends BatchRenderer {
       const scaleY = canvas.height / canvas.offsetHeight;
       const offsetX = scaleX * event.offsetX;
       const offsetY = scaleY * event.offsetY;
-      this._setPickerPoint(offsetX, offsetY);
+      this._setMousePosition(offsetX, offsetY);
     }
   }
 

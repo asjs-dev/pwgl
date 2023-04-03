@@ -56,7 +56,7 @@ export class Image extends BaseDrawable {
    * @returns {boolean}
    */
   isContainsPoint(point) {
-    this.$updateAdditionalData();
+    this.$updateInverseMatrixCache();
     return Matrix3Utilities.isPointInMatrix(this.$inverseMatrixCache, point);
   }
 

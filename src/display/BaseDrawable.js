@@ -47,7 +47,11 @@ export class BaseDrawable extends Item {
    * @ignore
    */
   $calcCorners() {
-    Matrix3Utilities.calcCorners(this.matrixCache, this.$corners, this.stage.renderer);
+    Matrix3Utilities.calcCorners(
+      this.matrixCache,
+      this.$corners,
+      this.stage.renderer
+    );
   }
 
   /**
@@ -76,8 +80,18 @@ export class BaseDrawable extends Item {
   $updateAdditionalData() {
     if (this.$currentAdditionalPropsUpdateId < this.propsUpdateId) {
       this.$currentAdditionalPropsUpdateId = this.propsUpdateId;
-      Matrix3Utilities.inverse(this.matrixCache, this.$inverseMatrixCache);
+      this.$updateInverseMatrixCache();
       this.$calcBounds();
+    }
+  }
+
+  /**
+   * @ignore
+   */
+  $updateInverseMatrixCache() {
+    if (this.$currentInverseMatrixPropsUpdateId < this.propsUpdateId) {
+      this.$currentInverseMatrixPropsUpdateId = this.propsUpdateId;
+      Matrix3Utilities.inverse(this.matrixCache, this.$inverseMatrixCache);
     }
   }
 }

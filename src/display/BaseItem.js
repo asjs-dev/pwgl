@@ -23,13 +23,13 @@ export class BaseItem {
    *  - It can handle mouse events if the item is interactive and has [onmouseover, onmouseout, onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
    * @param {*} event
    */
-  handleEvent(target, event) {
+  callEventHandler(target, event) {
     if (this.interactive) {
       const functionName = event.type;
       const callback = this["on" + functionName];
       callback && callback(this, target, event);
     }
-    if (this.$parent) this.$parent.handleEvent(target, event);
+    if (this.$parent) this.$parent.callEventHandler(target, event);
   }
 
   /**
