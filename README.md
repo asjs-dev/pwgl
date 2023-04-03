@@ -3,11 +3,12 @@ A JavaScript framework for creating 2D WebGL2 applications
 ![Game Demo](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/game.jpg?raw=true)
 
 ### Demos:
-- [Game Demo](https://codepen.io/iroshan/pen/rNMKbWv)
-- [Displacement Filter](https://codepen.io/iroshan/pen/MWEwYww)
-- [2D Lights and Shadows](https://codepen.io/iroshan/pen/zYoQgEG)
-- [Lights, Shadows and Filters](https://codepen.io/iroshan/pen/NWbzLaE)
-- [PS1 like fake 3D effect](https://codepen.io/iroshan/pen/VwbxdGw)
+- [Top View Game Demo](https://asjs-dev.github.io/pwgl/example/shGameDemo.html)
+- [Card Game Demo](https://asjs-dev.github.io/pwgl/example/cardGameDemo.html)
+- [Displacement Filter](https://asjs-dev.github.io/pwgl/example/rainDropsDemo.html)
+- [2D Lights and Shadows](https://asjs-dev.github.io/pwgl/example/lightDemo.html)
+- [Lights, Shadows and Filters](hhttps://asjs-dev.github.io/pwgl/example/boatDemo.html)
+- [Journey](https://asjs-dev.github.io/pwgl/example/journeyDemo.html)
 
 ### Features:
 * Batch rendering (10.000 elements - 60fps)
