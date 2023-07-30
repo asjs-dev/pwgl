@@ -1,5 +1,5 @@
 import { BaseProps } from "./BaseProps";
-import "../../geom/RectangleUtilities";
+import "../../geom/RectangleType";
 
 /**
  * Class for texture crop properties

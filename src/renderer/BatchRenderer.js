@@ -9,8 +9,10 @@ import "../utils/Utils";
  */
 
 /**
- * Batch Renderer
- *  - It renders multiple items
+ * <pre>
+ *  Batch Renderer
+ *    - It renders multiple items
+ * </pre>
  * @extends {BaseRenderer}
  */
 export class BatchRenderer extends BaseRenderer {

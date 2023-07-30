@@ -11,8 +11,10 @@ export class SaturateFilter extends BaseFilter {
    * @constructor
    * @param {number} intensity
    */
-  constructor(intensity) {
+  constructor(intensity, mix = 1) {
     super(2, 0, intensity);
+
+    this.mix = mix;
   }
 
   /**
@@ -21,15 +23,17 @@ export class SaturateFilter extends BaseFilter {
    */
   set intensity(v) {
     this.v[0] = v;
+    const sv = 1 - v;
 
-    const x = (v * 2) / 3 + 1;
-    const y = -(x - 1) / 2;
+    const svr = sv * 0.3;
+    const svg = sv * 0.59;
+    const svb = sv * 0.11;
 
     // prettier-ignore
     arraySet(this.kernels, [
-      x, y, y, 0,
-      y, x, y, 0,
-      y, y, x, 0
+      svr + v, svg, svb, 0,
+      svr, svg + v, svb, 0,
+      svr, svg, svb + v, 0
     ], 0);
   }
 }

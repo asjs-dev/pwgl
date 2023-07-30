@@ -7,7 +7,8 @@
 export const FPS = {
   /**
    * Start counting
-   * @param {number} [targetFPS=60] targetFPS - value of the target FPS, for example 60
+   * @param {number} [targetFPS=60] Target FPS 
+   *                                  - value of the target FPS, for example 60
    */
   start: function (targetFPS = 60) {
     this._targetMS =

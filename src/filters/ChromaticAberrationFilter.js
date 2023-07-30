@@ -12,15 +12,21 @@ export class ChromaticAberrationFilter extends BaseFilter {
    * @param {number} isRadial
    * @param {number} centerX
    * @param {number} centerY
-   * @param {number} size
+   * @param {boolean} invertRadial
    */
-  constructor(intensity, isRadial, centerX, centerY, size) {
+  constructor(
+    intensity,
+    isRadial = false,
+    centerX = 0.5,
+    centerY = 0.5,
+    invertRadial = false
+  ) {
     super(8, 0, intensity);
 
-    this.isRadial = isRadial || false;
-    this.centerX = centerX || 0;
-    this.centerY = centerY || 0;
-    this.size = size || 1;
+    this.isRadial = isRadial;
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.invertRadial = invertRadial;
   }
 
   /**
@@ -57,13 +63,13 @@ export class ChromaticAberrationFilter extends BaseFilter {
   }
 
   /**
-   * Set/Get size
-   * @type {number}
+   * Set/Get invertRadial
+   * @type {boolean}
    */
-  get size() {
+  get invertRadial() {
     return this.v[5];
   }
-  set size(v) {
+  set invertRadial(v) {
     this.v[5] = v;
   }
 }

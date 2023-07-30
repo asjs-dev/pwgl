@@ -1,5 +1,5 @@
 import { ItemProps } from "../data/props/ItemProps";
-import "./PointUtilities";
+import "./PointType";
 
 /**
  * @typedef {Float32Array} Matrix3

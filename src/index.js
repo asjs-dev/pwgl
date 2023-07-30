@@ -20,8 +20,6 @@ import { Texture } from "./data/texture/Texture";
 import { Framebuffer } from "./data/texture/Framebuffer";
 
 import { Matrix3Utilities } from "./geom/Matrix3Utilities";
-import { PointUtilities } from "./geom/PointUtilities";
-import { RectangleUtilities } from "./geom/RectangleUtilities";
 
 import { BaseItem } from "./display/BaseItem";
 import { Item } from "./display/Item";
@@ -87,8 +85,6 @@ window.PWGL = window.AGL = {
   FPS,
 
   Matrix3Utilities,
-  PointUtilities,
-  RectangleUtilities,
 
   BaseItem,
   Item,

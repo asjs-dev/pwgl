@@ -9,7 +9,7 @@ export class BaseFilter {
    * @param {number} subType
    * @param {number} intensity
    */
-  constructor(type, subType, intensity) {
+  constructor(type, subType, intensity = 0) {
     this.TYPE = type;
     this.SUB_TYPE = subType;
     this.on = true;
@@ -18,7 +18,7 @@ export class BaseFilter {
 
     this.kernels = new Float32Array(16);
 
-    this.intensity = intensity || 0;
+    this.intensity = intensity;
   }
 
   /**
@@ -33,8 +33,10 @@ export class BaseFilter {
   }
 
   /**
-   * Set/Get intendity x
-   *  - Same as intensity
+   * <pre>
+   *  Set/Get intendity x
+   *    - Same as intensity
+   * </pre>
    * @type {number}
    */
   get intensityX() {
@@ -52,6 +54,17 @@ export class BaseFilter {
     return this.v[1];
   }
   set intensityY(v) {
+    this.v[1] = v;
+  }
+
+  /**
+   * Set/Get mix
+   * @type {number}
+   */
+  get mix() {
+    return this.v[1];
+  }
+  set mix(v) {
     this.v[1] = v;
   }
 

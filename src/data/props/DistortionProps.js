@@ -1,6 +1,8 @@
 /**
- * Class for distortion properties
- * It distorts the corners of the elements
+ * <pre>
+ *  Class for distortion properties
+ *  It distorts the corners of the elements
+ * <pre>
  */
 export class DistortionProps {
   /**
@@ -20,10 +22,12 @@ export class DistortionProps {
   }
 
   /**
-   * Set/Get top left x value
-   * Examples:
-   *  - 0 - no distortion
-   *  - 0.5 - push the top left corners x position with the half of the element width
+   * <pre>
+   *  Set/Get top left x value
+   *  Examples:
+   *    - 0 - no distortion
+   *    - 0.5 - push the top left corners x position with the half of the element width
+   * </pre>
    * @type {number}
    */
   get topLeftX() {
@@ -34,10 +38,12 @@ export class DistortionProps {
   }
 
   /**
-   * Set/Get top left y value
-   * Examples:
-   *  - 0 - no distortion
-   *  - 0.5 - push the top left corners y position with the half of the element height
+   * <pre>
+   *  Set/Get top left y value
+   *  Examples:
+   *    - 0 - no distortion
+   *    - 0.5 - push the top left corners y position with the half of the element height
+   * </pre>
    * @type {number}
    */
   get topLeftY() {
@@ -48,10 +54,12 @@ export class DistortionProps {
   }
 
   /**
-   * Set/Get top right x value
-   * Examples:
-   *  - -0 - no distortion
-   *  - -0.5 - push the top right corners x position with the half of the element width
+   * <pre>
+   *  Set/Get top right x value
+   *  Examples:
+   *    - -0 - no distortion
+   *    - -0.5 - push the top right corners x position with the half of the element width
+   * </pre>
    * @type {number}
    */
   get topRightX() {
@@ -62,10 +70,12 @@ export class DistortionProps {
   }
 
   /**
-   * Set/Get top right y value
-   * Examples:
-   *  - 0 - no distortion
-   *  - 0.5 - push the top right corners y position with the half of the element height
+   * <pre>
+   *  Set/Get top right y value
+   *  Examples:
+   *    - 0 - no distortion
+   *    - 0.5 - push the top right corners y position with the half of the element height
+   * </pre>
    * @type {number}
    */
   get topRightY() {
@@ -76,10 +86,12 @@ export class DistortionProps {
   }
 
   /**
-   * Set/Get bottom right x value
-   * Examples:
-   *  - -0 - no distortion
-   *  - -0.5 - push the bottom right corners x position with the half of the element width
+   * <pre>
+   *  Set/Get bottom right x value
+   *  Examples:
+   *    - -0 - no distortion
+   *    - -0.5 - push the bottom right corners x position with the half of the element width
+   * </pre>
    * @type {number}
    */
   get bottomRightX() {
@@ -90,10 +102,12 @@ export class DistortionProps {
   }
 
   /**
-   * Set/Get bottom right y value
-   * Examples:
-   *  - -0 - no distortion
-   *  - -0.5 - push the bottom right corners y position with the half of the element height
+   * <pre>
+   *  Set/Get bottom right y value
+   *  Examples:
+   *    - -0 - no distortion
+   *    - -0.5 - push the bottom right corners y position with the half of the element height
+   * </pre>
    * @type {number}
    */
   get bottomRightY() {
@@ -104,10 +118,12 @@ export class DistortionProps {
   }
 
   /**
-   * Set/Get bottom left x value
-   * Examples:
-   *  - 0 - no distortion
-   *  - 0.5 - push the bottom left corners x position with the half of the element width
+   * <pre>
+   *  Set/Get bottom left x value
+   *  Examples:
+   *    - 0 - no distortion
+   *    - 0.5 - push the bottom left corners x position with the half of the element width
+   * </pre>
    * @type {number}
    */
   get bottomLeftX() {
@@ -118,10 +134,12 @@ export class DistortionProps {
   }
 
   /**
-   * Set/Get bottom left y value
-   * Examples:
-   *  - -0 - no distortion
-   *  - -0.5 - push the bottom left corners y position with the half of the element height
+   * <pre>
+   *  Set/Get bottom left y value
+   *  Examples:
+   *    - -0 - no distortion
+   *    - -0.5 - push the bottom left corners y position with the half of the element height
+   * </pre>
    * @type {number}
    */
   get bottomLeftY() {

@@ -48,10 +48,14 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Light<span class="signature">(id, lightData, extensionData)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Light<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Light
- - Use LightRenderer.getLight() instead of new Light()</div>
+            <div class="class-description"><pre>
+ Light
+   - Register every Light instance to a LightRenderer
+     with LightRenderer.registerLight
+     and unregister with LightRenderer.unregisterLight
+</pre></div>
         
     
 </header>
@@ -66,7 +70,7 @@
     
 
     
-    <h4 class="name" id="Light"><span class="type-signature"></span>new Light<span class="signature">(id, lightData, extensionData)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="Light"><span class="type-signature"></span>new Light<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -85,10 +89,15 @@
 
 
 
-    <h5>Parameters:</h5>
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
     
 
-<table class="params">
+<table class="props">
     <thead>
     <tr>
         
@@ -110,7 +119,7 @@
 
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>type</code></td>
             
 
             <td class="type">
@@ -126,20 +135,20 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Type of the Light</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>lightData</code></td>
+                <td class="name"><code>maxShadowStep</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Float32Array</span>
+<span class="param-type">number</span>
 
 
             
@@ -149,20 +158,21 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">The maximum step of shadow caster per pixel
+                                   - Default value is 128</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>extensionData</code></td>
+                <td class="name"><code>reflectionSize</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Float32Array</span>
+<span class="param-type">number</span>
 
 
             
@@ -172,14 +182,84 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Reflection size</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>precision</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Shadow precision
+                               - Default value is 1</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>angle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Rotation of the light</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>spotAngle</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Angle of the light source
+                               - Default value is 180deg [hemisphere]
+                               - 360deg [sphere]</td>
         </tr>
 
     
     </tbody>
 </table>
-
-
 
 
 
@@ -213,7 +293,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line13">line 13</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line29">line 29</a>
     </li></ul></dd>
     
 
@@ -281,86 +361,16 @@
 
         
             
-<h4 class="name" id="angle"><span class="type-signature"></span>angle<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get rotation of the light
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line169">line 169</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id="callback"><span class="type-signature"></span>callback<span class="type-signature"> :function</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get render callback
- - It will be called when the Item is rendered
+    <pre>
+ Set/Get render callback
+   - It will be called when the Item is rendered
+</pre>
 </div>
 
 
@@ -413,7 +423,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line75">line 75</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line77">line 77</a>
     </li></ul></dd>
     
 
@@ -485,7 +495,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line71">line 71</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line91">line 91</a>
     </li></ul></dd>
     
 
@@ -557,7 +567,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line122">line 122</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line146">line 146</a>
     </li></ul></dd>
     
 
@@ -581,8 +591,10 @@
 
 
 <div class="description">
-    Set/Get the surface reflects the color of the light
- - If it is false the surface reflects white color
+    <pre>
+ Set/Get the surface reflects the color of the light
+   - If it is false the surface reflects white color
+</pre>
 </div>
 
 
@@ -630,7 +642,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line110">line 110</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -654,9 +666,11 @@
 
 
 <div class="description">
-    Set/Get flatten the shadow
- - Cast shadow if true and a pixel is higher or equal than the light z position
- - Cast shadow if false and a pixel is higher than the light z position
+    <pre>
+ Set/Get flatten the shadow
+   - Cast shadow if true and a pixel is higher or equal than the light z position
+   - Cast shadow if false and a pixel is higher than the light z position
+</pre>
 </div>
 
 
@@ -704,80 +718,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line97">line 97</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="maxShadowStep"><span class="type-signature"></span>maxShadowStep<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get the maximum step of shadow caster per pixel
- - Default value is 128
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line135">line 135</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line119">line 119</a>
     </li></ul></dd>
     
 
@@ -872,151 +813,6 @@
 
         
             
-<h4 class="name" id="precision"><span class="type-signature"></span>precision<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get shadow precision
- - Default value is 1
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line158">line 158</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="reflectionSize"><span class="type-signature"></span>reflectionSize<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get reflection size
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line146">line 146</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id="shading"><span class="type-signature"></span>shading<span class="type-signature"> :boolean</span></h4>
 
 
@@ -1071,81 +867,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line83">line 83</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="spotAngle"><span class="type-signature"></span>spotAngle<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get angle of the light source
- - Default value is 180deg - hemisphere
- - 360deg - sphere
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line182">line 182</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -1223,78 +945,6 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line45">line 45</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="type"><span class="type-signature"></span>type<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get type of the Light
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -1431,7 +1081,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line307">line 307</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line278">line 278</a>
     </li></ul></dd>
     
 
@@ -1467,8 +1117,10 @@
 
 
 <div class="description">
-    Handle event
- - It can handle mouse events if the item is interactive and has [onmouseover, onmouseout, onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
+    <pre>
+ Handle event
+   - It can handle mouse events if the item is interactive and has [onmouseover, onmouseout, onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
+</pre>
 </div>
 
 
@@ -1566,7 +1218,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_BaseItem.js.html">display/BaseItem.js</a>, <a href="display_BaseItem.js.html#line26">line 26</a>
+        <a href="display_BaseItem.js.html">display/BaseItem.js</a>, <a href="display_BaseItem.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -1659,7 +1311,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line97">line 97</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line95">line 95</a>
     </li></ul></dd>
     
 
@@ -1969,7 +1621,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line193">line 193</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line158">line 158</a>
     </li></ul></dd>
     
 
@@ -2080,7 +1732,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line200">line 200</a>
+        <a href="display_Light.js.html">display/Light.js</a>, <a href="display_Light.js.html#line165">line 165</a>
     </li></ul></dd>
     
 
@@ -2132,7 +1784,7 @@
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Apr 03 2023 22:19:26 GMT+0200 (közép-európai nyári idő)
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun Jul 30 2023 13:16:42 GMT+0200 (közép-európai nyári idő)
             </footer>
         </div>
         <script> prettyPrint(); </script>

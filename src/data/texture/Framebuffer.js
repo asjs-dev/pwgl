@@ -15,6 +15,9 @@ export class Framebuffer extends TextureInfo {
     super();
 
     this._resizeUpdateId = this._currentResizeUpdateId = 0;
+
+    this.minFilter = Const.LINEAR_MIPMAP_LINEAR;
+    this.magFilter = Const.LINEAR;
   }
 
   /**
@@ -111,7 +114,5 @@ export class Framebuffer extends TextureInfo {
       this.useActiveTexture(gl, id);
       return true;
     }
-
-    return false;
   }
 }

@@ -3,6 +3,7 @@ A JavaScript framework for creating 2D WebGL2 applications
 ![Game Demo](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/game.jpg?raw=true)
 
 ### Demos:
+
 - [Top View Game Demo](https://asjs-dev.github.io/pwgl/example/shGameDemo.html)
 - [Card Game Demo](https://asjs-dev.github.io/pwgl/example/cardGameDemo.html)
 - [Displacement Filter](https://asjs-dev.github.io/pwgl/example/rainDropsDemo.html)
@@ -11,16 +12,18 @@ A JavaScript framework for creating 2D WebGL2 applications
 - [Journey](https://asjs-dev.github.io/pwgl/example/journeyDemo.html)
 
 ### Features:
-* Batch rendering (10.000 elements - 60fps)
-* Dynamic 2D lights and shadows
-* Element picker (can click on rendered items)
-* Image filters (Blur, Pixelate, Distortion, etc.)
-    * [Filters](https://github.com/asjs-dev/pwgl/blob/main/src/filters)
-* Video textures
-* and many other features...
+
+- Batch rendering (10.000 elements - 60fps)
+- Dynamic 2D lights and shadows
+- Element picker (can click on rendered items)
+- Image filters (Blur, Pixelate, Distortion, etc.)
+  - [Filters](https://github.com/asjs-dev/pwgl/blob/main/src/filters)
+- Video textures
+- and many other features...
 
 ### Minified version
-* [pwgl.min.js](https://github.com/asjs-dev/pwgl/blob/main/dist/pwgl.min.js)
+
+- [pwgl.min.js](https://github.com/asjs-dev/pwgl/blob/main/dist/pwgl.min.js)
 
 ### How to use
 
@@ -29,11 +32,10 @@ Create your index html ( include pwgl.min.js )
 ```html
 <!DOCTYPE html>
 <html>
-    <head>
-        <script src="pwgl.min.js" type="text/javascript"></script>
-    </head>
-    <body>
-    </body>
+  <head>
+    <script src="pwgl.min.js" type="text/javascript"></script>
+  </head>
+  <body></body>
 </html>
 ```
 
@@ -43,7 +45,7 @@ Add your script
 class Application {
   constructor() {}
 }
-PWGL.Utils.initApplication(function(isWebGl2Supported) {
+PWGL.Utils.initApplication(function (isWebGl2Supported) {
   if (!isWebGl2Supported) {
     // WebGL 2 is not supported
     return;
@@ -61,32 +63,33 @@ class Application {
     const width = 800;
     const height = 600;
 
-    this._stageContainer  = document.body;
+    this._stageContainer = document.body;
 
     // create context
     this._context = new PWGL.Context();
 
     // create stage 2d renderer
     this._stage2DRenderer = new PWGL.Stage2D({
-      config : {
-        context : this._context
-      }
+      config: {
+        context: this._context,
+      },
     });
 
     this._stageContainer.appendChild(this._context.canvas);
 
     // create renderable element
-    this._image               = new PWGL.Image(PWGL.Texture.loadImage("your/image/path/here"));
-    this._image.props.x       = width * .5;
-    this._image.props.y       = height * .5;
-    this._image.props.width   = 320;
-    this._image.props.height  = 240;
-    this._image.props.anchorX =
-    this._image.props.anchorY = .5;
+    this._image = new PWGL.Image(
+      PWGL.Texture.loadImage("your/image/path/here")
+    );
+    this._image.props.x = width * 0.5;
+    this._image.props.y = height * 0.5;
+    this._image.props.width = 320;
+    this._image.props.height = 240;
+    this._image.props.anchorX = this._image.props.anchorY = 0.5;
     this._stage2DRenderer.container.addChild(this._image);
 
     // resize context and renderers
-    this._context.setCanvasSize(width,   height);
+    this._context.setCanvasSize(width, height);
     this._stage2DRenderer.setSize(width, height);
 
     this._onBeforeUnloadBound = this._onBeforeUnload.bind(this);
@@ -111,7 +114,7 @@ class Application {
       console.log("fps:", PWGL.FPS.fps.toFixed(2));
 
       // rotate the image
-      this._image.props.rotation += .001;
+      this._image.props.rotation += 0.001;
 
       // render the state
       this._stage2DRenderer.render();
@@ -132,7 +135,7 @@ class Application {
   }
 }
 
-PWGL.Utils.initApplication(function(isWebGl2Supported) {
+PWGL.Utils.initApplication(function (isWebGl2Supported) {
   if (!isWebGl2Supported) {
     // WebGL 2 is not supported
     return;
@@ -150,7 +153,7 @@ class Application {
     const width = 800;
     const height = 600;
 
-    this._stageContainer  = document.body;
+    this._stageContainer = document.body;
 
     // create context
     this._context = new PWGL.Context();
@@ -160,39 +163,40 @@ class Application {
 
     // create stage 2d renderer
     this._stage2DRenderer = new PWGL.Stage2D({
-      config : {
-        context : this._context
-      }
+      config: {
+        context: this._context,
+      },
     });
 
     // create filter renderer and set the framebuffer as texture source
     this._filterRenderer = new PWGL.FilterRenderer({
-      config : {
-        context : this._context
+      config: {
+        context: this._context,
       },
-      texture : this._stage2DRendererFramebuffer,
-      filters : [
+      sourceTexture: this._stage2DRendererFramebuffer,
+      filters: [
         new PWGL.PixelateFilter(5),
-        new PWGL.VignetteFilter(1, 3, 1, 0, 0, 0)
-      ]
+        new PWGL.VignetteFilter(1, 3, 1, 0, 0, 0),
+      ],
     });
 
     this._stageContainer.appendChild(this._context.canvas);
 
     // create renderable element
-    this._image               = new PWGL.Image(PWGL.Texture.loadImage("your/image/path/here"));
-    this._image.props.x       = width * .5;
-    this._image.props.y       = height * .5;
-    this._image.props.width   = 320;
-    this._image.props.height  = 240;
-    this._image.props.anchorX =
-    this._image.props.anchorY = .5;
+    this._image = new PWGL.Image(
+      PWGL.Texture.loadImage("your/image/path/here")
+    );
+    this._image.props.x = width * 0.5;
+    this._image.props.y = height * 0.5;
+    this._image.props.width = 320;
+    this._image.props.height = 240;
+    this._image.props.anchorX = this._image.props.anchorY = 0.5;
     this._stage2DRenderer.container.addChild(this._image);
 
     // resize context and renderers
-    this._context.setCanvasSize(width,   height);
+    this._context.setCanvasSize(width, height);
     this._stage2DRenderer.setSize(width, height);
-    this._filterRenderer.setSize(width,  height);
+    this._filterRenderer.setSize(width, height);
 
     this._onBeforeUnloadBound = this._onBeforeUnload.bind(this);
     this._renderBound = this._render.bind(this);
@@ -216,10 +220,12 @@ class Application {
       console.log("fps:", PWGL.FPS.fps.toFixed(2));
 
       // rotate the image
-      this._image.props.rotation += .001;
+      this._image.props.rotation += 0.001;
 
       // render the state to framebuffer
-      this._stage2DRenderer.renderToFramebuffer(this._stage2DRendererFramebuffer);
+      this._stage2DRenderer.renderToFramebuffer(
+        this._stage2DRendererFramebuffer
+      );
       // render filters
       this._filterRenderer.render();
 
@@ -240,7 +246,7 @@ class Application {
   }
 }
 
-PWGL.Utils.initApplication(function(isWebGl2Supported) {
+PWGL.Utils.initApplication(function (isWebGl2Supported) {
   if (!isWebGl2Supported) {
     // WebGL 2 is not supported
     return;

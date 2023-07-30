@@ -11,10 +11,12 @@ export class EdgeDetectFilter extends BaseFilter {
    * @constructor
    * @param {number} intensity
    */
-  constructor(intensity) {
+  constructor(intensity, mix = 1) {
     super(1, 0, intensity);
 
-    // prettier-ignore
+    this.mix = mix;
+
+// prettier-ignore
     arraySet(this.kernels, [
       -1, -1, -1,
       -1,  8, -1,

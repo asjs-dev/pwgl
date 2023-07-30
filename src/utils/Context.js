@@ -167,8 +167,6 @@ export class Context {
 
       return true;
     }
-
-    return false;
   }
 
   /**

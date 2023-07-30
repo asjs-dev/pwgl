@@ -134,32 +134,6 @@ export class BaseRenderer {
    * @param {Framebuffer} framebuffer
    * @ignore
    */
-  _renderBatch(framebuffer) {
-    this.$renderTime = Date.now();
-    this.$render(framebuffer);
-    this.$gl.flush();
-  }
-
-  /**
-   * @ignore
-   */
-  _switchToProgram() {
-    this.$gl = this.context.gl;
-
-    if (this._currentContextId < this.context.contextId) {
-      this._currentContextId = this.context.contextId;
-      this._buildProgram();
-      this.$enableBuffers = true;
-    } else if (this.context.useProgram(this._program, this._vao))
-      this.$enableBuffers = true;
-
-    this.$resize();
-  }
-
-  /**
-   * @param {Framebuffer} framebuffer
-   * @ignore
-   */
   $attachFramebuffer(framebuffer) {
     framebuffer.bind(this.$gl);
     framebuffer.setSize(this.width, this.height);
@@ -175,19 +149,6 @@ export class BaseRenderer {
   $attachFramebufferAndClear(framebuffer) {
     this.$attachFramebuffer(framebuffer);
     this._clearBeforeRenderFunc();
-  }
-
-  /**
-   * @ignore
-   */
-  _clear() {
-    this.$gl.clearColor(
-      this.clearColor.r,
-      this.clearColor.g,
-      this.clearColor.b,
-      this.clearColor.a
-    );
-    this.$gl.clear(Const.COLOR_BUFFER_BIT);
   }
 
   /**
@@ -214,6 +175,88 @@ export class BaseRenderer {
   }
 
   /**
+   * @param {TextureInfo} texture
+   * @param {number} location
+   * @param {number} index
+   * @ignore
+   */
+  $useTextureAt(texture, location, index, forceBind = true) {
+    this.$gl.uniform1i(
+      location,
+      this.context.useTextureAt(texture, index, this.$renderTime, forceBind)
+    );
+  }
+
+  /**
+   * @param {TextureInfo} texture
+   * @param {number} location
+   * @ignore
+   */
+  $useTexture(texture, location, forceBind = true) {
+    this.$gl.uniform1i(
+      location,
+      this.context.useTexture(texture, this.$renderTime, forceBind)
+    );
+  }
+
+  /**
+   * @ignore
+   */
+  $uploadBuffers() {
+    this._positionBuffer.upload(this.$gl, this.$enableBuffers);
+    this._elementArrayBuffer.upload(this.$gl);
+
+    this.$enableBuffers = false;
+  }
+
+  /**
+   * @ignore
+   */
+  $createBuffers() {
+    this._elementArrayBuffer.create(this.$gl, this.$locations);
+    this._positionBuffer.create(this.$gl, this.$locations);
+  }
+
+  /**
+   * @param {Framebuffer} framebuffer
+   * @ignore
+   */
+  _renderBatch(framebuffer) {
+    this.$renderTime = Date.now();
+    this.$render(framebuffer);
+    this.$gl.flush();
+  }
+
+  /**
+   * @ignore
+   */
+  _switchToProgram() {
+    this.$gl = this.context.gl;
+
+    if (this._currentContextId < this.context.contextId) {
+      this._currentContextId = this.context.contextId;
+      this._buildProgram();
+      this.$enableBuffers = true;
+    } else if (this.context.useProgram(this._program, this._vao))
+      this.$enableBuffers = true;
+
+    this.$resize();
+  }
+
+  /**
+   * @ignore
+   */
+  _clear() {
+    this.$gl.clearColor(
+      this.clearColor.r,
+      this.clearColor.g,
+      this.clearColor.b,
+      this.clearColor.a
+    );
+    this.$gl.clear(Const.COLOR_BUFFER_BIT);
+  }
+
+  /**
    * @ignore
    */
   _buildProgram() {
@@ -236,23 +279,5 @@ export class BaseRenderer {
     this.context.useProgram(this._program, this._vao);
 
     this.$createBuffers();
-  }
-
-  /**
-   * @ignore
-   */
-  $uploadBuffers() {
-    this._positionBuffer.upload(this.$gl, this.$enableBuffers);
-    this._elementArrayBuffer.upload(this.$gl);
-
-    this.$enableBuffers = false;
-  }
-
-  /**
-   * @ignore
-   */
-  $createBuffers() {
-    this._elementArrayBuffer.create(this.$gl, this.$locations);
-    this._positionBuffer.create(this.$gl, this.$locations);
   }
 }

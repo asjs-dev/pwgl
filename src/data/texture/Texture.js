@@ -80,7 +80,9 @@ export class Texture extends TextureInfo {
         this._parseTextureSize();
 
         !this._loaded &&
-          value.addEventListener(this._eventType, this._parseTextureSize);
+          value.addEventListener(this._eventType, this._parseTextureSize, {
+            once: true,
+          });
       }
     }
   }
@@ -129,8 +131,6 @@ export class Texture extends TextureInfo {
       this.useActiveTexture(gl, id);
       return true;
     }
-
-    return false;
   }
 
   /**
@@ -176,10 +176,10 @@ export class Texture extends TextureInfo {
 Texture.placeholderImage = document.createElement("img");
 
 /**
- * Create a new Texture from an image source 
+ * Create a new Texture from an image source
  * @function
- * @param {HTMLElement} src 
- * @param {boolean} shouldUpdate 
+ * @param {HTMLElement} src
+ * @param {boolean} shouldUpdate
  * @returns {Texture}
  */
 Texture.loadImage = (src, shouldUpdate) => {
@@ -190,10 +190,10 @@ Texture.loadImage = (src, shouldUpdate) => {
 };
 
 /**
- * Create a new Texture from a video source 
+ * Create a new Texture from a video source
  * @function
- * @param {HTMLVideoElement} src 
- * @param {boolean} shouldUpdate 
+ * @param {HTMLVideoElement} src
+ * @param {boolean} shouldUpdate
  * @returns {Texture}
  */
 Texture.loadVideo = (src, shouldUpdate) => {

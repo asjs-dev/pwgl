@@ -5,20 +5,33 @@ import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import { BaseDrawable } from "./BaseDrawable";
 import { Container } from "./Container";
 
+const TEMP_ARRAY = [];
+
 /**
- * Light
- *  - Use LightRenderer.getLight() instead of new Light()
+ * <pre>
+ *  Light
+ *    - Register every Light instance to a LightRenderer
+ *      with LightRenderer.registerLight
+ *      and unregister with LightRenderer.unregisterLight
+ * </pre>
  * @extends {BaseDrawable}
+ * @property {number} type - Type of the Light
+ * @property {number} maxShadowStep - The maximum step of shadow caster per pixel
+ *                                    - Default value is 128
+ * @property {number} reflectionSize - Reflection size
+ * @property {number} precision - Shadow precision
+ *                                - Default value is 1
+ * @property {number} angle - Rotation of the light
+ * @property {number} spotAngle - Angle of the light source
+ *                                - Default value is 180deg [hemisphere]
+ *                                - 360deg [sphere]
  */
 export class Light extends BaseDrawable {
   /**
    * Creates an instance of Light.
    * @constructor
-   * @param {number} id
-   * @param {Float32Array} lightData
-   * @param {Float32Array} extensionData
    */
-  constructor(id, lightData, extensionData) {
+  constructor() {
     super();
 
     /*
@@ -33,14 +46,7 @@ export class Light extends BaseDrawable {
 
     this.color.a = 0;
 
-    this._id = id;
-    this._matId = id * 16;
-    this._quadId = this._matId + 4;
-    this._octId = this._matId + 8;
-    this._datId = this._matId + 12;
-
-    this._lightData = lightData;
-    this._extensionData = extensionData;
+    this.unregisterData();
 
     this.castShadow = this.shading = true;
     this.flattenShadow = false;
@@ -54,14 +60,28 @@ export class Light extends BaseDrawable {
   }
 
   /**
-   * Set/Get type of the Light
-   * @type {number}
+   * @ignore
    */
-  get type() {
-    return this._extensionData[this._matId];
+  registerData(id, lightData, extensionData) {
+    this._id = id;
+    this._matId = id * 16;
+    this._quadId = this._matId + 4;
+    this._octId = this._matId + 8;
+    this._datId = this._matId + 12;
+
+    this._lightData = lightData;
+    this._extensionData = extensionData;
+
+    this.$currentColorUpdateId = 0;
+
+    this._updateLightProps();
   }
-  set type(v) {
-    this._extensionData[this._matId] = v;
+
+  /**
+   * @ignore
+   */
+  unregisterData() {
+    this.registerData(0, TEMP_ARRAY, TEMP_ARRAY);
   }
 
   /**
@@ -89,9 +109,11 @@ export class Light extends BaseDrawable {
   }
 
   /**
-   * Set/Get flatten the shadow
-   *  - Cast shadow if true and a pixel is higher or equal than the light z position
-   *  - Cast shadow if false and a pixel is higher than the light z position
+   * <pre>
+   *  Set/Get flatten the shadow
+   *    - Cast shadow if true and a pixel is higher or equal than the light z position
+   *    - Cast shadow if false and a pixel is higher than the light z position
+   * </pre>
    * @type {boolean}
    */
   get flattenShadow() {
@@ -103,8 +125,10 @@ export class Light extends BaseDrawable {
   }
 
   /**
-   * Set/Get the surface reflects the color of the light
-   *  - If it is false the surface reflects white color
+   * <pre>
+   *  Set/Get the surface reflects the color of the light
+   *    - If it is false the surface reflects white color
+   * </pre>
    * @type {boolean}
    */
   get colorProofReflection() {
@@ -125,65 +149,6 @@ export class Light extends BaseDrawable {
   set centerReflection(v) {
     this._centerReflection = v;
     this._updateLightProps();
-  }
-
-  /**
-   * Set/Get the maximum step of shadow caster per pixel
-   *  - Default value is 128
-   * @type {number}
-   */
-  get maxShadowStep() {
-    return this._extensionData[this._quadId];
-  }
-  set maxShadowStep(v) {
-    this._extensionData[this._quadId] = v;
-  }
-
-  /**
-   * Set/Get reflection size
-   * @type {number}
-   */
-  get reflectionSize() {
-    return this._extensionData[this._quadId + 1];
-  }
-  set reflectionSize(v) {
-    this._extensionData[this._quadId + 1] = v;
-  }
-
-  /**
-   * Set/Get shadow precision
-   *  - Default value is 1
-   * @type {number}
-   */
-  get precision() {
-    return this._extensionData[this._matId + 3];
-  }
-  set precision(v) {
-    this._extensionData[this._matId + 3] = v;
-  }
-
-  /**
-   * Set/Get rotation of the light
-   * @type {number}
-   */
-  get angle() {
-    return this._lightData[this._datId + 3];
-  }
-  set angle(v) {
-    this._lightData[this._datId + 3] = v;
-  }
-
-  /**
-   * Set/Get angle of the light source
-   *  - Default value is 180deg - hemisphere
-   *  - 360deg - sphere
-   * @type {number}
-   */
-  get spotAngle() {
-    return this._lightData[this._matId + 7];
-  }
-  set spotAngle(v) {
-    this._lightData[this._matId + 7] = v;
   }
 
   /**
@@ -212,6 +177,12 @@ export class Light extends BaseDrawable {
       lightData[this._matId + 6] = this.props.width;
 
       this._extensionData[this._matId + 2] = this.props.z;
+      this._extensionData[this._matId] = this.type;
+      this._extensionData[this._quadId] = this.maxShadowStep;
+      this._extensionData[this._quadId + 1] = this.reflectionSize;
+      this._extensionData[this._matId + 3] = this.precision;
+      this._lightData[this._datId + 3] = this.angle;
+      this._lightData[this._matId + 7] = this.spotAngle;
     } else lightData[datId] = 0;
   }
 

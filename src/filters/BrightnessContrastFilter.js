@@ -33,9 +33,9 @@ export class BrightnessContrastFilter extends BaseFilter {
    * @type {number}
    */
   get contrast() {
-    return this.v[1];
+    return this.v[1] * 100;
   }
   set contrast(v) {
-    this.v[1] = v;
+    this.v[1] = v / 100;
   }
 }

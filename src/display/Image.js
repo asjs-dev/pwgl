@@ -4,8 +4,8 @@ import { TextureCrop } from "../data/props/TextureCrop";
 import { DistortionProps } from "../data/props/DistortionProps";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import { BaseDrawable } from "./BaseDrawable";
-import "../geom/PointUtilities";
 import { TextureInfo } from "../data/texture/TextureInfo";
+import "../geom/PointType";
 
 /**
  * Image class

@@ -8,12 +8,14 @@ import { BaseRenderer } from "./BaseRenderer";
  * @typedef {Object} FilterRendererConfig
  * @extends {RendererConfig}
  * @property {Array<BaseFilter>} filters
- * @property {TextureInfo} texture
+ * @property {TextureInfo} sourceTexture
  */
 
 /**
- * Filter renderer
- *  - Renders filters to a source texture
+ * <pre>
+ *  Filter renderer
+ *    - Renders filters to a source image
+ * </pre>
  * @extends {BaseRenderer}
  */
 export class FilterRenderer extends BaseRenderer {
@@ -22,8 +24,7 @@ export class FilterRenderer extends BaseRenderer {
    * @constructor
    * @param {FilterRendererConfig} options
    */
-  constructor(options) {
-    options = options || {};
+  constructor(options = {}) {
     options.config = Utils.initRendererConfig(options.config);
 
     // prettier-ignore
@@ -40,7 +41,7 @@ export class FilterRenderer extends BaseRenderer {
       noop;
 
     this.filters = options.filters || [];
-    this.texture = options.texture;
+    this.sourceTexture = options.sourceTexture;
 
     this._framebuffers = [new Framebuffer(), new Framebuffer()];
   }
@@ -59,8 +60,7 @@ export class FilterRenderer extends BaseRenderer {
 
     this.$uploadBuffers();
 
-    context.useTextureAt(this.texture, 0, renderTime, true);
-    gl.uniform1i(locations.uTex, 0);
+    this.$useTextureAt(this.sourceTexture, locations.uTex, 0);
 
     const l = this.filters.length || 1;
     const minL = l - 2;
@@ -75,10 +75,8 @@ export class FilterRenderer extends BaseRenderer {
 
       const filterTexture =
         useFilter && filter.textureProps && filter.textureProps.texture;
-      if (filterTexture) {
-        context.useTextureAt(filterTexture, 1, renderTime, true);
-        gl.uniform1i(locations.uFTex, 1);
-      }
+
+      filterTexture && this.$useTextureAt(filterTexture, locations.uFTex, 1);
 
       if (isLast)
         framebuffer
@@ -113,7 +111,9 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader(options) {
-    return Utils.createVersion(options.config.precision) +
+    return Utils.GLSL.VERSION + 
+    "precision highp float;\n" +
+
     "in vec2 " +
       "aPos;" +
 
@@ -143,14 +143,16 @@ export class FilterRenderer extends BaseRenderer {
       "for(oft.x=-2.;oft.x<3.;++oft.x)" +
         "for(oft.y=-2.;oft.y<3.;++oft.y)" +
           "if(oft.x!=0.&&oft.y!=0.){" +
-            "poft=clamp(f+ivec2(floor(wh*oft)),P.xx,ts-1);" +
+            "poft=clamp(f+ivec2(floor(wh*oft)),ivec2(ZO.xx),ts-1);" +
             "clg=texelFetch(uTex,poft,0);" +
             core +
           "}" +
       "pcl=cl/c;";
 
-    return Utils.createVersion(options.config.precision) +
-    "#define P ivec2(0,1)\n" +
+    return Utils.GLSL.VERSION + 
+    "precision highp float;\n" +
+
+    Utils.GLSL.DEFINE.ZO +
 
     "uniform sampler2D " +
       "uTex," +
@@ -168,6 +170,10 @@ export class FilterRenderer extends BaseRenderer {
 
     "out vec4 " +
       "oCl;" +
+    
+    "float gtGS(vec4 cl){" + 
+      "return .3*oCl.r+.59*oCl.g+.11*oCl.b;" +
+    "}" +
 
     "void main(void){" +
       "oCl=texture(uTex,vTUv);" +
@@ -182,7 +188,8 @@ export class FilterRenderer extends BaseRenderer {
           "f=ivec2(floor(vTUv*vec2(ts)));" +
 
         "vec2 " +
-          "vol=v*(1./vec2(ts));" +
+          "pts=1./vec2(ts)," +
+          "vol=v*pts;" +
 
         "vec3 " +
           "rgb=vec3(vl[2],vl[3],vl[4]);" +
@@ -196,7 +203,7 @@ export class FilterRenderer extends BaseRenderer {
         */
         "if(uFtrT.x<2){" +
           "kr*=v;" +
-          "oCl=vec4((" +
+          "oCl.rgb=(oCl.rgb*(1.-vl[1]))+(" +
             "texelFetch(uTex,f-ivec2(1),0)*kr[0].x+" +
             "texelFetch(uTex,f+ivec2(0,-1),0)*kr[0].y+" +
             "texelFetch(uTex,f+ivec2(1,-1),0)*kr[0].z+" +
@@ -206,16 +213,16 @@ export class FilterRenderer extends BaseRenderer {
             "texelFetch(uTex,f+ivec2(-1,1),0)*kr[1].z+" +
             "texelFetch(uTex,f+ivec2(0,1),0)*kr[1].w+" +
             "texelFetch(uTex,f+ivec2(1),0)*kr[2].x" +
-          ").rgb,oCl.a);" +
+          ").rgb*vl[1];" +
         /*
           COLORMATRIX FILTERS:
             - Saturate
         */
         "}else if(uFtrT.x<3)" +
-          "oCl.rgb=vec3(" +
-            "kr[0].r*oCl.r+kr[0].g*oCl.g+kr[0].b*oCl.b+kr[0].a," +
-            "kr[1].r*oCl.r+kr[1].g*oCl.g+kr[1].b*oCl.b+kr[1].a," +
-            "kr[2].r*oCl.r+kr[2].g*oCl.g+kr[2].b*oCl.b+kr[2].a" +
+          "oCl.rgb=(oCl.rgb*(1.-vl[1]))+vec3(" +
+            "kr[0].r*oCl.r+kr[0].g*oCl.g+kr[0].b*oCl.b," +
+            "kr[1].r*oCl.r+kr[1].g*oCl.g+kr[1].b*oCl.b," +
+            "kr[2].r*oCl.r+kr[2].g*oCl.g+kr[2].b*oCl.b" +
           ");" +
         // COLOR MANIPULATION FILTERS
         "else if(uFtrT.x<4){"+
@@ -223,11 +230,11 @@ export class FilterRenderer extends BaseRenderer {
             "oClVl=oCl*(1.-v);" +
           // GrayscaleFilter
           "if(uFtrT.y<2)" +
-            "oCl=oClVl+vec4(vec3((oCl.r+oCl.g+oCl.b)/3.),oCl.a)*v;" +
+            "oCl=oClVl+vec4(vec3(gtGS(oCl)),oCl.a)*v;" +
           // SepiaFilter
           "else if(uFtrT.y<3)" +
             "oCl=oClVl+" +
-              "vec4(vec3(.874,.514,.156)*((oCl.r+oCl.g+oCl.b)/3.),oCl.a)*v;" +
+              "vec4(vec3(.874,.514,.156)*gtGS(oCl),oCl.a)*v;" +
           // InvertFilter
           "else if(uFtrT.y<4)" +
             "oCl=oClVl+vec4(1.-oCl.rgb,oCl.a)*v;" +
@@ -236,7 +243,7 @@ export class FilterRenderer extends BaseRenderer {
             "oCl.rgb*=rgb*v;" +
           // ColorLimitFilter
           "else if(uFtrT.y<6)" +
-            "oCl=vec4((round((oCl.rgb*256.)/v)/256.)*v,oCl.a);" +
+            "oCl.rgb=(round((oCl.rgb*255.)/v)/255.)*v;" +
           // VignetteFilter
           "else if(uFtrT.y<7){" +
             "vec2 " +
@@ -250,10 +257,10 @@ export class FilterRenderer extends BaseRenderer {
             "oCl.rgb+=vec3(vUv.xy*.15,(vUv.x*vUv.y)*.15)*v;" +
           // BrightnessContrastFilter
           "else if(uFtrT.y<9)" +
-            "oCl.rgb=vec3((oCl.rgb-.5)*vl[1]+.5+v);" +
+            "oCl.rgb=(vl[1]+1.)*oCl.rgb*v-.5*vl[1];"+
           // GammaFilter
           "else if(uFtrT.y<10)" +
-            "oCl.rgb=pow(oCl.rgb,vec3(v));" +
+            "oCl.rgb=pow(oCl.rgb,vec3(1./v));" +
         "}" +
         // SAMPLING FILTERS
         "else if(uFtrT.x<5){" +
@@ -290,7 +297,6 @@ export class FilterRenderer extends BaseRenderer {
                 ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
 
             "oCl=dst*pcl+(1.-dst)*oCl;" +
-
           // GlowFilter
           "}else{" +
             "float " +
@@ -335,9 +341,11 @@ export class FilterRenderer extends BaseRenderer {
           "float " +
             "dst=vl[2]<1." +
               "?1." +
-              ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
+              ":clamp(distance(vec2(vl[3],vl[4]),vTUv),0.,1.)," +
+            "mA=vl[5]==0.?dst:1.-dst," +
+            "mB=vl[5]==0.?1.-dst:dst;" +
 
-          "oCl=dst*pcl+(1.-dst)*oCl;" +
+          "oCl=mA*pcl+mB*oCl;" +
         "}" +
       "}" +
     "}";

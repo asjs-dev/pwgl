@@ -1,4 +1,5 @@
 import { Context } from "./Context";
+import { noop } from "./helpers";
 
 /**
  * @typedef {Object} WebGLContext
@@ -11,7 +12,6 @@ import { Context } from "./Context";
 /**
  * @typedef {Object} RendererConfig
  * @property {Array<string>} locations
- * @property {string} precision
  * @property {WebGLContext} context
  */
 
@@ -59,7 +59,6 @@ const _createShader = (gl, shaderType, shaderSource) => {
  * @property {Object} INFO Information about WebGL
  * @property {function(ContextConfig)} initContextConfig Create new context config
  * @property {function(RendererConfig)} initRendererConfig Create new renderer config
- * @property {function(string)} createVersion Create shader version
  * @property {function(function)} initApplication Call the callback function if the document.readyState interactive or complete
  * @property {function(WebGLContext, string, string):WebGLProgram} createProgram Create a WebGL program
  * @property {function(WebGLContext, WebGLProgram, Object):Object} getLocationsFor
@@ -75,23 +74,31 @@ export const Utils = {
    * @property {Object}
    */
   // prettier-ignore
-  GLSL : {
-    RANDOM : "float rand(vec2 p,float s){" +
-      "return fract(" +
-        "sin(" +
-          "dot(" +
-            "p," +
-            "vec2(" +
-              "sin(p.x+p.y)," +
-              "cos(p.y-p.x)*s" +
-            ")" +
+  GLSL: {
+    VERSION: "#version 300 es\n",
+    DEFINE: {
+      HEIGHT: "#define HEIGHT 255.\n",
+      ZO: "#define ZO vec2(0,1)\n",
+      PI: "#define PI 3.14159265359\n",
+    },
+    RANDOM: 
+      "float rand(vec2 p,float s){" +
+        "p=mod(p,vec2(10000));" +
+        "return fract(" + 
+          "sin(" + 
+            "dot(" + 
+              "p," + 
+              "vec2(" + 
+                "sin(p.x+p.y)," + 
+                "cos(p.y-p.x)" + 
+              ")" + 
+            ")" + 
           ")*s" +
-        ")*.5+.5" +
-      ");" +
-    "}" +
-    "float rand(vec2 p){" +
-      "return rand(p,1.);" +
-    "}"
+        ");" +
+      "}" +
+      "float rand(vec2 p){" + 
+        "return rand(p,1.);" +
+      "}"
   },
 
   /**
@@ -106,8 +113,8 @@ export const Utils = {
    * @param {ContextConfig} config Context config
    * @returns {ContextConfig}
    */
-  initContextConfig: (config) => ({
-    canvas: (config = config || {}).canvas || document.createElement("canvas"),
+  initContextConfig: (config = {}) => ({
+    canvas: config.canvas || document.createElement("canvas"),
     initCallback: config.initCallback,
     contextAttributes: {
       ...{
@@ -124,33 +131,29 @@ export const Utils = {
    * @param {RendererConfig} config Renderer config
    * @returns {RendererConfig}
    */
-  initRendererConfig: (config) => ({
-    locations: (config = config || {}).locations || [],
-    precision: config.precision || "highp" /* lowp mediump highp */,
+  initRendererConfig: (config = {}) => ({
+    locations: config.locations || [],
     context: config.context || new Context(),
   }),
-
-  /**
-   * Create shader version
-   * @param {string} precision Shader precision
-   * @returns {string}
-   */
-  createVersion: (precision) =>
-    "#version 300 es\n" + "precision " + precision + " float;\n",
 
   /**
    * Call the callback function if the document.readyState interactive or complete
    * @param {function} callback Callback function
    */
   initApplication: (callback) => {
-    const checkDocumentReady = () => {
+    const isDocumentReady = () => {
       if (["interactive", "complete"].indexOf(document.readyState) > -1) {
-        document.removeEventListener("readystatechange", checkDocumentReady);
-        callback(Utils.INFO.isWebGl2Supported);
-      } else document.addEventListener("readystatechange", checkDocumentReady);
+        (callback ?? noop)(Utils.INFO.isWebGl2Supported);
+        return true;
+      }
     };
 
-    checkDocumentReady();
+    const onReadyStateChange = () =>
+      isDocumentReady() &&
+      document.removeEventListener("readystatechange", onReadyStateChange);
+
+    if (!isDocumentReady())
+      document.addEventListener("readystatechange", onReadyStateChange);
   },
 
   /**

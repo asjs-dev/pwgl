@@ -5,12 +5,15 @@ import { BaseRenderer } from "./BaseRenderer";
 /**
  * @typedef {Object} AmbientOcclusionMapRendererConfig
  * @extends {RendererConfig}
+ * @property {TextureInfo} sourceTexture
  * @property {TextureInfo} heightMap
  */
 
 /**
- * Ambient occlusion map renderer
- *  - Creates an ambient occlusion texture from a height map texture
+ * <pre>
+ *  Ambient occlusion map renderer
+ *    - Creates an ambient occlusion texture from a height map texture
+ * </pre>
  * @extends {BaseRenderer}
  */
 export class AmbientOcclusionMapRenderer extends BaseRenderer {
@@ -19,14 +22,17 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @constructor
    * @param {AmbientOcclusionMapRendererConfig} options
    */
-  constructor(options) {
-    options = options || {};
+  constructor(options = {}) {
     options.config = Utils.initRendererConfig(options.config);
 
     // prettier-ignore
     options.config.locations = options.config.locations.concat([
+      "uSTTex",
+      "uR",
+      "uS",
       "uM",
-      "uDM"
+      "uDM",
+      "uUSTT",
     ]);
 
     super(options);
@@ -34,10 +40,13 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     this.clearBeforeRender = true;
     this.clearColor.set(0, 0, 0, 1);
 
+    this.sourceTexture = options.sourceTexture;
     this.heightMap = options.heightMap;
 
-    this.multiplier = 10;
-    this.depthMultiplier = 2;
+    this.radius = options.radius ?? 4;
+    this.samples = options.samples ?? 4;
+    this.multiplier = options.multiplier ?? 1;
+    this.depthMultiplier = options.depthMultiplier ?? 1;
   }
 
   /**
@@ -46,11 +55,15 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
   $render() {
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$gl.uniform1i(
-      this.$locations.uTex,
-      this.context.useTexture(this.heightMap, this.$renderTime, true)
-    );
+    this.$useTextureAt(this.heightMap, this.$locations.uTex, 0);
 
+    if (this.sourceTexture) {
+      this.$useTextureAt(this.sourceTexture, this.$locations.uSTTex, 1);
+      this.$gl.uniform1f(this.$locations.uUSTT, 1);
+    } else this.$gl.uniform1f(this.$locations.uUSTT, 0);
+
+    this.$gl.uniform1f(this.$locations.uR, this.radius);
+    this.$gl.uniform1f(this.$locations.uS, this.samples);
     this.$gl.uniform1f(this.$locations.uM, this.multiplier);
     this.$gl.uniform1f(this.$locations.uDM, this.depthMultiplier);
 
@@ -66,7 +79,9 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader(options) {
-    return Utils.createVersion(options.config.precision) +
+    return Utils.GLSL.VERSION +
+    "precision highp float;\n" +
+
     "in vec2 " +
       "aPos;" +
 
@@ -90,46 +105,76 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createFragmentShader(options) {
-    return Utils.createVersion(options.config.precision) +
-    "#define H 255.\n" +
-
+    return Utils.GLSL.VERSION + 
+    "precision highp float;\n" +
+    
+    Utils.GLSL.DEFINE.HEIGHT +
+    Utils.GLSL.DEFINE.PI +
+    
     "in vec2 " +
       "vTUv;" +
 
     "uniform sampler2D " +
+      "uSTTex," +
       "uTex;" +
 
     "uniform float " +
       "uFlpY," +
+      "uR," +
+      "uS," +
+      "uUSTT," +
       "uM," +
       "uDM;" +
 
     "out vec4 " +
       "oCl;" +
 
+    Utils.GLSL.RANDOM +
+
     "void main(void){" +
-      "vec2 " +
-        "its=vec2(textureSize(uTex,0))," +
-        "ts=1./its," +
-        "f=floor(vTUv*its),"+
-        "p;" +
-
       "float " +
-        "tx=texture(uTex,f*ts).g," +
-        "v=0.," +
-        "z," +
-        "h;" +
+        "tx=texture(uTex,vTUv).g," +
+        "v=0.;" +
+        
+      "if(uS>0.&&uR>0.){" +
+        "vec2 " +
+          "its=vec2(textureSize(uTex,0))," +
+          "rnd=(vec2(rand(vTUv,1.),rand(vTUv,2.))*2.-1.)/its," +
+          "p;" +
+        
+        "float " + 
+          "t=360./uS*PI/180.," +
+          "uRH=uR/HEIGHT," +
+          "rad," +
+          "i;" +
 
-      "for(p.x=-2.;p.x<3.;++p.x)" +
-        "for(p.y=-2.;p.y<3.;++p.y)" +
-          "if(p.x!=0.&&p.y!=0.){" +
-            "h=texture(uTex,(f+p*2.)*ts).g;" +
-            "z=clamp(h-tx,0.,1.);" +
-            "v+=z*uM*(3./length(vec2(p)));" +
-          "}" +
-      "v/=24.;" +
+        "for(i=0.;i<uS;++i){" +
+          "rad=i*t;" +
+          "p=vec2(" + 
+            "cos(rad)," + 
+            "sin(rad)" +
+          ")*uR/its;" +
+          
+          "v+=uM*max(" + 
+            "0.," + 
+            "min(" + 
+              "1.," + 
+              "(" + 
+                "texture(" + 
+                  "uTex," + 
+                  "vTUv+p.xy+rnd" + 
+                ").g-tx" + 
+              ")/uRH" + 
+            ")" + 
+          ");" +
+        "}" +
+        "v/=uS;" +
+      "}" +
+      
+      "vec3 " +
+        "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb;" +
 
-      "oCl=vec4(vec3(((1.-uDM)*.5+tx*uDM))+(1.-max(0.,v)),1);" +
+      "oCl=vec4(stCl*(vec3(((1.-uDM)*.5+tx*uDM))*(1.-v)),1);" +
     "}";
   }
 }

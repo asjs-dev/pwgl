@@ -1,7 +1,7 @@
 import { Item } from "./Item";
-import { PointUtilities } from "../geom/PointUtilities";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
-import "../geom/RectangleUtilities";
+import "../geom/PointType";
+import "../geom/RectangleType";
 
 /**
  * Base drawable class
@@ -18,10 +18,10 @@ export class BaseDrawable extends Item {
     this.$inverseMatrixCache = new Float32Array(6);
 
     this.$corners = [
-      PointUtilities.create(),
-      PointUtilities.create(),
-      PointUtilities.create(),
-      PointUtilities.create(),
+      { x: 0, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 0 },
     ];
   }
 

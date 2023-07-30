@@ -1,9 +1,9 @@
 import { noop } from "../utils/helpers";
 import { ItemProps } from "../data/props/ItemProps";
 import { ColorProps } from "../data/props/ColorProps";
-import { RectangleUtilities } from "../geom/RectangleUtilities";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import { BaseItem } from "./BaseItem";
+import "../geom/RectangleType";
 
 /**
  * Item
@@ -34,7 +34,7 @@ export class Item extends BaseItem {
 
     this.callback = noop;
 
-    this.$bounds = RectangleUtilities.create();
+    this.$bounds = { x: 0, y: 0, width: 0, height: 0 };
   }
 
   /**
@@ -68,17 +68,15 @@ export class Item extends BaseItem {
   }
 
   /**
-   * Set/Get render callback
-   *  - It will be called when the Item is rendered
+   * <pre>
+   *  Set/Get render callback
+   *    - It will be called when the Item is rendered
+   * </pre>
    * @type {function}
    */
   get callback() {
     return this._callback;
   }
-  /**
-   * Set/Get render callback
-   - It will be called when the Item is rendered
-   */
   set callback(v) {
     this._callback = v || noop;
   }

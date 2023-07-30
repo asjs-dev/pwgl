@@ -9,17 +9,24 @@ import { TextureInfo } from "../data/texture/TextureInfo";
  * @typedef {Object} LightRendererConfig
  * @extends {RendererConfig}
  * @property {number} lightNum
- * @property {TextureInfo} sourceImage
+ * @property {TextureInfo} sourceTexture
  * @property {TextureInfo} normalMap
  * @property {TextureInfo} heightMap
+ * @property {TextureInfo} roughnessMap
  */
 
 /**
- * Light renderer
- *  - Renders lights and shadows based on height and normal map
- *  - Red channel: start of a vertical object
- *  - Green channel: end of a vertical object
- *  - Blue channel: shiness of the surface
+ * <pre>
+ *  Light renderer
+ *  - Renders lights and shadows based on height, normal and roughness map
+ *  - Height map could store the following values:
+ *    - Red channel: start of a vertical object
+ *    - Green channel: end of a vertical object
+ *    - Blue channel: shiness of the surface
+ *  - If the roughness map exists, the shiness and roughness values are
+ *    derived from its red and green channels.
+ *  - Every input texture are optional
+ * </pre>
  * @extends {BatchRenderer}
  */
 export class LightRenderer extends BatchRenderer {
@@ -28,18 +35,19 @@ export class LightRenderer extends BatchRenderer {
    * @constructor
    * @param {LightRendererConfig} options
    */
-  constructor(options) {
-    options = options || {};
+  constructor(options = {}) {
     options.config = Utils.initRendererConfig(options.config);
 
     // prettier-ignore
     options.config.locations = options.config.locations.concat([
       "uNMTex",
-      "uSITex",
+      "uSTTex",
+      "uRGTex",
       "aExt",
       "uTS",
-      "uUSIT",
-      "uUNMT"
+      "uUSTT",
+      "uUNMT",
+      "uURGT"
     ]);
 
     const maxBatchItems = (options.maxBatchItems = options.lightNum || 1);
@@ -49,38 +57,41 @@ export class LightRenderer extends BatchRenderer {
     this.clearBeforeRender = true;
     this.clearColor.set(0, 0, 0, 1);
 
-    this.sourceImage = options.sourceImage;
+    this.sourceTexture = options.sourceTexture;
     this.normalMap = options.normalMap;
     this.heightMap = options.heightMap;
+    this.roughnessMap = options.roughnessMap;
 
     this._extensionBuffer = new Buffer("aExt", maxBatchItems, 4, 4);
 
     this._lights = [];
-    for (let i = 0; i < maxBatchItems; ++i)
-      this._lights.push(
-        new Light(i, this.$matrixBuffer.data, this._extensionBuffer.data)
-      );
   }
 
   /**
-   * Returns with a Light instance
-   * @param {number} id
-   * @returns {Light}
+   * Register a Light instance
+   * @param {Light} light
    */
-  getLight(id) {
-    return this._lights[id];
+  registerLight(light) {
+    if (this._lights.indexOf(light) > -1) return;
+
+    let index = this._lights.indexOf(null);
+    index > -1
+      ? (this._lights[index] = light)
+      : (index = this._lights.push(light) - 1);
+
+    light.registerData(index, this.$matrixBuffer.data, this._extensionBuffer.data);
   }
 
   /**
-   * @param {TextureInfo} sourceTexture
-   * @param {number} location
-   * @ignore
+   * Remove a Light instance
+   * @param {Light} light
    */
-  _useTexture(sourceTexture, location) {
-    this.$gl.uniform1i(
-      location,
-      this.context.useTexture(sourceTexture, this.$renderTime, true)
-    );
+  unregisterLight(light) {
+    const index = this._lights.indexOf(light);
+    if (index > -1) {
+      this._lights[index] = null;
+      light.unregisterData();
+    }
   }
 
   /**
@@ -89,27 +100,32 @@ export class LightRenderer extends BatchRenderer {
   $render() {
     this.context.setBlendMode(BlendMode.ADD);
 
-    let width = this.width;
-    let height = this.height;
+    let sizeable = this;
 
-    if (this.sourceImage) {
-      this._useTexture(this.sourceImage, this.$locations.uSITex);
-      this.$gl.uniform1f(this.$locations.uUSIT, 1);
-    } else this.$gl.uniform1f(this.$locations.uUSIT, 0);
+    if (this.sourceTexture) {
+      this.$useTexture(this.sourceTexture, this.$locations.uSTTex);
+      sizeable = this.sourceTexture;
+      this.$gl.uniform1f(this.$locations.uUSTT, 1);
+    } else this.$gl.uniform1f(this.$locations.uUSTT, 0);
 
     if (this.normalMap) {
-      this._useTexture(this.normalMap, this.$locations.uNMTex);
+      this.$useTexture(this.normalMap, this.$locations.uNMTex);
+      sizeable = this.normalMap;
       this.$gl.uniform1f(this.$locations.uUNMT, 1);
     } else this.$gl.uniform1f(this.$locations.uUNMT, 0);
 
-    if (this.heightMap) {
-      this._useTexture(this.heightMap, this.$locations.uTex);
+    if (this.roughnessMap) {
+      this.$useTexture(this.roughnessMap, this.$locations.uRGTex);
+      sizeable = this.roughnessMap;
+      this.$gl.uniform1f(this.$locations.uURGT, 1);
+    } else this.$gl.uniform1f(this.$locations.uURGT, 0);
 
-      width = this.heightMap.width;
-      height = this.heightMap.height;
+    if (this.heightMap) {
+      this.$useTexture(this.heightMap, this.$locations.uTex);
+      sizeable = this.heightMap;
     }
 
-    this.$gl.uniform2f(this.$locations.uTS, width, height);
+    this.$gl.uniform2f(this.$locations.uTS, sizeable.width, sizeable.height);
 
     this.$uploadBuffers();
 
@@ -139,9 +155,11 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createVertexShader(options) {
-    return Utils.createVersion(options.config.precision) +
-    "#define H vec4(1,-1,2,-2)\n" +
-    "#define PI radians(180.)\n" +
+    return Utils.GLSL.VERSION + 
+    "precision highp float;\n" +
+
+    Utils.GLSL.DEFINE.PI +
+    "#define P vec4(1,-1,2,-2)\n" +
 
     "in vec2 " +
       "aPos;" +
@@ -181,15 +199,15 @@ export class LightRenderer extends BatchRenderer {
 
       "if(vExt[0].x<1.){" +
         "gl_Position=vec4(mt*pos,1);" +
-        "vTUv=(gl_Position.xy+H.xy)/H.zw;" +
-        "vUv.zw=(aMt[1].xy+H.xy)/H.zw;" +
+        "vTUv=(gl_Position.xy+P.xy)/P.zw;" +
+        "vUv.zw=(aMt[1].xy+P.xy)/P.zw;" +
         "vSpt=PI-aMt[1].w;" +
         "vSln=vec2(sin(vDt.w),cos(vDt.w));" +
       "}else{" +
         "mt[2].xy=vec2(-1,1);" +
         "gl_Position=vec4(pos,1);" +
         "vTUv=vec2(aPos.x,1.-aPos.y);" +
-        "vUv.zw=vTUv+((mt*vec3(1)).xy+H.xy)/H.zw;" +
+        "vUv.zw=vTUv+((mt*vec3(1)).xy+P.xy)/P.zw;" +
       "}" +
 
       "gl_Position.y*=uFlpY;" +
@@ -203,10 +221,12 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createFragmentShader(options) {
-    return Utils.createVersion(options.config.precision) +
-    "#define H 256.\n" +
-    "#define PI radians(180.)\n" +
-    "#define PIH radians(90.)\n" +
+    return Utils.GLSL.VERSION + 
+    "precision highp float;\n" +
+
+    Utils.GLSL.DEFINE.HEIGHT +
+    Utils.GLSL.DEFINE.PI +
+    "#define PIH 1.570796326795\n" +
 
     "in float " +
       "vHS," +
@@ -224,10 +244,12 @@ export class LightRenderer extends BatchRenderer {
 
     "uniform sampler2D " +
       "uNMTex," +
-      "uSITex," +
+      "uSTTex," +
+      "uRGTex," +
       "uTex;" +
     "uniform float " +
-      "uUSIT," +
+      "uUSTT," +
+      "uURGT," +
       "uUNMT;" +
     "uniform vec2 " +
       "uTS;" +
@@ -235,18 +257,18 @@ export class LightRenderer extends BatchRenderer {
     "out vec4 " +
       "oCl;" +
 
+    Utils.GLSL.RANDOM +
+
     "void main(void){" +
       "oCl=vec4(0);" +
       "if(vDt.x>0.){" +
-        "bool " +
-          "isl=vExt[0].x<1.;" +
-
         "vec4 " +
           "tc=texture(uTex,vTUv);" +
 
         "float " +
-          "ph=tc.g*H," +
-          "shn=tc.b;" +
+          "ph=tc.g*HEIGHT," +
+          "shn=tc.b," +
+          "rgh=1.;" +
 
         "vec2 " +
           "tUv=vTUv*uTS," +
@@ -262,12 +284,14 @@ export class LightRenderer extends BatchRenderer {
           "vol=vDt.z*vCl.a," +
           "spc=0.;" +
 
-        "if(isl){" +
+        "if(vol<=0.)discard;" +
+
+        "if(vExt[0].x<1.){" +
           "vol*=dst;" +
           "if(vol<=0.)discard;" +
 
           "float " +
-            "slh=(vHS-ph)/H;" +
+            "slh=(vHS-ph)/HEIGHT;" +
 
           "vec2 " +
             "sl=vec2(" +
@@ -292,7 +316,7 @@ export class LightRenderer extends BatchRenderer {
 
         "if((flg&2)>0){" +
           "vec3 " +
-            "nm=uUSIT<1." + 
+            "nm=uUNMT<1." + 
               "?vec3(0,0,1.)" + 
               ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*vec3(1,-1,1))," +
             "sftl=normalize(sftla)," +
@@ -300,19 +324,26 @@ export class LightRenderer extends BatchRenderer {
               "(flg&16)>0" +
                 "?uTS*.5" +
                 ":tUv," +
-              "H" +
+              "HEIGHT" +
             ")-sf)," +
             "hlf=normalize(sftl+sftv);" +
 
-          "vol*=dot(nm,sftl);" +
+          "float lght=dot(nm,sftl);" +
+          "vol*=lght;" +
           "if(vol<=0.)discard;" +
-          "if(isl)" +
-            "spc=pow(dot(nm,hlf),shn+H)*vExt[1].y;" +
+          "if(uURGT>0.){" + 
+            "vec2 rgt=texture(uRGTex,vTUv).rg;" +
+            "rgh=rgt.r;" +
+            "shn=rgt.g;" +
+          "}" +
+          "spc=pow(dot(nm,hlf),HEIGHT*rgh)*shn*vExt[1].y;" +
         "}" +
 
         "if((flg&1)>0){" +
+          "ivec2 " +
+            "p;" +
+
           "vec2 " +
-            "p," +
             "opd=(tUv-tCnt)/fltDst," +
             "opdm=opd/uTS;" +
 
@@ -327,8 +358,8 @@ export class LightRenderer extends BatchRenderer {
             "opdL=length(opd);" +
 
           "for(i=l;i>m;i-=st){" +
-            "p=vUv.zw+i*opdm;" +
-            "tc=texture(uTex,p)*H;" +
+            "p=ivec2((vUv.zw+i*opdm)*uTS);" +
+            "tc=texelFetch(uTex,p,0)*HEIGHT;" +
 
             "if((flg&4)>0&&tc.g>=vHS)discard;" +
 
@@ -341,9 +372,9 @@ export class LightRenderer extends BatchRenderer {
         "}" +
 
         "vec3 " +
-          "stCl=uUSIT<1.?vec3(1):texture(uSITex,vTUv).rgb," +
+          "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb," +
           "rCl=(flg&8)>0?vCl.rgb:vec3(1);" +
-        "oCl=vec4((stCl*vCl.rgb+rCl*spc)*shdw*vol,1);" +
+        "oCl=vec4((stCl*vCl.rgb*shdw+rCl*spc)*vol,1);" +
       "}" +
     "}";
   }

@@ -16,8 +16,10 @@ export class LightProps extends ItemProps {
   }
 
   /**
-   * Set/Get width
-   *  - In the case of lights, the height value is the same as the width value
+   * <pre>
+   *  Set/Get width
+   *    - In the case of lights, the height value is the same as the width value
+   * </pre>
    * @type {number}
    */
   get width() {

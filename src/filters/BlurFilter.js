@@ -10,29 +10,36 @@ export class BlurFilter extends BaseFilter {
    * @constructor
    * @param {number} intensityX
    * @param {number} intensityY
-   * @param {number} isRadialBlur
+   * @param {number} isRadial
    * @param {number} centerX
    * @param {number} centerY
    * @param {number} size
    */
-  constructor(intensityX, intensityY, isRadialBlur, centerX, centerY, size) {
+  constructor(
+    intensityX,
+    intensityY,
+    isRadial = false,
+    centerX = 0.5,
+    centerY = 0.5,
+    size = 1
+  ) {
     super(4, 1, intensityX);
 
     this.intensityY = intensityY;
-    this.isRadialBlur = isRadialBlur || false;
-    this.centerX = centerX || 0;
-    this.centerY = centerY || 0;
-    this.size = size || 1;
+    this.isRadial = isRadial;
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.size = size;
   }
 
   /**
    * Set/Get is blur radial
    * @type {boolean}
    */
-  get isRadialBlur() {
+  get isRadial() {
     return this.v[2] === 1;
   }
-  set isRadialBlur(v) {
+  set isRadial(v) {
     this.v[2] = v ? 1 : 0;
   }
 

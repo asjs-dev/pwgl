@@ -64,8 +64,10 @@ export class TextureProps extends BasePositioningProps {
   }
 
   /**
-   * Set/Get repeat random rotation
-   *  - If the texture is repeated, it will rotate randomly
+   * <pre>
+   *  Set/Get repeat random rotation
+   *    - If the texture is repeated, it will rotate randomly
+   * </pre>
    * @type {number}
    */
   get repeatRandomRotation() {
@@ -76,8 +78,10 @@ export class TextureProps extends BasePositioningProps {
   }
 
   /**
-   * Set/Get repeat random alpha
-   *  - If the texture is repeated, it will randomly become transparent
+   * <pre>
+   *  Set/Get repeat random alpha
+   *    - If the texture is repeated, it will randomly become transparent
+   * </pre>
    * @type {number}
    */
   get repeatRandomAlpha() {
@@ -88,8 +92,10 @@ export class TextureProps extends BasePositioningProps {
   }
 
   /**
-   * Set/Get repeat random blur
-   *  - If the texture is repeated, it will blur randomly
+   * <pre>
+   *  Set/Get repeat random blur
+   *    - If the texture is repeated, it will blur randomly
+   * </pre>
    * @type {number}
    */
   get repeatRandomBlur() {

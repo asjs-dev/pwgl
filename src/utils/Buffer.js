@@ -15,7 +15,7 @@ export class Buffer {
    * @param {number} type
    * @param {number} divisor
    */
-  constructor(locationName, data, rows, cols, target, type, divisor) {
+  constructor(locationName, data, rows, cols, target, type, divisor = 1) {
     /*
     this._buffer
     this._location
@@ -28,11 +28,11 @@ export class Buffer {
     this._locationName = locationName;
     this._rows = rows;
     this._cols = cols;
-    this._target = target || Const.ARRAY_BUFFER;
-    this._type = type || Const.DYNAMIC_DRAW;
+    this._target = target ?? Const.ARRAY_BUFFER;
+    this._type = type ?? Const.DYNAMIC_DRAW;
     this._length = length * 4;
     this._offset = cols * 4;
-    this._divisor = typeof divisor === "number" ? divisor : 1;
+    this._divisor = divisor;
 
     if (this._type === Const.STATIC_DRAW) this._length = this._offset = 0;
   }

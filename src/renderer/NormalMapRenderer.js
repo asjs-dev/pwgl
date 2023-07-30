@@ -9,8 +9,10 @@ import { BaseRenderer } from "./BaseRenderer";
  */
 
 /**
- * Normal map renderer
- *  - Renders a normal map from height map texture
+ * <pre>
+ *  Normal map renderer
+ *    - Renders a normal map from height map texture
+ * </pre>
  * @extends {BaseRenderer}
  */
 export class NormalMapRenderer extends BaseRenderer {
@@ -19,8 +21,7 @@ export class NormalMapRenderer extends BaseRenderer {
    * @constructor
    * @param {NormalMapRendererConfig} options
    */
-  constructor(options) {
-    options = options || {};
+  constructor(options = {}) {
     options.config = Utils.initRendererConfig(options.config);
 
     super(options);
@@ -37,10 +38,7 @@ export class NormalMapRenderer extends BaseRenderer {
   $render() {
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$gl.uniform1i(
-      this.$locations.uTex,
-      this.context.useTexture(this.heightMap, this.$renderTime, true)
-    );
+    this.$useTextureAt(this.heightMap, this.$locations.uTex, 0);
 
     this.$uploadBuffers();
 
@@ -54,7 +52,9 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader(options) {
-    return Utils.createVersion(options.config.precision) +
+    return Utils.GLSL.VERSION + 
+    "precision highp float;\n" +
+
     "in vec2 " +
       "aPos;" +
 
@@ -78,8 +78,11 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createFragmentShader(options) {
-    return Utils.createVersion(options.config.precision) +
-    "#define H 256.\n" +
+    return Utils.GLSL.VERSION + 
+    "precision highp float;\n" +
+
+    Utils.GLSL.DEFINE.HEIGHT +
+    
     "in vec2 " +
       "vTUv;" +
 
@@ -98,9 +101,9 @@ export class NormalMapRenderer extends BaseRenderer {
         "p2=p0+vec2(0,1);" +
 
       "vec3 " +
-        "A=vec3(p0,texture(uTex,p0*ts).g*H)," +
-        "B=vec3(p1,texture(uTex,p1*ts).g*H)," +
-        "C=vec3(p2,texture(uTex,p2*ts).g*H)," +
+        "A=vec3(p0,texture(uTex,p0*ts).g*HEIGHT)," +
+        "B=vec3(p1,texture(uTex,p1*ts).g*HEIGHT)," +
+        "C=vec3(p2,texture(uTex,p2*ts).g*HEIGHT)," +
         "nm=normalize(cross(B-A,C-A));" +
 
       "nm.y*=-1.;" +

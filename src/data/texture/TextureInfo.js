@@ -27,6 +27,9 @@ export class TextureInfo {
     this.minFilter = Const.NEAREST_MIPMAP_LINEAR;
     this.magFilter = Const.NEAREST;
 
+    this.maxMipMapLevel = 0;
+    this.baseMipMapLevel = 0;
+
     this.$width = this.$height = 1;
 
     this.type = Const.UNSIGNED_BYTE;
@@ -130,6 +133,34 @@ export class TextureInfo {
   set magFilter(v) {
     if (this._magFilter !== v) {
       this._magFilter = v;
+      ++this.$updateId;
+    }
+  }
+
+  /**
+   * Set/Get maxMipMapLevel
+   * @type {number}
+   */
+  get maxMipMapLevel() {
+    return this._maxMipMapLevel;
+  }
+  set maxMipMapLevel(v) {
+    if (this._maxMipMapLevel !== v) {
+      this._maxMipMapLevel = v;
+      ++this.$updateId;
+    }
+  }
+
+  /**
+   * Set/Get baseMipMapLevel
+   * @type {number}
+   */
+  get baseMipMapLevel() {
+    return this._baseMipMapLevel;
+  }
+  set baseMipMapLevel(v) {
+    if (this._baseMipMapLevel !== v) {
+      this._baseMipMapLevel = v;
       ++this.$updateId;
     }
   }
@@ -261,7 +292,16 @@ export class TextureInfo {
     gl.texParameteri(this.target, Const.TEXTURE_WRAP_T, this._wrapT);
     gl.texParameteri(this.target, Const.TEXTURE_MIN_FILTER, this._minFilter);
     gl.texParameteri(this.target, Const.TEXTURE_MAG_FILTER, this._magFilter);
-    gl.texParameteri(this.target, Const.TEXTURE_MAX_LEVEL, 0);
+    gl.texParameteri(
+      this.target,
+      Const.TEXTURE_MAX_LEVEL,
+      this._maxMipMapLevel
+    );
+    gl.texParameteri(
+      this.target,
+      Const.TEXTURE_BASE_LEVEL,
+      this._baseMipMapLevel
+    );
     gl.generateMipmap(this.target);
   }
 

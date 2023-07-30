@@ -20,21 +20,21 @@ export class FilterTextureProps {
   constructor(
     filter,
     texture,
-    translateX,
-    translateY,
-    cropX,
-    cropY,
-    cropWidth,
-    cropHeight
+    translateX = 0,
+    translateY = 0,
+    cropX = 0,
+    cropY = 0,
+    cropWidth = 1,
+    cropHeight = 1
   ) {
     this._filter = filter;
     this.texture = texture;
-    this.translateX = translateX || 0;
-    this.translateY = translateY || 0;
-    this.cropX = cropX || 0;
-    this.cropY = cropY || 0;
-    this.cropWidth = cropWidth || 1;
-    this.cropHeight = cropHeight || 1;
+    this.translateX = translateX;
+    this.translateY = translateY;
+    this.cropX = cropX;
+    this.cropY = cropY;
+    this.cropWidth = cropWidth;
+    this.cropHeight = cropHeight;
   }
 
   /**
