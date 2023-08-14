@@ -34,17 +34,7 @@ export class Light extends BaseDrawable {
   constructor() {
     super();
 
-    /*
-    this._castShadow
-    this._shading
-    this._flattenShadow
-    this._colorProofReflection
-    this._centerReflection
-    */
-
     this.props = new LightProps();
-
-    this.color.a = 0;
 
     this.unregisterData();
 

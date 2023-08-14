@@ -9,10 +9,7 @@ export class BaseItem {
    * @constructor
    */
   constructor() {
-    /*
-    this.interactive
-    */
-
+    this.interactive = false;
     this.matrixCache = Matrix3Utilities.identity();
     this.colorUpdateId = this.propsUpdateId = 0;
     this.colorCache = [1, 1, 1, 1];
@@ -31,7 +28,8 @@ export class BaseItem {
       const callback = this["on" + functionName];
       callback && callback(this, target, event);
     }
-    if (this.$parent) this.$parent.callEventHandler(target, event);
+
+    this.$parent && this.$parent.callEventHandler(target, event);
   }
 
   /**

@@ -33,10 +33,10 @@ export class Image extends BaseDrawable {
 
     this._currentTexturePropsUpdateId = 0;
 
-    this.textureCropCache = this.textureCrop.items;
-    this.textureRepeatRandomCache = this.textureProps.items;
-    this.distortionPropsCache = this.distortionProps.items;
-    this.colorCache = this.color.items;
+    this.textureCropCache = this.textureCrop.cache;
+    this.textureRepeatRandomCache = this.textureProps.cache;
+    this.distortionPropsCache = this.distortionProps.cache;
+    this.colorCache = this.color.cache;
 
     this.texture = texture;
   }

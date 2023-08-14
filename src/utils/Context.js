@@ -13,13 +13,6 @@ export class Context {
    * @param {ContextConfig} config
    */
   constructor(config) {
-    /*
-    this._currentProgram
-    this._currentBlendMode
-    this._width
-    this._height
-    */
-
     this.contextId = 0;
 
     this._config = Utils.initContextConfig(config || {});

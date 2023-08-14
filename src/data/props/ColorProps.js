@@ -12,7 +12,7 @@ export class ColorProps extends BaseProps {
   constructor() {
     super();
 
-    this.items = [1, 1, 1, 1];
+    this.cache = [1, 1, 1, 1];
   }
 
   /**
@@ -20,11 +20,11 @@ export class ColorProps extends BaseProps {
    * @type {number}
    */
   get r() {
-    return this.items[0];
+    return this.cache[0];
   }
   set r(v) {
-    if (this.items[0] !== v) {
-      this.items[0] = v;
+    if (this.cache[0] !== v) {
+      this.cache[0] = v;
       ++this.updateId;
     }
   }
@@ -34,11 +34,11 @@ export class ColorProps extends BaseProps {
    * @type {number}
    */
   get g() {
-    return this.items[1];
+    return this.cache[1];
   }
   set g(v) {
-    if (this.items[1] !== v) {
-      this.items[1] = v;
+    if (this.cache[1] !== v) {
+      this.cache[1] = v;
       ++this.updateId;
     }
   }
@@ -48,11 +48,11 @@ export class ColorProps extends BaseProps {
    * @type {number}
    */
   get b() {
-    return this.items[2];
+    return this.cache[2];
   }
   set b(v) {
-    if (this.items[2] !== v) {
-      this.items[2] = v;
+    if (this.cache[2] !== v) {
+      this.cache[2] = v;
       ++this.updateId;
     }
   }
@@ -62,11 +62,11 @@ export class ColorProps extends BaseProps {
    * @type {number}
    */
   get a() {
-    return this.items[3];
+    return this.cache[3];
   }
   set a(v) {
-    if (this.items[3] !== v) {
-      this.items[3] = v;
+    if (this.cache[3] !== v) {
+      this.cache[3] = v;
       ++this.updateId;
     }
   }

@@ -30,12 +30,6 @@ export class Stage2D extends BatchRenderer {
    * @param {Stage2DRendererConfig} options
    */
   constructor(options) {
-    /*
-    this._eventTarget
-    this._isMousePositionSet
-    this._previousEventTarget
-    */
-
     options = {
       ...{
         useTint: true,
@@ -162,14 +156,6 @@ export class Stage2D extends BatchRenderer {
   }
 
   /**
-   * @ignore
-   */
-  $render() {
-    this._drawItem(this.container);
-    this._batchDraw();
-  }
-
-  /**
    * @param {BaseItem} item
    * @ignore
    */
@@ -250,6 +236,29 @@ export class Stage2D extends BatchRenderer {
   /**
    * @ignore
    */
+  _onMouseEventHandler(event) {
+    const canvas = this.context.canvas;
+    if (event.target === canvas) {
+      this._latestEvent = event;
+      const scaleX = canvas.width / canvas.offsetWidth;
+      const scaleY = canvas.height / canvas.offsetHeight;
+      const offsetX = scaleX * event.offsetX;
+      const offsetY = scaleY * event.offsetY;
+      this._setMousePosition(offsetX, offsetY);
+    }
+  }
+
+  /**
+   * @ignore
+   */
+  $render() {
+    this._drawItem(this.container);
+    this._batchDraw();
+  }
+
+  /**
+   * @ignore
+   */
   $resize() {
     super.$resize();
     Matrix3Utilities.projection(this.container.parent.matrixCache, this);
@@ -272,22 +281,6 @@ export class Stage2D extends BatchRenderer {
     super.$createBuffers();
     this._dataBuffer.create(this.$gl, this.$locations);
     this._distortionBuffer.create(this.$gl, this.$locations);
-  }
-
-  /**
-   * @param {*} event
-   * @ignore
-   */
-  _onMouseEventHandler(event) {
-    const canvas = this.context.canvas;
-    if (event.target === canvas) {
-      this._latestEvent = event;
-      const scaleX = canvas.width / canvas.offsetWidth;
-      const scaleY = canvas.height / canvas.offsetHeight;
-      const offsetX = scaleX * event.offsetX;
-      const offsetY = scaleY * event.offsetY;
-      this._setMousePosition(offsetX, offsetY);
-    }
   }
 
   // prettier-ignore
@@ -401,7 +394,7 @@ export class Stage2D extends BatchRenderer {
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
 
-    Utils.GLSL.DEFINE.PI +
+    Utils.GLSL.DEFINE.RADIAN_360 +
     Utils.GLSL.DEFINE.ZO +
 
     "in float " +
@@ -440,7 +433,7 @@ export class Stage2D extends BatchRenderer {
 
           "float " +
             "rnd=rand(floor(uv+st))," +
-            "rndDg=rnd*360.*vRR.x;" +
+            "rndDg=rnd*RADIAN_360*vRR.x;" +
 
           "if(rndDg>0.){" +
             "vec2 " +

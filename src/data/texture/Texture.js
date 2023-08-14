@@ -1,6 +1,8 @@
 import { TextureInfo } from "./TextureInfo";
 import "../../utils/Utils";
 
+const _placeholderImage = document.createElement("img");
+
 /**
  * Texture
  * @extends {TextureInfo}
@@ -15,14 +17,11 @@ export class Texture extends TextureInfo {
   constructor(source, shouldUpdate) {
     super();
 
-    /*
-    this._loaded
-    this.isVideo
-    */
-
-    this._source = Texture.placeholderImage;
+    this._source = _placeholderImage;
 
     this._parseTextureSize = this._parseTextureSize.bind(this);
+
+    this.isVideo = false;
 
     this.source = source;
     this.shouldUpdate = shouldUpdate;
@@ -65,25 +64,20 @@ export class Texture extends TextureInfo {
   }
   set source(value) {
     if (value) {
-      this._loaded = false;
-
       this._source.removeEventListener(this._eventType, this._parseTextureSize);
 
-      this._source = value ? value : Texture.placeholderImage;
+      this._source = value ? value : _placeholderImage;
 
       this.isVideo = value.tagName
         ? value.tagName.toLowerCase() === "video"
         : false;
       this._eventType = this.isVideo ? "canplay" : "load";
 
-      if (value) {
-        this._parseTextureSize();
-
-        !this._loaded &&
-          value.addEventListener(this._eventType, this._parseTextureSize, {
-            once: true,
-          });
-      }
+      value &&
+        !this._parseTextureSize() &&
+        value.addEventListener(this._eventType, this._parseTextureSize, {
+          once: true,
+        });
     }
   }
 
@@ -165,15 +159,13 @@ export class Texture extends TextureInfo {
       this._dimensionHeightName = "videoHeight";
     }
 
-    this._loaded = this._sourceWidth * this._sourceHeight > 0;
-    if (this._loaded) {
+    if (this._sourceWidth * this._sourceHeight > 0) {
       this._renderSource = this._source;
       ++this._loadUpdateId;
+      return true;
     } else this._renderSource = null;
   }
 }
-
-Texture.placeholderImage = document.createElement("img");
 
 /**
  * Create a new Texture from an image source

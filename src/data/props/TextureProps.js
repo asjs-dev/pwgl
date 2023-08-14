@@ -14,7 +14,7 @@ export class TextureProps extends BasePositioningProps {
 
     this._repeatX = this._repeatY = 1;
 
-    this.items = [0, 0, 0];
+    this.cache = [0, 0, 0];
   }
 
   /**
@@ -71,10 +71,10 @@ export class TextureProps extends BasePositioningProps {
    * @type {number}
    */
   get repeatRandomRotation() {
-    return this.items[0];
+    return this.cache[0];
   }
   set repeatRandomRotation(v) {
-    this.items[0] = v;
+    this.cache[0] = v;
   }
 
   /**
@@ -85,10 +85,10 @@ export class TextureProps extends BasePositioningProps {
    * @type {number}
    */
   get repeatRandomAlpha() {
-    return this.items[1];
+    return this.cache[1];
   }
   set repeatRandomAlpha(v) {
-    this.items[1] = v;
+    this.cache[1] = v;
   }
 
   /**
@@ -99,9 +99,9 @@ export class TextureProps extends BasePositioningProps {
    * @type {number}
    */
   get repeatRandomBlur() {
-    return this.items[2];
+    return this.cache[2];
   }
   set repeatRandomBlur(v) {
-    this.items[2] = v;
+    this.cache[2] = v;
   }
 }

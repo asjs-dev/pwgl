@@ -57,12 +57,10 @@ export class Container extends Item {
    * @param {number} index
    */
   addChildAt(child, index) {
-    if (child) {
-      child.parent && child.parent.removeChild(child);
-      this.children.push(child);
-      this.setChildIndex(child, index);
-      child.parent = this;
-    }
+    child.parent && child.parent.removeChild(child);
+    this.children.push(child);
+    this.setChildIndex(child, index);
+    child.parent = this;
   }
 
   /**
@@ -70,10 +68,8 @@ export class Container extends Item {
    * @param {BaseItem} child
    */
   removeChild(child) {
-    if (child) {
-      removeFromArray(this.children, child);
-      child.parent = null;
-    }
+    removeFromArray(this.children, child);
+    child.parent = null;
   }
 
   /**

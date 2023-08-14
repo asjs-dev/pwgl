@@ -15,7 +15,7 @@ export class TextureCrop extends BaseProps {
 
     this._currentUpdateId = 0;
 
-    this.items = [0, 0, 1, 1];
+    this.cache = [0, 0, 1, 1];
 
     this._width = this._height = 1;
   }
@@ -25,11 +25,11 @@ export class TextureCrop extends BaseProps {
    * @type {number}
    */
   get x() {
-    return this.items[0];
+    return this.cache[0];
   }
   set x(v) {
-    if (this.items[0] !== v) {
-      this.items[0] = v;
+    if (this.cache[0] !== v) {
+      this.cache[0] = v;
       ++this.updateId;
     }
   }
@@ -39,11 +39,11 @@ export class TextureCrop extends BaseProps {
    * @type {number}
    */
   get y() {
-    return this.items[1];
+    return this.cache[1];
   }
   set y(v) {
-    if (this.items[1] !== v) {
-      this.items[1] = v;
+    if (this.cache[1] !== v) {
+      this.cache[1] = v;
       ++this.updateId;
     }
   }
@@ -83,8 +83,8 @@ export class TextureCrop extends BaseProps {
     if (this._currentUpdateId < this.updateId) {
       this._currentUpdateId = this.updateId;
 
-      this.items[2] = this._width - this.items[0];
-      this.items[3] = this._height - this.items[1];
+      this.cache[2] = this._width - this.cache[0];
+      this.cache[3] = this._height - this.cache[1];
     }
   }
 

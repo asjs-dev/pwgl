@@ -13,7 +13,7 @@ export class DistortionProps {
     this.distortTexture = true;
 
     // prettier-ignore
-    this.items = [
+    this.cache = [
       0, 0,
       1, 0,
       1, 1,
@@ -31,10 +31,10 @@ export class DistortionProps {
    * @type {number}
    */
   get topLeftX() {
-    return this.items[0];
+    return this.cache[0];
   }
   set topLeftX(v) {
-    this.items[0] = v;
+    this.cache[0] = v;
   }
 
   /**
@@ -47,10 +47,10 @@ export class DistortionProps {
    * @type {number}
    */
   get topLeftY() {
-    return this.items[1];
+    return this.cache[1];
   }
   set topLeftY(v) {
-    this.items[1] = v;
+    this.cache[1] = v;
   }
 
   /**
@@ -63,10 +63,10 @@ export class DistortionProps {
    * @type {number}
    */
   get topRightX() {
-    return this.items[2];
+    return this.cache[2];
   }
   set topRightX(v) {
-    this.items[2] = v;
+    this.cache[2] = v;
   }
 
   /**
@@ -79,10 +79,10 @@ export class DistortionProps {
    * @type {number}
    */
   get topRightY() {
-    return this.items[3];
+    return this.cache[3];
   }
   set topRightY(v) {
-    this.items[3] = v;
+    this.cache[3] = v;
   }
 
   /**
@@ -95,10 +95,10 @@ export class DistortionProps {
    * @type {number}
    */
   get bottomRightX() {
-    return this.items[4];
+    return this.cache[4];
   }
   set bottomRightX(v) {
-    this.items[4] = v;
+    this.cache[4] = v;
   }
 
   /**
@@ -111,10 +111,10 @@ export class DistortionProps {
    * @type {number}
    */
   get bottomRightY() {
-    return this.items[5];
+    return this.cache[5];
   }
   set bottomRightY(v) {
-    this.items[5] = v;
+    this.cache[5] = v;
   }
 
   /**
@@ -127,10 +127,10 @@ export class DistortionProps {
    * @type {number}
    */
   get bottomLeftX() {
-    return this.items[6];
+    return this.cache[6];
   }
   set bottomLeftX(v) {
-    this.items[6] = v;
+    this.cache[6] = v;
   }
 
   /**
@@ -143,9 +143,9 @@ export class DistortionProps {
    * @type {number}
    */
   get bottomLeftY() {
-    return this.items[7];
+    return this.cache[7];
   }
   set bottomLeftY(v) {
-    this.items[7] = v;
+    this.cache[7] = v;
   }
 }

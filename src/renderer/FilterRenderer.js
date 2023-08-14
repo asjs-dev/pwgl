@@ -140,19 +140,24 @@ export class FilterRenderer extends BaseRenderer {
    */
   $createFragmentShader(options) {
     const blurFunc = (core) =>
-      "for(oft.x=-2.;oft.x<3.;++oft.x)" +
-        "for(oft.y=-2.;oft.y<3.;++oft.y)" +
-          "if(oft.x!=0.&&oft.y!=0.){" +
-            "poft=clamp(f+ivec2(floor(wh*oft)),ivec2(ZO.xx),ts-1);" +
-            "clg=texelFetch(uTex,poft,0);" +
-            core +
-          "}" +
-      "pcl=cl/c;";
+      "for(float i=0.;i<RADIAN_360;i+=R){" +
+        "poft=clamp(" + 
+          "f+ivec2(floor(wh*vec2(cos(i),sin(i))))," + 
+          "ivec2(ZO.xx)," + 
+          "ts-1" + 
+        ");" +
+        "clg=texelFetch(uTex,poft,0);" +
+        core +
+      "}" +
+      "pcl=cl/(BP+1.);";
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
 
     Utils.GLSL.DEFINE.ZO +
+    Utils.GLSL.DEFINE.RADIAN_360 +
+    "#define BP 8.\n" +
+    "#define R RADIAN_360/BP\n" +
 
     "uniform sampler2D " +
       "uTex," +
@@ -265,7 +270,6 @@ export class FilterRenderer extends BaseRenderer {
         // SAMPLING FILTERS
         "else if(uFtrT.x<5){" +
           "vec2 " +
-            "oft," +
             "wh=vec2(v,vl[1]);" +
 
           "ivec2 " +
@@ -276,9 +280,6 @@ export class FilterRenderer extends BaseRenderer {
             "clg," +
             "cl=oCl;" +
 
-          "float " +
-            "c=1.;" +
-
           // BlurFilter
           "if(uFtrT.y<2){" +
             "float " +
@@ -286,9 +287,7 @@ export class FilterRenderer extends BaseRenderer {
               "im;" +
 
             blurFunc(
-              "im=1.-(length(oft)/l)*.9;" +
-              "cl+=clg*im;" +
-              "c+=im;"
+              "cl+=clg;"
             ) +
 
             "float " +
@@ -304,8 +303,7 @@ export class FilterRenderer extends BaseRenderer {
 
             blurFunc(
               "if(abs(max(clg.r,max(clg.g,clg.b))-omx)>.3)" +
-                "cl+=clg;" +
-              "c++;"
+                "cl+=clg;"
             ) +
 
             "oCl+=pcl;" +

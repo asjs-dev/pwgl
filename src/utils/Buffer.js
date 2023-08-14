@@ -16,11 +16,6 @@ export class Buffer {
    * @param {number} divisor
    */
   constructor(locationName, data, rows, cols, target, type, divisor = 1) {
-    /*
-    this._buffer
-    this._location
-    */
-
     const length = rows * cols;
 
     this.data =

@@ -22,14 +22,6 @@ export class BaseRenderer {
    * @param {BaseRendererConfig} options
    */
   constructor(options) {
-    /*
-    this._program
-    this.widthHalf
-    this.heightHalf
-    this.$gl
-    this._vao;
-    */
-
     this.$attachFramebufferCustom = this.$attachFramebuffer;
     this.$attachFramebufferAndClearCustom = this.$attachFramebufferAndClear;
 

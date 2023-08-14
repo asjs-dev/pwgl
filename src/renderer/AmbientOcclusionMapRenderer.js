@@ -109,7 +109,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "precision highp float;\n" +
     
     Utils.GLSL.DEFINE.HEIGHT +
-    Utils.GLSL.DEFINE.PI +
+    Utils.GLSL.DEFINE.RADIAN_360 +
     
     "in vec2 " +
       "vTUv;" +
@@ -143,7 +143,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "p;" +
         
         "float " + 
-          "t=360./uS*PI/180.," +
+          "t=RADIAN_360/uS," +
           "uRH=uR/HEIGHT," +
           "rad," +
           "i;" +
