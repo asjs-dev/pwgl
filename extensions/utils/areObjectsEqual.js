@@ -1,6 +1,4 @@
 export const areObjectsEqual = (a, b) => {
-  if (a === null || b === null) return a === b;
-
   if (typeof a !== typeof b) return false;
 
   if (typeof a !== "object") return a === b;

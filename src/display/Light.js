@@ -62,7 +62,7 @@ export class Light extends BaseDrawable {
     this._lightData = lightData;
     this._extensionData = extensionData;
 
-    this.$currentColorUpdateId = 0;
+    this.$currentColorUpdateId = -1;
 
     this._updateLightProps();
   }

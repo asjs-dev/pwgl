@@ -12,7 +12,8 @@ export class ItemProps extends BasePositioningProps {
   constructor() {
     super();
 
-    this.$scaleUpdateId = this._currentScaleUpdateId = 0;
+    this.$scaleUpdateId = 0;
+    this._currentScaleUpdateId = -1;
 
     this.scaledWidth =
       this.scaledHeight =

@@ -14,7 +14,8 @@ export class Framebuffer extends TextureInfo {
   constructor() {
     super();
 
-    this._resizeUpdateId = this._currentResizeUpdateId = 0;
+    this._resizeUpdateId = 0;
+    this._currentResizeUpdateId = -1;
 
     this.minFilter = Const.LINEAR_MIPMAP_LINEAR;
     this.magFilter = Const.LINEAR;

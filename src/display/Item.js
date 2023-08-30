@@ -30,7 +30,7 @@ export class Item extends BaseItem {
       this.$currentParentColorUpdateId =
       this.$currentAdditionalPropsUpdateId =
       this.$currentInverseMatrixPropsUpdateId =
-        0;
+        -1;
 
     this.callback = noop;
 
@@ -63,7 +63,7 @@ export class Item extends BaseItem {
         this.$currentParentColorUpdateId =
         this.$currentAdditionalPropsUpdateId =
         this.$currentInverseMatrixPropsUpdateId =
-          0;
+          -1;
     }
   }
 

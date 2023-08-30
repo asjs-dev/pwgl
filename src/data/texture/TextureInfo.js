@@ -16,9 +16,7 @@ export class TextureInfo {
 
     this.target = Const.TEXTURE_2D;
 
-    this._currenActiveId = -1;
-
-    this.$currentAglId = this.$updateId = this.$currentUpdateId = 0;
+    this.$currentAglId = this._currenActiveId = this.$currentUpdateId = -1;
 
     this.wrapS = this.wrapT = Const.CLAMP_TO_EDGE;
 
@@ -27,8 +25,7 @@ export class TextureInfo {
     this.minFilter = Const.NEAREST_MIPMAP_LINEAR;
     this.magFilter = Const.NEAREST;
 
-    this.maxMipMapLevel = 0;
-    this.baseMipMapLevel = 0;
+    this.$updateId = this.maxMipMapLevel = this.baseMipMapLevel = 0;
 
     this.$width = this.$height = 1;
 

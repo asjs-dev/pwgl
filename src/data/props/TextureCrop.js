@@ -13,7 +13,7 @@ export class TextureCrop extends BaseProps {
   constructor() {
     super();
 
-    this._currentUpdateId = 0;
+    this._currentUpdateId = -1;
 
     this.cache = [0, 0, 1, 1];
 
