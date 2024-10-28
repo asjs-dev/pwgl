@@ -47,10 +47,11 @@ export class BaseDrawable extends Item {
    * @ignore
    */
   $calcCorners() {
-    Matrix3Utilities.calcCorners(
+    const stage = this.stage;
+    stage && Matrix3Utilities.calcCorners(
       this.matrixCache,
       this.$corners,
-      this.stage.renderer
+      stage.renderer
     );
   }
 

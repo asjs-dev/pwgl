@@ -27,6 +27,14 @@ export class BaseRenderer {
 
     this._clearBeforeRenderFunc = noop;
 
+    this._currentSizeUpdateId = -1;
+    this._sizeUpdateId =
+      this.width =
+      this.height =
+      this.widthHalf =
+      this.heightHalf =
+        0;
+
     this.clearColor = new ColorProps();
 
     this._currentContextId = this.$renderTime = 0;
@@ -90,6 +98,8 @@ export class BaseRenderer {
   setSize(width, height) {
     this.width = width;
     this.height = height;
+
+    ++this._sizeUpdateId;
   }
 
   /**

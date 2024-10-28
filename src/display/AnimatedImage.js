@@ -65,6 +65,7 @@ export class AnimatedImage extends Image {
    */
   play() {
     this.updateAnimation = this._updateAnimation;
+    this._useTextureFrame();
   }
 
   /**

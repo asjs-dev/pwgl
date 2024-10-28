@@ -142,19 +142,13 @@ export const Utils = {
    * @param {function} callback Callback function
    */
   initApplication: (callback) => {
-    const isDocumentReady = () => {
-      if (["interactive", "complete"].indexOf(document.readyState) > -1) {
-        (callback ?? noop)(Utils.INFO.isWebGl2Supported);
-        return true;
-      }
-    };
-
-    const onReadyStateChange = () =>
-      isDocumentReady() &&
-      document.removeEventListener("readystatechange", onReadyStateChange);
-
-    if (!isDocumentReady())
-      document.addEventListener("readystatechange", onReadyStateChange);
+    const callItBack = () => (callback ?? noop)(Utils.INFO.isWebGl2Supported);
+    
+    ["interactive", "complete"].includes(document.readyState)
+      ? callItBack()
+      : document.addEventListener("DOMContentLoaded", callItBack, {
+          once: true,
+        });
   },
 
   /**

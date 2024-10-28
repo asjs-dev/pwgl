@@ -261,8 +261,11 @@ export class Stage2D extends BatchRenderer {
    */
   $resize() {
     super.$resize();
-    Matrix3Utilities.projection(this.container.parent.matrixCache, this);
-    ++this.container.parent.propsUpdateId;
+    if (this._currentSizeUpdateId < this._sizeUpdateId) {
+      this._currentSizeUpdateId = this._sizeUpdateId;
+      Matrix3Utilities.projection(this.container.parent.matrixCache, this);
+      ++this.container.parent.propsUpdateId;
+    }
   }
 
   /**
@@ -380,16 +383,20 @@ export class Stage2D extends BatchRenderer {
     const useTint = options.useTint;
 
     const createGetTextureFunction = (maxTextureImageUnits) => {
-      let func = "vec4 gtTexCl(float i,vec2 c){";
+      let func = "vec4 gtTexCl(float i,vec2 s,vec2 e,vec2 m){" +
+        "vec2 ts;";
       for (let i = 0; i < maxTextureImageUnits; ++i)
-        func += "if(i<" + (i + 1) + ".)return texture(uTex[" + i + "],c);";
+        func += "if(i<" + (i + 1) + ".){" + 
+          "ts=vec2(textureSize(uTex[" + i + "],0));" +
+          "return texture(uTex[" + i + "],(round(s*ts)/ts)+(round(e*ts)/ts)*m);" +
+        "}";
       func += "return vec4(1);" +
       "}";
       return func;
     }
 
     const getSimpleTexColor = (modCoordName) =>
-      "gtTexCl(vTId,vTCrop.xy+vTCrop.zw*" + modCoordName + ")";
+      "gtTexCl(vTId,vTCrop.xy,vTCrop.zw," + modCoordName + ")";
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +

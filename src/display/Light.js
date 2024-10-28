@@ -17,14 +17,14 @@ const TEMP_ARRAY = [];
  * @extends {BaseDrawable}
  * @property {number} type - Type of the Light
  * @property {number} maxShadowStep - The maximum step of shadow caster per pixel
- *                                    - Default value is 128
+ *                                  - Default value is 128
  * @property {number} reflectionSize - Reflection size
  * @property {number} precision - Shadow precision
- *                                - Default value is 1
+ *                              - Default value is 1
  * @property {number} angle - Rotation of the light
  * @property {number} spotAngle - Angle of the light source
- *                                - Default value is 180deg [hemisphere]
- *                                - 360deg [sphere]
+ *                              - Default value is 180deg [hemisphere]
+ *                              - 360deg [sphere]
  */
 export class Light extends BaseDrawable {
   /**
@@ -38,9 +38,8 @@ export class Light extends BaseDrawable {
 
     this.unregisterData();
 
-    this.castShadow = this.shading = true;
+    this.castShadow = this.shading = this.centerReflection = true;
     this.flattenShadow = false;
-    this.centerReflection = true;
 
     this.angle = 0;
     this.spotAngle = 180 * Utils.THETA;
@@ -115,21 +114,6 @@ export class Light extends BaseDrawable {
   }
 
   /**
-   * <pre>
-   *  Set/Get the surface reflects the color of the light
-   *    - If it is false the surface reflects white color
-   * </pre>
-   * @type {boolean}
-   */
-  get colorProofReflection() {
-    return this._colorProofReflection;
-  }
-  set colorProofReflection(v) {
-    this._colorProofReflection = v;
-    this._updateLightProps();
-  }
-
-  /**
    * Set/Get is the reflection moves towards the center of the screen
    * @type {boolean}
    */
@@ -160,19 +144,22 @@ export class Light extends BaseDrawable {
       this.$updateProps();
       this._updateColor();
 
+      const extensionData = this._extensionData;
+
       lightData[datId] = lightData[datId - 1] > 0 ? 1 : 0;
       lightData[datId + 1] = this.diffuse;
       lightData[datId + 2] = this.props.alpha;
 
       lightData[this._matId + 6] = this.props.width;
 
-      this._extensionData[this._matId + 2] = this.props.z;
-      this._extensionData[this._matId] = this.type;
-      this._extensionData[this._quadId] = this.maxShadowStep;
-      this._extensionData[this._quadId + 1] = this.reflectionSize;
-      this._extensionData[this._matId + 3] = this.precision;
-      this._lightData[this._datId + 3] = this.angle;
-      this._lightData[this._matId + 7] = this.spotAngle;
+      extensionData[this._matId + 2] = this.props.z;
+      extensionData[this._matId] = this.type;
+      extensionData[this._quadId] = this.maxShadowStep;
+      extensionData[this._quadId + 1] = this.reflectionSize;
+      extensionData[this._matId + 3] = this.precision;
+
+      lightData[this._datId + 3] = this.angle;
+      lightData[this._matId + 7] = this.spotAngle;
     } else lightData[datId] = 0;
   }
 
@@ -184,8 +171,7 @@ export class Light extends BaseDrawable {
       (this._castShadow * 1) |
       (this._shading * 2) |
       (this._flattenShadow * 4) |
-      (this._colorProofReflection * 8) |
-      (this._centerReflection * 16);
+      (this._centerReflection * 8);
   }
 
   /**

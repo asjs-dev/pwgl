@@ -1,8 +1,17 @@
-export class Mouse {
+import { PressState } from "./PressState";
+
+export class Mouse extends PressState {
   constructor() {
+    super();
+
     this.position = { x: 0, y: 0 };
 
-    this._state = 0;
+    this._typeMap = {
+      mousedown: 1,
+      mouseup: 1,
+      touchstart: 0,
+      touchend: 0,
+    };
 
     this._onMouseDown = this._onMouseDown.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
@@ -16,14 +25,6 @@ export class Mouse {
     window.addEventListener("touchmove", this._onMouseMove);
   }
 
-  isDown() {
-    return this._state === 1 && Date.now() - this._downTime > 128;
-  }
-
-  isClicked() {
-    return this._state === 2 && this._upTime < 128;
-  }
-
   destruct() {
     window.removeEventListener("mousedown", this._onMouseDown);
     window.removeEventListener("mouseup", this._onMouseUp);
@@ -33,14 +34,16 @@ export class Mouse {
     window.removeEventListener("touchmove", this._onMouseMove);
   }
 
-  _onMouseDown() {
-    this._state = 1;
-    this._downTime = Date.now();
+  _onMouseDown({ type, which }) {
+    if (this._typeMap[type] === which) {
+      this.$setDownState(0);
+    }
   }
 
-  _onMouseUp() {
-    this._state = 2;
-    this._upTime = Date.now() - this._downTime;
+  _onMouseUp({ type, which }) {
+    if (this._typeMap[type] === which) {
+      this.$setUpState(0);
+    }
   }
 
   _onMouseMove(event) {
@@ -49,9 +52,5 @@ export class Mouse {
 
     this.position.x = clientX;
     this.position.y = clientY;
-  }
-
-  update() {
-    this._state === 2 && (this._state = 0);
   }
 }

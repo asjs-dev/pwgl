@@ -3,7 +3,6 @@ import { Buffer } from "../utils/Buffer";
 import { BlendMode } from "../data/BlendMode";
 import { Light } from "../display/Light";
 import { BatchRenderer } from "./BatchRenderer";
-import { TextureInfo } from "../data/texture/TextureInfo";
 
 /**
  * @typedef {Object} LightRendererConfig
@@ -79,7 +78,11 @@ export class LightRenderer extends BatchRenderer {
       ? (this._lights[index] = light)
       : (index = this._lights.push(light) - 1);
 
-    light.registerData(index, this.$matrixBuffer.data, this._extensionBuffer.data);
+    light.registerData(
+      index,
+      this.$matrixBuffer.data,
+      this._extensionBuffer.data
+    );
   }
 
   /**
@@ -261,108 +264,116 @@ export class LightRenderer extends BatchRenderer {
 
     "void main(void){" +
       "oCl=vec4(0);" +
-      "if(vDt.x>0.){" +
-        "vec4 " +
-          "tc=texture(uTex,vTUv);" +
 
-        "float " +
-          "ph=tc.g*HEIGHT," +
-          "shn=tc.b," +
-          "rgh=1.;" +
+      "if(vDt.x==0.)discard;" +
 
-        "vec2 " +
-          "tUv=vTUv*uTS," +
-          "tCnt=vUv.zw*uTS;" +
+      "vec4 " +
+        "tc=texture(uTex,vTUv);" +
 
-        "vec3 " +
-          "sf=vec3(tUv,ph)," +
-          "lp=vec3(tCnt,vHS)," +
-          "sftla=lp-sf;" +
+      "float " +
+        "ph=tc.g*HEIGHT," +
+        "shn=tc.b," +
+        "rgh=1.;" +
 
-        "float " +
-          "dst=1.-length(sftla)/vD," +
-          "vol=vDt.z*vCl.a," +
-          "spc=0.;" +
+      "vec2 " +
+        "tUv=vTUv*uTS," +
+        "tCnt=vUv.zw*uTS;" +
 
+      "vec3 " +
+        "sf=vec3(tUv,ph)," +
+        "lp=vec3(tCnt,vHS)," +
+        "sftla=lp-sf;" +
+
+      "float " +
+        "dst=1.-length(sftla)/vD," +
+        "vol=vDt.z*vCl.a," +
+        "spc=0.;" +
+
+      "if(vol<=0.)discard;" +
+
+      "if(vExt[0].x<1.){" +
+        "vol*=dst;" +
         "if(vol<=0.)discard;" +
 
-        "if(vExt[0].x<1.){" +
-          "vol*=dst;" +
-          "if(vol<=0.)discard;" +
+        "float " +
+          "slh=(vHS-ph)/HEIGHT;" +
 
-          "float " +
-            "slh=(vHS-ph)/HEIGHT;" +
+        "vec2 " +
+          "sl=vec2(" +
+            "slh*vSln.y-vUv.x*vSln.x," +
+            "slh*vSln.x+vUv.x*vSln.y" +
+          ");" +
 
-          "vec2 " +
-            "sl=vec2(" +
-              "slh*vSln.y-vUv.x*vSln.x," +
-              "slh*vSln.x+vUv.x*vSln.y" +
-            ");" +
+        "if((" +
+          "atan(" +
+            "sl.x," +
+            "length(vec2(sl.y,vUv.y))" +
+          ")+PIH" +
+        ")-vSpt<0.)discard;" +
+      "}" +
 
-          "if((" +
-            "atan(" +
-              "sl.x," +
-              "length(vec2(sl.y,vUv.y))" +
-            ")+PIH" +
-          ")-vSpt<0.)discard;" +
+      "int " +
+        "flg=int(vExt[0].y);" +
+
+      "float " +
+        "fltDst=distance(tCnt,tUv)," +
+        "shdw=1.;" +
+
+      "if((flg&2)>0){" +
+        "vec3 " +
+          "nm=uUNMT<1." + 
+            "?vec3(0,0,1.)" + 
+            ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*vec3(1,-1,1))," +
+          "sftl=normalize(sftla)," +
+          "sftv=normalize(vec3(" +
+            "(flg&8)>0" +
+              "?uTS*.5" +
+              ":tUv," +
+            "HEIGHT" +
+          ")-sf)," +
+          "hlf=normalize(sftl+sftv);" +
+
+        "float lght=dot(nm,sftl);" +
+        "vol*=lght;" +
+        "if(vol<=0.)discard;" +
+        "if(uURGT>0.){" + 
+          "vec2 rgt=texture(uRGTex,vTUv).rg;" +
+          "rgh=rgt.r;" +
+          "shn=rgt.g;" +
         "}" +
+        "spc=pow(dot(nm,hlf),HEIGHT*rgh)*shn*vExt[1].y;" +
+      "}" +
 
-        "int " +
-          "flg=int(vExt[0].y);" +
+      "if((flg&1)>0){" +
+        "ivec2 " +
+          "p;" +
+
+        "vec2 " +
+          "opd=(tUv-tCnt)/fltDst," +
+          "opdm=opd/uTS;" +
 
         "float " +
-          "fltDst=distance(tCnt,tUv)," +
-          "shdw=1.;" +
-
-        "if((flg&2)>0){" +
-          "vec3 " +
-            "nm=uUNMT<1." + 
-              "?vec3(0,0,1.)" + 
-              ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*vec3(1,-1,1))," +
-            "sftl=normalize(sftla)," +
-            "sftv=normalize(vec3(" +
-              "(flg&16)>0" +
-                "?uTS*.5" +
-                ":tUv," +
-              "HEIGHT" +
-            ")-sf)," +
-            "hlf=normalize(sftl+sftv);" +
-
-          "float lght=dot(nm,sftl);" +
-          "vol*=lght;" +
-          "if(vol<=0.)discard;" +
-          "if(uURGT>0.){" + 
-            "vec2 rgt=texture(uRGTex,vTUv).rg;" +
-            "rgh=rgt.r;" +
-            "shn=rgt.g;" +
-          "}" +
-          "spc=pow(dot(nm,hlf),HEIGHT*rgh)*shn*vExt[1].y;" +
-        "}" +
-
-        "if((flg&1)>0){" +
-          "ivec2 " +
-            "p;" +
-
-          "vec2 " +
-            "opd=(tUv-tCnt)/fltDst," +
-            "opdm=opd/uTS;" +
-
-          "float " +
-            "shl=vD/vDt.y," +
-            "st=ceil(max(1.,max(fltDst/vExt[1].x,vExt[0].w)))," +
-            "hst=(ph-vHS)/fltDst," +
-            "l=fltDst-st," +
-            "m=max(st,l-shl)," +
-            "i," +
-            "pc," +
-            "opdL=length(opd);" +
-
+          "shl=vD*vDt.y," + // shadow length
+          "st=max(1.,ceil(max(fltDst/vExt[1].x,vExt[0].w)))," + // loop step length
+          "hst=(ph-vHS)/fltDst," + // vertical step
+          "opdL=length(opd)," + // horizontal step
+          "i," +
+          "pc;" +
+        
+        "float " +
+          "l=fltDst-st," +
+          "m=max(st,l-shl);" +
+        
+        "if((flg&4)>0){" + 
           "for(i=l;i>m;i-=st){" +
             "p=ivec2((vUv.zw+i*opdm)*uTS);" +
             "tc=texelFetch(uTex,p,0)*HEIGHT;" +
-
-            "if((flg&4)>0&&tc.g>=vHS)discard;" +
-
+            "if(tc.g>=vHS)discard;" +
+          "}" +
+        "}else{" +
+          "for(i=l;i>m;i-=st){" +
+            "p=ivec2((vUv.zw+i*opdm)*uTS);" +
+            "tc=texelFetch(uTex,p,0)*HEIGHT;" +
             "pc=vHS+i*hst;" +
             "if(tc.r<=pc&&tc.g>=pc){" +
               "shdw*=(fltDst-i*opdL)/shl;" +
@@ -370,12 +381,11 @@ export class LightRenderer extends BatchRenderer {
             "}" +
           "}" +
         "}" +
-
-        "vec3 " +
-          "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb," +
-          "rCl=(flg&8)>0?vCl.rgb:vec3(1);" +
-        "oCl=vec4((stCl*vCl.rgb*shdw+rCl*spc)*vol,1);" +
       "}" +
+
+      "vec3 " +
+        "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb;" +
+      "oCl=vec4((stCl*vCl.rgb+spc)*vol*shdw,1);" +
     "}";
   }
 }
