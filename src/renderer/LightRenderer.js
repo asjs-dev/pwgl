@@ -260,8 +260,6 @@ export class LightRenderer extends BatchRenderer {
     "out vec4 " +
       "oCl;" +
 
-    Utils.GLSL.RANDOM +
-
     "void main(void){" +
       "oCl=vec4(0);" +
 
@@ -365,23 +363,24 @@ export class LightRenderer extends BatchRenderer {
           "m=max(st,l-shl);" +
         
         "if((flg&4)>0){" + 
-          "for(i=l;i>m;i-=st){" +
+          "for(i=m;i<l;i+=st){" +
             "p=ivec2((vUv.zw+i*opdm)*uTS);" +
             "tc=texelFetch(uTex,p,0)*HEIGHT;" +
             "if(tc.g>=vHS)discard;" +
           "}" +
         "}else{" +
-          "for(i=l;i>m;i-=st){" +
+          "for(i=m;i<l;i+=st){" +
             "p=ivec2((vUv.zw+i*opdm)*uTS);" +
             "tc=texelFetch(uTex,p,0)*HEIGHT;" +
             "pc=vHS+i*hst;" +
             "if(tc.r<=pc&&tc.g>=pc){" +
               "shdw*=(fltDst-i*opdL)/shl;" +
-              "if(shdw<=0.)discard;" +
             "}" +
           "}" +
         "}" +
       "}" +
+      
+      "if(shdw<=0.)discard;" +
 
       "vec3 " +
         "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb;" +
