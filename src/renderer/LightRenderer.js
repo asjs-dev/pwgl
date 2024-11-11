@@ -61,7 +61,7 @@ export class LightRenderer extends BatchRenderer {
     this.heightMap = options.heightMap;
     this.roughnessMap = options.roughnessMap;
 
-    this._extensionBuffer = new Buffer("aExt", maxBatchItems, 4, 4);
+    this._extensionBuffer = new Buffer("aExt", maxBatchItems, 2, 4);
 
     this._lights = [];
   }
@@ -132,7 +132,7 @@ export class LightRenderer extends BatchRenderer {
 
     this.$uploadBuffers();
 
-    this.$drawInstanced(this._lights.length);
+    this.$drawInstanced(this.$MAX_BATCH_ITEMS);
   }
 
   /**
@@ -167,8 +167,9 @@ export class LightRenderer extends BatchRenderer {
     "in vec2 " +
       "aPos;" +
     "in mat4 " +
-      "aExt," +
       "aMt;" +
+    "in mat2x4 " +
+      "aExt;" +
 
     "uniform float " +
       "uFlpY;" +
@@ -184,7 +185,7 @@ export class LightRenderer extends BatchRenderer {
       "vUv," +
       "vCl," +
       "vDt;" +
-    "out mat4 " +
+    "out mat2x4 " +
       "vExt;" +
 
     "void main(void){" +
@@ -242,7 +243,7 @@ export class LightRenderer extends BatchRenderer {
       "vUv," +
       "vCl," +
       "vDt;" +
-    "in mat4 " +
+    "in mat2x4 " +
       "vExt;" +
 
     "uniform sampler2D " +
@@ -339,7 +340,7 @@ export class LightRenderer extends BatchRenderer {
           "rgh=rgt.r;" +
           "shn=rgt.g;" +
         "}" +
-        "spc=pow(dot(nm,hlf),HEIGHT*rgh)*shn*vExt[1].y;" +
+        "spc=pow(dot(nm,hlf),rgh*HEIGHT)*shn*vExt[1].y;" +
       "}" +
 
       "if((flg&1)>0){" +
@@ -384,7 +385,7 @@ export class LightRenderer extends BatchRenderer {
 
       "vec3 " +
         "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb;" +
-      "oCl=vec4((stCl*vCl.rgb+spc)*vol*shdw,1);" +
+      "oCl=vec4(((stCl+spc)*vCl.rgb)*vol*shdw,1);" +
     "}";
   }
 }

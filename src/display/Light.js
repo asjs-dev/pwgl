@@ -18,7 +18,7 @@ const TEMP_ARRAY = [];
  * @property {number} type - Type of the Light
  * @property {number} maxShadowStep - The maximum step of shadow caster per pixel
  *                                  - Default value is 128
- * @property {number} reflectionSize - Reflection size
+ * @property {number} specularStrength - Strength of specular light
  * @property {number} precision - Shadow precision
  *                              - Default value is 1
  * @property {number} angle - Rotation of the light
@@ -44,7 +44,7 @@ export class Light extends BaseDrawable {
     this.angle = 0;
     this.spotAngle = 180 * Utils.THETA;
     this.type = Light.Type.POINT;
-    this.precision = this.diffuse = this.reflectionSize = 1;
+    this.precision = this.shadowLength = this.specularStrength = 1;
     this.maxShadowStep = 128;
   }
 
@@ -53,10 +53,8 @@ export class Light extends BaseDrawable {
    */
   registerData(id, lightData, extensionData) {
     this._id = id;
-    this._matId = id * 16;
-    this._quadId = this._matId + 4;
-    this._octId = this._matId + 8;
-    this._datId = this._matId + 12;
+    this._lightDataId = id * 16;
+    this._extensionDataId = id * 8;
 
     this._lightData = lightData;
     this._extensionData = extensionData;
@@ -138,36 +136,35 @@ export class Light extends BaseDrawable {
    */
   update() {
     const lightData = this._lightData;
-    const datId = this._datId;
+    const lightDataId = this._lightDataId;
 
     if (this.isOn()) {
       this.$updateProps();
       this._updateColor();
 
+      const extensionDataId = this._extensionDataId;
       const extensionData = this._extensionData;
 
-      lightData[datId] = lightData[datId - 1] > 0 ? 1 : 0;
-      lightData[datId + 1] = this.diffuse;
-      lightData[datId + 2] = this.props.alpha;
+      extensionData[extensionDataId] = this.type;
+      extensionData[extensionDataId + 2] = this.props.z;
+      extensionData[extensionDataId + 3] = this.precision;
+      extensionData[extensionDataId + 4] = this.maxShadowStep;
+      extensionData[extensionDataId + 5] = this.specularStrength;
 
-      lightData[this._matId + 6] = this.props.width;
-
-      extensionData[this._matId + 2] = this.props.z;
-      extensionData[this._matId] = this.type;
-      extensionData[this._quadId] = this.maxShadowStep;
-      extensionData[this._quadId + 1] = this.reflectionSize;
-      extensionData[this._matId + 3] = this.precision;
-
-      lightData[this._datId + 3] = this.angle;
-      lightData[this._matId + 7] = this.spotAngle;
-    } else lightData[datId] = 0;
+      lightData[lightDataId + 6] = this.props.width;
+      lightData[lightDataId + 7] = this.spotAngle;
+      lightData[lightDataId + 12] = lightData[lightDataId + 11] > 0 ? 1 : 0;
+      lightData[lightDataId + 13] = this.shadowLength;
+      lightData[lightDataId + 14] = this.props.alpha;
+      lightData[lightDataId + 15] = this.angle;
+    } else lightData[lightDataId + 12] = 0;
   }
 
   /**
    * @ignore
    */
   _updateLightProps() {
-    this._extensionData[this._matId + 1] =
+    this._extensionData[this._extensionDataId + 1] =
       (this._castShadow * 1) |
       (this._shading * 2) |
       (this._flattenShadow * 4) |
@@ -220,7 +217,7 @@ export class Light extends BaseDrawable {
   $updateTransform(props, parent) {
     super.$updateTransform(props, parent);
 
-    arraySet(this._lightData, this.matrixCache, this._matId);
+    arraySet(this._lightData, this.matrixCache, this._lightDataId);
   }
 
   /**
@@ -234,13 +231,12 @@ export class Light extends BaseDrawable {
 
       const lightData = this._lightData;
       const parentColorCache = this.$parent.colorCache;
+      const lightDataId = this._lightDataId;
 
-      const colId = this._octId;
-
-      lightData[colId] = parentColorCache[0] * color.r;
-      lightData[colId + 1] = parentColorCache[1] * color.g;
-      lightData[colId + 2] = parentColorCache[2] * color.b;
-      lightData[colId + 3] = parentColorCache[3] * color.a;
+      lightData[lightDataId + 8] = parentColorCache[0] * color.r;
+      lightData[lightDataId + 9] = parentColorCache[1] * color.g;
+      lightData[lightDataId + 10] = parentColorCache[2] * color.b;
+      lightData[lightDataId + 11] = parentColorCache[3] * color.a;
     }
   }
 }

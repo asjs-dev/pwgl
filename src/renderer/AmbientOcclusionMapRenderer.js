@@ -141,9 +141,8 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "p;" +
           
         "float " + 
-          "rnd=rand(vTUv*100.+50.)," +
+          "rnd=rand(vTUv*100.+50.)+1./length(its)," +
           "t=RADIAN_360/uS," +
-          "rh=uR/HEIGHT," +
           "rad," +
           "i;" +
 
@@ -152,7 +151,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "p=vec2(" + 
             "cos(rad)," + 
             "sin(rad)" +
-          ")*uR/its;" +
+          ")*uR/its*rnd;" +
           
           "v+=max(" + 
             "0.," + 
@@ -161,9 +160,9 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
               "(" + 
                 "texture(" + 
                   "uTex," + 
-                  "vTUv+p*rnd" + 
+                  "vTUv+p" + 
                 ").g-tx" + 
-              ")/rh" + 
+              ")/length(p)" + 
             ")" + 
           ");" +
         "}" +
