@@ -331,7 +331,7 @@ export class FilterRenderer extends BaseRenderer {
           "vec4 " +
             "pcl=vec4(" +
               "texture(uFTex,vTUv-vec2(vol.x,0)).r," +
-              "texture(uFTex,vTUv+vec2(0,vol.y)).g," +
+              "oCl.g," +
               "texture(uFTex,vTUv+vec2(vol.x,0)).b," +
               "1" +
             ");" +
@@ -341,7 +341,7 @@ export class FilterRenderer extends BaseRenderer {
               "?1." +
               ":clamp(distance(vec2(vl[3],vl[4]),vTUv),0.,1.)," +
             "mA=vl[5]==0.?dst:1.-dst," +
-            "mB=vl[5]==0.?1.-dst:dst;" +
+            "mB=1.-mA;" +
 
           "oCl=mA*pcl+mB*oCl;" +
         "}" +

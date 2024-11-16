@@ -16,11 +16,11 @@ export class Keyboard extends PressState {
     window.removeEventListener("keyup", this._onKeyUp);
   }
 
-  _onKeyDown({ keyCode }) {
-    this.$setDownState(keyCode);
+  _onKeyDown(event) {
+    this.$setDownState(event.keyCode);
   }
 
-  _onKeyUp({ keyCode }) {
-    this.$setUpState(keyCode);
+  _onKeyUp(event) {
+    this.$setUpState(event.keyCode);
   }
 }

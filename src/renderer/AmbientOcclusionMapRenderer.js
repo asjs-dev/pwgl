@@ -30,7 +30,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "uSTTex",
       "uR",
       "uS",
-      "uM",
       "uDM",
       "uUSTT",
     ]);
@@ -45,7 +44,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
     this.radius = options.radius ?? 4;
     this.samples = options.samples ?? 4;
-    this.multiplier = options.multiplier ?? 1;
     this.depthMultiplier = options.depthMultiplier ?? 1;
   }
 
@@ -64,7 +62,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
     this.$gl.uniform1f(this.$locations.uR, this.radius);
     this.$gl.uniform1f(this.$locations.uS, this.samples);
-    this.$gl.uniform1f(this.$locations.uM, this.multiplier);
     this.$gl.uniform1f(this.$locations.uDM, this.depthMultiplier);
 
     this.$uploadBuffers();
@@ -122,7 +119,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "uR," +
       "uS," +
       "uUSTT," +
-      "uM," +
       "uDM;" +
 
     "out vec4 " +
@@ -141,7 +137,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "p;" +
           
         "float " + 
-          "rnd=rand(vTUv*100.+50.)+1./length(its)," +
+          "rnd=max(rand(vTUv*100.+50.),1./length(its))," +
           "t=RADIAN_360/uS," +
           "rad," +
           "i;" +
@@ -166,13 +162,13 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
             ")" + 
           ");" +
         "}" +
-        "v=(uM*v)/uS;" +
+        "v/=uS;" +
       "}" +
       
       "vec3 " +
         "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb;" +
 
-      "oCl=vec4(stCl*(vec3(((1.-uDM)*.5+tx*uDM))*(1.-v)),1);" +
+      "oCl=vec4(stCl*((1.-uDM)*.5+tx*uDM)*(1.-v),1);" +
     "}";
   }
 }

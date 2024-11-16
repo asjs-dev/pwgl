@@ -1,0 +1,13 @@
+{
+  "js": {
+    "files": ["./extensions/index.js"],
+    "lzw": false,
+    "wrapped": true,
+    "minify": true,
+    "compress": true,
+    "output": "dist/pwgl.extensions.min.js"
+  },
+  "copyAssets": {
+    "./dist/pwgl.extensions.min.js": "./docs/assets/pwgl.extensions.min.js"
+  }
+}

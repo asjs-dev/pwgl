@@ -1,7 +1,7 @@
 import { cross } from "./cross";
 import { dot } from "./dot";
 
-export const distanceBetweenPointAndLine = (p, l) => {
+const distanceBetweenPointAndLine = (p, l) => {
   const AB = { x: l.b.x - l.a.x, y: l.b.y - l.a.y };
   const AP = { x: p.x - l.a.x, y: p.y - l.a.y };
   const BP = { x: p.x - l.b.x, y: p.y - l.b.y };
@@ -15,7 +15,7 @@ export const distanceBetweenPointAndLine = (p, l) => {
   return Math.hypot(P.x, P.y);
 };
 
-export const areTwoLinesCollided = (lineA, lineB) => {
+const areTwoLinesCollided = (lineA, lineB) => {
   const a = lineA.b.y - lineA.a.y;
   const b = lineA.b.x - lineA.a.x;
   const c = lineB.b.y - lineB.a.y;
@@ -42,7 +42,7 @@ export const areTwoLinesCollided = (lineA, lineB) => {
   return null;
 };
 
-export const lineToLineIntersection = (lineA, lineB) => {
+const lineToLineIntersection = (lineA, lineB) => {
   const collisionData = areTwoLinesCollided(lineA, lineB);
   return collisionData
     ? {
@@ -52,18 +52,26 @@ export const lineToLineIntersection = (lineA, lineB) => {
     : null;
 };
 
-export const areTwoRectsCollided = (rectA, rectB) =>
+const areTwoRectsCollided = (rectA, rectB) =>
   rectA.width > rectB.x &&
   rectA.x < rectB.width &&
   rectA.height > rectB.y &&
   rectA.y < rectB.height;
 
-export const rectToRectIntersection = (rectA, rectB) =>
+const rectToRectIntersection = (rectA, rectB) =>
   areTwoRectsCollided(rectA, rectB)
     ? {
         x: Math.max(rectA.x, rectB.x),
         y: Math.max(rectA.y, rectB.y),
         width: Math.min(rectA.width, rectB.width),
-        height: Math.min(rectA.height, rectB.height)
+        height: Math.min(rectA.height, rectB.height),
       }
     : null;
+
+export const collisionDetection = {
+  distanceBetweenPointAndLine,
+  areTwoLinesCollided,
+  lineToLineIntersection,
+  areTwoRectsCollided,
+  rectToRectIntersection,
+};

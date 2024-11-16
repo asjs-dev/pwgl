@@ -34,23 +34,22 @@ export class Mouse extends PressState {
     window.removeEventListener("touchmove", this._onMouseMove);
   }
 
-  _onMouseDown({ type, which }) {
-    if (this._typeMap[type] === which) {
+  _onMouseDown(event) {
+    if (this._typeMap[event.type] === event.which) {
       this.$setDownState(0);
     }
   }
 
-  _onMouseUp({ type, which }) {
-    if (this._typeMap[type] === which) {
+  _onMouseUp(event) {
+    if (this._typeMap[event.type] === event.which) {
       this.$setUpState(0);
     }
   }
 
   _onMouseMove(event) {
-    const { clientX, clientY } =
-      event.type === "touchmove" ? event.touches[0] : event;
+    const postion = event.type === "touchmove" ? event.touches[0] : event;
 
-    this.position.x = clientX;
-    this.position.y = clientY;
+    this.position.x = postion.clientX;
+    this.position.y = postion.clientY;
   }
 }

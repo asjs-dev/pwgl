@@ -374,9 +374,7 @@ export class LightRenderer extends BatchRenderer {
             "p=ivec2((vUv.zw+i*opdm)*uTS);" +
             "tc=texelFetch(uTex,p,0)*HEIGHT;" +
             "pc=vHS+i*hst;" +
-            "if(tc.r<=pc&&tc.g>=pc){" +
-              "shdw*=(fltDst-i*opdL)/shl;" +
-            "}" +
+            "if(tc.r<=pc&&tc.g>=pc)shdw*=(fltDst-i*opdL)/shl;" +
           "}" +
         "}" +
       "}" +
@@ -385,7 +383,8 @@ export class LightRenderer extends BatchRenderer {
 
       "vec3 " +
         "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb;" +
-      "oCl=vec4(((stCl+spc)*vCl.rgb)*vol*shdw,1);" +
+        
+      "oCl=vec4((stCl+spc)*vCl.rgb*vol*shdw,1);" +
     "}";
   }
 }
