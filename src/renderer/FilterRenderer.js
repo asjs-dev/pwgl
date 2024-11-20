@@ -140,24 +140,22 @@ export class FilterRenderer extends BaseRenderer {
    */
   $createFragmentShader(options) {
     const blurFunc = (core) =>
-      "for(float i=0.;i<RADIAN_360;i+=R){" +
+      "for(float i=0.;i<RADIAN_360;i+=.7853981633974483){" +
         "poft=clamp(" + 
-          "f+ivec2(floor(wh*vec2(cos(i),sin(i))))," + 
-          "ivec2(ZO.xx)," + 
+          "f+ivec2(floor(wh*vec2(cos(i),sin(i)))*rnd)," + 
+          "ivec2(Z.xx)," + 
           "ts-1" + 
         ");" +
         "clg=texelFetch(uTex,poft,0);" +
         core +
       "}" +
-      "pcl=cl/(BP+1.);";
+      "pcl=cl/9.;";
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
 
-    Utils.GLSL.DEFINE.ZO +
+    Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIAN_360 +
-    "#define BP 8.\n" +
-    "#define R RADIAN_360/BP\n" +
 
     "uniform sampler2D " +
       "uTex," +
@@ -175,6 +173,9 @@ export class FilterRenderer extends BaseRenderer {
 
     "out vec4 " +
       "oCl;" +
+
+
+    Utils.GLSL.RANDOM +
     
     "float gtGS(vec4 cl){" + 
       "return .3*oCl.r+.59*oCl.g+.11*oCl.b;" +
@@ -182,6 +183,7 @@ export class FilterRenderer extends BaseRenderer {
 
     "void main(void){" +
       "oCl=texture(uTex,vTUv);" +
+
       // FILTERS
       "if(uFtrT.x>0){" +
         "float " +
@@ -193,8 +195,7 @@ export class FilterRenderer extends BaseRenderer {
           "f=ivec2(floor(vTUv*vec2(ts)));" +
 
         "vec2 " +
-          "pts=1./vec2(ts)," +
-          "vol=v*pts;" +
+          "vol=v*(1./vec2(ts));" +
 
         "vec3 " +
           "rgb=vec3(vl[2],vl[3],vl[4]);" +
@@ -253,8 +254,10 @@ export class FilterRenderer extends BaseRenderer {
           "else if(uFtrT.y<7){" +
             "vec2 " +
               "pv=pow(abs(vUv*v),vec2(vl[1]));" +
+            
             "float " +
               "cv=clamp((1.-length(pv))*vl[5],0.,1.);" +
+
             "oCl.rgb=oCl.rgb*cv+rgb*(1.-cv);" +
           "}" +
           // RainbowFilter
@@ -280,34 +283,32 @@ export class FilterRenderer extends BaseRenderer {
             "clg," +
             "cl=oCl;" +
 
+          "float " + 
+            "rnd=rand(vTUv*100.+50.)+.5;" +
+
           // BlurFilter
           "if(uFtrT.y<2){" +
-            "float " +
-              "l=length(vec2(2))," +
-              "im;" +
-
             blurFunc(
               "cl+=clg;"
             ) +
 
-            "float " +
-              "dst=vl[2]<1." +
-                "?1." +
-                ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
-
-            "oCl=dst*pcl+(1.-dst)*oCl;" +
           // GlowFilter
           "}else{" +
             "float " +
               "omx=max(oCl.r,max(oCl.g,oCl.b));" +
 
             blurFunc(
-              "if(abs(max(clg.r,max(clg.g,clg.b))-omx)>.3)" +
-                "cl+=clg;"
+              "cl+=max(clg.r,max(clg.g,clg.b))>omx?clg:oCl;"
             ) +
 
-            "oCl+=pcl;" +
           "}" +
+
+          "float " +
+            "dst=vl[2]<1." +
+              "?1." +
+              ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
+
+          "oCl=dst*pcl+(1.-dst)*oCl;" +
         "}" +
         // PixelateFilter
         "else if(uFtrT.x<6)" +
@@ -320,7 +321,7 @@ export class FilterRenderer extends BaseRenderer {
               "mod(vec2(vl[1],vl[2])+vTUv,1.)*vec2(vl[5]-vl[3],vl[6]-vl[4])" +
             ");" +
           "if(uFtrT.x<7)" +
-            "oCl=texture(uTex,vTUv+(vec2(1,-1)*(mskCl.rg-.5)*2.*vol));" +
+            "oCl=texture(uTex,vTUv+(Z.yz*(mskCl.rg-.5)*2.*vol));" +
           // MaskFilter
           "else if(uFtrT.x<8)" +
             "oCl.a*=v<4." +

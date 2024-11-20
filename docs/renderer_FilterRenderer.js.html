@@ -188,24 +188,22 @@ export class FilterRenderer extends BaseRenderer {
    */
   $createFragmentShader(options) {
     const blurFunc = (core) =>
-      "for(float i=0.;i&lt;RADIAN_360;i+=R){" +
+      "for(float i=0.;i&lt;RADIAN_360;i+=.7853981633974483){" +
         "poft=clamp(" + 
-          "f+ivec2(floor(wh*vec2(cos(i),sin(i))))," + 
-          "ivec2(ZO.xx)," + 
+          "f+ivec2(floor(wh*vec2(cos(i),sin(i)))*rnd)," + 
+          "ivec2(Z.xx)," + 
           "ts-1" + 
         ");" +
         "clg=texelFetch(uTex,poft,0);" +
         core +
       "}" +
-      "pcl=cl/(BP+1.);";
+      "pcl=cl/9.;";
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
 
-    Utils.GLSL.DEFINE.ZO +
+    Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIAN_360 +
-    "#define BP 8.\n" +
-    "#define R RADIAN_360/BP\n" +
 
     "uniform sampler2D " +
       "uTex," +
@@ -223,6 +221,9 @@ export class FilterRenderer extends BaseRenderer {
 
     "out vec4 " +
       "oCl;" +
+
+
+    Utils.GLSL.RANDOM +
     
     "float gtGS(vec4 cl){" + 
       "return .3*oCl.r+.59*oCl.g+.11*oCl.b;" +
@@ -230,6 +231,7 @@ export class FilterRenderer extends BaseRenderer {
 
     "void main(void){" +
       "oCl=texture(uTex,vTUv);" +
+
       // FILTERS
       "if(uFtrT.x>0){" +
         "float " +
@@ -241,8 +243,7 @@ export class FilterRenderer extends BaseRenderer {
           "f=ivec2(floor(vTUv*vec2(ts)));" +
 
         "vec2 " +
-          "pts=1./vec2(ts)," +
-          "vol=v*pts;" +
+          "vol=v*(1./vec2(ts));" +
 
         "vec3 " +
           "rgb=vec3(vl[2],vl[3],vl[4]);" +
@@ -301,8 +302,10 @@ export class FilterRenderer extends BaseRenderer {
           "else if(uFtrT.y&lt;7){" +
             "vec2 " +
               "pv=pow(abs(vUv*v),vec2(vl[1]));" +
+            
             "float " +
               "cv=clamp((1.-length(pv))*vl[5],0.,1.);" +
+
             "oCl.rgb=oCl.rgb*cv+rgb*(1.-cv);" +
           "}" +
           // RainbowFilter
@@ -328,34 +331,32 @@ export class FilterRenderer extends BaseRenderer {
             "clg," +
             "cl=oCl;" +
 
+          "float " + 
+            "rnd=rand(vTUv*100.+50.)+.5;" +
+
           // BlurFilter
           "if(uFtrT.y&lt;2){" +
-            "float " +
-              "l=length(vec2(2))," +
-              "im;" +
-
             blurFunc(
               "cl+=clg;"
             ) +
 
-            "float " +
-              "dst=vl[2]&lt;1." +
-                "?1." +
-                ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
-
-            "oCl=dst*pcl+(1.-dst)*oCl;" +
           // GlowFilter
           "}else{" +
             "float " +
               "omx=max(oCl.r,max(oCl.g,oCl.b));" +
 
             blurFunc(
-              "if(abs(max(clg.r,max(clg.g,clg.b))-omx)>.3)" +
-                "cl+=clg;"
+              "cl+=max(clg.r,max(clg.g,clg.b))>omx?clg:oCl;"
             ) +
 
-            "oCl+=pcl;" +
           "}" +
+
+          "float " +
+            "dst=vl[2]&lt;1." +
+              "?1." +
+              ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
+
+          "oCl=dst*pcl+(1.-dst)*oCl;" +
         "}" +
         // PixelateFilter
         "else if(uFtrT.x&lt;6)" +
@@ -368,7 +369,7 @@ export class FilterRenderer extends BaseRenderer {
               "mod(vec2(vl[1],vl[2])+vTUv,1.)*vec2(vl[5]-vl[3],vl[6]-vl[4])" +
             ");" +
           "if(uFtrT.x&lt;7)" +
-            "oCl=texture(uTex,vTUv+(vec2(1,-1)*(mskCl.rg-.5)*2.*vol));" +
+            "oCl=texture(uTex,vTUv+(Z.yz*(mskCl.rg-.5)*2.*vol));" +
           // MaskFilter
           "else if(uFtrT.x&lt;8)" +
             "oCl.a*=v&lt;4." +
@@ -407,13 +408,13 @@ export class FilterRenderer extends BaseRenderer {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseItem.html">BaseItem</a></li><li><a href="BasePositioningProps.html">BasePositioningProps</a></li><li><a href="BaseProps.html">BaseProps</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureProps.html">FilterTextureProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemProps.html">ItemProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightProps.html">LightProps</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureProps.html">TextureProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseItem.html">BaseItem</a></li><li><a href="BasePositioningProps.html">BasePositioningProps</a></li><li><a href="BaseProps.html">BaseProps</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureProps.html">FilterTextureProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemProps.html">ItemProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightProps.html">LightProps</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureProps.html">TextureProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat, 16 Nov 2024 19:48:20 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 20 Nov 2024 19:24:15 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

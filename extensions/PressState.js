@@ -15,11 +15,11 @@ export class PressState {
   }
 
   isPressed(id) {
-    return this.isUp(id) && this._upState[id] - this._downState[id] <= 128;
+    return this.isUp(id) && this._upState[id] - this._downState[id] <= 200;
   }
 
   isLongPressed(id) {
-    return this.isUp(id) && this._upState[id] - this._downState[id] > 128;
+    return this.isUp(id) && this._upState[id] - this._downState[id] > 200;
   }
 
   update() {

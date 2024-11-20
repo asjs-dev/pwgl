@@ -390,7 +390,7 @@ export class Stage2D extends BatchRenderer {
           "ts=vec2(textureSize(uTex[" + i + "],0));" +
           "return texture(uTex[" + i + "],(round(s*ts)/ts)+(round(e*ts)/ts)*m);" +
         "}";
-      func += "return vec4(1);" +
+      func += "return Z.yyyy;" +
       "}";
       return func;
     }
@@ -402,7 +402,7 @@ export class Stage2D extends BatchRenderer {
     "precision highp float;\n" +
 
     Utils.GLSL.DEFINE.RADIAN_360 +
-    Utils.GLSL.DEFINE.ZO +
+    Utils.GLSL.DEFINE.Z +
 
     "in float " +
       "vACl," +
@@ -448,7 +448,7 @@ export class Stage2D extends BatchRenderer {
             "uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);" +
           "}" +
 
-          "return " + getSimpleTexColor("mod(uv,vec2(1))") + ";" +
+          "return " + getSimpleTexColor("mod(uv,Z.yy)") + ";" +
         "}" +
 
         "float gtRClBUv(vec2 st,vec2 uv){" +
@@ -462,7 +462,7 @@ export class Stage2D extends BatchRenderer {
     "void main(void){" +
       "if(vTId>-1.){" +
         "vec2 " +
-          "uv=mod(vTUv,vec2(1));" +
+          "uv=mod(vTUv,Z.yy);" +
 
         (useRepeatTextures
           ? "if(vRR.w>0.){" +
@@ -472,19 +472,19 @@ export class Stage2D extends BatchRenderer {
                 "rcc," +
                 "rcd;" +
               "if(vRR.y+vRR.z>0.){" +
-                "rca=gtRClBUv(ZO.xx,uv);" +
-                "rcb=gtRClBUv(ZO.yx,uv);" +
-                "rcc=gtRClBUv(ZO.xy,uv);" +
-                "rcd=gtRClBUv(ZO.yy,uv);" +
+                "rca=gtRClBUv(Z.xx,uv);" +
+                "rcb=gtRClBUv(Z.yx,uv);" +
+                "rcc=gtRClBUv(Z.xy,uv);" +
+                "rcd=gtRClBUv(Z.yy,uv);" +
               "}" +
               "oCl=vRR.z>0." +
                 "?clamp(" +
-                  "gtClBUv(ZO.xx)*rca+" +
-                  "gtClBUv(ZO.yx)*rcb+" +
-                  "gtClBUv(ZO.xy)*rcc+" +
-                  "gtClBUv(ZO.yy)*rcd" +
+                  "gtClBUv(Z.xx)*rca+" +
+                  "gtClBUv(Z.yx)*rcb+" +
+                  "gtClBUv(Z.xy)*rcc+" +
+                  "gtClBUv(Z.yy)*rcd" +
                 ",0.,1.)" +
-                ":gtClBUv(ZO);" +
+                ":gtClBUv(Z.xy);" +
               "if(vRR.y>0.)" +
                 "oCl.a=clamp(" +
                   "oCl.a*(" +

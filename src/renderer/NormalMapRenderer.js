@@ -82,7 +82,7 @@ export class NormalMapRenderer extends BaseRenderer {
     "precision highp float;\n" +
 
     Utils.GLSL.DEFINE.HEIGHT +
-    Utils.GLSL.DEFINE.ZO +
+    Utils.GLSL.DEFINE.Z +
     
     "in vec2 " +
       "vTUv;" +
@@ -97,9 +97,9 @@ export class NormalMapRenderer extends BaseRenderer {
       "vec2 " +
         "its=vec2(textureSize(uTex,0))," +
         "ts=1./its," +
-        "p0=floor(vTUv*its)," +
-        "p1=p0+ZO.yx," +
-        "p2=p0+ZO;" +
+        "p0=round(vTUv*its)," +
+        "p1=p0+Z.yx," +
+        "p2=p0+Z.xy;" +
 
       "vec3 " +
         "A=vec3(p0,texture(uTex,p0*ts).g)," +

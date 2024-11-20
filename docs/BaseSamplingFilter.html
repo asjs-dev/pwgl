@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>JSDoc: Class: SepiaFilter</title>
+        <title>JSDoc: Class: BaseSamplingFilter</title>
 
         <script src="scripts/prettify/prettify.js"> </script>
         <script src="scripts/prettify/lang-css.js"> </script>
@@ -37,7 +37,7 @@
         <div class="container">
             <div id="main">
 
-                <h1 class="page-title">Class: SepiaFilter</h1>
+                <h1 class="page-title">Class: BaseSamplingFilter</h1>
 
                 
 
@@ -48,9 +48,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>SepiaFilter<span class="signature">(intensity)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>BaseSamplingFilter<span class="signature">(intensityX, intensityY, isRadial, centerX, centerY, size)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Sepia filter</div>
+            <div class="class-description">Blur filter</div>
         
     
 </header>
@@ -65,7 +65,7 @@
     
 
     
-    <h4 class="name" id="SepiaFilter"><span class="type-signature"></span>new SepiaFilter<span class="signature">(intensity)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="BaseSamplingFilter"><span class="type-signature"></span>new BaseSamplingFilter<span class="signature">(intensityX, intensityY, isRadial, centerX, centerY, size)</span><span class="type-signature"></span></h4>
     
 
     
@@ -73,7 +73,7 @@
 
 
 <div class="description">
-    Creates an instance of SepiaFilter.
+    Creates an instance of BlurFilter.
 </div>
 
 
@@ -99,6 +99,8 @@
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -109,7 +111,7 @@
 
         <tr>
             
-                <td class="name"><code>intensity</code></td>
+                <td class="name"><code>intensityX</code></td>
             
 
             <td class="type">
@@ -123,6 +125,153 @@
 
             
 
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>intensityY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>isRadial</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>centerX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    0.5
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>centerY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    0.5
+                
+                </td>
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>size</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
             
 
             <td class="description last"></td>
@@ -166,7 +315,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_SepiaFilter.js.html">filters/SepiaFilter.js</a>, <a href="filters_SepiaFilter.js.html#line7">line 7</a>
+        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line7">line 7</a>
     </li></ul></dd>
     
 
@@ -218,7 +367,7 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="SepiaFilter.html">SepiaFilter</a></dt>
+            <dt><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></dt>
             <dd></dd>
         </dl>
     
@@ -294,6 +443,150 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line97">line 97</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="centerX"><span class="type-signature"></span>centerX<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    Set/Get center x
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line51">line 51</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="centerY"><span class="type-signature"></span>centerY<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    Set/Get center y
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line62">line 62</a>
     </li></ul></dd>
     
 
@@ -622,6 +915,78 @@
 
         
             
+<h4 class="name" id="isRadial"><span class="type-signature"></span>isRadial<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    Set/Get is blur radial
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line40">line 40</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
 <h4 class="name" id="mix"><span class="type-signature"></span>mix<span class="type-signature"> :number</span></h4>
 
 
@@ -759,6 +1124,78 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line75">line 75</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="size"><span class="type-signature"></span>size<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    Set/Get size
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line73">line 73</a>
     </li></ul></dd>
     
 

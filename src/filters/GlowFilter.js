@@ -1,19 +1,26 @@
-import { BaseFilter } from "./BaseFilter";
+import { BaseSamplingFilter } from "./BaseSamplingFilter";
 
 /**
- * Glow filter
- * @extends {BaseFilter}
+ * Blur filter
+ * @extends {BaseSamplingFilter}
  */
-export class GlowFilter extends BaseFilter {
-  /**
-   * Creates an instance of GlowFilter.
-   * @constructor
-   * @param {number} intensityX
-   * @param {number} intensityY
-   */
-  constructor(intensityX, intensityY) {
-    super(4, 2, intensityX);
-
-    this.intensityY = intensityY;
+export class GlowFilter extends BaseSamplingFilter {
+  constructor(
+    intensityX,
+    intensityY,
+    isRadial = false,
+    centerX = 0.5,
+    centerY = 0.5,
+    size = 1
+  ) {
+    super(
+      2,
+      intensityX,
+      intensityY,
+      isRadial = false,
+      centerX = 0.5,
+      centerY = 0.5,
+      size = 1
+    );
   }
 }

@@ -162,6 +162,7 @@ export class LightRenderer extends BatchRenderer {
     "precision highp float;\n" +
 
     Utils.GLSL.DEFINE.PI +
+    Utils.GLSL.DEFINE.Z +
     "#define P vec4(1,-1,2,-2)\n" +
 
     "in vec2 " +
@@ -208,7 +209,7 @@ export class LightRenderer extends BatchRenderer {
         "vSpt=PI-aMt[1].w;" +
         "vSln=vec2(sin(vDt.w),cos(vDt.w));" +
       "}else{" +
-        "mt[2].xy=vec2(-1,1);" +
+        "mt[2].xy=Z.zy;" +
         "gl_Position=vec4(pos,1);" +
         "vTUv=vec2(aPos.x,1.-aPos.y);" +
         "vUv.zw=vTUv+((mt*vec3(1)).xy+P.xy)/P.zw;" +
@@ -230,7 +231,7 @@ export class LightRenderer extends BatchRenderer {
 
     Utils.GLSL.DEFINE.HEIGHT +
     Utils.GLSL.DEFINE.PI +
-    "#define PIH 1.570796326795\n" +
+    Utils.GLSL.DEFINE.Z +
 
     "in float " +
       "vHS," +
@@ -262,8 +263,6 @@ export class LightRenderer extends BatchRenderer {
       "oCl;" +
 
     "void main(void){" +
-      "oCl=vec4(0);" +
-
       "if(vDt.x==0.)discard;" +
 
       "vec4 " +
@@ -303,12 +302,11 @@ export class LightRenderer extends BatchRenderer {
             "slh*vSln.x+vUv.x*vSln.y" +
           ");" +
 
-        "if((" +
+        "if(" +
           "atan(" +
             "sl.x," +
             "length(vec2(sl.y,vUv.y))" +
-          ")+PIH" +
-        ")-vSpt<0.)discard;" +
+          ")+1.5707963267948966-vSpt<0.)discard;" +
       "}" +
 
       "int " +
@@ -321,8 +319,8 @@ export class LightRenderer extends BatchRenderer {
       "if((flg&2)>0){" +
         "vec3 " +
           "nm=uUNMT<1." + 
-            "?vec3(0,0,1.)" + 
-            ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*vec3(1,-1,1))," +
+            "?Z.xxy" + 
+            ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*Z.yzy)," +
           "sftl=normalize(sftla)," +
           "sftv=normalize(vec3(" +
             "(flg&8)>0" +
@@ -382,7 +380,7 @@ export class LightRenderer extends BatchRenderer {
       "if(shdw<=0.)discard;" +
 
       "vec3 " +
-        "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb;" +
+        "stCl=uUSTT<1.?Z.yyy:texture(uSTTex,vTUv).rgb;" +
         
       "oCl=vec4((stCl+spc)*vCl.rgb*vol*shdw,1);" +
     "}";

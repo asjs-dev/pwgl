@@ -438,7 +438,7 @@ export class Stage2D extends BatchRenderer {
           "ts=vec2(textureSize(uTex[" + i + "],0));" +
           "return texture(uTex[" + i + "],(round(s*ts)/ts)+(round(e*ts)/ts)*m);" +
         "}";
-      func += "return vec4(1);" +
+      func += "return Z.yyyy;" +
       "}";
       return func;
     }
@@ -450,7 +450,7 @@ export class Stage2D extends BatchRenderer {
     "precision highp float;\n" +
 
     Utils.GLSL.DEFINE.RADIAN_360 +
-    Utils.GLSL.DEFINE.ZO +
+    Utils.GLSL.DEFINE.Z +
 
     "in float " +
       "vACl," +
@@ -496,7 +496,7 @@ export class Stage2D extends BatchRenderer {
             "uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);" +
           "}" +
 
-          "return " + getSimpleTexColor("mod(uv,vec2(1))") + ";" +
+          "return " + getSimpleTexColor("mod(uv,Z.yy)") + ";" +
         "}" +
 
         "float gtRClBUv(vec2 st,vec2 uv){" +
@@ -510,7 +510,7 @@ export class Stage2D extends BatchRenderer {
     "void main(void){" +
       "if(vTId>-1.){" +
         "vec2 " +
-          "uv=mod(vTUv,vec2(1));" +
+          "uv=mod(vTUv,Z.yy);" +
 
         (useRepeatTextures
           ? "if(vRR.w>0.){" +
@@ -520,19 +520,19 @@ export class Stage2D extends BatchRenderer {
                 "rcc," +
                 "rcd;" +
               "if(vRR.y+vRR.z>0.){" +
-                "rca=gtRClBUv(ZO.xx,uv);" +
-                "rcb=gtRClBUv(ZO.yx,uv);" +
-                "rcc=gtRClBUv(ZO.xy,uv);" +
-                "rcd=gtRClBUv(ZO.yy,uv);" +
+                "rca=gtRClBUv(Z.xx,uv);" +
+                "rcb=gtRClBUv(Z.yx,uv);" +
+                "rcc=gtRClBUv(Z.xy,uv);" +
+                "rcd=gtRClBUv(Z.yy,uv);" +
               "}" +
               "oCl=vRR.z>0." +
                 "?clamp(" +
-                  "gtClBUv(ZO.xx)*rca+" +
-                  "gtClBUv(ZO.yx)*rcb+" +
-                  "gtClBUv(ZO.xy)*rcc+" +
-                  "gtClBUv(ZO.yy)*rcd" +
+                  "gtClBUv(Z.xx)*rca+" +
+                  "gtClBUv(Z.yx)*rcb+" +
+                  "gtClBUv(Z.xy)*rcc+" +
+                  "gtClBUv(Z.yy)*rcd" +
                 ",0.,1.)" +
-                ":gtClBUv(ZO);" +
+                ":gtClBUv(Z.xy);" +
               "if(vRR.y>0.)" +
                 "oCl.a=clamp(" +
                   "oCl.a*(" +
@@ -575,13 +575,13 @@ export class Stage2D extends BatchRenderer {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseItem.html">BaseItem</a></li><li><a href="BasePositioningProps.html">BasePositioningProps</a></li><li><a href="BaseProps.html">BaseProps</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureProps.html">FilterTextureProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemProps.html">ItemProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightProps.html">LightProps</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureProps.html">TextureProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseItem.html">BaseItem</a></li><li><a href="BasePositioningProps.html">BasePositioningProps</a></li><li><a href="BaseProps.html">BaseProps</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureProps.html">FilterTextureProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemProps.html">ItemProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightProps.html">LightProps</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureProps.html">TextureProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat, 16 Nov 2024 19:48:20 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 20 Nov 2024 19:24:15 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

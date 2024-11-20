@@ -107,6 +107,8 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     
     Utils.GLSL.DEFINE.HEIGHT +
     Utils.GLSL.DEFINE.RADIAN_360 +
+    Utils.GLSL.DEFINE.PI +
+    Utils.GLSL.DEFINE.Z +
     
     "in vec2 " +
       "vTUv;" +
@@ -137,36 +139,26 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "p;" +
           
         "float " + 
-          "rnd=max(rand(vTUv*100.+50.),1./length(its))," +
+          "rnd=rand(vTUv*100.+50.)+length(1./its)," +
           "t=RADIAN_360/uS," +
-          "rad," +
-          "i;" +
+          "l=uS*t," +
+          "rad;" +
 
-        "for(i=0.;i<uS;++i){" +
-          "rad=i*t;" +
+        "for(rad=0.;rad<l;rad+=t){" +
           "p=vec2(" + 
             "cos(rad)," + 
             "sin(rad)" +
           ")*uR/its*rnd;" +
           
-          "v+=max(" + 
-            "0.," + 
-            "min(" + 
-              "1.," + 
-              "(" + 
-                "texture(" + 
-                  "uTex," + 
-                  "vTUv+p" + 
-                ").g-tx" + 
-              ")/length(p)" + 
-            ")" + 
-          ");" +
+          "v+=clamp((texture(uTex,vTUv+p).g-tx)/length(p),0.,1.);" +
         "}" +
         "v/=uS;" +
       "}" +
       
       "vec3 " +
-        "stCl=uUSTT<1.?vec3(1):texture(uSTTex,vTUv).rgb;" +
+        "stCl=uUSTT<1." + 
+          "?Z.yyy" + 
+          ":texture(uSTTex,vTUv).rgb;" +
 
       "oCl=vec4(stCl*((1.-uDM)*.5+tx*uDM)*(1.-v),1);" +
     "}";

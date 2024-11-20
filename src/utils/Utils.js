@@ -77,10 +77,10 @@ export const Utils = {
   GLSL: {
     VERSION: "#version 300 es\n",
     DEFINE: {
-      RADIAN_360: "#define RADIAN_360 radians(360.)\n",
+      RADIAN_360: "#define RADIAN_360 6.283185307179586\n",
       HEIGHT: "#define HEIGHT 255.\n",
-      ZO: "#define ZO vec2(0,1)\n",
-      PI: "#define PI radians(180.)\n",
+      Z: "#define Z vec3(0,1,-1)\n",
+      PI: "#define PI 3.141592653589793\n",
     },
     RANDOM: 
       "float rand(vec2 p,float s){" +
