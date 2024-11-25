@@ -1,12 +1,12 @@
 import { BaseFilter } from "./BaseFilter";
 
 /**
- * Blur filter
+ * Base Sampling filter
  * @extends {BaseFilter}
  */
 export class BaseSamplingFilter extends BaseFilter {
   /**
-   * Creates an instance of BlurFilter.
+   * Creates an instance of BaseSamplingFilter.
    * @constructor
    * @param {number} intensityX
    * @param {number} intensityY

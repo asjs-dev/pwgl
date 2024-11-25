@@ -99,15 +99,13 @@ export class NormalMapRenderer extends BaseRenderer {
         "ts=1./its," +
         "p0=round(vTUv*its)," +
         "p1=p0+Z.yx," +
-        "p2=p0+Z.xy;" +
+        "p2=p0+Z.yy;" +
 
       "vec3 " +
         "A=vec3(p0,texture(uTex,p0*ts).g)," +
         "B=vec3(p1,texture(uTex,p1*ts).g)," +
         "C=vec3(p2,texture(uTex,p2*ts).g)," +
-        "nm=normalize(cross(B-A,C-A))*HEIGHT;" +
-
-      "nm.y*=-1.;" +
+        "nm=normalize(cross(B-A,C-A))*HEIGHT*Z.yzy;" +
 
       "oCl=vec4(nm*.5+.5,1);" +
     "}";

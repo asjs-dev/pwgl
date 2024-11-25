@@ -125,7 +125,7 @@ export class Context {
 
     this._textureMap[textureId] = textureInfo;
 
-    this.textureIds.indexOf(textureId) < 0 && this.textureIds.push(textureId);
+    !this.textureIds.includes(textureId) && this.textureIds.push(textureId);
 
     removeFromArray(this._emptyTextureSlots, textureId);
 

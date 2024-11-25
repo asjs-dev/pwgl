@@ -1,39 +1,44 @@
 export class PressState {
   constructor() {
-    this._downState = {};
-    this._upState = {};
-    this._updateTime = Date.now();
-    this._delay;
+    this._state = {};
+    this._timestamp = {};
+    this._duration = {};
   }
 
   isDown(id) {
-    return this._downState[id] > this._upState[id];
+    return this._state[id] === 0;
   }
 
   isUp(id) {
-    return Date.now() - this._upState[id] <= this._delay;
+    return this._state[id] === 1;
   }
 
   isPressed(id) {
-    return this.isUp(id) && this._upState[id] - this._downState[id] <= 200;
+    return this.isUp(id) && this._duration[id] <= 200;
   }
 
   isLongPressed(id) {
-    return this.isUp(id) && this._upState[id] - this._downState[id] > 200;
+    return this.isUp(id) && this._duration[id] > 200;
   }
 
   update() {
-    const now = Date.now();
-    this._delay = now - this._updateTime;
-    this._updateTime = now;
+    for (let key in this._state)
+      if (this._state[key] > 0) {
+        delete this._state[key];
+        delete this._duration[key];
+        delete this._timestamp[key];
+      }
   }
 
   $setDownState(id) {
-    this._upState[id] = 0;
-    this._downState[id] = Date.now();
+    this._state[id] = 0;
+    this._timestamp[id] = Date.now();
   }
 
   $setUpState(id) {
-    this._upState[id] = Date.now();
+    const now = Date.now();
+    this._state[id] = 1;
+    this._duration[id] = now - this._timestamp[id];
+    this._timestamp[id] = now;
   }
 }

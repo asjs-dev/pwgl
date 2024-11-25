@@ -140,16 +140,15 @@ export class FilterRenderer extends BaseRenderer {
    */
   $createFragmentShader(options) {
     const blurFunc = (core) =>
-      "for(float i=0.;i<RADIAN_360;i+=.7853981633974483){" +
+      "for(float i=0.;i<RADIAN_360;i+=t){" +
         "poft=clamp(" + 
-          "f+ivec2(floor(wh*vec2(cos(i),sin(i)))*rnd)," + 
+          "f+ivec2(floor(wh*vec2(cos(i),sin(i))))," + 
           "ivec2(Z.xx)," + 
           "ts-1" + 
         ");" +
         "clg=texelFetch(uTex,poft,0);" +
         core +
-      "}" +
-      "pcl=cl/9.;";
+      "}";
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
@@ -174,7 +173,6 @@ export class FilterRenderer extends BaseRenderer {
     "out vec4 " +
       "oCl;" +
 
-
     Utils.GLSL.RANDOM +
     
     "float gtGS(vec4 cl){" + 
@@ -195,7 +193,7 @@ export class FilterRenderer extends BaseRenderer {
           "f=ivec2(floor(vTUv*vec2(ts)));" +
 
         "vec2 " +
-          "vol=v*(1./vec2(ts));" +
+          "vol=v/vec2(ts);" +
 
         "vec3 " +
           "rgb=vec3(vl[2],vl[3],vl[4]);" +
@@ -279,27 +277,38 @@ export class FilterRenderer extends BaseRenderer {
             "poft;" +
 
           "vec4 " +
-            "pcl," +
             "clg," +
             "cl=oCl;" +
 
           "float " + 
-            "rnd=rand(vTUv*100.+50.)+.5;" +
+            "cnt=1.," +
+            "rnd=rand(vTUv*100.+50.)," +
+            "t=RADIAN_360/(3.+ceil(3.*rnd));" +
 
           // BlurFilter
           "if(uFtrT.y<2){" +
             blurFunc(
-              "cl+=clg;"
-            ) +
+              "cl+=clg;" +
+              "cnt++;"
+            ) + 
+
+            "cl/=cnt;" +
 
           // GlowFilter
           "}else{" +
             "float " +
               "omx=max(oCl.r,max(oCl.g,oCl.b));" +
 
+            "cl=vec4(0);" +
+
             blurFunc(
-              "cl+=max(clg.r,max(clg.g,clg.b))>omx?clg:oCl;"
+              "if(max(clg.r,max(clg.g,clg.b))>omx){" +
+                "cl+=clg;" +
+                "cnt++;" +
+              "}"
             ) +
+
+            "cl=(oCl+cl)/cnt;" +
 
           "}" +
 
@@ -308,7 +317,7 @@ export class FilterRenderer extends BaseRenderer {
               "?1." +
               ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
 
-          "oCl=dst*pcl+(1.-dst)*oCl;" +
+          "oCl=dst*cl+(1.-dst)*oCl;" +
         "}" +
         // PixelateFilter
         "else if(uFtrT.x<6)" +

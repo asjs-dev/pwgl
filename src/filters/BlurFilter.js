@@ -13,14 +13,6 @@ export class BlurFilter extends BaseSamplingFilter {
     centerY = 0.5,
     size = 1
   ) {
-    super(
-      1,
-      intensityX,
-      intensityY,
-      isRadial = false,
-      centerX = 0.5,
-      centerY = 0.5,
-      size = 1
-    );
+    super(1, intensityX, intensityY, isRadial, centerX, centerY, size);
   }
 }

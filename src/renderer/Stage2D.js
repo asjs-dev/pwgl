@@ -384,13 +384,16 @@ export class Stage2D extends BatchRenderer {
 
     const createGetTextureFunction = (maxTextureImageUnits) => {
       let func = "vec4 gtTexCl(float i,vec2 s,vec2 e,vec2 m){" +
-        "vec2 ts;";
+        "vec2 " + 
+          "ts," +
+          "pt=s+e*m;";
+
       for (let i = 0; i < maxTextureImageUnits; ++i)
         func += "if(i<" + (i + 1) + ".){" + 
-          "ts=vec2(textureSize(uTex[" + i + "],0));" +
-          "return texture(uTex[" + i + "],(round(s*ts)/ts)+(round(e*ts)/ts)*m);" +
+          "ts=1./vec2(textureSize(uTex[" + i + "],0));" +
+          "return texture(uTex[" + i + "],mix(ceil(pt/ts),floor(pt/ts),m)*ts);" +
         "}";
-      func += "return Z.yyyy;" +
+        func += "return Z.yyyy;" +
       "}";
       return func;
     }

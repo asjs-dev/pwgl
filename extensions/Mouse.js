@@ -1,10 +1,12 @@
 import { PressState } from "./PressState";
 
 export class Mouse extends PressState {
-  constructor() {
+  constructor(target) {
     super();
 
     this.position = { x: 0, y: 0 };
+
+    this._target = target ?? window;
 
     this._typeMap = {
       mousedown: 1,
@@ -17,21 +19,21 @@ export class Mouse extends PressState {
     this._onMouseUp = this._onMouseUp.bind(this);
     this._onMouseMove = this._onMouseMove.bind(this);
 
-    window.addEventListener("mousedown", this._onMouseDown);
-    window.addEventListener("mouseup", this._onMouseUp);
-    window.addEventListener("mousemove", this._onMouseMove);
-    window.addEventListener("touchstart", this._onMouseDown);
-    window.addEventListener("touchend", this._onMouseUp);
-    window.addEventListener("touchmove", this._onMouseMove);
+    this._target.addEventListener("mousedown", this._onMouseDown);
+    this._target.addEventListener("mouseup", this._onMouseUp);
+    this._target.addEventListener("mousemove", this._onMouseMove);
+    this._target.addEventListener("touchstart", this._onMouseDown);
+    this._target.addEventListener("touchend", this._onMouseUp);
+    this._target.addEventListener("touchmove", this._onMouseMove);
   }
 
   destruct() {
-    window.removeEventListener("mousedown", this._onMouseDown);
-    window.removeEventListener("mouseup", this._onMouseUp);
-    window.removeEventListener("mousemove", this._onMouseMove);
-    window.removeEventListener("touchstart", this._onMouseDown);
-    window.removeEventListener("touchend", this._onMouseUp);
-    window.removeEventListener("touchmove", this._onMouseMove);
+    this._target.removeEventListener("mousedown", this._onMouseDown);
+    this._target.removeEventListener("mouseup", this._onMouseUp);
+    this._target.removeEventListener("mousemove", this._onMouseMove);
+    this._target.removeEventListener("touchstart", this._onMouseDown);
+    this._target.removeEventListener("touchend", this._onMouseUp);
+    this._target.removeEventListener("touchmove", this._onMouseMove);
   }
 
   _onMouseDown(event) {

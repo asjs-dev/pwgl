@@ -38,7 +38,6 @@ import { AmbientOcclusionMapRenderer } from "./renderer/AmbientOcclusionMapRende
 import { LightRenderer } from "./renderer/LightRenderer";
 import { Stage2D } from "./renderer/Stage2D";
 
-import { BaseFilter } from "./filters/BaseFilter";
 import { DisplacementFilter } from "./filters/DisplacementFilter";
 import { MaskFilter } from "./filters/MaskFilter";
 import { PixelateFilter } from "./filters/PixelateFilter";
@@ -103,7 +102,6 @@ window.PWGL = window.AGL = {
   LightRenderer,
   Stage2D,
 
-  BaseFilter,
   DisplacementFilter,
   MaskFilter,
   PixelateFilter,

@@ -22,8 +22,7 @@ export class TextureInfo {
 
     this.internalFormat = this.format = Const.RGBA;
 
-    this.minFilter = Const.NEAREST_MIPMAP_LINEAR;
-    this.magFilter = Const.NEAREST;
+    this.minFilter = this.magFilter = Const.LINEAR;
 
     this.$updateId = this.maxMipMapLevel = this.baseMipMapLevel = 0;
 

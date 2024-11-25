@@ -136,23 +136,27 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "if(uS>0.&&uR>0.){" +
         "vec2 " +
           "its=vec2(textureSize(uTex,0))," +
+          "ts=uR/its," +
           "p;" +
           
         "float " + 
-          "rnd=rand(vTUv*100.+50.)+length(1./its)," +
-          "t=RADIAN_360/uS," +
-          "l=uS*t," +
+          "lng=length(ts)," +
+          "rnd=.8+rand(vTUv*100.+50.)*.4," +
+          "l=3.+ceil(uS*rand(vTUv*100.+50.))," +
+          "t=RADIAN_360/l," +
+          "ht," +
           "rad;" +
 
-        "for(rad=0.;rad<l;rad+=t){" +
+        "for(rad=0.;rad<RADIAN_360;rad+=t){" +
           "p=vec2(" + 
             "cos(rad)," + 
             "sin(rad)" +
-          ")*uR/its*rnd;" +
+          ")*ts*rnd;" +
           
-          "v+=clamp((texture(uTex,vTUv+p).g-tx)/length(p),0.,1.);" +
+          "ht=texture(uTex,vTUv+p).g-tx;" +
+          "v+=ht*length(p)/lng;" +
         "}" +
-        "v/=uS;" +
+        "v/=l;" +
       "}" +
       
       "vec3 " +
@@ -160,7 +164,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "?Z.yyy" + 
           ":texture(uSTTex,vTUv).rgb;" +
 
-      "oCl=vec4(stCl*((1.-uDM)*.5+tx*uDM)*(1.-v),1);" +
+      "oCl=vec4(stCl*((1.-uDM)*.5+tx*uDM)-clamp(v,0.,1.),1);" +
     "}";
   }
 }

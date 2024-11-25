@@ -1,19 +1,21 @@
 import { PressState } from "./PressState";
 
 export class Keyboard extends PressState {
-  constructor() {
+  constructor(target) {
     super();
+
+    this._target = target ?? window;
 
     this._onKeyDown = this._onKeyDown.bind(this);
     this._onKeyUp = this._onKeyUp.bind(this);
 
-    window.addEventListener("keydown", this._onKeyDown);
-    window.addEventListener("keyup", this._onKeyUp);
+    this._target.addEventListener("keydown", this._onKeyDown);
+    this._target.addEventListener("keyup", this._onKeyUp);
   }
 
   destruct() {
-    window.removeEventListener("keydown", this._onKeyDown);
-    window.removeEventListener("keyup", this._onKeyUp);
+    this._target.removeEventListener("keydown", this._onKeyDown);
+    this._target.removeEventListener("keyup", this._onKeyUp);
   }
 
   _onKeyDown(event) {

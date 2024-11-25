@@ -71,7 +71,7 @@ export class LightRenderer extends BatchRenderer {
    * @param {Light} light
    */
   registerLight(light) {
-    if (this._lights.indexOf(light) > -1) return;
+    if (this._lights.includes(light)) return;
 
     let index = this._lights.indexOf(null);
     index > -1
@@ -262,6 +262,8 @@ export class LightRenderer extends BatchRenderer {
     "out vec4 " +
       "oCl;" +
 
+    Utils.GLSL.RANDOM +
+
     "void main(void){" +
       "if(vDt.x==0.)discard;" +
 
@@ -351,13 +353,12 @@ export class LightRenderer extends BatchRenderer {
 
         "float " +
           "shl=vD*vDt.y," + // shadow length
-          "st=max(1.,ceil(max(fltDst/vExt[1].x,vExt[0].w)))," + // loop step length
+          "rnd=vExt[0].w*rand(vTUv*100.+50.)," +
+          "st=max(1.,ceil(fltDst/vExt[1].x))," + // loop step length
           "hst=(ph-vHS)/fltDst," + // vertical step
           "opdL=length(opd)," + // horizontal step
           "i," +
-          "pc;" +
-        
-        "float " +
+          "pc," +
           "l=fltDst-st," +
           "m=max(st,l-shl);" +
         
@@ -369,6 +370,7 @@ export class LightRenderer extends BatchRenderer {
           "}" +
         "}else{" +
           "for(i=m;i<l;i+=st){" +
+            "st+=rnd;" +
             "p=ivec2((vUv.zw+i*opdm)*uTS);" +
             "tc=texelFetch(uTex,p,0)*HEIGHT;" +
             "pc=vHS+i*hst;" +
