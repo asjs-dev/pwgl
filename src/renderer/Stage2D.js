@@ -383,15 +383,14 @@ export class Stage2D extends BatchRenderer {
     const useTint = options.useTint;
 
     const createGetTextureFunction = (maxTextureImageUnits) => {
-      let func = "vec4 gtTexCl(float i,vec2 s,vec2 e,vec2 m){" +
+      let func = "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
         "vec2 " + 
-          "ts," +
-          "pt=s+e*m;";
+          "tsh;";
 
       for (let i = 0; i < maxTextureImageUnits; ++i)
         func += "if(i<" + (i + 1) + ".){" + 
-          "ts=1./vec2(textureSize(uTex[" + i + "],0));" +
-          "return texture(uTex[" + i + "],mix(ceil(pt/ts),floor(pt/ts),m)*ts);" +
+          "tsh=.5/vec2(textureSize(uTex[" + i + "],0));" +
+          "return texture(uTex[" + i + "],clamp(s.xy+s.zw*m,s.xy+tsh,s.xy+s.zw-tsh));" +
         "}";
         func += "return Z.yyyy;" +
       "}";
@@ -399,7 +398,7 @@ export class Stage2D extends BatchRenderer {
     }
 
     const getSimpleTexColor = (modCoordName) =>
-      "gtTexCl(vTId,vTCrop.xy,vTCrop.zw," + modCoordName + ")";
+      "gtTexCl(vTId,vTCrop," + modCoordName + ")";
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +

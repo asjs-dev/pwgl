@@ -164,7 +164,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "?Z.yyy" + 
           ":texture(uSTTex,vTUv).rgb;" +
 
-      "oCl=vec4(stCl*((1.-uDM)*.5+tx*uDM)-clamp(v,0.,1.),1);" +
+      "oCl=vec4(stCl*(1.-(1.-tx)*uDM-clamp(v,0.,1.)),1);" +
     "}";
   }
 }
