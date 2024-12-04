@@ -88,6 +88,127 @@
 
 
 
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>TYPE</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Item.Type</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>renderable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ItemProps.html">ItemProps</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>color</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="ColorProps.html">ColorProps</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
 <dl class="details">
 
     
@@ -117,7 +238,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line12">line 12</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -185,15 +306,15 @@
 
         
             
-<h4 class="name" id="callback"><span class="type-signature"></span>callback<span class="type-signature"> :function</span></h4>
+<h4 class="name" id="callbackAfterRender"><span class="type-signature"></span>callbackAfterRender<span class="type-signature"> :function</span></h4>
 
 
 
 
 <div class="description">
     <pre>
- Set/Get render callback
-   - It will be called when the Item is rendered
+ Set/Get after render callback
+   - It will be called after the Item rendered
 </pre>
 </div>
 
@@ -242,7 +363,82 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line77">line 77</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line95">line 95</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="callbackBeforeRender"><span class="type-signature"></span>callbackBeforeRender<span class="type-signature"> :function</span></h4>
+
+
+
+
+<div class="description">
+    <pre>
+ Set/Get before render callback
+   - It will be called before the Item rendered
+</pre>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">function</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line81">line 81</a>
     </li></ul></dd>
     
 
@@ -314,7 +510,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line53">line 53</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -376,7 +572,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line59">line 59</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -448,7 +644,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line45">line 45</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -510,7 +706,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line139">line 139</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line157">line 157</a>
     </li></ul></dd>
     
 
@@ -548,7 +744,17 @@
 <div class="description">
     <pre>
  Handle event
-   - It can handle mouse events if the item is interactive and has [onmouseover, onmouseout, onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
+   - It can handle mouse events if the item is interactive and has [
+     onmouseover, 
+     onmouseout, 
+     onmousemove, 
+     onmousedown, 
+     onmouseup, 
+     onclick, 
+     ontouchstart, 
+     ontouchmove, 
+     touchend
+   ] function
 </pre>
 </div>
 
@@ -647,7 +853,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_BaseItem.js.html">display/BaseItem.js</a>, <a href="display_BaseItem.js.html#line25">line 25</a>
+        <a href="display_BaseItem.js.html">display/BaseItem.js</a>, <a href="display_BaseItem.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -740,7 +946,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line95">line 95</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line113">line 113</a>
     </li></ul></dd>
     
 
@@ -828,7 +1034,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line88">line 88</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -934,7 +1140,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line103">line 103</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -986,7 +1192,7 @@
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 29 Nov 2024 15:18:30 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 04 Dec 2024 15:53:06 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

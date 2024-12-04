@@ -14,6 +14,7 @@ import { BaseRenderer } from "./BaseRenderer";
  *    - Renders a normal map from height map texture
  * </pre>
  * @extends {BaseRenderer}
+ * @property {TextureInfo} heightMap
  */
 export class NormalMapRenderer extends BaseRenderer {
   /**

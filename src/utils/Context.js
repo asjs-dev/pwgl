@@ -5,6 +5,7 @@ import { TextureInfo } from "../data/texture/TextureInfo";
 
 /**
  * Context
+ * @property {HTMLCanvasElement} canvas
  */
 export class Context {
   /**
@@ -12,10 +13,10 @@ export class Context {
    * @constructor
    * @param {ContextConfig} config
    */
-  constructor(config) {
+  constructor(config = {}) {
     this.contextId = 0;
 
-    this._config = Utils.initContextConfig(config || {});
+    this._config = Utils.initContextConfig(config);
     this.canvas = this._config.canvas;
 
     this._MAX_TEXTURE_NUM = Utils.INFO.maxTextureImageUnits;

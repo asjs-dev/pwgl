@@ -137,6 +137,104 @@
 
 
 
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>frameLength</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frames</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;<a href="global.html#Rectangle">Rectangle</a>></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>frame</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
 <dl class="details">
 
     
@@ -234,15 +332,15 @@
 
         
             
-<h4 class="name" id="callback"><span class="type-signature"></span>callback<span class="type-signature"> :function</span></h4>
+<h4 class="name" id="callbackAfterRender"><span class="type-signature"></span>callbackAfterRender<span class="type-signature"> :function</span></h4>
 
 
 
 
 <div class="description">
     <pre>
- Set/Get render callback
-   - It will be called when the Item is rendered
+ Set/Get after render callback
+   - It will be called after the Item rendered
 </pre>
 </div>
 
@@ -273,7 +371,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Image.html#callback">Image#callback</a>
+        <a href="Image.html#callbackAfterRender">Image#callbackAfterRender</a>
     </li></ul></dd>
     
 
@@ -296,7 +394,87 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line77">line 77</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line95">line 95</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="callbackBeforeRender"><span class="type-signature"></span>callbackBeforeRender<span class="type-signature"> :function</span></h4>
+
+
+
+
+<div class="description">
+    <pre>
+ Set/Get before render callback
+   - It will be called before the Item rendered
+</pre>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">function</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Image.html#callbackBeforeRender">Image#callbackBeforeRender</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line81">line 81</a>
     </li></ul></dd>
     
 
@@ -368,7 +546,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line33">line 33</a>
+        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -445,7 +623,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line53">line 53</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line57">line 57</a>
     </li></ul></dd>
     
 
@@ -522,7 +700,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line45">line 45</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -560,7 +738,17 @@
 <div class="description">
     <pre>
  Handle event
-   - It can handle mouse events if the item is interactive and has [onmouseover, onmouseout, onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
+   - It can handle mouse events if the item is interactive and has [
+     onmouseover, 
+     onmouseout, 
+     onmousemove, 
+     onmousedown, 
+     onmouseup, 
+     onclick, 
+     ontouchstart, 
+     ontouchmove, 
+     touchend
+   ] function
 </pre>
 </div>
 
@@ -659,7 +847,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_BaseItem.js.html">display/BaseItem.js</a>, <a href="display_BaseItem.js.html#line25">line 25</a>
+        <a href="display_BaseItem.js.html">display/BaseItem.js</a>, <a href="display_BaseItem.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -752,7 +940,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line83">line 83</a>
+        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line86">line 86</a>
     </li></ul></dd>
     
 
@@ -1111,7 +1299,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line51">line 51</a>
+        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line54">line 54</a>
     </li></ul></dd>
     
 
@@ -1248,7 +1436,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line41">line 41</a>
+        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line44">line 44</a>
     </li></ul></dd>
     
 
@@ -1390,7 +1578,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line58">line 58</a>
+        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line65">line 65</a>
     </li></ul></dd>
     
 
@@ -1496,7 +1684,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line66">line 66</a>
+        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line69">line 69</a>
     </li></ul></dd>
     
 
@@ -1584,7 +1772,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line59">line 59</a>
+        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line62">line 62</a>
     </li></ul></dd>
     
 
@@ -1726,7 +1914,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line75">line 75</a>
+        <a href="display_AnimatedImage.js.html">display/AnimatedImage.js</a>, <a href="display_AnimatedImage.js.html#line78">line 78</a>
     </li></ul></dd>
     
 
@@ -1778,7 +1966,7 @@
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 29 Nov 2024 15:18:30 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 04 Dec 2024 15:53:06 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

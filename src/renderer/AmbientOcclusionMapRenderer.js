@@ -7,6 +7,9 @@ import { BaseRenderer } from "./BaseRenderer";
  * @extends {RendererConfig}
  * @property {TextureInfo} sourceTexture
  * @property {TextureInfo} heightMap
+ * @property {number} radius
+ * @property {number} samples
+ * @property {number} depthMultiplier
  */
 
 /**

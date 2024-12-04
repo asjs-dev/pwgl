@@ -22,6 +22,7 @@ import "../geom/PointType";
  *    - Renders multiple textures
  * </pre>
  * @extends {BatchRenderer}
+ * @property {StageContainer} container
  */
 export class Stage2D extends BatchRenderer {
   /**
@@ -29,12 +30,12 @@ export class Stage2D extends BatchRenderer {
    * @constructor
    * @param {Stage2DRendererConfig} options
    */
-  constructor(options) {
+  constructor(options = {}) {
     options = {
       ...{
         useTint: true,
       },
-      ...(options || {}),
+      ...options,
     };
 
     options.config = Utils.initRendererConfig(options.config);
@@ -161,8 +162,9 @@ export class Stage2D extends BatchRenderer {
    */
   _drawItem(item) {
     item.update(this.$renderTime);
-    item.callback(item, this.$renderTime);
+    item.callbackBeforeRender(item, this.$renderTime);
     item.renderable && this["_draw" + item.TYPE](item);
+    item.callbackAfterRender(item, this.$renderTime);
   }
 
   /**

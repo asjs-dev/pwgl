@@ -3,6 +3,7 @@ import { ItemProps } from "./ItemProps";
 /**
  * Class for light properties
  * @extends {ItemProps}
+ * @property {number} z 
  */
 export class LightProps extends ItemProps {
   /**

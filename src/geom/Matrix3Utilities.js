@@ -134,7 +134,7 @@ export const Matrix3Utilities = {
   /**
    * Calculate cornrers
    * @param {Matrix3} matrix
-   * @param {array} corners
+   * @param {Array<Point>} corners
    * @param {Object} resolution
    * @param {number} resolution.widthHalf
    * @param {number} resolution.heightHalf

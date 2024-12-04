@@ -5,6 +5,7 @@ import { BatchRenderer } from "../renderer/BatchRenderer";
 /**
  * Stage container
  * @extends {Container}
+ * @property {BatchRenderer} renderer
  */
 export class StageContainer extends Container {
   /**

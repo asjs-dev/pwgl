@@ -2,6 +2,7 @@ import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 
 /**
  * Base Item
+ * @property {boolean} interactive
  */
 export class BaseItem {
   /**
@@ -18,7 +19,17 @@ export class BaseItem {
   /**
    * <pre>
    *  Handle event
-   *    - It can handle mouse events if the item is interactive and has [onmouseover, onmouseout, onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
+   *    - It can handle mouse events if the item is interactive and has [
+   *      onmouseover, 
+   *      onmouseout, 
+   *      onmousemove, 
+   *      onmousedown, 
+   *      onmouseup, 
+   *      onclick, 
+   *      ontouchstart, 
+   *      ontouchmove, 
+   *      touchend
+   *    ] function
    * </pre>
    * @param {*} event
    */

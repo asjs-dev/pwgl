@@ -137,6 +137,58 @@
 
 
 
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>renderer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="BatchRenderer.html">BatchRenderer</a></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
 <dl class="details">
 
     
@@ -166,7 +218,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_StageContainer.js.html">display/StageContainer.js</a>, <a href="display_StageContainer.js.html#line9">line 9</a>
+        <a href="display_StageContainer.js.html">display/StageContainer.js</a>, <a href="display_StageContainer.js.html#line10">line 10</a>
     </li></ul></dd>
     
 
@@ -234,15 +286,15 @@
 
         
             
-<h4 class="name" id="callback"><span class="type-signature"></span>callback<span class="type-signature"> :function</span></h4>
+<h4 class="name" id="callbackAfterRender"><span class="type-signature"></span>callbackAfterRender<span class="type-signature"> :function</span></h4>
 
 
 
 
 <div class="description">
     <pre>
- Set/Get render callback
-   - It will be called when the Item is rendered
+ Set/Get after render callback
+   - It will be called after the Item rendered
 </pre>
 </div>
 
@@ -273,7 +325,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="Container.html#callback">Container#callback</a>
+        <a href="Container.html#callbackAfterRender">Container#callbackAfterRender</a>
     </li></ul></dd>
     
 
@@ -296,7 +348,87 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line77">line 77</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line95">line 95</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="callbackBeforeRender"><span class="type-signature"></span>callbackBeforeRender<span class="type-signature"> :function</span></h4>
+
+
+
+
+<div class="description">
+    <pre>
+ Set/Get before render callback
+   - It will be called before the Item rendered
+</pre>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">function</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="Container.html#callbackBeforeRender">Container#callbackBeforeRender</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line81">line 81</a>
     </li></ul></dd>
     
 
@@ -373,7 +505,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_StageContainer.js.html">display/StageContainer.js</a>, <a href="display_StageContainer.js.html#line36">line 36</a>
+        <a href="display_StageContainer.js.html">display/StageContainer.js</a>, <a href="display_StageContainer.js.html#line37">line 37</a>
     </li></ul></dd>
     
 
@@ -450,7 +582,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_StageContainer.js.html">display/StageContainer.js</a>, <a href="display_StageContainer.js.html#line45">line 45</a>
+        <a href="display_StageContainer.js.html">display/StageContainer.js</a>, <a href="display_StageContainer.js.html#line46">line 46</a>
     </li></ul></dd>
     
 
@@ -527,7 +659,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_StageContainer.js.html">display/StageContainer.js</a>, <a href="display_StageContainer.js.html#line27">line 27</a>
+        <a href="display_StageContainer.js.html">display/StageContainer.js</a>, <a href="display_StageContainer.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -661,7 +793,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line50">line 50</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line51">line 51</a>
     </li></ul></dd>
     
 
@@ -826,7 +958,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line59">line 59</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -872,7 +1004,17 @@
 <div class="description">
     <pre>
  Handle event
-   - It can handle mouse events if the item is interactive and has [onmouseover, onmouseout, onmousemove, onmousedown, onmouseup, onclick, ontouchstart, ontouchmove, touchend] function
+   - It can handle mouse events if the item is interactive and has [
+     onmouseover, 
+     onmouseout, 
+     onmousemove, 
+     onmousedown, 
+     onmouseup, 
+     onclick, 
+     ontouchstart, 
+     ontouchmove, 
+     touchend
+   ] function
 </pre>
 </div>
 
@@ -971,7 +1113,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_BaseItem.js.html">display/BaseItem.js</a>, <a href="display_BaseItem.js.html#line25">line 25</a>
+        <a href="display_BaseItem.js.html">display/BaseItem.js</a>, <a href="display_BaseItem.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -1113,7 +1255,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line42">line 42</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line43">line 43</a>
     </li></ul></dd>
     
 
@@ -1224,7 +1366,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line25">line 25</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line26">line 26</a>
     </li></ul></dd>
     
 
@@ -1317,7 +1459,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line33">line 33</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -1410,7 +1552,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line133">line 133</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -1570,7 +1712,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line92">line 92</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line93">line 93</a>
     </li></ul></dd>
     
 
@@ -1730,7 +1872,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line111">line 111</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line112">line 112</a>
     </li></ul></dd>
     
 
@@ -1890,7 +2032,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line72">line 72</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line73">line 73</a>
     </li></ul></dd>
     
 
@@ -2032,7 +2174,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line83">line 83</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line84">line 84</a>
     </li></ul></dd>
     
 
@@ -2197,7 +2339,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line101">line 101</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line102">line 102</a>
     </li></ul></dd>
     
 
@@ -2362,7 +2504,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line120">line 120</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -2455,7 +2597,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line154">line 154</a>
+        <a href="display_Container.js.html">display/Container.js</a>, <a href="display_Container.js.html#line155">line 155</a>
     </li></ul></dd>
     
 
@@ -2507,7 +2649,7 @@
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 29 Nov 2024 15:18:31 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 04 Dec 2024 15:53:06 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

@@ -1,5 +1,8 @@
 /**
  * Base Filter
+ * @property {number} TYPE;
+ * @property {number} SUB_TYPE
+ * @property {boolean} on
  */
 export class BaseFilter {
   /**

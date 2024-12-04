@@ -8,8 +8,8 @@ import { Framebuffer } from "../data/texture/Framebuffer";
  * @typedef {Object} BaseRendererConfig
  * @extends {RendererConfig}
  * @property {Object} config
- * @property {WebGlContext} config.context
- * @property {Array<string>} config.locations
+ * @property {ColorProps} clearColor
+ * @property {WebGL2Context} context
  */
 
 /**

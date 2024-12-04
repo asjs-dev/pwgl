@@ -8,6 +8,10 @@ import "../geom/RectangleType";
 /**
  * Item
  * @extends {BaseItem}
+ * @property {Item.Type} TYPE
+ * @property {boolean} renderable
+ * @property {ItemProps} props
+ * @property {ColorProps} color
  */
 export class Item extends BaseItem {
   /**
@@ -32,7 +36,7 @@ export class Item extends BaseItem {
       this.$currentInverseMatrixPropsUpdateId =
         -1;
 
-    this.callback = noop;
+    this.callbackBeforeRender = this.callbackAfterRender = noop;
 
     this.$bounds = { x: 0, y: 0, width: 0, height: 0 };
   }
@@ -69,16 +73,30 @@ export class Item extends BaseItem {
 
   /**
    * <pre>
-   *  Set/Get render callback
-   *    - It will be called when the Item is rendered
+   *  Set/Get before render callback
+   *    - It will be called before the Item rendered
    * </pre>
    * @type {function}
    */
-  get callback() {
-    return this._callback;
+  get callbackBeforeRender() {
+    return this._callbackBeforeRender;
   }
-  set callback(v) {
-    this._callback = v || noop;
+  set callbackBeforeRender(v) {
+    this._callbackBeforeRender = v ?? noop;
+  }
+
+  /**
+   * <pre>
+   *  Set/Get after render callback
+   *    - It will be called after the Item rendered
+   * </pre>
+   * @type {function}
+   */
+  get callbackAfterRender() {
+    return this._callbackAfterRender;
+  }
+  set callbackAfterRender(v) {
+    this._callbackAfterRender = v ?? noop;
   }
 
   /**

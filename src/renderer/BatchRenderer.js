@@ -5,7 +5,6 @@ import "../utils/Utils";
 /**
  * @typedef {Object} BatchRendererConfig
  * @extends {RendererConfig}
- * @property {number} maxBatchItems
  */
 
 /**

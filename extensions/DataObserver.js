@@ -2,8 +2,8 @@ import { areObjectsEqual } from "./utils/areObjectsEqual";
 import { clone } from "./utils/clone";
 
 export class DataObserver {
-  constructor(defaultState) {
-    this._state = defaultState || {};
+  constructor(defaultState = {}) {
+    this._state = defaultState;
     this._prevState = clone(this._state);
     this._run = false;
     this._checkState = this._checkState.bind(this);

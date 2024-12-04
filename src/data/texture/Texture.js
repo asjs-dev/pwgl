@@ -6,6 +6,8 @@ const _placeholderImage = document.createElement("img");
 /**
  * Texture
  * @extends {TextureInfo}
+ * @property {boolean} isVideo
+ * @property {boolean} shouldUpdate
  */
 export class Texture extends TextureInfo {
   /**
@@ -16,7 +18,7 @@ export class Texture extends TextureInfo {
    */
   constructor(source, shouldUpdate) {
     super();
-
+    
     this._source = _placeholderImage;
 
     this._parseTextureSize = this._parseTextureSize.bind(this);
@@ -62,19 +64,17 @@ export class Texture extends TextureInfo {
   get source() {
     return this._source;
   }
+
   set source(value) {
     if (value) {
       this._source.removeEventListener(this._eventType, this._parseTextureSize);
 
-      this._source = value ? value : _placeholderImage;
+      this._source = value;
 
-      this.isVideo = value.tagName
-        ? value.tagName.toLowerCase() === "video"
-        : false;
+      this.isVideo = value.tagName.toLowerCase() === "video";
       this._eventType = this.isVideo ? "canplay" : "load";
 
-      value &&
-        !this._parseTextureSize() &&
+      !this._parseTextureSize() &&
         value.addEventListener(this._eventType, this._parseTextureSize, {
           once: true,
         });

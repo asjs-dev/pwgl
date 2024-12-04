@@ -54,25 +54,19 @@
  * @property {Array&lt;number>} functions
  * @property {string} equationName
  * @property {Array&lt;number>} equations
-*/
+ */
+
 
 /**
- * Create new blend mode
+ * @typedef {function} createBlendMode
  * @param {Array&lt;number>} functions
  * @param {Array&lt;number>} equations
  * @returns {BlendModeInfo}
- * @ignore
  */
-const createBlendMode = (functions, equations) => ({
-  functionName: "blendFunc" + (functions.length &lt; 3 ? "" : "Separate"),
-  functions: functions,
-  equationName:
-    "blendEquation" + (!equations || equations.length &lt; 2 ? "" : "Separate"),
-  equations: equations || [Const.FUNC_ADD],
-});
 
 /**
  * @typedef {Object} BlendMode
+ * @property {createBlendMode} createBlendMode
  * @property {BlendModeInfo} NONE
  * @property {BlendModeInfo} NORMAL_PM
  * @property {BlendModeInfo} ADD_PM
@@ -97,65 +91,67 @@ const createBlendMode = (functions, equations) => ({
  * @property {BlendModeInfo} DARKEN
  * @property {BlendModeInfo} SHADOW
  */
-export const BlendMode = {
-  createBlendMode,
-  
-  NONE: createBlendMode([0, 0]),
+export const BlendMode = (() => {
+  const cb = (functions, equations) => ({
+    functionName: "blendFunc" + (functions.length &lt; 3 ? "" : "Separate"),
+    functions: functions,
+    equationName:
+      "blendEquation" + (!equations || equations.length &lt; 2 ? "" : "Separate"),
+    equations: equations || [Const.FUNC_ADD],
+  });
 
-  NORMAL_PM: createBlendMode([Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
-  ADD_PM: createBlendMode([Const.ONE, Const.ONE]),
-  MULTIPLY_PM: createBlendMode([
-    Const.DST_COLOR,
-    Const.ONE_MINUS_SRC_ALPHA,
-    Const.ONE,
-    Const.ONE_MINUS_SRC_ALPHA,
-  ]),
-  SCREEN_PM: createBlendMode([
-    Const.ONE,
-    Const.ONE_MINUS_SRC_COLOR,
-    Const.ONE,
-    Const.ONE_MINUS_SRC_ALPHA,
-  ]),
+  return {
+    createBlendMode: cb,
 
-  ADD_NPM: createBlendMode([Const.SRC_ALPHA, Const.ONE, Const.ONE, Const.ONE]),
+    NONE: cb([0, 0]),
 
-  SRC_IN: createBlendMode([Const.DST_ALPHA, Const.ZERO]),
-  SRC_OUT: createBlendMode([Const.ONE_MINUS_DST_ALPHA, Const.ZERO]),
-  SRC_ATOP: createBlendMode([Const.DST_ALPHA, Const.ONE_MINUS_SRC_ALPHA]),
-  DST_OVER: createBlendMode([Const.ONE_MINUS_DST_ALPHA, Const.ONE]),
-  DST_IN: createBlendMode([Const.ZERO, Const.SRC_ALPHA]),
-  DST_OUT: createBlendMode([Const.ZERO, Const.ONE_MINUS_SRC_ALPHA]),
-  DST_ATOP: createBlendMode([Const.ONE_MINUS_DST_ALPHA, Const.SRC_ALPHA]),
-  XOR: createBlendMode([Const.ONE_MINUS_DST_ALPHA, Const.ONE_MINUS_SRC_ALPHA]),
+    NORMAL_PM: cb([Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
+    ADD_PM: cb([Const.ONE, Const.ONE]),
+    MULTIPLY_PM: cb([
+      Const.DST_COLOR,
+      Const.ONE_MINUS_SRC_ALPHA,
+      Const.ONE,
+      Const.ONE_MINUS_SRC_ALPHA,
+    ]),
+    SCREEN_PM: cb([
+      Const.ONE,
+      Const.ONE_MINUS_SRC_COLOR,
+      Const.ONE,
+      Const.ONE_MINUS_SRC_ALPHA,
+    ]),
 
-  NORMAL: createBlendMode([
-    Const.SRC_ALPHA,
-    Const.ONE_MINUS_SRC_ALPHA,
-    Const.ONE,
-    Const.ONE_MINUS_SRC_ALPHA,
-  ]),
-  ADD: createBlendMode([
-    Const.SRC_ALPHA,
-    Const.DST_ALPHA,
-    Const.ONE,
-    Const.DST_ALPHA,
-  ]),
-  MULTIPLY: createBlendMode([Const.DST_COLOR, Const.ZERO]),
-  SCREEN: createBlendMode([
-    Const.SRC_ALPHA,
-    Const.ONE_MINUS_SRC_COLOR,
-    Const.ONE,
-    Const.ONE_MINUS_SRC_COLOR,
-  ]),
-  OVERLAY: createBlendMode([Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
-  EXCLUSION: createBlendMode([
-    Const.ONE_MINUS_DST_COLOR,
-    Const.ONE_MINUS_SRC_COLOR,
-  ]),
-  LIGHTEN: createBlendMode([Const.ONE, Const.ONE], [Const.MAX]),
-  DARKEN: createBlendMode([Const.ONE, Const.ONE], [Const.MIN]),
-  SHADOW: createBlendMode([Const.DST_COLOR, Const.SRC_COLOR]),
-};
+    ADD_NPM: cb([Const.SRC_ALPHA, Const.ONE, Const.ONE, Const.ONE]),
+
+    SRC_IN: cb([Const.DST_ALPHA, Const.ZERO]),
+    SRC_OUT: cb([Const.ONE_MINUS_DST_ALPHA, Const.ZERO]),
+    SRC_ATOP: cb([Const.DST_ALPHA, Const.ONE_MINUS_SRC_ALPHA]),
+    DST_OVER: cb([Const.ONE_MINUS_DST_ALPHA, Const.ONE]),
+    DST_IN: cb([Const.ZERO, Const.SRC_ALPHA]),
+    DST_OUT: cb([Const.ZERO, Const.ONE_MINUS_SRC_ALPHA]),
+    DST_ATOP: cb([Const.ONE_MINUS_DST_ALPHA, Const.SRC_ALPHA]),
+    XOR: cb([Const.ONE_MINUS_DST_ALPHA, Const.ONE_MINUS_SRC_ALPHA]),
+
+    NORMAL: cb([
+      Const.SRC_ALPHA,
+      Const.ONE_MINUS_SRC_ALPHA,
+      Const.ONE,
+      Const.ONE_MINUS_SRC_ALPHA,
+    ]),
+    ADD: cb([Const.SRC_ALPHA, Const.DST_ALPHA, Const.ONE, Const.DST_ALPHA]),
+    MULTIPLY: cb([Const.DST_COLOR, Const.ZERO]),
+    SCREEN: cb([
+      Const.SRC_ALPHA,
+      Const.ONE_MINUS_SRC_COLOR,
+      Const.ONE,
+      Const.ONE_MINUS_SRC_COLOR,
+    ]),
+    OVERLAY: cb([Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
+    EXCLUSION: cb([Const.ONE_MINUS_DST_COLOR, Const.ONE_MINUS_SRC_COLOR]),
+    LIGHTEN: cb([Const.ONE, Const.ONE], [Const.MAX]),
+    DARKEN: cb([Const.ONE, Const.ONE], [Const.MIN]),
+    SHADOW: cb([Const.DST_COLOR, Const.SRC_COLOR]),
+  };
+})();
 </code></pre>
         </article>
     </section>
@@ -172,7 +168,7 @@ export const BlendMode = {
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 29 Nov 2024 15:18:30 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 04 Dec 2024 15:53:06 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

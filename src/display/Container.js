@@ -10,6 +10,7 @@ export class Container extends Item {
   /**
    * Creates an instance of Container.
    * @constructor
+   * @property {Array<Item>} children
    */
   constructor() {
     super();

@@ -11,6 +11,9 @@ export class AnimatedImage extends Image {
    * Creates an instance of AnimatedImage.
    * @constructor
    * @param {TextureInfo} texture
+   * @property {number} frameLength
+   * @property {Array<Rectangle>} frames
+   * @property {number} frame
    */
   constructor(texture) {
     super(texture);

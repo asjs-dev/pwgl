@@ -27,6 +27,10 @@ import { BatchRenderer } from "./BatchRenderer";
  *  - Every input texture are optional
  * </pre>
  * @extends {BatchRenderer}
+ * @property {TextureInfo} sourceTexture
+ * @property {TextureInfo} normalMap
+ * @property {TextureInfo} heightMap
+ * @property {TextureInfo} roughnessMap
  */
 export class LightRenderer extends BatchRenderer {
   /**
@@ -267,17 +271,17 @@ export class LightRenderer extends BatchRenderer {
     "void main(void){" +
       "if(vDt.x==0.)discard;" +
 
+      "vec2 " +
+        "tUv=vTUv*uTS," +
+        "tCnt=vUv.zw*uTS;" +
+
       "vec4 " +
-        "tc=texture(uTex,vTUv);" +
+        "tc=texelFetch(uTex,ivec2(tUv),0);" +
 
       "float " +
         "ph=tc.g*HEIGHT," +
         "shn=tc.b," +
         "rgh=1.;" +
-
-      "vec2 " +
-        "tUv=vTUv*uTS," +
-        "tCnt=vUv.zw*uTS;" +
 
       "vec3 " +
         "sf=vec3(tUv,ph)," +

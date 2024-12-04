@@ -3,6 +3,7 @@ import { TextureInfo } from "../texture/TextureInfo";
 
 /**
  * Class for texture properties of filters
+ * @property {TextureInfo} texture
  */
 export class FilterTextureProps {
   /**

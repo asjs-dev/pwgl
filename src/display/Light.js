@@ -15,6 +15,7 @@ const TEMP_ARRAY = [];
  *      and unregister with LightRenderer.unregisterLight
  * </pre>
  * @extends {BaseDrawable}
+ * @property {LightProps} props
  * @property {number} type - Type of the Light
  * @property {number} maxShadowStep - The maximum step of shadow caster per pixel
  *                                  - Default value is 128

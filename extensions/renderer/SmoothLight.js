@@ -14,10 +14,8 @@ export class SmoothLight extends AGL.Image {
    * @constructor
    * @param {SmoothLightRendererConfig} options
    */
-  constructor(options) {
+  constructor(options = {}) {
     super();
-
-    options = options || {};
 
     this._framebuffer = new AGL.Framebuffer();
 

@@ -10,6 +10,13 @@ import "../geom/PointType";
 /**
  * Image class
  * @extends {BaseDrawable}
+ * @property {BlendModeInfo} SHADOW
+ * @property {Image.TintType} TintType
+ * @property {BlendMode} blendMode
+ * @property {TextureProps} textureProps
+ * @property {TextureCrop} textureCrop
+ * @property {DistortionProps} distortionProps
+ * @property {TextureInfo} texture
  */
 export class Image extends BaseDrawable {
   /**
