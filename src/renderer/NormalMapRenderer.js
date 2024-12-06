@@ -98,7 +98,7 @@ export class NormalMapRenderer extends BaseRenderer {
       "vec2 " +
         "its=vec2(textureSize(uTex,0))," +
         "ts=1./its," +
-        "p0=round(vTUv*its)," +
+        "p0=floor(vTUv*its)," +
         "p1=p0+Z.yx," +
         "p2=p0+Z.yy;" +
 

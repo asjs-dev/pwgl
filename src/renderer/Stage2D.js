@@ -330,18 +330,16 @@ export class Stage2D extends BatchRenderer {
       "vCl;" +
 
     "vec2 clcQd(vec2 p){" +
-      "return vec2(" +
-        "mix(" +
-          "mix(aDst[0].x,aDst[1].x,p.x)," +
-          "mix(aDst[3].x,aDst[2].x,p.x)," +
-          "p.y" +
-        ")," +
-        "mix(" +
-          "mix(aDst[0].y,aDst[3].y,p.y)," +
-          "mix(aDst[1].y,aDst[2].y,p.y)," +
-          "p.x" +
-        ")" +
-      ");" +
+      "vec3 " + 
+        "P0=vec3(aDst[0],1.)," +
+        "P1=vec3(aDst[1],1.)," +
+        "P2=vec3(aDst[2],1.)," +
+        "P3=vec3(aDst[3],1.)," +
+        "t=mix(P0,P1,p.x)," +
+        "b=mix(P3,P2,p.x)," +
+        "r=mix(t,b,p.y);" +
+
+      "return r.xy/r.z;" +
     "}" +
 
     "void main(void){" +
