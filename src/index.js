@@ -1,7 +1,6 @@
 import { Context } from "./utils/Context";
 import { Buffer } from "./utils/Buffer";
 import { Utils, Const } from "./utils/Utils";
-import { FPS } from "./utils/FPS";
 
 import { BlendMode } from "./data/BlendMode";
 
@@ -81,7 +80,6 @@ window.PWGL = window.AGL = {
   Buffer,
   Utils,
   Const,
-  FPS,
 
   Matrix3Utilities,
 

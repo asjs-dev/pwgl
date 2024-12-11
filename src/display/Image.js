@@ -52,7 +52,7 @@ export class Image extends BaseDrawable {
    * Update Image
    */
   update() {
-    this.$updateProps();
+    super.update();
     this._updateTexture();
     this.textureCrop.updateCrop();
   }

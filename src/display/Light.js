@@ -140,7 +140,7 @@ export class Light extends BaseDrawable {
     const lightDataId = this._lightDataId;
 
     if (this.isOn()) {
-      this.$updateProps();
+      super.update();
       this._updateColor();
 
       const extensionDataId = this._extensionDataId;

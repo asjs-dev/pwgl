@@ -157,11 +157,10 @@ export class LightRenderer extends BatchRenderer {
 
   // prettier-ignore
   /**
-   * @param {LightRendererConfig} options
    * @returns {string}
    * @ignore
    */
-  $createVertexShader(options) {
+  $createVertexShader() {
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
 
@@ -192,6 +191,8 @@ export class LightRenderer extends BatchRenderer {
       "vDt;" +
     "out mat2x4 " +
       "vExt;" +
+    "out vec4 " +
+      "flg;" +
 
     "void main(void){" +
       "vec3 pos=vec3(aPos*2.-1.,1);" +
@@ -199,6 +200,11 @@ export class LightRenderer extends BatchRenderer {
       "vExt=aExt;" +
       "vCl=aMt[2];" +
       "vDt=aMt[3];" +
+
+      "int " +
+        "f=int(vExt[0].y);" +
+      
+      "flg=vec4(f&1,f&2,f&4,f&8);" +
 
       "vUv.xy=pos.xy;" +
       "vHS=vExt[0].z;" +
@@ -225,11 +231,16 @@ export class LightRenderer extends BatchRenderer {
 
   // prettier-ignore
   /**
-   * @param {LightRendererConfig} options
    * @returns {string}
    * @ignore
    */
-  $createFragmentShader(options) {
+  $createFragmentShader() {
+    const loop = (core) => "for(i=m;i<l;i+=st){" +
+            "p=ivec2((vUv.zw+i*opdm)*uTS);" +
+            "tc=texelFetch(uTex,p,0)*HEIGHT;" +
+            core +
+          "}";
+
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
 
@@ -250,6 +261,8 @@ export class LightRenderer extends BatchRenderer {
       "vDt;" +
     "in mat2x4 " +
       "vExt;" +
+    "in vec4 " +
+      "flg;" +
 
     "uniform sampler2D " +
       "uNMTex," +
@@ -315,21 +328,18 @@ export class LightRenderer extends BatchRenderer {
           ")+1.5707963267948966-vSpt<0.)discard;" +
       "}" +
 
-      "int " +
-        "flg=int(vExt[0].y);" +
-
       "float " +
         "fltDst=distance(tCnt,tUv)," +
         "shdw=1.;" +
 
-      "if((flg&2)>0){" +
+      "if(flg.y>0.){" +
         "vec3 " +
           "nm=uUNMT<1." + 
             "?Z.xxy" + 
             ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*Z.yzy)," +
           "sftl=normalize(sftla)," +
           "sftv=normalize(vec3(" +
-            "(flg&8)>0" +
+            "flg.w>0." +
               "?uTS*.5" +
               ":tUv," +
             "HEIGHT" +
@@ -347,7 +357,7 @@ export class LightRenderer extends BatchRenderer {
         "spc=pow(dot(nm,hlf),rgh*HEIGHT)*shn*vExt[1].y;" +
       "}" +
 
-      "if((flg&1)>0){" +
+      "if(flg.x>0.){" +
         "ivec2 " +
           "p;" +
 
@@ -357,7 +367,6 @@ export class LightRenderer extends BatchRenderer {
 
         "float " +
           "shl=vD*vDt.y," + // shadow length
-          "rnd=vExt[0].w*rand(vTUv*100.+50.)," +
           "st=max(1.,ceil(fltDst/vExt[1].x))," + // loop step length
           "hst=(ph-vHS)/fltDst," + // vertical step
           "opdL=length(opd)," + // horizontal step
@@ -366,20 +375,17 @@ export class LightRenderer extends BatchRenderer {
           "l=fltDst-st," +
           "m=max(st,l-shl);" +
         
-        "if((flg&4)>0){" + 
-          "for(i=m;i<l;i+=st){" +
-            "p=ivec2((vUv.zw+i*opdm)*uTS);" +
-            "tc=texelFetch(uTex,p,0)*HEIGHT;" +
-            "if(tc.g>=vHS)discard;" +
-          "}" +
+        "if(flg.z>0.){" + 
+          loop("if(tc.g>=vHS)discard;") +
         "}else{" +
-          "for(i=m;i<l;i+=st){" +
+          "float " +
+            "rnd=vExt[0].w*rand(vTUv*100.+50.);" +
+            
+          loop(
             "st+=rnd;" +
-            "p=ivec2((vUv.zw+i*opdm)*uTS);" +
-            "tc=texelFetch(uTex,p,0)*HEIGHT;" +
             "pc=vHS+i*hst;" +
-            "if(tc.r<=pc&&tc.g>=pc)shdw*=(fltDst-i*opdL)/shl;" +
-          "}" +
+            "if(tc.r<=pc&&tc.g>=pc)shdw*=(fltDst-i*opdL)/shl;"
+          ) +
         "}" +
       "}" +
       

@@ -18,7 +18,7 @@ export class Texture extends TextureInfo {
    */
   constructor(source, shouldUpdate) {
     super();
-    
+
     this._source = _placeholderImage;
 
     this._parseTextureSize = this._parseTextureSize.bind(this);
@@ -89,42 +89,45 @@ export class Texture extends TextureInfo {
   }
 
   /**
-   * @param {WebGL2Context} gl
+   * Use TextureInfo
+   * @param {WebGLContext} gl
    * @param {number} id
+   * @param {boolean} forceBind
    * @param {number} renderTime
-   * @returns {boolean}
-   * @ignore
    */
-  $hasNeedToDraw(gl, id, renderTime) {
+  use(gl, id, forceBind, renderTime) {
     if (this.$currentAglId < gl.agl_id) {
       this.$currentAglId = gl.agl_id;
       this._baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
-      return true;
+      return;
     }
 
     if (this.$currentUpdateId < this.$updateId) {
       this.$currentUpdateId = this.$updateId;
       this.useActiveTexture(gl, id);
-      return true;
+      return;
     }
 
     if (this._currentLoadUpdateId < this._loadUpdateId) {
       this._currentLoadUpdateId = this._loadUpdateId;
       this.useActiveTexture(gl, id);
-      return true;
+      return;
     }
 
     if (this.shouldUpdate && this._currentRenderTime < renderTime) {
       this._currentRenderTime = renderTime;
       this.useActiveTexture(gl, id);
-      return true;
+      return;
     }
 
     if (this.isVideo && !this._source.paused) {
       this.useActiveTexture(gl, id);
-      return true;
+      return;
     }
+
+    if (this._currenActiveId !== id || forceBind)
+      this.bindActiveTexture(gl, id);
   }
 
   /**

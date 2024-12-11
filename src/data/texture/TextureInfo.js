@@ -176,21 +176,6 @@ export class TextureInfo {
   }
 
   /**
-   * Use TextureInfo
-   * @param {WebGLContext} gl
-   * @param {number} id
-   * @param {boolean} forceBind
-   * @param {number} renderTime
-   */
-  use(gl, id, forceBind, renderTime) {
-    if (
-      !this.$hasNeedToDraw(gl, id, renderTime) &&
-      (this._currenActiveId !== id || forceBind)
-    )
-      this.bindActiveTexture(gl, id);
-  }
-
-  /**
    * Use active TextureInfo
    * @param {WebGLContext} gl
    * @param {number} id
@@ -305,9 +290,4 @@ export class TextureInfo {
    * Destruct class
    */
   destruct() {}
-
-  /**
-   * @ignore
-   */
-  $hasNeedToDraw() {}
 }

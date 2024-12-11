@@ -27,13 +27,8 @@ export class BaseRenderer {
 
     this._clearBeforeRenderFunc = noop;
 
-    this._currentSizeUpdateId = -1;
-    this._sizeUpdateId =
-      this.width =
-      this.height =
-      this.widthHalf =
-      this.heightHalf =
-        0;
+    this._sizeUpdateId = 1;
+    this.width = this.height = this.widthHalf = this.heightHalf = 0;
 
     this.clearColor = new ColorProps();
 
@@ -139,7 +134,7 @@ export class BaseRenderer {
   $attachFramebuffer(framebuffer) {
     framebuffer.bind(this.$gl);
     framebuffer.setSize(this.width, this.height);
-    this.context.useTexture(framebuffer, this.$renderTime);
+    this.context.useTexture(framebuffer, this.$renderTime, false);
     this.context.deactivateTexture(framebuffer);
     this.$gl.uniform1f(this.$locations.uFlpY, -1);
   }
@@ -182,7 +177,7 @@ export class BaseRenderer {
    * @param {number} index
    * @ignore
    */
-  $useTextureAt(texture, location, index, forceBind = true) {
+  $useTextureAt(texture, location, index, forceBind) {
     this.$gl.uniform1i(
       location,
       this.context.useTextureAt(texture, index, this.$renderTime, forceBind)
@@ -194,7 +189,7 @@ export class BaseRenderer {
    * @param {number} location
    * @ignore
    */
-  $useTexture(texture, location, forceBind = true) {
+  $useTexture(texture, location, forceBind) {
     this.$gl.uniform1i(
       location,
       this.context.useTexture(texture, this.$renderTime, forceBind)
@@ -235,7 +230,7 @@ export class BaseRenderer {
   _switchToProgram() {
     this.$gl = this.context.gl;
 
-    if (this._currentContextId < this.context.contextId) {
+    if (this._currentContextId !== this.context.contextId) {
       this._currentContextId = this.context.contextId;
       this._buildProgram();
       this.$enableBuffers = true;

@@ -1,11 +1,13 @@
+import { FPS } from "../FPS";
+
 export const enterFrame = (callback) => {
   let requestAnimationFrameId;
   let isPlaying = false;
 
   const render = () => {
     if (isPlaying) {
-      AGL.FPS.update();
-      callback(AGL.FPS.fps, AGL.FPS.delay);
+      FPS.update();
+      callback(FPS.fps, FPS.delay);
       requestAnimationFrameId = requestAnimationFrame(render);
     }
   };
@@ -13,7 +15,7 @@ export const enterFrame = (callback) => {
   const start = () => {
     if (!isPlaying) {
       isPlaying = true;
-      AGL.FPS.init();
+      FPS.init();
       render();
     }
   };

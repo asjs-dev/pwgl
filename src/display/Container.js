@@ -21,6 +21,15 @@ export class Container extends Item {
   }
 
   /**
+   * Returns with the permultiplied alpha
+   * @readonly
+   * @type {number}
+   */
+  get premultipliedAlpha() {
+    return this.props.alpha * this.$parent.premultipliedAlpha;
+  }
+
+  /**
    * Destruct class
    */
   destruct() {
@@ -153,17 +162,8 @@ export class Container extends Item {
    * Update container data
    */
   update() {
-    this.$updateProps();
+    super.update();
     this._updateColor();
-  }
-
-  /**
-   * Returns with the permultiplied alpha
-   * @readonly
-   * @type {number}
-   */
-  get premultipliedAlpha() {
-    return this.props.alpha * this.$parent.premultipliedAlpha;
   }
 
   /**

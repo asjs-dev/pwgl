@@ -101,18 +101,17 @@ export class FilterRenderer extends BaseRenderer {
 
       if (filterFramebuffer) {
         filterFramebuffer.unbind(gl);
-        context.useTextureAt(filterFramebuffer, 0, renderTime, true);
+        context.useTextureAt(filterFramebuffer, 0, renderTime);
       }
     }
   }
 
   // prettier-ignore
   /**
-   * @param {FilterRendererConfig} options
    * @returns {string}
    * @ignore
    */
-  $createVertexShader(options) {
+  $createVertexShader() {
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
 
@@ -136,11 +135,10 @@ export class FilterRenderer extends BaseRenderer {
 
   // prettier-ignore
   /**
-   * @param {FilterRendererConfig} options
    * @returns {string}
    * @ignore
    */
-  $createFragmentShader(options) {
+  $createFragmentShader() {
     const blurFunc = (core) =>
       "for(float i=0.;i<RADIAN_360;i+=t){" +
         "poft=clamp(" + 

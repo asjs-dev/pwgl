@@ -119,13 +119,6 @@ export class Item extends BaseItem {
    * Update ItemProps
    */
   update() {
-    this.$updateProps();
-  }
-
-  /**
-   * @ignore
-   */
-  $updateProps() {
     const props = this.props;
     props.updateRotation();
     props.updateScale();

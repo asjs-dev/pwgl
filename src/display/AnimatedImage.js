@@ -1,6 +1,18 @@
 import { TextureInfo } from "../data/texture/TextureInfo";
 import { noop } from "../utils/helpers";
 import { Image } from "./Image";
+import "../geom/RectangleType";
+
+/**
+ * Frame
+ * @typedef {Object} Frame
+ * @extends {Rectangle}
+ * @property {number} length - optional frame length
+ * @property {number} x
+ * @property {number} y
+ * @property {number} width
+ * @property {number} height
+ */
 
 /**
  * Animated Image
@@ -12,14 +24,13 @@ export class AnimatedImage extends Image {
    * @constructor
    * @param {TextureInfo} texture
    * @property {number} frameLength
-   * @property {Array<Rectangle>} frames
    * @property {number} frame
    */
   constructor(texture) {
     super(texture);
 
-    this.frameLength = 120;
-    this.frames = [];
+    this._currentFrameLength = this.frameLength = 120;
+    this._frames = [];
 
     this.frame = 0;
     this._currentRenderTime = Date.now();
@@ -35,6 +46,22 @@ export class AnimatedImage extends Image {
    */
   get isPlaying() {
     return this.updateAnimation === this._updateAnimation;
+  }
+
+  /**
+   * Set/Get frames
+   * @type {Array<Frame>}
+   */
+  get frames() {
+    return this._frames;
+  }
+  set frames(v) {
+    this._frames = v;
+    const firstFrame = this._frames[0];
+    if (firstFrame) {
+      this._currentFrameLength = firstFrame.length ?? this.frameLength;
+      this._currentRenderTime = Date.now();
+    }
   }
 
   /**
@@ -94,10 +121,10 @@ export class AnimatedImage extends Image {
    */
   _updateAnimation(renderTime) {
     const ellapsedTime = renderTime - this._currentRenderTime;
-    if (ellapsedTime > this.frameLength) {
+    if (ellapsedTime > this._currentFrameLength) {
       this._currentRenderTime = renderTime;
-      this.frame += ~~(ellapsedTime / this.frameLength);
-      this.frame >= this.frames.length && (this.frame = 0);
+      this.frame += ~~(ellapsedTime / this._currentFrameLength);
+      if (this.frame >= this._frames.length) this.frame = 0;
 
       this._useTextureFrame();
     }
@@ -107,6 +134,8 @@ export class AnimatedImage extends Image {
    * @ignore
    */
   _useTextureFrame() {
-    this.textureCrop.setRect(this.frames[this.frame]);
+    const selectedFrame = this._frames[this.frame];
+    this.textureCrop.setRect(selectedFrame);
+    this._currentFrameLength = selectedFrame.length ?? this.frameLength;
   }
 }

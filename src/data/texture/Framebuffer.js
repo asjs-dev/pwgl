@@ -73,12 +73,12 @@ export class Framebuffer extends TextureInfo {
   }
 
   /**
+   * Use TextureInfo
    * @param {WebGLContext} gl
    * @param {number} id
-   * @returns {boolean}
-   * @ignore
+   * @param {boolean} forceBind
    */
-  $hasNeedToDraw(gl, id) {
+  use(gl, id, forceBind) {
     if (this.$currentAglId < gl.agl_id) {
       this.$currentAglId = gl.agl_id;
       this._baseTexture = gl.createTexture();
@@ -98,19 +98,22 @@ export class Framebuffer extends TextureInfo {
 
       this.unbind(gl);
 
-      return true;
+      return;
     }
 
     if (this.$currentUpdateId < this.$updateId) {
       this.$currentUpdateId = this.$updateId;
       this.useActiveTextureAfterUpdate(gl, id);
-      return true;
+      return;
     }
 
     if (this._currentResizeUpdateId < this._resizeUpdateId) {
       this._currentResizeUpdateId = this._resizeUpdateId;
       this.useActiveTexture(gl, id);
-      return true;
+      return;
     }
+
+    if (this._currenActiveId !== id || forceBind)
+      this.bindActiveTexture(gl, id);
   }
 }

@@ -263,8 +263,8 @@ export class Stage2D extends BatchRenderer {
    */
   $resize() {
     super.$resize();
-    if (this._currentSizeUpdateId < this._sizeUpdateId) {
-      this._currentSizeUpdateId = this._sizeUpdateId;
+    if (this._sizeUpdateId) {
+      this._sizeUpdateId = 0;
       Matrix3Utilities.projection(this.container.parent.matrixCache, this);
       ++this.container.parent.propsUpdateId;
     }

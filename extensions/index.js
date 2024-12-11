@@ -1,6 +1,7 @@
+import { FPS } from "./FPS";
+import { PressState } from "./PressState";
 import { Mouse } from "./Mouse";
 import { Keyboard } from "./Keyboard";
-import { PressState } from "./PressState";
 import { Gamepad } from "./Gamepad";
 import { DataObserver } from "./DataObserver";
 import { SmoothLight } from "./renderer/SmoothLight";
@@ -19,6 +20,7 @@ import { nthCall } from "./utils/nthCall";
 import { random } from "./utils/rand";
 
 window.PWGLExtensions = window.AGLExtensions = {
+  FPS,
   PressState,
   Mouse,
   Keyboard,

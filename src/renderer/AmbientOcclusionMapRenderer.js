@@ -74,11 +74,10 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
   // prettier-ignore
   /**
-   * @param {AmbientOcclusionMapRendererConfig} options
    * @returns {string}
    * @ignore
    */
-  $createVertexShader(options) {
+  $createVertexShader() {
     return Utils.GLSL.VERSION +
     "precision highp float;\n" +
 
@@ -100,11 +99,10 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
   // prettier-ignore
   /**
-   * @param {AmbientOcclusionMapRendererConfig} options
    * @returns {string}
    * @ignore
    */
-  $createFragmentShader(options) {
+  $createFragmentShader() {
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
     
