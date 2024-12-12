@@ -58,7 +58,6 @@ import { ChromaticAberrationFilter } from "./filters/ChromaticAberrationFilter";
 
 window.PWGL = window.AGL = {
   version: "{{appVersion}}",
-  buildDate: "{{date}}",
 
   BlendMode,
 
@@ -119,3 +118,8 @@ window.PWGL = window.AGL = {
   GlowFilter,
   ChromaticAberrationFilter,
 };
+
+console.log(
+  `%cPWGL v${PWGL.version}\nhttps:\/\/github.com/asjs-dev/pwgl`,
+  "background:#222;color:#00FF00"
+);
