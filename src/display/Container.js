@@ -1,5 +1,4 @@
 import { removeFromArray } from "../utils/helpers";
-import { BaseItem } from "./BaseItem";
 import { Item } from "./Item";
 
 /**
@@ -45,8 +44,8 @@ export class Container extends Item {
   }
 
   /**
-   * Returns true, if the container contains the BaseItem
-   * @param {BaseItem} child
+   * Returns true, if the container contains the Item
+   * @param {Item} child
    * @returns {boolean}
    */
   contains(child) {
@@ -54,16 +53,16 @@ export class Container extends Item {
   }
 
   /**
-   * Add BaseItem to the container
-   * @param {BaseItem} child
+   * Add Item to the container
+   * @param {Item} child
    */
   addChild(child) {
     this.addChildAt(child, this.children.length);
   }
 
   /**
-   * Add BaseItem to a specific index
-   * @param {BaseItem} child
+   * Add Item to a specific index
+   * @param {Item} child
    * @param {number} index
    */
   addChildAt(child, index) {
@@ -76,8 +75,8 @@ export class Container extends Item {
   }
 
   /**
-   * Removes the BaseItem from the container
-   * @param {BaseItem} child
+   * Removes the Item from the container
+   * @param {Item} child
    */
   removeChild(child) {
     if (child) {
@@ -87,7 +86,7 @@ export class Container extends Item {
   }
 
   /**
-   * Removes BaseItem from index
+   * Removes Item from index
    * @param {number} index
    */
   removeChildAt(index) {
@@ -95,9 +94,9 @@ export class Container extends Item {
   }
 
   /**
-   * Returns with a BaseItem from a specific index
+   * Returns with a Item from a specific index
    * @param {number} index
-   * @returns {BaseItem}
+   * @returns {Item}
    */
   getChildAt(index) {
     return this.children[index];
@@ -105,7 +104,7 @@ export class Container extends Item {
 
   /**
    * Set child element index
-   * @param {BaseItem} child
+   * @param {Item} child
    * @param {number} index
    */
   setChildIndex(child, index) {
@@ -115,7 +114,7 @@ export class Container extends Item {
 
   /**
    * Returns with the child element index
-   * @param {BaseItem} child
+   * @param {Item} child
    * @returns {number}
    */
   getChildIndex(child) {
@@ -124,8 +123,8 @@ export class Container extends Item {
 
   /**
    * Swap two children
-   * @param {BaseItem} childA
-   * @param {BaseItem} childB
+   * @param {Item} childA
+   * @param {Item} childB
    */
   swapChildren(childA, childB) {
     const childAIndex = this.getChildIndex(childA);

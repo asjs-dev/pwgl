@@ -7,7 +7,6 @@ import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import { Buffer } from "../utils/Buffer";
 import { Utils } from "../utils/Utils";
 import { BatchRenderer } from "./BatchRenderer";
-import { BaseItem } from "../display/BaseItem";
 import { BaseDrawable } from "../display/BaseDrawable";
 import "../geom/PointType";
 
@@ -157,7 +156,7 @@ export class Stage2D extends BatchRenderer {
   }
 
   /**
-   * @param {BaseItem} item
+   * @param {Item} item
    * @ignore
    */
   _drawItem(item) {
@@ -242,11 +241,10 @@ export class Stage2D extends BatchRenderer {
     const canvas = this.context.canvas;
     if (event.target === canvas) {
       this._latestEvent = event;
-      const scaleX = canvas.width / canvas.offsetWidth;
-      const scaleY = canvas.height / canvas.offsetHeight;
-      const offsetX = scaleX * event.offsetX;
-      const offsetY = scaleY * event.offsetY;
-      this._setMousePosition(offsetX, offsetY);
+      this._setMousePosition(
+        (canvas.width / canvas.offsetWidth) * event.offsetX,
+        (canvas.height / canvas.offsetHeight) * event.offsetY
+      );
     }
   }
 
@@ -380,7 +378,6 @@ export class Stage2D extends BatchRenderer {
   $createFragmentShader(options) {
     const maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
     const useRepeatTextures = options.useRepeatTextures;
-    const useTint = options.useTint;
 
     const createGetTextureFunction = (maxTextureImageUnits) => {
       let func = "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
@@ -394,6 +391,7 @@ export class Stage2D extends BatchRenderer {
         "}";
         func += "return Z.yyyy;" +
       "}";
+      
       return func;
     }
 
@@ -503,7 +501,7 @@ export class Stage2D extends BatchRenderer {
 
       "if(oCl.a<=0.)discard;" +
 
-      (useTint
+      (options.useTint
         ? "if(vTTp>0.){" +
             "vec3 cl=vCl[1].rgb+oCl.rgb*vCl[1].a;" +
             "if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +

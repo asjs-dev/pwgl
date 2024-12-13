@@ -1,5 +1,5 @@
 import { Container } from "./Container";
-import { BaseItem } from "./BaseItem";
+import { Item } from "./Item";
 import { BatchRenderer } from "../renderer/BatchRenderer";
 
 /**
@@ -17,7 +17,7 @@ export class StageContainer extends Container {
     super();
 
     this.renderer = renderer;
-    this.$parent = new BaseItem();
+    this.$parent = new Item();
   }
 
   /**
@@ -32,7 +32,7 @@ export class StageContainer extends Container {
   /**
    * Get parent
    * @readonly
-   * @type {BaseItem}
+   * @type {Item}
    */
   get parent() {
     return this.$parent;

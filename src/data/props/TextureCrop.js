@@ -1,17 +1,15 @@
-import { BaseProps } from "./BaseProps";
 import "../../geom/RectangleType";
 
 /**
  * Class for texture crop properties
- * @extends {BaseProps}
  */
-export class TextureCrop extends BaseProps {
+export class TextureCrop {
   /**
    * Creates an instance of TextureCrop.
    * @constructor
    */
   constructor() {
-    super();
+    this.updateId = 0;
 
     this._currentUpdateId = -1;
 

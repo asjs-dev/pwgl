@@ -2,26 +2,28 @@ import { noop } from "../utils/helpers";
 import { ItemProps } from "../data/props/ItemProps";
 import { ColorProps } from "../data/props/ColorProps";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
-import { BaseItem } from "./BaseItem";
 import "../geom/RectangleType";
 
 /**
  * Item
- * @extends {BaseItem}
  * @property {Item.Type} TYPE
+ * @property {boolean} interactive
  * @property {boolean} renderable
  * @property {ItemProps} props
  * @property {ColorProps} color
  */
-export class Item extends BaseItem {
+export class Item {
   /**
    * Creates an instance of Item.
    * @constructor
    */
   constructor() {
-    super();
-
     this.TYPE = Item.TYPE;
+
+    this.interactive = false;
+    this.matrixCache = Matrix3Utilities.identity();
+    this.colorUpdateId = this.propsUpdateId = 0;
+    this.colorCache = [1, 1, 1, 1];
 
     this.renderable = true;
 
@@ -100,6 +102,32 @@ export class Item extends BaseItem {
   }
 
   /**
+   * <pre>
+   *  Handle event
+   *    - It can handle mouse events if the item is interactive and has [
+   *      onmouseover,
+   *      onmouseout,
+   *      onmousemove,
+   *      onmousedown,
+   *      onmouseup,
+   *      onclick,
+   *      ontouchstart,
+   *      ontouchmove,
+   *      touchend
+   *    ] function
+   * </pre>
+   * @param {*} event
+   */
+  callEventHandler(target, event) {
+    if (this.interactive) {
+      const callback = this["on" + event.type];
+      callback && callback(this, target, event);
+    }
+
+    this.$parent && this.$parent.callEventHandler(target, event);
+  }
+
+  /**
    * Returns with the Item bounds
    * @returns {Rectangle}
    */
@@ -112,7 +140,6 @@ export class Item extends BaseItem {
    */
   destruct() {
     this.$parent && this.$parent.removeChild && this.$parent.removeChild(this);
-    super.destruct();
   }
 
   /**

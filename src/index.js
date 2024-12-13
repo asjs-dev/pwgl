@@ -4,8 +4,7 @@ import { Utils, Const } from "./utils/Utils";
 
 import { BlendMode } from "./data/BlendMode";
 
-import { BaseProps } from "./data/props/BaseProps";
-import { BasePositioningProps } from "./data/props/BasePositioningProps";
+import { BaseTransformProps } from "./data/props/BaseTransformProps";
 import { ColorProps } from "./data/props/ColorProps";
 import { ItemProps } from "./data/props/ItemProps";
 import { LightProps } from "./data/props/LightProps";
@@ -20,7 +19,6 @@ import { Framebuffer } from "./data/texture/Framebuffer";
 
 import { Matrix3Utilities } from "./geom/Matrix3Utilities";
 
-import { BaseItem } from "./display/BaseItem";
 import { Item } from "./display/Item";
 import { BaseDrawable } from "./display/BaseDrawable";
 import { Light } from "./display/Light";
@@ -61,8 +59,7 @@ window.PWGL = window.AGL = {
 
   BlendMode,
 
-  BaseProps,
-  BasePositioningProps,
+  BaseTransformProps,
   ColorProps,
   ItemProps,
   LightProps,
@@ -82,7 +79,6 @@ window.PWGL = window.AGL = {
 
   Matrix3Utilities,
 
-  BaseItem,
   Item,
   BaseDrawable,
   Light,

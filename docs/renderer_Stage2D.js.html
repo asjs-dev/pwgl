@@ -55,7 +55,6 @@ import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import { Buffer } from "../utils/Buffer";
 import { Utils } from "../utils/Utils";
 import { BatchRenderer } from "./BatchRenderer";
-import { BaseItem } from "../display/BaseItem";
 import { BaseDrawable } from "../display/BaseDrawable";
 import "../geom/PointType";
 
@@ -205,7 +204,7 @@ export class Stage2D extends BatchRenderer {
   }
 
   /**
-   * @param {BaseItem} item
+   * @param {Item} item
    * @ignore
    */
   _drawItem(item) {
@@ -290,11 +289,10 @@ export class Stage2D extends BatchRenderer {
     const canvas = this.context.canvas;
     if (event.target === canvas) {
       this._latestEvent = event;
-      const scaleX = canvas.width / canvas.offsetWidth;
-      const scaleY = canvas.height / canvas.offsetHeight;
-      const offsetX = scaleX * event.offsetX;
-      const offsetY = scaleY * event.offsetY;
-      this._setMousePosition(offsetX, offsetY);
+      this._setMousePosition(
+        (canvas.width / canvas.offsetWidth) * event.offsetX,
+        (canvas.height / canvas.offsetHeight) * event.offsetY
+      );
     }
   }
 
@@ -428,7 +426,6 @@ export class Stage2D extends BatchRenderer {
   $createFragmentShader(options) {
     const maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
     const useRepeatTextures = options.useRepeatTextures;
-    const useTint = options.useTint;
 
     const createGetTextureFunction = (maxTextureImageUnits) => {
       let func = "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
@@ -442,6 +439,7 @@ export class Stage2D extends BatchRenderer {
         "}";
         func += "return Z.yyyy;" +
       "}";
+      
       return func;
     }
 
@@ -551,7 +549,7 @@ export class Stage2D extends BatchRenderer {
 
       "if(oCl.a&lt;=0.)discard;" +
 
-      (useTint
+      (options.useTint
         ? "if(vTTp>0.){" +
             "vec3 cl=vCl[1].rgb+oCl.rgb*vCl[1].a;" +
             "if(vTTp==1.||(vTTp==2.&amp;&amp;oCl.r==oCl.g&amp;&amp;oCl.r==oCl.b))" +
@@ -577,13 +575,13 @@ export class Stage2D extends BatchRenderer {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseItem.html">BaseItem</a></li><li><a href="BasePositioningProps.html">BasePositioningProps</a></li><li><a href="BaseProps.html">BaseProps</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureProps.html">FilterTextureProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemProps.html">ItemProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightProps.html">LightProps</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureProps.html">TextureProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureProps.html">FilterTextureProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemProps.html">ItemProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightProps.html">LightProps</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureProps.html">TextureProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu, 12 Dec 2024 07:58:17 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 13 Dec 2024 20:23:41 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

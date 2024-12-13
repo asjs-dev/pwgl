@@ -64,7 +64,6 @@ export class Texture extends TextureInfo {
   get source() {
     return this._source;
   }
-
   set source(value) {
     if (value) {
       this._source.removeEventListener(this._eventType, this._parseTextureSize);
@@ -179,9 +178,8 @@ export class Texture extends TextureInfo {
  */
 Texture.loadImage = (src, shouldUpdate) => {
   const image = document.createElement("img");
-  const texture = new Texture(image, shouldUpdate);
   image.src = src;
-  return texture;
+  return new Texture(image, shouldUpdate);
 };
 
 /**
@@ -193,7 +191,6 @@ Texture.loadImage = (src, shouldUpdate) => {
  */
 Texture.loadVideo = (src, shouldUpdate) => {
   const video = document.createElement("video");
-  const texture = new Texture(video, shouldUpdate);
   video.src = src;
-  return texture;
+  return new Texture(video, shouldUpdate);
 };

@@ -1,16 +1,13 @@
-import { BaseProps } from "./BaseProps";
-
 /**
  * Base class for positioning elements
- * @extends {BaseProps}
  */
-export class BasePositioningProps extends BaseProps {
+export class BaseTransformProps {
   /**
-   * Creates an instance of BasePositioningProps.
+   * Creates an instance of BaseTransformProps.
    * @constructor
    */
   constructor() {
-    super();
+    this.updateId = 0;
 
     this._rotationUpdateId =
       this._currentRotationUpdateId =

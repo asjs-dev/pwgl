@@ -1,10 +1,10 @@
-import { BasePositioningProps } from "./BasePositioningProps";
+import { BaseTransformProps } from "./BaseTransformProps";
 
 /**
  * Class for element properties
- * @extends {BasePositioningProps}
+ * @extends {BaseTransformProps}
  */
-export class ItemProps extends BasePositioningProps {
+export class ItemProps extends BaseTransformProps {
   /**
    * Creates an instance of ItemProps.
    * @constructor

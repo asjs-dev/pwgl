@@ -1,10 +1,10 @@
-import { BasePositioningProps } from "./BasePositioningProps";
+import { BaseTransformProps } from "./BaseTransformProps";
 
 /**
  * Class for texture properties
- * @extends {BasePositioningProps}
+ * @extends {BaseTransformProps}
  */
-export class TextureProps extends BasePositioningProps {
+export class TextureProps extends BaseTransformProps {
   /**
    * Creates an instance of TextureProps
    * @constructor

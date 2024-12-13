@@ -1,16 +1,13 @@
-import { BaseProps } from "./BaseProps";
-
 /**
  * Class for color properties
- * @extends {BaseProps}
  */
-export class ColorProps extends BaseProps {
+export class ColorProps {
   /**
    * Creates an instance of ColorProps.
    * @constructor
    */
   constructor() {
-    super();
+    this.updateId = 0;
 
     this.cache = [1, 1, 1, 1];
   }
