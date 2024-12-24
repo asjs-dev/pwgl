@@ -9,10 +9,7 @@ export class TextureCrop {
    * @constructor
    */
   constructor() {
-    this.updateId = 0;
-
-    this._currentUpdateId = -1;
-
+    this.updateCrop = this._updateCrop;
     this.cache = [0, 0, 1, 1];
 
     this._width = this._height = 1;
@@ -28,7 +25,7 @@ export class TextureCrop {
   set x(v) {
     if (this.cache[0] !== v) {
       this.cache[0] = v;
-      ++this.updateId;
+      this.updateCrop = this._updateCrop;
     }
   }
 
@@ -42,7 +39,7 @@ export class TextureCrop {
   set y(v) {
     if (this.cache[1] !== v) {
       this.cache[1] = v;
-      ++this.updateId;
+      this.updateCrop = this._updateCrop;
     }
   }
 
@@ -56,7 +53,7 @@ export class TextureCrop {
   set width(v) {
     if (this._width !== v) {
       this._width = v;
-      ++this.updateId;
+      this.updateCrop = this._updateCrop;
     }
   }
 
@@ -70,19 +67,7 @@ export class TextureCrop {
   set height(v) {
     if (this._height !== v) {
       this._height = v;
-      ++this.updateId;
-    }
-  }
-
-  /**
-   * Update calculated crop values
-   */
-  updateCrop() {
-    if (this._currentUpdateId < this.updateId) {
-      this._currentUpdateId = this.updateId;
-
-      this.cache[2] = this._width - this.cache[0];
-      this.cache[3] = this._height - this.cache[1];
+      this.updateCrop = this._updateCrop;
     }
   }
 
@@ -95,5 +80,16 @@ export class TextureCrop {
     this.y = rect.y;
     this.width = rect.width;
     this.height = rect.height;
+  }
+
+  /**
+   * Update calculated crop values
+   * @ignore
+   */
+  _updateCrop() {
+    this.updateCrop = noop;
+
+    this.cache[2] = this._width - this.cache[0];
+    this.cache[3] = this._height - this.cache[1];
   }
 }

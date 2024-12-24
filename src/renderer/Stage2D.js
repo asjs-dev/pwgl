@@ -1,6 +1,7 @@
 import { arraySet, noop } from "../utils/helpers";
 import { Item } from "../display/Item";
 import { Image } from "../display/Image";
+import { Light } from "../display/Light";
 import { Container } from "../display/Container";
 import { StageContainer } from "../display/StageContainer";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
@@ -9,6 +10,7 @@ import { Utils } from "../utils/Utils";
 import { BatchRenderer } from "./BatchRenderer";
 import { BaseDrawable } from "../display/BaseDrawable";
 import "../geom/PointType";
+import { LightRenderer } from "./LightRenderer";
 
 /**
  * @typedef {Object} Stage2DRendererConfig
@@ -30,21 +32,12 @@ export class Stage2D extends BatchRenderer {
    * @param {Stage2DRendererConfig} options
    */
   constructor(options = {}) {
-    options = {
-      ...{
-        useTint: true,
-      },
-      ...options,
-    };
-
     options.config = Utils.initRendererConfig(options.config);
 
     // prettier-ignore
     options.config.locations = options.config.locations.concat([
       "aDt",
-      "aDst",
-      "uWCl",
-      "uWA"
+      "aDst"
     ]);
 
     const maxBatchItems = (options.maxBatchItems =
@@ -56,9 +49,10 @@ export class Stage2D extends BatchRenderer {
 
     this._batchItems = 0;
 
-    this["_draw" + Item.TYPE] = noop;
-    this["_draw" + Image.TYPE] = this._drawImage.bind(this);
-    this["_draw" + Container.TYPE] = this._drawContainer.bind(this);
+    this["_draw" + Item.RENDERING_TYPE] = this["_draw" + Light.RENDERING_TYPE] =
+      noop;
+    this["_draw" + Image.RENDERING_TYPE] = this._drawImage.bind(this);
+    this["_draw" + Container.RENDERING_TYPE] = this._drawContainer.bind(this);
 
     this._batchDraw = this._batchDraw.bind(this);
     this._drawItem = this._drawItem.bind(this);
@@ -78,6 +72,24 @@ export class Stage2D extends BatchRenderer {
     body.addEventListener("touchstart", this._onMouseEventHandler);
     body.addEventListener("touchmove", this._onMouseEventHandler);
     body.addEventListener("touchend", this._onMouseEventHandler);
+  }
+
+  /**
+   * Attach LightRenderer
+   * Recommended to set LightRenderer when using Light
+   * @param {LightRenderer} v
+   */
+  attachLightRenderer(v) {
+    this._lightRenderer = v;
+    this["_draw" + Light.RENDERING_TYPE] = this._drawLight.bind(this);
+  }
+
+  /**
+   * Detach LightRenderer
+   */
+  detachLightRenderer() {
+    this._lightRenderer = null;
+    this["_draw" + Light.RENDERING_TYPE] = noop;
   }
 
   /**
@@ -162,7 +174,7 @@ export class Stage2D extends BatchRenderer {
   _drawItem(item) {
     item.update(this.$renderTime);
     item.callbackBeforeRender(item, this.$renderTime);
-    item.renderable && this["_draw" + item.TYPE](item);
+    item.renderable && this["_draw" + item.RENDERING_TYPE](item);
     item.callbackAfterRender(item, this.$renderTime);
   }
 
@@ -171,12 +183,17 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawContainer(container) {
-    this.$gl.uniform4fv(this.$locations.uWCl, container.colorCache);
-    this.$gl.uniform1f(this.$locations.uWA, container.premultipliedAlpha);
-
     const children = container.children;
     for (let i = 0, l = children.length; i < l; ++i)
       this._drawItem(children[i]);
+  }
+
+  /**
+   * @param {BaseDrawable} item
+   * @ignore
+   */
+  _drawLight(item) {
+    this._lightRenderer.registerLightForRender(item);
   }
 
   /**
@@ -196,10 +213,15 @@ export class Stage2D extends BatchRenderer {
     const twId = this._batchItems * 12;
     const matId = this._batchItems * 16;
 
-    arraySet(this._dataBuffer.data, item.colorCache, twId);
+    const itemParent = item.parent;
+    const colorCache = item.colorCache;
+    const itemParentColorCache = itemParent.colorCache;
+
+    arraySet(this._dataBuffer.data, colorCache, twId);
     arraySet(this._dataBuffer.data, item.textureRepeatRandomCache, twId + 8);
 
-    this._dataBuffer.data[twId + 4] = item.props.alpha;
+    this._dataBuffer.data[twId + 4] =
+      item.alpha * itemParent.premultipliedAlpha;
     this._dataBuffer.data[twId + 5] = item.tintType;
     this._dataBuffer.data[twId + 6] = this.context.useTexture(
       item.texture,
@@ -226,7 +248,7 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _batchDraw() {
-    if (this._batchItems > 0) {
+    if (this._batchItems) {
       this.$uploadBuffers();
       this.$gl.uniform1iv(this.$locations.uTex, this.context.textureIds);
       this.$drawInstanced(this._batchItems);
@@ -261,8 +283,8 @@ export class Stage2D extends BatchRenderer {
    */
   $resize() {
     super.$resize();
-    if (this._sizeUpdateId) {
-      this._sizeUpdateId = 0;
+    if (this.$sizeUpdateId) {
+      this.$sizeUpdateId = 0;
       Matrix3Utilities.projection(this.container.parent.matrixCache, this);
       ++this.container.parent.propsUpdateId;
     }
@@ -288,12 +310,11 @@ export class Stage2D extends BatchRenderer {
 
   // prettier-ignore
   /**
-   * @param {Stage2DRendererConfig} options
    * @returns {string}
    * @ignore
    */
-  $createVertexShader(options) {
-    const useRepeatTextures = options.useRepeatTextures;
+  $createVertexShader() {
+    const useRepeatTextures = this._options.useRepeatTextures;
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
@@ -308,10 +329,7 @@ export class Stage2D extends BatchRenderer {
       "aMt;" +
 
     "uniform float " +
-      "uFlpY," +
-      "uWA;" +
-    "uniform vec4 " +
-      "uWCl;" +
+      "uFlpY;" +
 
     "out float " +
       "vACl," +
@@ -320,12 +338,11 @@ export class Stage2D extends BatchRenderer {
     "out vec2 " +
       "vTUv;" +
     "out vec4 " +
-      "vTCrop" +
+      "vTCrop," +
+      "vCl" +
     (useRepeatTextures
       ? ",vRR;"
       : ";") +
-    "out mat2x4 " +
-      "vCl;" +
 
     "vec2 clcQd(vec2 p){" +
       "vec3 " + 
@@ -356,8 +373,8 @@ export class Stage2D extends BatchRenderer {
       "vTUv=(tMt*((dt*vec3(aPos,1))+((1.-dt)*tPos))).xy;" +
       "vTCrop=aMt[3];" +
 
-      "vCl=mat2x4(uWCl,aDt[0].rgb*aDt[0].a,1.-aDt[0].a);" +
-      "vACl=uWA*aDt[1].x;" +
+      "vCl=aDt[0];" +
+      "vACl=aDt[1].x;" +
 
       "vTTp=aDt[1].y;" +
       "vTId=aDt[1].z;" +
@@ -371,11 +388,11 @@ export class Stage2D extends BatchRenderer {
 
   // prettier-ignore
   /**
-   * @param {Stage2DRendererConfig} options
    * @returns {string}
    * @ignore
    */
-  $createFragmentShader(options) {
+  $createFragmentShader() {
+    const options = this._options;
     const maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
     const useRepeatTextures = options.useRepeatTextures;
 
@@ -391,7 +408,7 @@ export class Stage2D extends BatchRenderer {
         "}";
         func += "return Z.yyyy;" +
       "}";
-      
+
       return func;
     }
 
@@ -411,12 +428,11 @@ export class Stage2D extends BatchRenderer {
     "in vec2 " +
       "vTUv;" +
     "in vec4 " +
-      "vTCrop" +
+      "vTCrop," +
+      "vCl" +
       (useRepeatTextures
         ? ",vRR;"
         : ";") +
-    "in mat2x4 " +
-      "vCl;" +
 
     "uniform sampler2D " +
       "uTex[" + maxTextureImageUnits + "];" +
@@ -501,19 +517,13 @@ export class Stage2D extends BatchRenderer {
 
       "if(oCl.a<=0.)discard;" +
 
-      (options.useTint
-        ? "if(vTTp>0.){" +
-            "vec3 cl=vCl[1].rgb+oCl.rgb*vCl[1].a;" +
-            "if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
-              "oCl.rgb*=cl+oCl.rgb*vCl[1].a;" +
-            "else if(vTTp==3.)" +
-              "oCl.rgb=cl;" +
-            "else if(vTTp==4.)" +
-              "oCl.rgb+=cl;" +
-          "}"
-        : "") +
-
-      "oCl*=vCl[0];" +
+      "if(vTTp>0.)" +
+        "if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
+          "oCl*=vCl;" +
+        "else if(vTTp==3.)" +
+          "oCl=vCl;" +
+        "else if(vTTp==4.)" +
+          "oCl+=vCl;" +
     "}";
   }
 }

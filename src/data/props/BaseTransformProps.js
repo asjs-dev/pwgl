@@ -1,5 +1,8 @@
+import { noop } from "../../utils/helpers";
+
 /**
  * Base class for positioning elements
+ * @method updateRotation
  */
 export class BaseTransformProps {
   /**
@@ -7,10 +10,9 @@ export class BaseTransformProps {
    * @constructor
    */
   constructor() {
-    this.updateId = 0;
-
-    this._rotationUpdateId =
-      this._currentRotationUpdateId =
+    this.updateRotation = noop;
+    this.cosRotationA = this.cosRotationB = 1;
+    this.updateId =
       this.sinRotationA =
       this.sinRotationB =
       this._x =
@@ -21,8 +23,6 @@ export class BaseTransformProps {
       this._skewX =
       this._skewY =
         0;
-
-    this.cosRotationA = this.cosRotationB = 1;
   }
 
   /**
@@ -63,7 +63,7 @@ export class BaseTransformProps {
   set rotation(v) {
     if (this._rotation !== v) {
       this._rotation = v;
-      ++this._rotationUpdateId;
+      this.updateRotation = this._updateRotation;
     }
   }
 
@@ -105,7 +105,7 @@ export class BaseTransformProps {
   set skewX(v) {
     if (this._skewX !== v) {
       this._skewX = v;
-      ++this._rotationUpdateId;
+      this.updateRotation = this._updateRotation;
     }
   }
 
@@ -119,30 +119,29 @@ export class BaseTransformProps {
   set skewY(v) {
     if (this._skewY !== v) {
       this._skewY = v;
-      ++this._rotationUpdateId;
+      this.updateRotation = this._updateRotation;
     }
   }
 
   /**
    * Update calculated rotation values
+   * @ignore
    */
-  updateRotation() {
-    if (this._currentRotationUpdateId < this._rotationUpdateId) {
-      this._currentRotationUpdateId = this._rotationUpdateId;
-      ++this.updateId;
+  _updateRotation() {
+    this.updateRotation = noop;
+    ++this.updateId;
 
-      if (this._skewX === 0 && this._skewY === 0) {
-        this.sinRotationA = this.sinRotationB = Math.sin(this._rotation);
-        this.cosRotationA = this.cosRotationB = Math.cos(this._rotation);
-      } else {
-        const rotSkewX = this._rotation - this._skewX;
-        const rotSkewY = this._rotation + this._skewY;
+    if (this._skewX === 0 && this._skewY === 0) {
+      this.sinRotationA = this.sinRotationB = Math.sin(this._rotation);
+      this.cosRotationA = this.cosRotationB = Math.cos(this._rotation);
+    } else {
+      const rotSkewX = this._rotation - this._skewX;
+      const rotSkewY = this._rotation + this._skewY;
 
-        this.sinRotationA = Math.sin(rotSkewY);
-        this.cosRotationA = Math.cos(rotSkewY);
-        this.sinRotationB = Math.sin(rotSkewX);
-        this.cosRotationB = Math.cos(rotSkewX);
-      }
+      this.sinRotationA = Math.sin(rotSkewY);
+      this.cosRotationA = Math.cos(rotSkewY);
+      this.sinRotationB = Math.sin(rotSkewX);
+      this.cosRotationB = Math.cos(rotSkewX);
     }
   }
 }

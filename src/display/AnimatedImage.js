@@ -17,25 +17,23 @@ import "../geom/RectangleType";
 /**
  * Animated Image
  * @extends {Image}
+ * @property {number} frameLength
  */
 export class AnimatedImage extends Image {
   /**
    * Creates an instance of AnimatedImage.
    * @constructor
    * @param {TextureInfo} texture
-   * @property {number} frameLength
-   * @property {number} frame
    */
   constructor(texture) {
     super(texture);
 
-    this._currentFrameLength = this.frameLength = 120;
-    this._frames = [];
+    this._frame = 0;
+    this.frameLength = this._currentFrameLength = 120;
 
-    this.frame = 0;
+    this._frames = [];
     this._currentRenderTime = Date.now();
 
-    this.updateAnimation;
     this.stop();
   }
 
@@ -70,7 +68,7 @@ export class AnimatedImage extends Image {
    */
   gotoAndStop(frame) {
     this.stop();
-    this.frame = frame;
+    this._frame = frame;
     this._useTextureFrame();
   }
 
@@ -79,7 +77,7 @@ export class AnimatedImage extends Image {
    * @param {number} frame
    */
   gotoAndPlay(frame) {
-    this.frame = frame;
+    this._frame = frame;
     this.play();
   }
 
@@ -123,8 +121,8 @@ export class AnimatedImage extends Image {
     const ellapsedTime = renderTime - this._currentRenderTime;
     if (ellapsedTime > this._currentFrameLength) {
       this._currentRenderTime = renderTime;
-      this.frame += ~~(ellapsedTime / this._currentFrameLength);
-      if (this.frame >= this._frames.length) this.frame = 0;
+      this._frame += ~~(ellapsedTime / this._currentFrameLength);
+      if (this._frame >= this._frames.length) this._frame = 0;
 
       this._useTextureFrame();
     }
@@ -134,7 +132,7 @@ export class AnimatedImage extends Image {
    * @ignore
    */
   _useTextureFrame() {
-    const selectedFrame = this._frames[this.frame];
+    const selectedFrame = this._frames[this._frame];
     this.textureCrop.setRect(selectedFrame);
     this._currentFrameLength = selectedFrame.length ?? this.frameLength;
   }

@@ -1,20 +1,20 @@
 import { BaseTransformProps } from "./BaseTransformProps";
 
 /**
- * Class for texture properties
+ * Class for texture transform properties
  * @extends {BaseTransformProps}
  */
-export class TextureProps extends BaseTransformProps {
+export class TextureTransformProps extends BaseTransformProps {
   /**
-   * Creates an instance of TextureProps
+   * Creates an instance of TextureTransformProps
    * @constructor
    */
   constructor() {
     super();
 
-    this._repeatX = this._repeatY = 1;
-
     this.cache = [0, 0, 0];
+
+    this._repeatX = this._repeatY = 1;
   }
 
   /**

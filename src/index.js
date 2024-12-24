@@ -4,14 +4,13 @@ import { Utils, Const } from "./utils/Utils";
 
 import { BlendMode } from "./data/BlendMode";
 
-import { BaseTransformProps } from "./data/props/BaseTransformProps";
 import { ColorProps } from "./data/props/ColorProps";
-import { ItemProps } from "./data/props/ItemProps";
-import { LightProps } from "./data/props/LightProps";
+import { ItemTransformProps } from "./data/props/ItemTransformProps";
+import { LightTransformProps } from "./data/props/LightTransformProps";
 import { TextureCrop } from "./data/props/TextureCrop";
-import { TextureProps } from "./data/props/TextureProps";
+import { TextureTransformProps } from "./data/props/TextureTransformProps";
 import { DistortionProps } from "./data/props/DistortionProps";
-import { FilterTextureProps } from "./data/props/FilterTextureProps";
+import { FilterTextureTransformProps } from "./data/props/FilterTextureTransformProps";
 
 import { TextureInfo } from "./data/texture/TextureInfo";
 import { Texture } from "./data/texture/Texture";
@@ -59,14 +58,13 @@ window.PWGL = window.AGL = {
 
   BlendMode,
 
-  BaseTransformProps,
   ColorProps,
-  ItemProps,
-  LightProps,
+  ItemTransformProps,
+  LightTransformProps,
   TextureCrop,
-  TextureProps,
+  TextureTransformProps,
   DistortionProps,
-  FilterTextureProps,
+  FilterTextureTransformProps,
 
   TextureInfo,
   Texture,

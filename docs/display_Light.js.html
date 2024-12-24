@@ -46,24 +46,17 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { arraySet } from "../utils/helpers";
-import { Utils } from "../utils/Utils";
-import { LightProps } from "../data/props/LightProps";
+            <pre class="prettyprint source linenums"><code>import { Utils } from "../utils/Utils";
+import { LightTransformProps } from "../data/props/LightTransformProps";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import { BaseDrawable } from "./BaseDrawable";
-import { Container } from "./Container";
-
-const TEMP_ARRAY = [];
 
 /**
  * &lt;pre>
  *  Light
- *    - Register every Light instance to a LightRenderer
- *      with LightRenderer.registerLight
- *      and unregister with LightRenderer.unregisterLight
  * &lt;/pre>
  * @extends {BaseDrawable}
- * @property {LightProps} props
+ * @property {LightTransformProps} transform
  * @property {number} type - Type of the Light
  * @property {number} maxShadowStep - The maximum step of shadow caster per pixel
  *                                  - Default value is 128
@@ -83,41 +76,15 @@ export class Light extends BaseDrawable {
   constructor() {
     super();
 
-    this.props = new LightProps();
-
-    this.unregisterData();
+    this.RENDERING_TYPE = Light.RENDERING_TYPE;
 
     this.castShadow = this.shading = this.centerReflection = true;
     this.flattenShadow = false;
-
     this.angle = 0;
     this.spotAngle = 180 * Utils.THETA;
     this.type = Light.Type.POINT;
     this.precision = this.shadowLength = this.specularStrength = 1;
     this.maxShadowStep = 128;
-  }
-
-  /**
-   * @ignore
-   */
-  registerData(id, lightData, extensionData) {
-    this._id = id;
-    this._lightDataId = id * 16;
-    this._extensionDataId = id * 8;
-
-    this._lightData = lightData;
-    this._extensionData = extensionData;
-
-    this.$currentColorUpdateId = -1;
-
-    this._updateLightProps();
-  }
-
-  /**
-   * @ignore
-   */
-  unregisterData() {
-    this.registerData(0, TEMP_ARRAY, TEMP_ARRAY);
   }
 
   /**
@@ -129,7 +96,7 @@ export class Light extends BaseDrawable {
   }
   set castShadow(v) {
     this._castShadow = v;
-    this._updateLightProps();
+    this._updateFlags();
   }
 
   /**
@@ -141,7 +108,7 @@ export class Light extends BaseDrawable {
   }
   set shading(v) {
     this._shading = v;
-    this._updateLightProps();
+    this._updateFlags();
   }
 
   /**
@@ -157,7 +124,7 @@ export class Light extends BaseDrawable {
   }
   set flattenShadow(v) {
     this._flattenShadow = v;
-    this._updateLightProps();
+    this._updateFlags();
   }
 
   /**
@@ -169,55 +136,14 @@ export class Light extends BaseDrawable {
   }
   set centerReflection(v) {
     this._centerReflection = v;
-    this._updateLightProps();
-  }
-
-  /**
-   * Returns true if the light is renderable
-   * @returns {boolean}
-   */
-  isOn() {
-    return this.renderable &amp;&amp; this.stage !== null;
-  }
-
-  /**
-   * Update Light properties
-   */
-  update() {
-    const lightData = this._lightData;
-    const lightDataId = this._lightDataId;
-
-    if (this.isOn()) {
-      super.update();
-      this._updateColor();
-
-      const extensionDataId = this._extensionDataId;
-      const extensionData = this._extensionData;
-
-      extensionData[extensionDataId] = this.type;
-      extensionData[extensionDataId + 2] = this.props.z;
-      extensionData[extensionDataId + 3] = this.precision;
-      extensionData[extensionDataId + 4] = this.maxShadowStep;
-      extensionData[extensionDataId + 5] = this.specularStrength;
-
-      lightData[lightDataId + 6] = this.props.width;
-      lightData[lightDataId + 7] = this.spotAngle;
-      lightData[lightDataId + 12] = lightData[lightDataId + 11] > 0 ? 1 : 0;
-      lightData[lightDataId + 13] = this.shadowLength;
-      lightData[lightDataId + 14] = this.props.alpha;
-      lightData[lightDataId + 15] = this.angle;
-    } else lightData[lightDataId + 12] = 0;
+    this._updateFlags();
   }
 
   /**
    * @ignore
    */
-  _updateLightProps() {
-    this._extensionData[this._extensionDataId + 1] =
-      (this._castShadow * 1) |
-      (this._shading * 2) |
-      (this._flattenShadow * 4) |
-      (this._centerReflection * 8);
+  get $transformClass() {
+    return LightTransformProps;
   }
 
   /**
@@ -225,7 +151,7 @@ export class Light extends BaseDrawable {
    */
   $updateAdditionalData() {
     if (
-      this.isOn() &amp;&amp;
+      this.renderable &amp;&amp;
       this.$currentAdditionalPropsUpdateId &lt; this.propsUpdateId
     ) {
       this.$currentAdditionalPropsUpdateId = this.propsUpdateId;
@@ -259,36 +185,18 @@ export class Light extends BaseDrawable {
   }
 
   /**
-   * @param {LightProps} props
-   * @param {Container} parent
    * @ignore
    */
-  $updateTransform(props, parent) {
-    super.$updateTransform(props, parent);
-
-    arraySet(this._lightData, this.matrixCache, this._lightDataId);
-  }
-
-  /**
-   * @ignore
-   */
-  _updateColor() {
-    const color = this.color;
-
-    if (this.$currentColorUpdateId &lt; color.updateId) {
-      this.$currentColorUpdateId = color.updateId;
-
-      const lightData = this._lightData;
-      const parentColorCache = this.$parent.colorCache;
-      const lightDataId = this._lightDataId;
-
-      lightData[lightDataId + 8] = parentColorCache[0] * color.r;
-      lightData[lightDataId + 9] = parentColorCache[1] * color.g;
-      lightData[lightDataId + 10] = parentColorCache[2] * color.b;
-      lightData[lightDataId + 11] = parentColorCache[3] * color.a;
-    }
+  _updateFlags() {
+    this.flags =
+      (this._castShadow * 1) |
+      (this._shading * 2) |
+      (this._flattenShadow * 4) |
+      (this._centerReflection * 8);
   }
 }
+
+Light.RENDERING_TYPE = "light";
 
 /**
  * Light type
@@ -310,13 +218,13 @@ Light.Type = {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureProps.html">FilterTextureProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemProps.html">ItemProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightProps.html">LightProps</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureProps.html">TextureProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="AnimatedImage_Item.html">Item</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseDrawable_Item.html">Item</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Container_Item.html">Item</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="Image_Item.html">Item</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item_Item.html">Item</a></li><li><a href="ItemTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="Light_Item.html">Item</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="LightTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="StageContainer_Item.html">Item</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TextureTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#callbackAfterRender">callbackAfterRender</a></li><li><a href="global.html#updateRotation">updateRotation</a></li><li><a href="global.html#updateScale">updateScale</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 13 Dec 2024 20:23:41 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 24 Dec 2024 08:19:55 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

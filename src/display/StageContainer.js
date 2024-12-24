@@ -17,6 +17,7 @@ export class StageContainer extends Container {
     super();
 
     this.renderer = renderer;
+
     this.$parent = new Item();
   }
 
@@ -44,6 +45,6 @@ export class StageContainer extends Container {
    * @type {number}
    */
   get premultipliedAlpha() {
-    return this.props.alpha;
+    return this.alpha;
   }
 }

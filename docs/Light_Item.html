@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>JSDoc: Source: data/props/FilterTextureProps.js</title>
+        <title>JSDoc: Class: Item</title>
 
         <script src="scripts/prettify/prettify.js"> </script>
         <script src="scripts/prettify/lang-css.js"> </script>
@@ -37,124 +37,143 @@
         <div class="container">
             <div id="main">
 
-                <h1 class="page-title">Source: data/props/FilterTextureProps.js</h1>
+                <h1 class="page-title">Class: Item</h1>
 
                 
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>import { BaseFilter } from "../../filters/BaseFilter";
-import { TextureInfo } from "../texture/TextureInfo";
+        <h2><span class="attribs"><span class="type-signature"></span></span>
+            <span class="ancestors"><a href="Light.html">Light</a>#</span>Item<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+    
+</header>
 
-/**
- * Class for texture properties of filters
- * @property {TextureInfo} texture
- */
-export class FilterTextureProps {
-  /**
-   * Creates an instance of FilterTextureProps.
-   * @constructor
-   * @param {BaseFilter} filter
-   * @param {TextureInfo} texture
-   * @param {number} translateX
-   * @param {number} translateY
-   * @param {number} cropX
-   * @param {number} cropY
-   * @param {number} cropWidth
-   * @param {number} cropHeight
-   */
-  constructor(
-    filter,
-    texture,
-    translateX = 0,
-    translateY = 0,
-    cropX = 0,
-    cropY = 0,
-    cropWidth = 1,
-    cropHeight = 1
-  ) {
-    this._filter = filter;
-    this.texture = texture;
-    this.translateX = translateX;
-    this.translateY = translateY;
-    this.cropX = cropX;
-    this.cropY = cropY;
-    this.cropWidth = cropWidth;
-    this.cropHeight = cropHeight;
-  }
+<article>
+    <div class="container-overview">
+    
+        
 
-  /**
-   * Set/Get translate x
-   * @type {number}
-   */
-  get translateX() {
-    return this._filter.v[1];
-  }
-  set translateX(v) {
-    this._filter.v[1] = v;
-  }
+    
 
-  /**
-   * Set/Get translate y
-   * @type {number}
-   */
-  get translateY() {
-    return this._filter.v[2];
-  }
-  set translateY(v) {
-    this._filter.v[2] = v;
-  }
+    
+    <h4 class="name" id="Item"><span class="type-signature"></span>new Item<span class="signature">()</span><span class="type-signature"></span></h4>
+    
 
-  /**
-   * Set/Get crop x
-   * @type {number}
-   */
-  get cropX() {
-    return this._filter.v[3];
-  }
-  set cropX(v) {
-    this._filter.v[3] = v;
-  }
+    
 
-  /**
-   * Set/Get crop y
-   * @type {number}
-   */
-  get cropY() {
-    return this._filter.v[4];
-  }
-  set cropY(v) {
-    this._filter.v[4] = v;
-  }
 
-  /**
-   * Set/Get crop width
-   * @type {number}
-   */
-  get cropWidth() {
-    return this._filter.v[5];
-  }
-  set cropWidth(v) {
-    this._filter.v[5] = v;
-  }
 
-  /**
-   * Set/Get crop height
-   * @type {number}
-   */
-  get cropHeight() {
-    return this._filter.v[6];
-  }
-  set cropHeight(v) {
-    this._filter.v[6] = v;
-  }
-}
-</code></pre>
-        </article>
-    </section>
+<div class="description">
+    Creates an instance of Item.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseDrawable_Item.html">BaseDrawable#Item</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
@@ -162,13 +181,13 @@ export class FilterTextureProps {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureProps.html">FilterTextureProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemProps.html">ItemProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightProps.html">LightProps</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureProps.html">TextureProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="AnimatedImage_Item.html">Item</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseDrawable_Item.html">Item</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Container_Item.html">Item</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="Image_Item.html">Item</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item_Item.html">Item</a></li><li><a href="ItemTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="Light_Item.html">Item</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="LightTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="StageContainer_Item.html">Item</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TextureTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#callbackAfterRender">callbackAfterRender</a></li><li><a href="global.html#updateRotation">updateRotation</a></li><li><a href="global.html#updateScale">updateScale</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 13 Dec 2024 20:23:41 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 24 Dec 2024 08:19:55 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

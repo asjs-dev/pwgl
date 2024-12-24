@@ -142,11 +142,12 @@ export const Utils = {
    * @param {function} callback Callback function
    */
   initApplication: (callback) => {
-    const callItBack = () => (callback ?? noop)(Utils.INFO.isWebGl2Supported);
-    
+    const loadedCallback = () =>
+      (callback ?? noop)(Utils.INFO.isWebGl2Supported);
+
     ["interactive", "complete"].includes(document.readyState)
-      ? callItBack()
-      : document.addEventListener("DOMContentLoaded", callItBack, {
+      ? loadedCallback()
+      : document.addEventListener("DOMContentLoaded", loadedCallback, {
           once: true,
         });
   },

@@ -1,5 +1,5 @@
 import { noop } from "../utils/helpers";
-import { ItemProps } from "../data/props/ItemProps";
+import { ItemTransformProps } from "../data/props/ItemTransformProps";
 import { ColorProps } from "../data/props/ColorProps";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import "../geom/RectangleType";
@@ -9,8 +9,10 @@ import "../geom/RectangleType";
  * @property {Item.Type} TYPE
  * @property {boolean} interactive
  * @property {boolean} renderable
- * @property {ItemProps} props
+ * @property {ItemTransformProps} transform
  * @property {ColorProps} color
+ * @method callbackBeforeRender
+ * @method callbackAfterRender
  */
 export class Item {
   /**
@@ -18,29 +20,30 @@ export class Item {
    * @constructor
    */
   constructor() {
-    this.TYPE = Item.TYPE;
+    this.RENDERING_TYPE = Item.RENDERING_TYPE;
 
-    this.interactive = false;
     this.matrixCache = Matrix3Utilities.identity();
     this.colorUpdateId = this.propsUpdateId = 0;
-    this.colorCache = [1, 1, 1, 1];
-
-    this.renderable = true;
-
-    this.props = new ItemProps();
+    this.transform = new this.$transformClass();
     this.color = new ColorProps();
-
-    this._currentPropsUpdateId =
-      this.$currentColorUpdateId =
-      this._currentParentPropsUpdateId =
-      this.$currentParentColorUpdateId =
-      this.$currentAdditionalPropsUpdateId =
-      this.$currentInverseMatrixPropsUpdateId =
-        -1;
-
+    this.colorCache = [1, 1, 1, 1];
+    this.interactive = false;
+    this.alpha = 1;
     this.callbackBeforeRender = this.callbackAfterRender = noop;
-
+    this._currentColorUpdateId = this._currentPropsUpdateId = -1;
+    this._renderable = true;
     this.$bounds = { x: 0, y: 0, width: 0, height: 0 };
+  }
+
+  /**
+   * Returns true if the item is renderable
+   * @returns {boolean}
+   */
+  get renderable() {
+    return this._renderable;
+  }
+  set renderable(v) {
+    this._renderable = v;
   }
 
   /**
@@ -59,16 +62,13 @@ export class Item {
   get parent() {
     return this.$parent;
   }
-  /**
-   * Set/Get parent
-   */
   set parent(v) {
     if (this.$parent !== v) {
       this.$parent = v;
       this._currentParentPropsUpdateId =
-        this.$currentParentColorUpdateId =
-        this.$currentAdditionalPropsUpdateId =
+        this._currentParentColorUpdateId =
         this.$currentInverseMatrixPropsUpdateId =
+        this.$currentAdditionalPropsUpdateId =
           -1;
     }
   }
@@ -143,30 +143,63 @@ export class Item {
   }
 
   /**
-   * Update ItemProps
+   * Update ItemTransformProps
    */
   update() {
-    const props = this.props;
-    props.updateRotation();
-    props.updateScale();
+    this._updateColor();
+    const transform = this.transform;
+    transform.updateRotation();
+    transform.updateScale();
     const parent = this.$parent;
 
     (this._currentParentPropsUpdateId < parent.propsUpdateId ||
-      this._currentPropsUpdateId < props.updateId) &&
-      this.$updateTransform(props, parent);
+      this._currentPropsUpdateId < transform.updateId) &&
+      this.$updateTransform(transform, parent);
   }
 
   /**
-   * @param {ItemProps} props
+   * @ignore
+   */
+  get $transformClass() {
+    return ItemTransformProps;
+  }
+
+  /**
+   * @param {ItemTransformProps} transform
    * @param {Container} parent
    * @ignore
    */
-  $updateTransform(props, parent) {
+  $updateTransform(transform, parent) {
     this._currentParentPropsUpdateId = parent.propsUpdateId;
-    this._currentPropsUpdateId = props.updateId;
+    this._currentPropsUpdateId = transform.updateId;
     ++this.propsUpdateId;
 
-    Matrix3Utilities.transform(parent.matrixCache, props, this.matrixCache);
+    Matrix3Utilities.transform(parent.matrixCache, transform, this.matrixCache);
+  }
+
+  /**
+   * @ignore
+   */
+  _updateColor() {
+    const parent = this.$parent;
+    const color = this.color;
+
+    if (
+      this._currentParentColorUpdateId < parent.colorUpdateId ||
+      this._currentColorUpdateId < color.updateId
+    ) {
+      this._currentParentColorUpdateId = parent.colorUpdateId;
+      this._currentColorUpdateId = color.updateId;
+      ++this.colorUpdateId;
+
+      const colorCache = this.colorCache;
+      const parentColorCache = parent.colorCache;
+
+      colorCache[0] = parentColorCache[0] * color.r;
+      colorCache[1] = parentColorCache[1] * color.g;
+      colorCache[2] = parentColorCache[2] * color.b;
+      colorCache[3] = parentColorCache[3] * color.a;
+    }
   }
 }
 
@@ -174,4 +207,4 @@ export class Item {
  * Type "item"
  * @string
  */
-Item.TYPE = "item";
+Item.RENDERING_TYPE = "item";

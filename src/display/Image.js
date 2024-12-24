@@ -1,5 +1,5 @@
 import { BlendMode } from "../data/BlendMode";
-import { TextureProps } from "../data/props/TextureProps";
+import { TextureTransformProps } from "../data/props/TextureTransformProps";
 import { TextureCrop } from "../data/props/TextureCrop";
 import { DistortionProps } from "../data/props/DistortionProps";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";
@@ -13,7 +13,7 @@ import "../geom/PointType";
  * @property {BlendModeInfo} SHADOW
  * @property {Image.TintType} TintType
  * @property {BlendMode} blendMode
- * @property {TextureProps} textureProps
+ * @property {TextureTransformProps} textureTransformProps
  * @property {TextureCrop} textureCrop
  * @property {DistortionProps} distortionProps
  * @property {TextureInfo} texture
@@ -27,25 +27,20 @@ export class Image extends BaseDrawable {
   constructor(texture) {
     super();
 
-    this.TYPE = Image.TYPE;
+    this.RENDERING_TYPE = Image.RENDERING_TYPE;
 
     this.textureMatrixCache = Matrix3Utilities.identity();
-
-    this.tintType = Image.TintType.NONE;
+    this.tintType = Image.TintType.NORMAL;
     this.blendMode = BlendMode.NORMAL;
-
-    this.textureProps = new TextureProps();
+    this.texture = texture;
+    this.textureTransform = new TextureTransformProps();
     this.textureCrop = new TextureCrop();
     this.distortionProps = new DistortionProps();
-
-    this._currentTexturePropsUpdateId = -1;
-
     this.textureCropCache = this.textureCrop.cache;
-    this.textureRepeatRandomCache = this.textureProps.cache;
+    this.textureRepeatRandomCache = this.textureTransform.cache;
     this.distortionPropsCache = this.distortionProps.cache;
-    this.colorCache = this.color.cache;
 
-    this.texture = texture;
+    this._currentTextureTransformUpdateId = -1;
   }
 
   /**
@@ -71,13 +66,16 @@ export class Image extends BaseDrawable {
    * @ignore
    */
   _updateTexture() {
-    const props = this.textureProps;
-    props.updateRotation();
+    const textureTransform = this.textureTransform;
+    textureTransform.updateRotation();
 
-    if (this._currentTexturePropsUpdateId < props.updateId) {
-      this._currentTexturePropsUpdateId = props.updateId;
+    if (this._currentTextureTransformUpdateId < textureTransform.updateId) {
+      this._currentTextureTransformUpdateId = textureTransform.updateId;
 
-      Matrix3Utilities.transformLocal(props, this.textureMatrixCache);
+      Matrix3Utilities.transformLocal(
+        textureTransform,
+        this.textureMatrixCache
+      );
     }
   }
 }
@@ -86,14 +84,14 @@ export class Image extends BaseDrawable {
  * Type "drawable"
  * @string
  */
-Image.TYPE = "drawable";
+Image.RENDERING_TYPE = "drawable";
 
 /**
  * Tint type
  * @member
  * @property {number} NONE output color = source color * 1 + tint color * 0
  * @property {number} NORMAL output color = source color * tint color
- * @property {number} GRAYSCALE output color = if source color red channel == source color green channel and source color red channel == source color blue channel then source color red channel * tint color else source color
+ * @property {number} GRAYSCALE output color = if source color red channel == source color green channel and source color red channel == source color blue channel then source color * tint color else source color
  * @property {number} OVERRIDE output color = tint color
  * @property {number} ADD output color = source color + tint color
  */

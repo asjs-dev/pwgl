@@ -1,13 +1,13 @@
-import { ItemProps } from "./ItemProps";
+import { ItemTransformProps } from "./ItemTransformProps";
 
 /**
- * Class for light properties
- * @extends {ItemProps}
- * @property {number} z 
+ * Class for light transform properties
+ * @extends {ItemTransformProps}
+ * @property {number} z
  */
-export class LightProps extends ItemProps {
+export class LightTransformProps extends ItemTransformProps {
   /**
-   * Creates an instance of LightProps.
+   * Creates an instance of LightTransformProps.
    * @constructor
    */
   constructor() {
@@ -29,7 +29,7 @@ export class LightProps extends ItemProps {
   set width(v) {
     if (this.$width !== v) {
       this.$width = this.$height = v;
-      ++this.$scaleUpdateId;
+      this.updateScale = this._updateScale;
     }
   }
 
@@ -40,5 +40,7 @@ export class LightProps extends ItemProps {
   get height() {
     return this.$height;
   }
-  set height(v) {}
+  set height(v) {
+    this.width = v;
+  }
 }

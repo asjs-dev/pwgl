@@ -3,6 +3,7 @@
  *  Class for distortion properties
  *  It distorts the corners of the elements
  * <pre>
+ * @property {boolean} distortTexture
  */
 export class DistortionProps {
   /**
@@ -11,7 +12,6 @@ export class DistortionProps {
    */
   constructor() {
     this.distortTexture = true;
-
     // prettier-ignore
     this.cache = [
       0, 0,

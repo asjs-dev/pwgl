@@ -23,7 +23,7 @@ export class PressState {
 
   update() {
     for (let key in this._state)
-      if (this._state[key] > 0) {
+      if (this._state[key]) {
         delete this._state[key];
         delete this._duration[key];
         delete this._timestamp[key];

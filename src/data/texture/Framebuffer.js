@@ -1,6 +1,5 @@
 import { TextureInfo } from "./TextureInfo";
 import { Const } from "../../utils/Utils";
-import "../../utils/Utils";
 
 /**
  * Framebuffer
@@ -14,8 +13,7 @@ export class Framebuffer extends TextureInfo {
   constructor() {
     super();
 
-    this._resizeUpdateId = 0;
-    this._currentResizeUpdateId = -1;
+    this._resizeUpdateId = 1;
   }
 
   /**
@@ -26,7 +24,7 @@ export class Framebuffer extends TextureInfo {
     return this.$width;
   }
   set width(v) {
-    if (this.$width !== v && v > 0) {
+    if (this.$width !== v && v) {
       this.$width = v;
       ++this._resizeUpdateId;
     }
@@ -40,7 +38,7 @@ export class Framebuffer extends TextureInfo {
     return this.$height;
   }
   set height(v) {
-    if (this.$height !== v && v > 0) {
+    if (this.$height !== v && v) {
       this.$height = v;
       ++this._resizeUpdateId;
     }
@@ -101,14 +99,14 @@ export class Framebuffer extends TextureInfo {
       return;
     }
 
-    if (this.$currentUpdateId < this.$updateId) {
-      this.$currentUpdateId = this.$updateId;
+    if (this.$updateId) {
+      this.$updateId = 0;
       this.useActiveTextureAfterUpdate(gl, id);
       return;
     }
 
-    if (this._currentResizeUpdateId < this._resizeUpdateId) {
-      this._currentResizeUpdateId = this._resizeUpdateId;
+    if (this._resizeUpdateId) {
+      this._resizeUpdateId = 0;
       this.useActiveTexture(gl, id);
       return;
     }
@@ -116,4 +114,9 @@ export class Framebuffer extends TextureInfo {
     if (this._currenActiveId !== id || forceBind)
       this.bindActiveTexture(gl, id);
   }
+
+  /**
+   * Destruct class
+   */
+  destruct() {}
 }

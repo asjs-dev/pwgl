@@ -81,11 +81,11 @@ class Application {
     this._image = new PWGL.Image(
       PWGL.Texture.loadImage("your/image/path/here")
     );
-    this._image.props.x = width * 0.5;
-    this._image.props.y = height * 0.5;
-    this._image.props.width = 320;
-    this._image.props.height = 240;
-    this._image.props.anchorX = this._image.props.anchorY = 0.5;
+    this._image.transform.x = width * 0.5;
+    this._image.transform.y = height * 0.5;
+    this._image.transform.width = 320;
+    this._image.transform.height = 240;
+    this._image.transform.anchorX = this._image.transform.anchorY = 0.5;
     this._stage2DRenderer.container.addChild(this._image);
 
     // resize context and renderers
@@ -99,7 +99,7 @@ class Application {
     window.addEventListener("beforeunload", this._onBeforeUnloadBound);
 
     // set fps meter
-    PWGL.FPS.start(60);
+    PWGLExtensions.FPS.init();
 
     // start render cycle
     this._requestAnimationFrameId = requestAnimationFrame(this._renderBound);
@@ -107,14 +107,14 @@ class Application {
 
   _render() {
     if (this._requestAnimationFrameId) {
-      PWGL.FPS.update();
-      let delay = PWGL.FPS.delay;
+      PWGLExtensions.FPS.update();
+      let delay = PWGLExtensions.FPS.delay;
 
-      console.log("delay:", PWGL.FPS.delay);
-      console.log("fps:", PWGL.FPS.fps.toFixed(2));
+      console.log("delay:", PWGLExtensions.FPS.delay);
+      console.log("fps:", PWGLExtensions.FPS.fps.toFixed(2));
 
       // rotate the image
-      this._image.props.rotation += 0.001;
+      this._image.transform.rotation += 0.001;
 
       // render the state
       this._stage2DRenderer.render();
@@ -186,11 +186,11 @@ class Application {
     this._image = new PWGL.Image(
       PWGL.Texture.loadImage("your/image/path/here")
     );
-    this._image.props.x = width * 0.5;
-    this._image.props.y = height * 0.5;
-    this._image.props.width = 320;
-    this._image.props.height = 240;
-    this._image.props.anchorX = this._image.props.anchorY = 0.5;
+    this._image.transform.x = width * 0.5;
+    this._image.transform.y = height * 0.5;
+    this._image.transform.width = 320;
+    this._image.transform.height = 240;
+    this._image.transform.anchorX = this._image.transform.anchorY = 0.5;
     this._stage2DRenderer.container.addChild(this._image);
 
     // resize context and renderers
@@ -205,7 +205,7 @@ class Application {
     window.addEventListener("beforeunload", this._onBeforeUnloadBound);
 
     // set fps meter
-    PWGL.FPS.start(60);
+    PWGLExtensions.FPS.init();
 
     // start render cycle
     this._requestAnimationFrameId = requestAnimationFrame(this._renderBound);
@@ -213,14 +213,14 @@ class Application {
 
   _render() {
     if (this._requestAnimationFrameId) {
-      PWGL.FPS.update();
-      let delay = PWGL.FPS.delay;
+      PWGLExtensions.FPS.update();
+      let delay = PWGLExtensions.FPS.delay;
 
-      console.log("delay:", PWGL.FPS.delay);
-      console.log("fps:", PWGL.FPS.fps.toFixed(2));
+      console.log("delay:", PWGLExtensions.FPS.delay);
+      console.log("fps:", PWGLExtensions.FPS.fps.toFixed(2));
 
       // rotate the image
-      this._image.props.rotation += 0.001;
+      this._image.transform.rotation += 0.001;
 
       // render the state to framebuffer
       this._stage2DRenderer.renderToFramebuffer(

@@ -1,5 +1,4 @@
 import { TextureInfo } from "./TextureInfo";
-import "../../utils/Utils";
 
 const _placeholderImage = document.createElement("img");
 
@@ -19,24 +18,18 @@ export class Texture extends TextureInfo {
   constructor(source, shouldUpdate) {
     super();
 
+    this.isVideo = false;
+
     this._source = _placeholderImage;
 
     this._parseTextureSize = this._parseTextureSize.bind(this);
-
-    this.isVideo = false;
 
     this.source = source;
     this.shouldUpdate = shouldUpdate;
 
     this._dimensionWidthName = "width";
     this._dimensionHeightName = "height";
-
-    this._currentRenderTime =
-      this._loadUpdateId =
-      this._currentLoadUpdateId =
-        0;
-
-    this._eventType;
+    this._currentRenderTime = this._loadUpdateId = 0;
   }
 
   /**
@@ -102,25 +95,14 @@ export class Texture extends TextureInfo {
       return;
     }
 
-    if (this.$currentUpdateId < this.$updateId) {
-      this.$currentUpdateId = this.$updateId;
-      this.useActiveTexture(gl, id);
-      return;
-    }
-
-    if (this._currentLoadUpdateId < this._loadUpdateId) {
-      this._currentLoadUpdateId = this._loadUpdateId;
-      this.useActiveTexture(gl, id);
-      return;
-    }
-
-    if (this.shouldUpdate && this._currentRenderTime < renderTime) {
+    if (
+      this.$updateId ||
+      this._loadUpdateId ||
+      (this.shouldUpdate && this._currentRenderTime < renderTime) ||
+      (this.isVideo && !this._source.paused)
+    ) {
+      this.$updateId = this._loadUpdateId = 0;
       this._currentRenderTime = renderTime;
-      this.useActiveTexture(gl, id);
-      return;
-    }
-
-    if (this.isVideo && !this._source.paused) {
       this.useActiveTexture(gl, id);
       return;
     }
@@ -161,11 +143,13 @@ export class Texture extends TextureInfo {
       this._dimensionHeightName = "videoHeight";
     }
 
-    if (this._sourceWidth * this._sourceHeight > 0) {
+    if (this._sourceWidth * this._sourceHeight) {
       this._renderSource = this._source;
       ++this._loadUpdateId;
       return true;
-    } else this._renderSource = null;
+    }
+
+    this._renderSource = null;
   }
 }
 

@@ -7,8 +7,7 @@ export class ColorProps {
    * @constructor
    */
   constructor() {
-    this.updateId = 0;
-
+    this.updateId = 1;
     this.cache = [1, 1, 1, 1];
   }
 

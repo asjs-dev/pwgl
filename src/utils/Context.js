@@ -1,7 +1,7 @@
 import { removeFromArray } from "./helpers";
 import { Utils, Const } from "./Utils";
-import "../data/BlendMode";
 import { TextureInfo } from "../data/texture/TextureInfo";
+import "../data/BlendMode";
 
 /**
  * Context
@@ -17,7 +17,6 @@ export class Context {
     this.contextId = 0;
 
     this._config = Utils.initContextConfig(config);
-    this.canvas = this._config.canvas;
 
     this._MAX_TEXTURE_NUM = Utils.INFO.maxTextureImageUnits;
 
@@ -25,6 +24,7 @@ export class Context {
     this._initContext = this._initContext.bind(this);
     this._restoreContext = this._restoreContext.bind(this);
 
+    this.canvas = this._config.canvas;
     this.canvas.addEventListener("webglcontextlost", this._onContextLost);
     this.canvas.addEventListener("webglcontextrestored", this._initContext);
 
@@ -78,7 +78,7 @@ export class Context {
    * Clear textures
    */
   clearTextures() {
-    for (let i = 0; i < this._MAX_TEXTURE_NUM; ++i) {
+    for (let i = 0, l = this._MAX_TEXTURE_NUM; i < l; ++i) {
       this._textureMap[i] = null;
       this._emptyTextureSlots[i] = i;
     }

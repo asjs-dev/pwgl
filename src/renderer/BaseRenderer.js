@@ -27,19 +27,24 @@ export class BaseRenderer {
 
     this._clearBeforeRenderFunc = noop;
 
-    this._sizeUpdateId = 1;
-    this.width = this.height = this.widthHalf = this.heightHalf = 0;
+    this.$sizeUpdateId = 1;
+
+    this.width =
+      this.height =
+      this.widthHalf =
+      this.heightHalf =
+      this._currentContextId =
+      this.$renderTime =
+        0;
 
     this.clearColor = new ColorProps();
 
-    this._currentContextId = this.$renderTime = 0;
-
     this._options = options;
-    this._config = this._options.config;
-    this.context = this._config.context;
+    const config = this._options.config;
+    this.context = config.context;
 
     // prettier-ignore
-    this._config.locations = this._config.locations.concat([
+    config.locations = config.locations.concat([
       "uFlpY",
       "aPos",
       "uTex"
@@ -94,7 +99,7 @@ export class BaseRenderer {
     this.width = width;
     this.height = height;
 
-    ++this._sizeUpdateId;
+    ++this.$sizeUpdateId;
   }
 
   /**
@@ -229,13 +234,13 @@ export class BaseRenderer {
    */
   _switchToProgram() {
     this.$gl = this.context.gl;
+    const context = this.context;
+    const contextId = context.contextId;
 
-    if (this._currentContextId !== this.context.contextId) {
-      this._currentContextId = this.context.contextId;
+    if (this._currentContextId !== contextId) {
+      this._currentContextId = contextId;
       this._buildProgram();
-      this.$enableBuffers = true;
-    } else if (this.context.useProgram(this._program, this._vao))
-      this.$enableBuffers = true;
+    } else this._useProgram();
 
     this.$resize();
   }
@@ -257,24 +262,30 @@ export class BaseRenderer {
    * @ignore
    */
   _buildProgram() {
-    const options = this._options;
-
     this._program = Utils.createProgram(
       this.$gl,
-      this.$createVertexShader(options),
-      this.$createFragmentShader(options)
+      this.$createVertexShader(),
+      this.$createFragmentShader()
     );
 
     this.$locations = Utils.getLocationsFor(
       this.$gl,
       this._program,
-      this._config.locations
+      this._options.config.locations
     );
 
     this._vao = this.$gl.createVertexArray();
 
-    this.context.useProgram(this._program, this._vao);
+    this._useProgram();
 
     this.$createBuffers();
+  }
+
+  /**
+   * @ignore
+   */
+  _useProgram() {
+    if (this.context.useProgram(this._program, this._vao))
+      this.$enableBuffers = true;
   }
 }

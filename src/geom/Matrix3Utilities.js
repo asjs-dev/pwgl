@@ -1,4 +1,4 @@
-import { ItemProps } from "../data/props/ItemProps";
+import { ItemTransformProps } from "../data/props/ItemTransformProps";
 import "./PointType";
 
 /**
@@ -10,8 +10,8 @@ import "./PointType";
  * @typedef {Object} Matrix3Utilities
  * @property {function():Matrix3} identity Create irentity matrix
  * @property {function(Matrix3, Object)} projection Update projection matrix
- * @property {function(ItemProps, Matrix3)} transformLocal Calculate local transformation
- * @property {function(Matrix3, ItemProps, Matrix3)} transform Calculate global transformation
+ * @property {function(ItemTransformProps, Matrix3)} transformLocal Calculate local transformation
+ * @property {function(Matrix3, ItemTransformProps, Matrix3)} transform Calculate global transformation
  * @property {function(Matrix3, Matrix3)} inverse Create inverse matrix
  * @property {function(matrix, Point):boolean} isPointInMatrix  Returns true if the point in the matrix
  * @property {function(Matrix3, array, Object)} calcCorners Calculate cornrers
@@ -40,42 +40,46 @@ export const Matrix3Utilities = {
 
   /**
    * Calculate local transformation
-   * @param {ItemProps} props
+   * @param {ItemTransformProps} itemTransform
    * @param {Matrix3} destinationMatrix
    */
-  transformLocal: (props, destinationMatrix) => {
-    const anchorX = props.anchorX;
-    const anchorY = props.anchorY;
-    const scaledWidth = props.scaledWidth;
-    const scaledHeight = props.scaledHeight;
+  transformLocal: (itemTransform, destinationMatrix) => {
+    const anchorX = itemTransform.anchorX;
+    const anchorY = itemTransform.anchorY;
+    const scaledWidth = itemTransform.scaledWidth;
+    const scaledHeight = itemTransform.scaledHeight;
 
-    destinationMatrix[0] = props.cosRotationA * scaledWidth;
-    destinationMatrix[1] = props.sinRotationA * scaledWidth;
-    destinationMatrix[2] = -props.sinRotationB * scaledHeight;
-    destinationMatrix[3] = props.cosRotationB * scaledHeight;
+    destinationMatrix[0] = itemTransform.cosRotationA * scaledWidth;
+    destinationMatrix[1] = itemTransform.sinRotationA * scaledWidth;
+    destinationMatrix[2] = -itemTransform.sinRotationB * scaledHeight;
+    destinationMatrix[3] = itemTransform.cosRotationB * scaledHeight;
     destinationMatrix[4] =
-      props.x - anchorX * destinationMatrix[0] - anchorY * destinationMatrix[2];
+      itemTransform.x -
+      anchorX * destinationMatrix[0] -
+      anchorY * destinationMatrix[2];
     destinationMatrix[5] =
-      props.y - anchorX * destinationMatrix[1] - anchorY * destinationMatrix[3];
+      itemTransform.y -
+      anchorX * destinationMatrix[1] -
+      anchorY * destinationMatrix[3];
   },
 
   /**
    * Calculate global transformation
    * @param {Matrix3} matrix
-   * @param {ItemProps} props
+   * @param {ItemTransformProps} itemTransform
    * @param {Matrix3} destinationMatrix
    */
-  transform: (matrix, props, destinationMatrix) => {
-    const x = props.x;
-    const y = props.y;
-    const anchorX = props.anchorX;
-    const anchorY = props.anchorY;
-    const sinRotationA = props.sinRotationA;
-    const sinRotationB = props.sinRotationB;
-    const cosRotationA = props.cosRotationA;
-    const cosRotationB = props.cosRotationB;
-    const scaledWidth = props.scaledWidth;
-    const scaledHeight = props.scaledHeight;
+  transform: (matrix, itemTransform, destinationMatrix) => {
+    const x = itemTransform.x;
+    const y = itemTransform.y;
+    const anchorX = itemTransform.anchorX;
+    const anchorY = itemTransform.anchorY;
+    const sinRotationA = itemTransform.sinRotationA;
+    const sinRotationB = itemTransform.sinRotationB;
+    const cosRotationA = itemTransform.cosRotationA;
+    const cosRotationB = itemTransform.cosRotationB;
+    const scaledWidth = itemTransform.scaledWidth;
+    const scaledHeight = itemTransform.scaledHeight;
 
     destinationMatrix[0] =
       (cosRotationA * matrix[0] + sinRotationA * matrix[2]) * scaledWidth;

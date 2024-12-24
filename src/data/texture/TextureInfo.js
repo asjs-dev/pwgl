@@ -1,5 +1,4 @@
 import { Const } from "../../utils/Utils";
-import "../../utils/Utils";
 
 /**
  * TextureInfo
@@ -10,25 +9,15 @@ export class TextureInfo {
    * @constructor
    */
   constructor() {
-    /*
-    this._baseTexture
-    */
-
     this.target = Const.TEXTURE_2D;
-
-    this.$currentAglId = this._currenActiveId = this.$currentUpdateId = -1;
-
     this.wrapS = this.wrapT = Const.CLAMP_TO_EDGE;
-
     this.internalFormat = this.format = Const.RGBA;
-
     this.minFilter = this.magFilter = Const.LINEAR;
-
-    this.$updateId = this.maxMipMapLevel = this.baseMipMapLevel = 0;
-
-    this.$width = this.$height = 1;
-
+    this.maxMipMapLevel = this.baseMipMapLevel = 0;
     this.type = Const.UNSIGNED_BYTE;
+
+    this.$currentAglId = this._currenActiveId = -1;
+    this.$updateId = this.$width = this.$height = 1;
   }
 
   /**
@@ -285,9 +274,4 @@ export class TextureInfo {
     );
     gl.generateMipmap(this.target);
   }
-
-  /**
-   * Destruct class
-   */
-  destruct() {}
 }

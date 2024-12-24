@@ -4,17 +4,17 @@ import { Item } from "./Item";
 /**
  * Container
  * @extends {Item}
+ * @property {Array<Item>} children
  */
 export class Container extends Item {
   /**
    * Creates an instance of Container.
    * @constructor
-   * @property {Array<Item>} children
    */
   constructor() {
     super();
 
-    this.TYPE = Container.TYPE;
+    this.RENDERING_TYPE = Container.RENDERING_TYPE;
 
     this.children = [];
   }
@@ -25,7 +25,7 @@ export class Container extends Item {
    * @type {number}
    */
   get premultipliedAlpha() {
-    return this.props.alpha * this.$parent.premultipliedAlpha;
+    return this.alpha * this.$parent.premultipliedAlpha;
   }
 
   /**
@@ -141,12 +141,13 @@ export class Container extends Item {
    */
   getBounds() {
     const bounds = this.$bounds;
+    const children = this.children;
 
     bounds.x = bounds.y = 1 / 0;
     bounds.width = bounds.height = -1 / 0;
 
-    for (let i = 0, l = this.children.length; i < l; ++i) {
-      const childBounds = this.children[i].getBounds();
+    for (let i = 0, l = children.length; i < l; ++i) {
+      const childBounds = children[i].getBounds();
 
       bounds.x = Math.min(bounds.x, childBounds.x);
       bounds.y = Math.min(bounds.y, childBounds.y);
@@ -156,43 +157,10 @@ export class Container extends Item {
 
     return bounds;
   }
-
-  /**
-   * Update container data
-   */
-  update() {
-    super.update();
-    this._updateColor();
-  }
-
-  /**
-   * @ignore
-   */
-  _updateColor() {
-    const parent = this.$parent;
-    const color = this.color;
-
-    if (
-      this.$currentParentColorUpdateId < parent.colorUpdateId ||
-      this.$currentColorUpdateId < color.updateId
-    ) {
-      this.$currentColorUpdateId = color.updateId;
-      this.$currentParentColorUpdateId = parent.colorUpdateId;
-      ++this.colorUpdateId;
-
-      const colorCache = this.colorCache;
-      const parentColorCache = parent.colorCache;
-
-      colorCache[0] = parentColorCache[0] * color.r;
-      colorCache[1] = parentColorCache[1] * color.g;
-      colorCache[2] = parentColorCache[2] * color.b;
-      colorCache[3] = parentColorCache[3] * color.a;
-    }
-  }
 }
 
 /**
  * Type "container"
  * @string
  */
-Container.TYPE = "container";
+Container.RENDERING_TYPE = "container";

@@ -1,27 +1,25 @@
 import { BaseTransformProps } from "./BaseTransformProps";
 
 /**
- * Class for element properties
+ * Class for item transform properties
  * @extends {BaseTransformProps}
+ * @method updateScale
  */
-export class ItemProps extends BaseTransformProps {
+export class ItemTransformProps extends BaseTransformProps {
   /**
-   * Creates an instance of ItemProps.
+   * Creates an instance of ItemTransformProps.
    * @constructor
    */
   constructor() {
     super();
 
-    this.$scaleUpdateId = 0;
-    this._currentScaleUpdateId = -1;
-
+    this.updateScale = noop;
     this.scaledWidth =
       this.scaledHeight =
       this._scaleX =
       this._scaleY =
       this.$width =
       this.$height =
-      this.alpha =
         1;
   }
 
@@ -35,7 +33,7 @@ export class ItemProps extends BaseTransformProps {
   set scaleX(v) {
     if (this._scaleX !== v) {
       this._scaleX = v;
-      ++this.$scaleUpdateId;
+      this.updateScale = this._updateScale;
     }
   }
 
@@ -49,7 +47,7 @@ export class ItemProps extends BaseTransformProps {
   set scaleY(v) {
     if (this._scaleY !== v) {
       this._scaleY = v;
-      ++this.$scaleUpdateId;
+      this.updateScale = this._updateScale;
     }
   }
 
@@ -63,7 +61,7 @@ export class ItemProps extends BaseTransformProps {
   set width(v) {
     if (this.$width !== v) {
       this.$width = v;
-      ++this.$scaleUpdateId;
+      this.updateScale = this._updateScale;
     }
   }
 
@@ -77,20 +75,19 @@ export class ItemProps extends BaseTransformProps {
   set height(v) {
     if (this.$height !== v) {
       this.$height = v;
-      ++this.$scaleUpdateId;
+      this.updateScale = this._updateScale;
     }
   }
 
   /**
    * Update calculated scale values
+   * @ignore
    */
-  updateScale() {
-    if (this._currentScaleUpdateId < this.$scaleUpdateId) {
-      this._currentScaleUpdateId = this.$scaleUpdateId;
-      ++this.updateId;
+  _updateScale() {
+    this.updateScale = noop;
+    ++this.updateId;
 
-      this.scaledWidth = this.$width * this._scaleX;
-      this.scaledHeight = this.$height * this._scaleY;
-    }
+    this.scaledWidth = this.$width * this._scaleX;
+    this.scaledHeight = this.$height * this._scaleY;
   }
 }

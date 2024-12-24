@@ -2,12 +2,12 @@ import { BaseFilter } from "../../filters/BaseFilter";
 import { TextureInfo } from "../texture/TextureInfo";
 
 /**
- * Class for texture properties of filters
+ * Class for texture transform properties of filters
  * @property {TextureInfo} texture
  */
-export class FilterTextureProps {
+export class FilterTextureTransformProps {
   /**
-   * Creates an instance of FilterTextureProps.
+   * Creates an instance of FilterTextureTransformProps.
    * @constructor
    * @param {BaseFilter} filter
    * @param {TextureInfo} texture
@@ -29,6 +29,7 @@ export class FilterTextureProps {
     cropHeight = 1
   ) {
     this._filter = filter;
+
     this.texture = texture;
     this.translateX = translateX;
     this.translateY = translateY;

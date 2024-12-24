@@ -10,15 +10,15 @@ export class WaterRenderer extends AGL.Container {
     heightMapTexture.magFilter = AGL.Const.LINEAR;
 
     this._waterDisplacementImageLarge = new AGL.Image(heightMapTexture);
-    this._waterDisplacementImageLarge.textureProps.repeatX = 0.7;
+    this._waterDisplacementImageLarge.textureTransform.repeatX = 0.7;
     this._waterDisplacementImageLarge.tintType = AGL.Image.TintType.GRAYSCALE;
     this._waterDisplacementImageLarge.color.set(0, 0.1, 0.75, 1);
     this.addChild(this._waterDisplacementImageLarge);
 
     this._waterDisplacementImageSmall = new AGL.Image(heightMapTexture);
     this._waterDisplacementImageSmall.blendMode = AGL.BlendMode.ADD;
-    this._waterDisplacementImageSmall.textureProps.repeatX = 4;
-    this._waterDisplacementImageSmall.textureProps.repeatRandomRotation = 1;
+    this._waterDisplacementImageSmall.textureTransform.repeatX = 4;
+    this._waterDisplacementImageSmall.textureTransform.repeatRandomRotation = 1;
     this._waterDisplacementImageSmall.tintType = AGL.Image.TintType.GRAYSCALE;
     this._waterDisplacementImageSmall.color.set(0, 0.06, 0.75, 1);
     this.addChild(this._waterDisplacementImageSmall);
@@ -34,17 +34,17 @@ export class WaterRenderer extends AGL.Container {
 
     const ratio = h / w;
 
-    this._waterDisplacementImageSmall.props.width =
-      this._waterDisplacementImageLarge.props.width = w;
+    this._waterDisplacementImageSmall.transform.width =
+      this._waterDisplacementImageLarge.transform.width = w;
 
-    this._waterDisplacementImageSmall.props.height =
-      this._waterDisplacementImageLarge.props.height = h;
+    this._waterDisplacementImageSmall.transform.height =
+      this._waterDisplacementImageLarge.transform.height = h;
 
-    this._waterDisplacementImageSmall.textureProps.repeatY =
-      this._waterDisplacementImageSmall.textureProps.repeatX * ratio;
+    this._waterDisplacementImageSmall.textureTransform.repeatY =
+      this._waterDisplacementImageSmall.textureTransform.repeatX * ratio;
 
-    this._waterDisplacementImageLarge.textureProps.repeatY =
-      this._waterDisplacementImageLarge.textureProps.repeatX * ratio;
+    this._waterDisplacementImageLarge.textureTransform.repeatY =
+      this._waterDisplacementImageLarge.textureTransform.repeatX * ratio;
   }
 
   render(delay) {
@@ -55,21 +55,21 @@ export class WaterRenderer extends AGL.Container {
     const sinWave = Math.sin(this._wave) * 0.3;
     const cosWave = Math.cos(this._wave) * 0.3;
 
-    let textureProps;
-
-    textureProps = this._waterDisplacementImageLarge.textureProps;
-    textureProps.x =
-      this._moveTarget.x * textureProps.repeatX +
+    let textureTransform = this._waterDisplacementImageLarge.textureTransform;
+    textureTransform.x =
+      this._moveTarget.x * textureTransform.repeatX +
       ((waveSpeedX * 0.75 + sinWave) % 1);
-    textureProps.y =
-      this._moveTarget.y * textureProps.repeatY +
+    textureTransform.y =
+      this._moveTarget.y * textureTransform.repeatY +
       ((waveSpeedY * 0.75 + cosWave) % 1);
 
-    textureProps = this._waterDisplacementImageSmall.textureProps;
-    textureProps.x =
-      this._moveTarget.x * textureProps.repeatX + ((waveSpeedX - sinWave) % 1);
-    textureProps.y =
-      this._moveTarget.y * textureProps.repeatY + ((waveSpeedY - cosWave) % 1);
+    textureTransform = this._waterDisplacementImageSmall.textureTransform;
+    textureTransform.x =
+      this._moveTarget.x * textureTransform.repeatX +
+      ((waveSpeedX - sinWave) % 1);
+    textureTransform.y =
+      this._moveTarget.y * textureTransform.repeatY +
+      ((waveSpeedY - cosWave) % 1);
   }
 
   move(x, y) {

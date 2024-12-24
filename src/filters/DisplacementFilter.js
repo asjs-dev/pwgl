@@ -1,4 +1,4 @@
-import { FilterTextureProps } from "../data/props/FilterTextureProps";
+import { FilterTextureTransformProps } from "../data/props/FilterTextureTransformProps";
 import { BaseFilter } from "./BaseFilter";
 
 /**
@@ -30,7 +30,7 @@ export class DisplacementFilter extends BaseFilter {
   ) {
     super(6, 0, intensity);
 
-    this.textureProps = new FilterTextureProps(
+    this.textureTransform = new FilterTextureTransformProps(
       this,
       texture,
       translateX,
