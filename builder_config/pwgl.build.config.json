@@ -11,7 +11,21 @@
     },
     "replaceTexts": {
       "removeFromArray": "$rfa",
-      "arraySet": "$as"
+      "arraySet": "$as",
+
+      "BaseTransformProps": "DBTP",
+      "ColorProps": "DCP",
+      "DistortionProps": "DDP",
+      "FilterTextureTransformProps": "DFTTP",
+      "ItemTransformProps": "DITP",
+      "LightTransformProps": "DLTP",
+      "TextureCrop": "DTC",
+      "TextureTransformProps": "DTTP",
+      "TextureInfo": "DTI",
+      "StageContainer": "DSC",
+      "BaseFilter": "FBF",
+      "BaseSamplingFilter": "FBSF",
+      "Matrix3Utilities": "GM3U"
     },
     "output": "dist/pwgl.min.js"
   },

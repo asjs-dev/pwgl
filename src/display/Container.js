@@ -127,8 +127,8 @@ export class Container extends Item {
    * @param {Item} childB
    */
   swapChildren(childA, childB) {
-    const childAIndex = this.getChildIndex(childA);
-    const childBIndex = this.getChildIndex(childB);
+    const childAIndex = this.getChildIndex(childA),
+      childBIndex = this.getChildIndex(childB);
     if (childAIndex > -1 && childBIndex > -1) {
       this.setChildIndex(childA, childBIndex);
       this.setChildIndex(childB, childAIndex);
@@ -140,13 +140,14 @@ export class Container extends Item {
    * @returns {Rectangle}
    */
   getBounds() {
-    const bounds = this.$bounds;
-    const children = this.children;
+    const bounds = this.$bounds,
+      children = this.children,
+      l = children.length;
 
     bounds.x = bounds.y = 1 / 0;
     bounds.width = bounds.height = -1 / 0;
 
-    for (let i = 0, l = children.length; i < l; ++i) {
+    for (let i = 0; i < l; ++i) {
       const childBounds = children[i].getBounds();
 
       bounds.x = Math.min(bounds.x, childBounds.x);

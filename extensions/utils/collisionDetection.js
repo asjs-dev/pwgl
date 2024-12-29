@@ -2,12 +2,11 @@ import { cross } from "./cross";
 import { dot } from "./dot";
 
 const distanceBetweenPointAndLine = (p, l) => {
-  const AB = { x: l.b.x - l.a.x, y: l.b.y - l.a.y };
-  const AP = { x: p.x - l.a.x, y: p.y - l.a.y };
-  const BP = { x: p.x - l.b.x, y: p.y - l.b.y };
-
-  const useAP = dot(AB, AP) < 0;
-  const useBP = dot(AB, BP) > 0;
+  const AB = { x: l.b.x - l.a.x, y: l.b.y - l.a.y },
+    AP = { x: p.x - l.a.x, y: p.y - l.a.y },
+    BP = { x: p.x - l.b.x, y: p.y - l.b.y },
+    useAP = dot(AB, AP) < 0,
+    useBP = dot(AB, BP) > 0;
 
   if (!useAP && !useBP) return Math.abs(cross(AB, AP)) / Math.hypot(AB.x, AB.y);
 
@@ -16,21 +15,19 @@ const distanceBetweenPointAndLine = (p, l) => {
 };
 
 const areTwoLinesCollided = (lineA, lineB) => {
-  const a = lineA.b.y - lineA.a.y;
-  const b = lineA.b.x - lineA.a.x;
-  const c = lineB.b.y - lineB.a.y;
-  const d = lineB.b.x - lineB.a.x;
-
-  const denom = b * c - d * a;
+  const a = lineA.b.y - lineA.a.y,
+    b = lineA.b.x - lineA.a.x,
+    c = lineB.b.y - lineB.a.y,
+    d = lineB.b.x - lineB.a.x,
+    denom = b * c - d * a;
 
   if (denom !== 0) {
-    const e = lineB.b.x - lineA.a.x;
-    const f = lineB.a.x - lineB.b.x;
-    const g = lineB.b.y - lineA.a.y;
-    const h = lineA.a.y - lineA.b.y;
-
-    const lambda = (c * e + f * g) / denom;
-    const gamma = (h * e + b * g) / denom;
+    const e = lineB.b.x - lineA.a.x,
+      f = lineB.a.x - lineB.b.x,
+      g = lineB.b.y - lineA.a.y,
+      h = lineA.a.y - lineA.b.y,
+      lambda = (c * e + f * g) / denom,
+      gamma = (h * e + b * g) / denom;
 
     if (0 < lambda && lambda < 1 && 0 < gamma && gamma < 1)
       return {

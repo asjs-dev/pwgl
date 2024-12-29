@@ -33,8 +33,8 @@ export class SmoothLight extends AGL.Image {
     this.filterRenderer.clearColor.set(0, 0, 0, 0);
     this.filterRenderer.clearBeforeRender = true;
 
-    this.registerLightForRender =
-      this.lightRenderer.registerLightForRender.bind(this.lightRenderer);
+    this.addLightForRender =
+      this.lightRenderer.addLightForRender.bind(this.lightRenderer);
 
     this.blendMode = AGL.BlendMode.SHADOW;
 

@@ -135,8 +135,8 @@ export class BaseTransformProps {
       this.sinRotationA = this.sinRotationB = Math.sin(this._rotation);
       this.cosRotationA = this.cosRotationB = Math.cos(this._rotation);
     } else {
-      const rotSkewX = this._rotation - this._skewX;
-      const rotSkewY = this._rotation + this._skewY;
+      const rotSkewX = this._rotation - this._skewX,
+        rotSkewY = this._rotation + this._skewY;
 
       this.sinRotationA = Math.sin(rotSkewY);
       this.cosRotationA = Math.cos(rotSkewY);

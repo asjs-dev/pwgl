@@ -6,8 +6,8 @@ export const clone = (from) => {
 
   const propNames = Object.getOwnPropertyNames(from);
 
-  let key;
-  let i = propNames.length;
+  let key,
+    i = propNames.length;
   while ((key = propNames[--i]))
     target[key] = typeof from[key] === "object" ? clone(from[key]) : from[key];
 

@@ -101,32 +101,14 @@ export class Light extends BaseDrawable {
   /**
    * @ignore
    */
-  $updateAdditionalData() {
-    if (
-      this.renderable &&
-      this.$currentAdditionalPropsUpdateId < this.propsUpdateId
-    ) {
-      this.$currentAdditionalPropsUpdateId = this.propsUpdateId;
-      this.$calcBounds();
-    }
-  }
-
-  /**
-   * @ignore
-   */
   $calcCorners() {
-    Matrix3Utilities.calcCorners(
-      this.matrixCache,
-      this.$corners,
-      this.stage.renderer
-    );
+    super.$calcCorners();
 
-    const corners = this.$corners;
-
-    const a = corners[0];
-    const b = corners[1];
-    const c = corners[2];
-    const d = corners[3];
+    const corners = this.$corners,
+      a = corners[0],
+      b = corners[1],
+      c = corners[2],
+      d = corners[3];
 
     a.x += a.x - d.x + (a.x - c.x);
     a.y += a.y - d.y + (a.y - c.y);
@@ -148,6 +130,10 @@ export class Light extends BaseDrawable {
   }
 }
 
+/**
+ * Type "light"
+ * @string
+ */
 Light.RENDERING_TYPE = "light";
 
 /**

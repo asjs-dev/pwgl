@@ -1,13 +1,13 @@
-import { Utils } from "../utils/Utils";
-import { Buffer } from "../utils/Buffer";
+import { BatchRenderer } from "./BatchRenderer";
 import { BlendMode } from "../data/BlendMode";
 import { Light } from "../display/Light";
-import { BatchRenderer } from "./BatchRenderer";
+import { Utils } from "../utils/Utils";
+import { Buffer } from "../utils/Buffer";
 
 /**
  * @typedef {Object} LightRendererConfig
  * @extends {RendererConfig}
- * @property {number} lightNum
+ * @property {number} maxRenderCount
  * @property {TextureInfo} sourceTexture
  * @property {TextureInfo} normalMap
  * @property {TextureInfo} heightMap
@@ -42,18 +42,16 @@ export class LightRenderer extends BatchRenderer {
     options.config = Utils.initRendererConfig(options.config);
 
     // prettier-ignore
-    options.config.locations = options.config.locations.concat([
+    options.config.locations = [
+      "aExt",
       "uNMTex",
       "uSTTex",
       "uRGTex",
-      "aExt",
       "uTS",
       "uUSTT",
       "uUNMT",
       "uURGT"
-    ]);
-
-    const maxBatchItems = (options.maxBatchItems = options.lightNum || 1);
+    ];
 
     super(options);
 
@@ -65,20 +63,19 @@ export class LightRenderer extends BatchRenderer {
     this.heightMap = options.heightMap;
     this.roughnessMap = options.roughnessMap;
 
-    this._extensionBuffer = new Buffer("aExt", maxBatchItems, 2, 4);
+    this._extensionBuffer = new Buffer("aExt", this.$MAX_RENDER_COUNT, 2, 4);
   }
 
   /**
    * Register a Light instance for rendering
    * @param {Light} light
    */
-  registerLightForRender(light) {
-    if (this._batchItems < this.$MAX_BATCH_ITEMS) {
-      const matId = this._batchItems * 16;
-      const extId = this._batchItems * 8;
-
-      const matData = this.$matrixBuffer.data;
-      const extData = this._extensionBuffer.data;
+  addLightForRender(light) {
+    if (this._batchItems < this.$MAX_RENDER_COUNT) {
+      const matId = this._batchItems * 16,
+        extId = this._batchItems * 8,
+        matData = this.$matrixBuffer.data,
+        extData = this._extensionBuffer.data;
 
       arraySet(matData, light.matrixCache, matId);
       matData[matId + 6] = light.transform.width;
@@ -325,7 +322,7 @@ export class LightRenderer extends BatchRenderer {
           "atan(" +
             "sl.x," +
             "length(vec2(sl.y,vUv.y))" +
-          ")+1.5707963267948966-vSpt<0.)discard;" +
+          ")+" + Utils.ALPHA + "-vSpt<0.)discard;" +
       "}" +
 
       "float " +

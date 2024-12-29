@@ -1,6 +1,6 @@
-import { Utils } from "../utils/Utils";
-import { BlendMode } from "../data/BlendMode";
 import { BaseRenderer } from "./BaseRenderer";
+import { BlendMode } from "../data/BlendMode";
+import { Utils } from "../utils/Utils";
 
 /**
  * @typedef {Object} AmbientOcclusionMapRendererConfig
@@ -29,22 +29,18 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     options.config = Utils.initRendererConfig(options.config);
 
     // prettier-ignore
-    options.config.locations = options.config.locations.concat([
+    options.config.locations = [
       "uSTTex",
       "uR",
       "uS",
       "uDM",
       "uUSTT",
-    ]);
+    ];
 
     super(options);
 
-    this.clearBeforeRender = true;
-    this.clearColor.set(0, 0, 0, 1);
-
     this.sourceTexture = options.sourceTexture;
     this.heightMap = options.heightMap;
-
     this.radius = options.radius ?? 4;
     this.samples = options.samples ?? 4;
     this.depthMultiplier = options.depthMultiplier ?? 1;

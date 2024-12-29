@@ -65,11 +65,7 @@ export class Item {
   set parent(v) {
     if (this.$parent !== v) {
       this.$parent = v;
-      this._currentParentPropsUpdateId =
-        this._currentParentColorUpdateId =
-        this.$currentInverseMatrixPropsUpdateId =
-        this.$currentAdditionalPropsUpdateId =
-          -1;
+      this._currentParentPropsUpdateId = this._currentParentColorUpdateId = -1;
     }
   }
 
@@ -146,15 +142,16 @@ export class Item {
    * Update ItemTransformProps
    */
   update() {
+    const transform = this.transform,
+      parent = this.$parent;
+
     this._updateColor();
-    const transform = this.transform;
     transform.updateRotation();
     transform.updateScale();
-    const parent = this.$parent;
 
     (this._currentParentPropsUpdateId < parent.propsUpdateId ||
       this._currentPropsUpdateId < transform.updateId) &&
-      this.$updateTransform(transform, parent);
+      this._updateTransform(transform, parent);
   }
 
   /**
@@ -169,7 +166,7 @@ export class Item {
    * @param {Container} parent
    * @ignore
    */
-  $updateTransform(transform, parent) {
+  _updateTransform(transform, parent) {
     this._currentParentPropsUpdateId = parent.propsUpdateId;
     this._currentPropsUpdateId = transform.updateId;
     ++this.propsUpdateId;
@@ -181,8 +178,8 @@ export class Item {
    * @ignore
    */
   _updateColor() {
-    const parent = this.$parent;
-    const color = this.color;
+    const parent = this.$parent,
+      color = this.color;
 
     if (
       this._currentParentColorUpdateId < parent.colorUpdateId ||
@@ -192,8 +189,8 @@ export class Item {
       this._currentColorUpdateId = color.updateId;
       ++this.colorUpdateId;
 
-      const colorCache = this.colorCache;
-      const parentColorCache = parent.colorCache;
+      const colorCache = this.colorCache,
+        parentColorCache = parent.colorCache;
 
       colorCache[0] = parentColorCache[0] * color.r;
       colorCache[1] = parentColorCache[1] * color.g;

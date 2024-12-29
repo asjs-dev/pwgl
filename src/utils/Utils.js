@@ -1,5 +1,4 @@
 import { Context } from "./Context";
-import { noop } from "./helpers";
 
 /**
  * @typedef {Object} WebGLContext
@@ -42,7 +41,7 @@ const _locationTypes = {
  * @returns {Object} Shader
  * @ignore
  */
-const _createShader = (gl, shaderType, shaderSource) => {
+const _createShader = (gl, shaderSource, shaderType) => {
   const shader = gl.createShader(shaderType);
 
   gl.shaderSource(shader, shaderSource);
@@ -64,11 +63,18 @@ const _createShader = (gl, shaderType, shaderSource) => {
  * @property {function(WebGLContext, WebGLProgram, Object):Object} getLocationsFor
  */
 
+const _THETA = Math.PI / 180;
+
 export const Utils = {
   /**
    * @property {number}
    */
-  THETA: Math.PI / 180,
+  ALPHA: 90 * _THETA,
+
+  /**
+   * @property {number}
+   */
+  THETA: _THETA,
 
   /**
    * @property {Object}
@@ -77,10 +83,10 @@ export const Utils = {
   GLSL: {
     VERSION: "#version 300 es\n",
     DEFINE: {
-      RADIAN_360: "#define RADIAN_360 6.283185307179586\n",
+      RADIAN_360: "#define RADIAN_360 " + Math.PI * 2 + "\n",
       HEIGHT: "#define HEIGHT 255.\n",
       Z: "#define Z vec3(0,1,-1)\n",
-      PI: "#define PI 3.141592653589793\n",
+      PI: "#define PI " + Math.PI + "\n",
     },
     RANDOM: 
       "float rand(vec2 p,float s){" +
@@ -115,8 +121,8 @@ export const Utils = {
    * @returns {ContextConfig}
    */
   initContextConfig: (config = {}) => ({
-    canvas: config.canvas || document.createElement("canvas"),
-    initCallback: config.initCallback,
+    canvas: document.createElement("canvas"),
+    ...config,
     contextAttributes: {
       ...{
         powerPreference: "high-performance",
@@ -142,8 +148,7 @@ export const Utils = {
    * @param {function} callback Callback function
    */
   initApplication: (callback) => {
-    const loadedCallback = () =>
-      (callback ?? noop)(Utils.INFO.isWebGl2Supported);
+    const loadedCallback = () => callback(Utils.INFO.isWebGl2Supported);
 
     ["interactive", "complete"].includes(document.readyState)
       ? loadedCallback()
@@ -161,17 +166,16 @@ export const Utils = {
    */
   createProgram: (gl, vertexShaderSource, fragmentShaderSource) => {
     const vertexShader = _createShader(
-      gl,
-      Const.VERTEX_SHADER,
-      vertexShaderSource
-    );
-    const fragmentShader = _createShader(
-      gl,
-      Const.FRAGMENT_SHADER,
-      fragmentShaderSource
-    );
-
-    const program = gl.createProgram();
+        gl,
+        vertexShaderSource,
+        Const.VERTEX_SHADER
+      ),
+      fragmentShader = _createShader(
+        gl,
+        fragmentShaderSource,
+        Const.FRAGMENT_SHADER
+      ),
+      program = gl.createProgram();
 
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
@@ -211,12 +215,13 @@ export const Utils = {
   getLocationsFor: (gl, program, locationsDescriptor) => {
     const locations = {};
 
-    locationsDescriptor.forEach((name) => {
-      locations[name] = gl["get" + _locationTypes[name[0]] + "Location"](
-        program,
-        name
-      );
-    });
+    locationsDescriptor.forEach(
+      (name) =>
+        (locations[name] = gl["get" + _locationTypes[name[0]] + "Location"](
+          program,
+          name
+        ))
+    );
 
     return locations;
   },

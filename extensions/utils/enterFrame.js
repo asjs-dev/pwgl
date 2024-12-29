@@ -1,8 +1,8 @@
 import { FPS } from "../FPS";
 
 export const enterFrame = (callback) => {
-  let requestAnimationFrameId;
-  let isPlaying = false;
+  let requestAnimationFrameId,
+    isPlaying = false;
 
   const render = () => {
     if (isPlaying) {

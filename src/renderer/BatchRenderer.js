@@ -1,5 +1,5 @@
-import { Buffer } from "../utils/Buffer";
 import { BaseRenderer } from "./BaseRenderer";
+import { Buffer } from "../utils/Buffer";
 
 /**
  * @typedef {Object} BatchRendererConfig
@@ -21,15 +21,16 @@ export class BatchRenderer extends BaseRenderer {
    */
   constructor(options) {
     // prettier-ignore
-    options.config.locations = options.config.locations.concat([
+    options.config.locations = [
+      ...options.config.locations,
       "aMt"
-    ]);
+    ];
 
     super(options);
 
-    this.$MAX_BATCH_ITEMS = options.maxBatchItems || 1;
+    this.$MAX_RENDER_COUNT = options.maxRenderCount || 10000;
 
-    this.$matrixBuffer = new Buffer("aMt", this.$MAX_BATCH_ITEMS, 4, 4);
+    this.$matrixBuffer = new Buffer("aMt", this.$MAX_RENDER_COUNT, 4, 4);
   }
 
   /**

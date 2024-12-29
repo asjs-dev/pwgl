@@ -18,8 +18,6 @@ export class Context {
 
     this._config = Utils.initContextConfig(config);
 
-    this._MAX_TEXTURE_NUM = Utils.INFO.maxTextureImageUnits;
-
     this._onContextLost = this._onContextLost.bind(this);
     this._initContext = this._initContext.bind(this);
     this._restoreContext = this._restoreContext.bind(this);
@@ -78,7 +76,9 @@ export class Context {
    * Clear textures
    */
   clearTextures() {
-    for (let i = 0, l = this._MAX_TEXTURE_NUM; i < l; ++i) {
+    const l = Utils.INFO.maxTextureImageUnits;
+
+    for (let i = 0; i < l; ++i) {
       this._textureMap[i] = null;
       this._emptyTextureSlots[i] = i;
     }
@@ -94,19 +94,16 @@ export class Context {
    * @param {function} callback
    * @returns {number}
    */
-  useTexture(textureInfo, renderTime, forceBind, callback) {
+  useTexture(textureInfo, renderTime, forceBind = true, callback) {
     if (!textureInfo) return -1;
 
     let textureId = this._textureMap.indexOf(textureInfo);
     if (textureId < 0) {
-      textureId = this._emptyTextureSlots[0];
-      forceBind = true;
-    }
-
-    if (this._emptyTextureSlots.length < 1) {
-      callback && callback();
-      this.clearTextures();
-      textureId = 0;
+      if (this._emptyTextureSlots.length < 1) {
+        callback && callback();
+        this.clearTextures();
+        textureId = 0;
+      } else textureId = this._emptyTextureSlots[0];
       forceBind = true;
     }
 

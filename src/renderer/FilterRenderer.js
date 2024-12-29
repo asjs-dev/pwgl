@@ -1,8 +1,8 @@
+import { BaseRenderer } from "./BaseRenderer";
+import { Framebuffer } from "../data/texture/Framebuffer";
+import { BlendMode } from "../data/BlendMode";
 import { noop } from "../utils/helpers";
 import { Utils } from "../utils/Utils";
-import { BlendMode } from "../data/BlendMode";
-import { Framebuffer } from "../data/texture/Framebuffer";
-import { BaseRenderer } from "./BaseRenderer";
 
 /**
  * @typedef {Object} FilterRendererConfig
@@ -30,17 +30,17 @@ export class FilterRenderer extends BaseRenderer {
     options.config = Utils.initRendererConfig(options.config);
 
     // prettier-ignore
-    options.config.locations = options.config.locations.concat([
+    options.config.locations = [
       "uFTex",
       "uFtrT",
       "uFtrV",
       "uFtrK"
-    ]);
+    ];
 
     super(options);
 
-    this.$attachFramebufferCustom = this.$attachFramebufferAndClearCustom =
-      noop;
+    this._attachFramebufferAndClear = this.$attachFramebufferAndClear;
+    this.$attachFramebufferAndClear = noop;
 
     this.filters = options.filters || [];
     this.sourceTexture = options.sourceTexture;
@@ -53,10 +53,13 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $render(framebuffer) {
-    const context = this.context;
-    const gl = this.$gl;
-    const renderTime = this.$renderTime;
-    const locations = this.$locations;
+    const context = this.context,
+      gl = this.$gl,
+      renderTime = this.$renderTime,
+      locations = this.$locations,
+      filters = this.filters,
+      l = filters.length || 1,
+      minL = l - 2;
 
     context.setBlendMode(BlendMode.NORMAL);
 
@@ -64,29 +67,26 @@ export class FilterRenderer extends BaseRenderer {
 
     this.$useTextureAt(this.sourceTexture, locations.uTex, 0);
 
-    const l = this.filters.length || 1;
-    const minL = l - 2;
-
     for (let i = 0; i < l; ++i) {
       let filterFramebuffer;
 
-      const filter = this.filters[i];
-      const useFilter = filter && filter.on;
-
-      const isLast = i > minL;
-
-      const filterTexture =
-        useFilter && filter.textureTransform && filter.textureTransform.texture;
+      const filter = filters[i],
+        useFilter = filter && filter.on,
+        isLast = i > minL,
+        filterTexture =
+          useFilter &&
+          filter.textureTransform &&
+          filter.textureTransform.texture;
 
       filterTexture && this.$useTextureAt(filterTexture, locations.uFTex, 1);
 
       if (isLast)
         framebuffer
-          ? this.$attachFramebufferAndClear(framebuffer)
+          ? this._attachFramebufferAndClear(framebuffer)
           : gl.uniform1f(locations.uFlpY, 1);
       else if (useFilter) {
         filterFramebuffer = this._framebuffers[i & 1];
-        this.$attachFramebufferAndClear(filterFramebuffer);
+        this._attachFramebufferAndClear(filterFramebuffer);
       }
 
       if (useFilter) {

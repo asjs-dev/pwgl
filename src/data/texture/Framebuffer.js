@@ -95,23 +95,13 @@ export class Framebuffer extends TextureInfo {
       );
 
       this.unbind(gl);
-
-      return;
-    }
-
-    if (this.$updateId) {
+    } else if (this.$updateId) {
       this.$updateId = 0;
       this.useActiveTextureAfterUpdate(gl, id);
-      return;
-    }
-
-    if (this._resizeUpdateId) {
+    } else if (this._resizeUpdateId) {
       this._resizeUpdateId = 0;
       this.useActiveTexture(gl, id);
-      return;
-    }
-
-    if (this._currenActiveId !== id || forceBind)
+    } else if (this._currenActiveId !== id || forceBind)
       this.bindActiveTexture(gl, id);
   }
 

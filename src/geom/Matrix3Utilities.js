@@ -44,10 +44,10 @@ export const Matrix3Utilities = {
    * @param {Matrix3} destinationMatrix
    */
   transformLocal: (itemTransform, destinationMatrix) => {
-    const anchorX = itemTransform.anchorX;
-    const anchorY = itemTransform.anchorY;
-    const scaledWidth = itemTransform.scaledWidth;
-    const scaledHeight = itemTransform.scaledHeight;
+    const anchorX = itemTransform.anchorX,
+      anchorY = itemTransform.anchorY,
+      scaledWidth = itemTransform.scaledWidth,
+      scaledHeight = itemTransform.scaledHeight;
 
     destinationMatrix[0] = itemTransform.cosRotationA * scaledWidth;
     destinationMatrix[1] = itemTransform.sinRotationA * scaledWidth;
@@ -70,16 +70,16 @@ export const Matrix3Utilities = {
    * @param {Matrix3} destinationMatrix
    */
   transform: (matrix, itemTransform, destinationMatrix) => {
-    const x = itemTransform.x;
-    const y = itemTransform.y;
-    const anchorX = itemTransform.anchorX;
-    const anchorY = itemTransform.anchorY;
-    const sinRotationA = itemTransform.sinRotationA;
-    const sinRotationB = itemTransform.sinRotationB;
-    const cosRotationA = itemTransform.cosRotationA;
-    const cosRotationB = itemTransform.cosRotationB;
-    const scaledWidth = itemTransform.scaledWidth;
-    const scaledHeight = itemTransform.scaledHeight;
+    const x = itemTransform.x,
+      y = itemTransform.y,
+      anchorX = itemTransform.anchorX,
+      anchorY = itemTransform.anchorY,
+      sinRotationA = itemTransform.sinRotationA,
+      sinRotationB = itemTransform.sinRotationB,
+      cosRotationA = itemTransform.cosRotationA,
+      cosRotationB = itemTransform.cosRotationB,
+      scaledWidth = itemTransform.scaledWidth,
+      scaledHeight = itemTransform.scaledHeight;
 
     destinationMatrix[0] =
       (cosRotationA * matrix[0] + sinRotationA * matrix[2]) * scaledWidth;
@@ -129,8 +129,8 @@ export const Matrix3Utilities = {
    * @returns {boolean}
    */
   isPointInMatrix: (matrix, point) => {
-    const x = point.x * matrix[0] + point.y * matrix[2] + matrix[4];
-    const y = point.x * matrix[1] + point.y * matrix[3] + matrix[5];
+    const x = point.x * matrix[0] + point.y * matrix[2] + matrix[4],
+      y = point.x * matrix[1] + point.y * matrix[3] + matrix[5];
 
     return x >= 0 && x <= 1 && y >= 0 && y <= 1;
   },
@@ -144,8 +144,8 @@ export const Matrix3Utilities = {
    * @param {number} resolution.heightHalf
    */
   calcCorners: (matrix, corners, resolution) => {
-    const widthHalf = resolution.widthHalf;
-    const heightHalf = resolution.heightHalf;
+    const widthHalf = resolution.widthHalf,
+      heightHalf = resolution.heightHalf;
 
     corners[0].x = widthHalf + matrix[4] * widthHalf;
     corners[0].y = resolution.height - (heightHalf + matrix[5] * heightHalf);

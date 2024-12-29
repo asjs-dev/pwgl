@@ -23,11 +23,10 @@ export class SaturateFilter extends BaseFilter {
    */
   set intensity(v) {
     this.v[0] = v;
-    const sv = 1 - v;
-
-    const svr = sv * 0.3;
-    const svg = sv * 0.59;
-    const svb = sv * 0.11;
+    const sv = 1 - v,
+      svr = sv * 0.3,
+      svg = sv * 0.59,
+      svb = sv * 0.11;
 
     // prettier-ignore
     arraySet(this.kernels, [

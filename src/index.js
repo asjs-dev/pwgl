@@ -4,26 +4,14 @@ import { Utils, Const } from "./utils/Utils";
 
 import { BlendMode } from "./data/BlendMode";
 
-import { ColorProps } from "./data/props/ColorProps";
-import { ItemTransformProps } from "./data/props/ItemTransformProps";
-import { LightTransformProps } from "./data/props/LightTransformProps";
-import { TextureCrop } from "./data/props/TextureCrop";
-import { TextureTransformProps } from "./data/props/TextureTransformProps";
-import { DistortionProps } from "./data/props/DistortionProps";
-import { FilterTextureTransformProps } from "./data/props/FilterTextureTransformProps";
-
-import { TextureInfo } from "./data/texture/TextureInfo";
 import { Texture } from "./data/texture/Texture";
 import { Framebuffer } from "./data/texture/Framebuffer";
-
-import { Matrix3Utilities } from "./geom/Matrix3Utilities";
 
 import { Item } from "./display/Item";
 import { BaseDrawable } from "./display/BaseDrawable";
 import { Light } from "./display/Light";
 import { AnimatedImage } from "./display/AnimatedImage";
 import { Container } from "./display/Container";
-import { StageContainer } from "./display/StageContainer";
 import { Image } from "./display/Image";
 
 import { BaseRenderer } from "./renderer/BaseRenderer";
@@ -58,15 +46,6 @@ window.PWGL = window.AGL = {
 
   BlendMode,
 
-  ColorProps,
-  ItemTransformProps,
-  LightTransformProps,
-  TextureCrop,
-  TextureTransformProps,
-  DistortionProps,
-  FilterTextureTransformProps,
-
-  TextureInfo,
   Texture,
   Framebuffer,
 
@@ -75,14 +54,11 @@ window.PWGL = window.AGL = {
   Utils,
   Const,
 
-  Matrix3Utilities,
-
   Item,
   BaseDrawable,
   Light,
   AnimatedImage,
   Container,
-  StageContainer,
   Image,
 
   BaseRenderer,
@@ -114,6 +90,6 @@ window.PWGL = window.AGL = {
 };
 
 console.log(
-  `%cPWGL v${PWGL.version}\nhttps:\/\/github.com/asjs-dev/pwgl`,
-  "background:#222;color:#00FF00"
+  `%cPWGL v${AGL.version}\nhttps:\/\/github.com/asjs-dev/pwgl`,
+  "background:#222;color:#0F0"
 );

@@ -27,6 +27,8 @@ export class Image extends BaseDrawable {
   constructor(texture) {
     super();
 
+    this._inverseMatrixCache = new Float32Array(6);
+
     this.RENDERING_TYPE = Image.RENDERING_TYPE;
 
     this.textureMatrixCache = Matrix3Utilities.identity();
@@ -44,6 +46,20 @@ export class Image extends BaseDrawable {
   }
 
   /**
+   * Set/Get parent
+   * @type {Container}
+   */
+  get parent() {
+    return this.$parent;
+  }
+  set parent(v) {
+    if (this.$parent !== v) {
+      super.parent = v;
+      this._currentInverseMatrixPropsUpdateId = -1;
+    }
+  }
+
+  /**
    * Update Image
    */
   update() {
@@ -58,8 +74,25 @@ export class Image extends BaseDrawable {
    * @returns {boolean}
    */
   isContainsPoint(point) {
-    this.$updateInverseMatrixCache();
-    return Matrix3Utilities.isPointInMatrix(this.$inverseMatrixCache, point);
+    this._updateInverseMatrixCache();
+    return Matrix3Utilities.isPointInMatrix(this._inverseMatrixCache, point);
+  }
+
+  /**
+   * @ignore
+   */
+  $updateAdditionalData() {
+    if (super.$updateAdditionalData()) this._updateInverseMatrixCache();
+  }
+
+  /**
+   * @ignore
+   */
+  _updateInverseMatrixCache() {
+    if (this._currentInverseMatrixPropsUpdateId < this.propsUpdateId) {
+      this._currentInverseMatrixPropsUpdateId = this.propsUpdateId;
+      Matrix3Utilities.inverse(this.matrixCache, this._inverseMatrixCache);
+    }
   }
 
   /**

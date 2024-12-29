@@ -3,8 +3,8 @@ export const areObjectsEqual = (a, b) => {
 
   if (typeof a !== "object") return a === b;
 
-  const ap = Object.getOwnPropertyNames(a);
-  const bp = Object.getOwnPropertyNames(b);
+  const ap = Object.getOwnPropertyNames(a),
+    bp = Object.getOwnPropertyNames(b);
 
   if (ap.length !== bp.length) return false;
 

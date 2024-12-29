@@ -1,21 +1,30 @@
-import { arraySet, noop } from "../utils/helpers";
+import { BatchRenderer } from "./BatchRenderer";
+import { LightRenderer } from "./LightRenderer";
 import { Item } from "../display/Item";
 import { Image } from "../display/Image";
 import { Light } from "../display/Light";
 import { Container } from "../display/Container";
 import { StageContainer } from "../display/StageContainer";
-import { Matrix3Utilities } from "../geom/Matrix3Utilities";
+import { arraySet, noop } from "../utils/helpers";
 import { Buffer } from "../utils/Buffer";
 import { Utils } from "../utils/Utils";
-import { BatchRenderer } from "./BatchRenderer";
-import { BaseDrawable } from "../display/BaseDrawable";
+import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import "../geom/PointType";
-import { LightRenderer } from "./LightRenderer";
 
 /**
- * @typedef {Object} Stage2DRendererConfig
+ * @typedef {Object} Stage2DConfig
  * @extends {RendererConfig}
  */
+
+const _INTERACTION_EVENT_TYPES = [
+  "mousemove",
+  "mousedown",
+  "mouseup",
+  "click",
+  "touchstart",
+  "touchmove",
+  "touchend",
+];
 
 /**
  * <pre>
@@ -29,21 +38,20 @@ export class Stage2D extends BatchRenderer {
   /**
    * Creates an instance of Stage2D.
    * @constructor
-   * @param {Stage2DRendererConfig} options
+   * @param {Stage2DConfig} options
    */
   constructor(options = {}) {
     options.config = Utils.initRendererConfig(options.config);
 
     // prettier-ignore
-    options.config.locations = options.config.locations.concat([
+    options.config.locations = [
       "aDt",
       "aDst"
-    ]);
-
-    const maxBatchItems = (options.maxBatchItems =
-      options.maxBatchItems || 10000);
+    ];
 
     super(options);
+
+    const maxRenderCount = this.$MAX_RENDER_COUNT;
 
     this.container = new StageContainer(this);
 
@@ -51,27 +59,20 @@ export class Stage2D extends BatchRenderer {
 
     this["_draw" + Item.RENDERING_TYPE] = this["_draw" + Light.RENDERING_TYPE] =
       noop;
-    this["_draw" + Image.RENDERING_TYPE] = this._drawImage.bind(this);
-    this["_draw" + Container.RENDERING_TYPE] = this._drawContainer.bind(this);
-
+    this["_draw" + Image.RENDERING_TYPE] = this._drawImage;
+    this["_draw" + Container.RENDERING_TYPE] = this._drawContainer;
     this._batchDraw = this._batchDraw.bind(this);
-    this._drawItem = this._drawItem.bind(this);
 
     this._mousePosition = { x: 0, y: 0 };
 
-    this._dataBuffer = new Buffer("aDt", maxBatchItems, 3, 4);
-
-    this._distortionBuffer = new Buffer("aDst", maxBatchItems, 4, 2);
+    this._dataBuffer = new Buffer("aDt", maxRenderCount, 3, 4);
+    this._distortionBuffer = new Buffer("aDst", maxRenderCount, 4, 2);
 
     this._onMouseEventHandler = this._onMouseEventHandler.bind(this);
     const body = document.body;
-    body.addEventListener("mousemove", this._onMouseEventHandler);
-    body.addEventListener("mousedown", this._onMouseEventHandler);
-    body.addEventListener("mouseup", this._onMouseEventHandler);
-    body.addEventListener("click", this._onMouseEventHandler);
-    body.addEventListener("touchstart", this._onMouseEventHandler);
-    body.addEventListener("touchmove", this._onMouseEventHandler);
-    body.addEventListener("touchend", this._onMouseEventHandler);
+    _INTERACTION_EVENT_TYPES.forEach((type) =>
+      body.addEventListener(type, this._onMouseEventHandler)
+    );
   }
 
   /**
@@ -80,15 +81,13 @@ export class Stage2D extends BatchRenderer {
    * @param {LightRenderer} v
    */
   attachLightRenderer(v) {
-    this._lightRenderer = v;
-    this["_draw" + Light.RENDERING_TYPE] = this._drawLight.bind(this);
+    this["_draw" + Light.RENDERING_TYPE] = v.addLightForRender.bind(v);
   }
 
   /**
    * Detach LightRenderer
    */
   detachLightRenderer() {
-    this._lightRenderer = null;
     this["_draw" + Light.RENDERING_TYPE] = noop;
   }
 
@@ -107,13 +106,9 @@ export class Stage2D extends BatchRenderer {
    */
   destruct() {
     const body = document.body;
-    body.removeEventListener("mousemove", this._onMouseEventHandler);
-    body.removeEventListener("mousedown", this._onMouseEventHandler);
-    body.removeEventListener("mouseup", this._onMouseEventHandler);
-    body.removeEventListener("click", this._onMouseEventHandler);
-    body.removeEventListener("touchstart", this._onMouseEventHandler);
-    body.removeEventListener("touchmove", this._onMouseEventHandler);
-    body.removeEventListener("touchend", this._onMouseEventHandler);
+    _INTERACTION_EVENT_TYPES.forEach((type) =>
+      body.removeEventListener(type, this._onMouseEventHandler)
+    );
   }
 
   /**
@@ -183,65 +178,56 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawContainer(container) {
-    const children = container.children;
-    for (let i = 0, l = children.length; i < l; ++i)
-      this._drawItem(children[i]);
+    const children = container.children,
+      l = children.length;
+
+    for (let i = 0; i < l; ++i) this._drawItem(children[i]);
   }
 
   /**
-   * @param {BaseDrawable} item
+   * @param {Image} image
    * @ignore
    */
-  _drawLight(item) {
-    this._lightRenderer.registerLightForRender(item);
-  }
-
-  /**
-   * @param {BaseDrawable} item
-   * @ignore
-   */
-  _drawImage(item) {
-    this.context.setBlendMode(item.blendMode, this._batchDraw);
+  _drawImage(image) {
+    this.context.setBlendMode(image.blendMode, this._batchDraw);
 
     if (
       this._isMousePositionSet &&
-      item.interactive &&
-      item.isContainsPoint(this._mousePosition)
+      image.interactive &&
+      image.isContainsPoint(this._mousePosition)
     )
-      this._eventTarget = item;
+      this._eventTarget = image;
 
-    const twId = this._batchItems * 12;
-    const matId = this._batchItems * 16;
+    const twId = this._batchItems * 12,
+      matId = this._batchItems * 16,
+      itemParent = image.parent,
+      colorCache = image.colorCache,
+      dataBuffer = this._dataBuffer.data,
+      matrixBuffer = this.$matrixBuffer.data;
 
-    const itemParent = item.parent;
-    const colorCache = item.colorCache;
-    const itemParentColorCache = itemParent.colorCache;
-
-    arraySet(this._dataBuffer.data, colorCache, twId);
-    arraySet(this._dataBuffer.data, item.textureRepeatRandomCache, twId + 8);
-
-    this._dataBuffer.data[twId + 4] =
-      item.alpha * itemParent.premultipliedAlpha;
-    this._dataBuffer.data[twId + 5] = item.tintType;
-    this._dataBuffer.data[twId + 6] = this.context.useTexture(
-      item.texture,
+    arraySet(dataBuffer, colorCache, twId);
+    arraySet(dataBuffer, image.textureRepeatRandomCache, twId + 8);
+    dataBuffer[twId + 4] = image.alpha * itemParent.premultipliedAlpha;
+    dataBuffer[twId + 5] = image.tintType;
+    dataBuffer[twId + 6] = this.context.useTexture(
+      image.texture,
       this.$renderTime,
       false,
       this._batchDraw
     );
-    this._dataBuffer.data[twId + 7] = item.distortionProps.distortTexture;
+    dataBuffer[twId + 7] = image.distortionProps.distortTexture;
 
-    arraySet(this.$matrixBuffer.data, item.matrixCache, matId);
-    arraySet(this.$matrixBuffer.data, item.textureMatrixCache, matId + 6);
-    arraySet(this.$matrixBuffer.data, item.textureCropCache, matId + 12);
+    arraySet(matrixBuffer, image.matrixCache, matId);
+    arraySet(matrixBuffer, image.textureMatrixCache, matId + 6);
+    arraySet(matrixBuffer, image.textureCropCache, matId + 12);
 
     arraySet(
       this._distortionBuffer.data,
-      item.distortionPropsCache,
+      image.distortionPropsCache,
       this._batchItems * 8
     );
 
-    ++this._batchItems === this.$MAX_BATCH_ITEMS && this._batchDraw();
+    ++this._batchItems === this.$MAX_RENDER_COUNT && this._batchDraw();
   }
 
   /**
@@ -392,11 +378,11 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    const options = this._options;
-    const maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
-    const useRepeatTextures = options.useRepeatTextures;
+    const options = this._options,
+     maxTextureImageUnits = Utils.INFO.maxTextureImageUnits,
+     useRepeatTextures = options.useRepeatTextures;
 
-    const createGetTextureFunction = (maxTextureImageUnits) => {
+     const createGetTextureFunction = (maxTextureImageUnits) => {
       let func = "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
         "vec2 " + 
           "tsh;";

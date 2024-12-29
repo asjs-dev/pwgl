@@ -1,8 +1,8 @@
+import { ColorProps } from "../data/props/ColorProps";
+import { Framebuffer } from "../data/texture/Framebuffer";
 import { noop } from "../utils/helpers";
 import { Buffer } from "../utils/Buffer";
 import { Utils, Const } from "../utils/Utils";
-import { ColorProps } from "../data/props/ColorProps";
-import { Framebuffer } from "../data/texture/Framebuffer";
 
 /**
  * @typedef {Object} BaseRendererConfig
@@ -22,9 +22,6 @@ export class BaseRenderer {
    * @param {BaseRendererConfig} options
    */
   constructor(options) {
-    this.$attachFramebufferCustom = this.$attachFramebuffer;
-    this.$attachFramebufferAndClearCustom = this.$attachFramebufferAndClear;
-
     this._clearBeforeRenderFunc = noop;
 
     this.$sizeUpdateId = 1;
@@ -44,11 +41,12 @@ export class BaseRenderer {
     this.context = config.context;
 
     // prettier-ignore
-    config.locations = config.locations.concat([
+    config.locations = [
+      ...config.locations,
       "uFlpY",
       "aPos",
       "uTex"
-    ]);
+    ];
 
     this.$enableBuffers = false;
 
@@ -109,7 +107,7 @@ export class BaseRenderer {
   renderToFramebuffer(framebuffer) {
     if (!this.context.isLost()) {
       this._switchToProgram();
-      this.$attachFramebufferAndClearCustom(framebuffer);
+      this.$attachFramebufferAndClear(framebuffer);
       this._renderBatch(framebuffer);
       framebuffer.unbind(this.$gl);
     }
@@ -234,8 +232,8 @@ export class BaseRenderer {
    */
   _switchToProgram() {
     this.$gl = this.context.gl;
-    const context = this.context;
-    const contextId = context.contextId;
+    const context = this.context,
+      contextId = context.contextId;
 
     if (this._currentContextId !== contextId) {
       this._currentContextId = contextId;

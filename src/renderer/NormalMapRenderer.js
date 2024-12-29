@@ -1,6 +1,6 @@
-import { Utils } from "../utils/Utils";
-import { BlendMode } from "../data/BlendMode";
 import { BaseRenderer } from "./BaseRenderer";
+import { BlendMode } from "../data/BlendMode";
+import { Utils } from "../utils/Utils";
 
 /**
  * @typedef {Object} NormalMapRendererConfig
@@ -26,9 +26,6 @@ export class NormalMapRenderer extends BaseRenderer {
     options.config = Utils.initRendererConfig(options.config);
 
     super(options);
-
-    this.clearBeforeRender = true;
-    this.clearColor.set(0, 0, 0, 1);
 
     this.heightMap = options.heightMap;
   }

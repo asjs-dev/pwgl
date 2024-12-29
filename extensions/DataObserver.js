@@ -20,8 +20,8 @@ export class DataObserver {
 
   _checkState() {
     if (this._run && !areObjectsEqual(this._state, this._prevState)) {
-      const stateClone = clone(this._state);
-      const prevStateClone = clone(this._prevState);
+      const stateClone = clone(this._state),
+        prevStateClone = clone(this._prevState);
       this._update(stateClone, prevStateClone);
       this._prevState = stateClone;
     }

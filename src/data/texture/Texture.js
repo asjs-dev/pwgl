@@ -92,10 +92,7 @@ export class Texture extends TextureInfo {
       this.$currentAglId = gl.agl_id;
       this._baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
-      return;
-    }
-
-    if (
+    } else if (
       this.$updateId ||
       this._loadUpdateId ||
       (this.shouldUpdate && this._currentRenderTime < renderTime) ||
@@ -104,10 +101,7 @@ export class Texture extends TextureInfo {
       this.$updateId = this._loadUpdateId = 0;
       this._currentRenderTime = renderTime;
       this.useActiveTexture(gl, id);
-      return;
-    }
-
-    if (this._currenActiveId !== id || forceBind)
+    } else if (this._currenActiveId !== id || forceBind)
       this.bindActiveTexture(gl, id);
   }
 

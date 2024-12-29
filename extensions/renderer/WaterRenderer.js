@@ -48,12 +48,12 @@ export class WaterRenderer extends AGL.Container {
   }
 
   render(delay) {
-    const waveSpeedX = this._speed * delay;
-    const waveSpeedY = waveSpeedX * 2;
+    const waveSpeedX = this._speed * delay,
+      waveSpeedY = waveSpeedX * 2;
 
     this._wave += waveSpeedX * 2.5;
-    const sinWave = Math.sin(this._wave) * 0.3;
-    const cosWave = Math.cos(this._wave) * 0.3;
+    const sinWave = Math.sin(this._wave) * 0.3,
+      cosWave = Math.cos(this._wave) * 0.3;
 
     let textureTransform = this._waterDisplacementImageLarge.textureTransform;
     textureTransform.x =

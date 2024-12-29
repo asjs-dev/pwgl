@@ -74,24 +74,17 @@ export class Buffer {
    * @ignore
    */
   _enable(gl) {
-    const rows = this._rows;
-    const location = this._location;
-    const cols = this._cols;
-    const length = this._length;
-    const offset = this._offset;
-    const divisor = this._divisor;
+    const rows = this._rows,
+      location = this._location,
+      cols = this._cols,
+      length = this._length,
+      offset = this._offset,
+      divisor = this._divisor;
     let i = -1;
     while (++i < rows) {
       const loc = location + i;
       gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(
-        loc,
-        cols,
-        Const.FLOAT,
-        false,
-        length,
-        i * offset
-      );
+      gl.vertexAttribPointer(loc, cols, Const.FLOAT, false, length, i * offset);
       gl.vertexAttribDivisor(loc, divisor);
     }
   }
