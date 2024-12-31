@@ -82,7 +82,7 @@ export class LightRenderer extends BatchRenderer {
       matData[matId + 7] = light.spotAngle;
       arraySet(matData, light.colorCache, matId + 8);
       matData[matId + 12] = light.shadowLength;
-      matData[matId + 13] = light.alpha * light.parent.premultipliedAlpha;
+      matData[matId + 13] = light.alpha * light.parent.getPremultipliedAlpha();
       matData[matId + 14] = light.angle;
 
       extData[extId] = light.type;

@@ -42,6 +42,7 @@ export class Stage2D extends BatchRenderer {
    */
   constructor(options = {}) {
     options.config = Utils.initRendererConfig(options.config);
+    options.useTint = options.useTint ?? true;
 
     // prettier-ignore
     options.config.locations = [
@@ -207,8 +208,9 @@ export class Stage2D extends BatchRenderer {
 
     arraySet(dataBuffer, colorCache, twId);
     arraySet(dataBuffer, image.textureRepeatRandomCache, twId + 8);
-    dataBuffer[twId + 4] = image.alpha * itemParent.premultipliedAlpha;
-    dataBuffer[twId + 5] = image.tintType;
+    dataBuffer[twId + 4] = image.alpha * itemParent.getPremultipliedAlpha();
+    dataBuffer[twId + 5] =
+      image.tintType * itemParent.getPremultipliedUseTint();
     dataBuffer[twId + 6] = this.context.useTexture(
       image.texture,
       this.$renderTime,
@@ -331,16 +333,19 @@ export class Stage2D extends BatchRenderer {
       : ";") +
 
     "vec2 clcQd(vec2 p){" +
-      "vec3 " + 
-        "P0=vec3(aDst[0],1.)," +
-        "P1=vec3(aDst[1],1.)," +
-        "P2=vec3(aDst[2],1.)," +
-        "P3=vec3(aDst[3],1.)," +
-        "t=mix(P0,P1,p.x)," +
-        "b=mix(P3,P2,p.x)," +
-        "r=mix(t,b,p.y);" +
-
-      "return r.xy/r.z;" +
+      "return mix(" + 
+        "mix(" + 
+          "aDst[0]," + 
+          "aDst[1]," + 
+          "p.x" + 
+        ")," + 
+        "mix(" + 
+          "aDst[3]," + 
+          "aDst[2]," + 
+          "p.x" + 
+        ")," + 
+        "p.y" + 
+      ");" +
     "}" +
 
     "void main(void){" +
@@ -356,7 +361,8 @@ export class Stage2D extends BatchRenderer {
       "gl_Position=vec4(mt*tPos,1);" +
       "gl_Position.y*=uFlpY;" +
       "float dt=aDt[1].w;" +
-      "vTUv=(tMt*((dt*vec3(aPos,1))+((1.-dt)*tPos))).xy;" +
+      "vTUv=(tMt*((dt*vec3(aPos,1))+((1.-dt)*tPos))).xy;" + 
+
       "vTCrop=aMt[3];" +
 
       "vCl=aDt[0];" +
@@ -380,7 +386,8 @@ export class Stage2D extends BatchRenderer {
   $createFragmentShader() {
     const options = this._options,
      maxTextureImageUnits = Utils.INFO.maxTextureImageUnits,
-     useRepeatTextures = options.useRepeatTextures;
+     useRepeatTextures = options.useRepeatTextures,
+     useTint = options.useTint;
 
      const createGetTextureFunction = (maxTextureImageUnits) => {
       let func = "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
@@ -503,13 +510,15 @@ export class Stage2D extends BatchRenderer {
 
       "if(oCl.a<=0.)discard;" +
 
-      "if(vTTp>0.)" +
-        "if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
-          "oCl*=vCl;" +
-        "else if(vTTp==3.)" +
-          "oCl=vCl;" +
-        "else if(vTTp==4.)" +
-          "oCl+=vCl;" +
+      (useTint
+        ? "if(vTTp>0.)" +
+          "if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
+            "oCl*=vCl;" +
+          "else if(vTTp==3.)" +
+            "oCl=vCl;" +
+          "else if(vTTp==4.)" +
+            "oCl+=vCl;" 
+        : "") +
     "}";
   }
 }

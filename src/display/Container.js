@@ -2,9 +2,15 @@ import { removeFromArray } from "../utils/helpers";
 import { Item } from "./Item";
 
 /**
+ * @ignore
+ */
+const _noopReturnsOne = () => 1;
+
+/**
  * Container
  * @extends {Item}
  * @property {Array<Item>} children
+ * @property {number} useTint
  */
 export class Container extends Item {
   /**
@@ -17,15 +23,35 @@ export class Container extends Item {
     this.RENDERING_TYPE = Container.RENDERING_TYPE;
 
     this.children = [];
+    this.useTint = true;
   }
 
   /**
-   * Returns with the permultiplied alpha
-   * @readonly
-   * @type {number}
+   * Set/Get parent
+   * @type {Container}
    */
-  get premultipliedAlpha() {
-    return this.alpha * this.$parent.premultipliedAlpha;
+  get parent() {
+    return this.$parent;
+  }
+  set parent(v) {
+    super.parent = v;
+    this._updatePremultipliedFunctions(v);
+  }
+
+  /**
+   * Get premultipliedUseTint
+   * @type {Container}
+   */
+  getPremultipliedUseTint() {
+    return this.useTint * this._getPremultipliedUseTint();
+  }
+
+  /**
+   * Get premultipliedAlpha
+   * @type {Container}
+   */
+  getPremultipliedAlpha() {
+    return this.alpha * this._getPremultipliedAlpha();
   }
 
   /**
@@ -157,6 +183,16 @@ export class Container extends Item {
     }
 
     return bounds;
+  }
+
+  _updatePremultipliedFunctions(v) {
+    if (v) {
+      this._getPremultipliedUseTint = v.getPremultipliedUseTint.bind(v);
+      this._getPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
+    } else {
+      this._getPremultipliedUseTint = _noopReturnsOne;
+      this._getPremultipliedAlpha = _noopReturnsOne;
+    }
   }
 }
 

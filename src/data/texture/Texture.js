@@ -27,8 +27,6 @@ export class Texture extends TextureInfo {
     this.source = source;
     this.shouldUpdate = shouldUpdate;
 
-    this._dimensionWidthName = "width";
-    this._dimensionHeightName = "height";
     this._currentRenderTime = this._loadUpdateId = 0;
   }
 
@@ -138,12 +136,12 @@ export class Texture extends TextureInfo {
     }
 
     if (this._sourceWidth * this._sourceHeight) {
-      this._renderSource = this._source;
+      this.$renderSource = this._source;
       ++this._loadUpdateId;
       return true;
     }
 
-    this._renderSource = null;
+    this.$renderSource = null;
   }
 }
 
@@ -164,11 +162,10 @@ Texture.loadImage = (src, shouldUpdate) => {
  * Create a new Texture from a video source
  * @function
  * @param {HTMLVideoElement} src
- * @param {boolean} shouldUpdate
  * @returns {Texture}
  */
-Texture.loadVideo = (src, shouldUpdate) => {
+Texture.loadVideo = (src) => {
   const video = document.createElement("video");
   video.src = src;
-  return new Texture(video, shouldUpdate);
+  return new Texture(video);
 };

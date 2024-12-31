@@ -40,11 +40,18 @@ export class StageContainer extends Container {
   }
 
   /**
-   * Get premultiplied alpha
-   * @readonly
-   * @type {number}
+   * Get premultiplied useTint value
+   * @type {Container}
    */
-  get premultipliedAlpha() {
+  getPremultipliedUseTint() {
+    return this.useTint;
+  }
+
+  /**
+   * Get premultiplied alpha
+   * @type {Container}
+   */
+  getPremultipliedAlpha() {
     return this.alpha;
   }
 }

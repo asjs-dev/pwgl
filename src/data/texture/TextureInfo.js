@@ -247,7 +247,7 @@ export class TextureInfo {
       0,
       this._format,
       this._type,
-      this._renderSource
+      this.$renderSource
     );
 
     this.uploadTextureInfo(gl);

@@ -4,6 +4,7 @@ import { Mouse } from "./Mouse";
 import { Keyboard } from "./Keyboard";
 import { Gamepad } from "./Gamepad";
 import { DataObserver } from "./DataObserver";
+import { AudioMixer, crossFadeAudioVolumes, fadeAudioVolume } from "./AudioMixer";
 import { SmoothLight } from "./renderer/SmoothLight";
 import { WaterRenderer } from "./renderer/WaterRenderer";
 import { areObjectsEqual } from "./utils/areObjectsEqual";
@@ -18,6 +19,7 @@ import { fract } from "./utils/fract";
 import { getFPS } from "./utils/getFPS";
 import { nthCall } from "./utils/nthCall";
 import { random } from "./utils/rand";
+import { mix } from "./utils/mix";
 
 window.PWGLExtensions = window.AGLExtensions = {
   FPS,
@@ -27,11 +29,16 @@ window.PWGLExtensions = window.AGLExtensions = {
   Gamepad,
   DataObserver,
 
+  AudioMixer,
+  fadeAudioVolume,
+  crossFadeAudioVolumes,
+
   SmoothLight,
   WaterRenderer,
 
   areObjectsEqual,
   clamp,
+  mix,
   clone,
   collisionDetection,
   cross,
