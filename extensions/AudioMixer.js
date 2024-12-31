@@ -64,15 +64,15 @@ export class AudioMixer {
     this._callFunction(this._stop, fileName);
   }
 
-  resume(fileName) {
-    this._callFunction(this._resume, fileName);
+  resume(fileName, options) {
+    this._callFunction(this._resume, fileName, options);
   }
 
   setLoop(fileName, loop) {
     const audioElement = this._audioMap[fileName];
     if (audioElement) {
       audioElement.state.loop = loop;
-      if (audioElement.isPlaying) audioElement.source.loop = loop;
+      if (audioElement.state.isPlaying) audioElement.source.loop = loop;
     }
   }
 
@@ -80,7 +80,8 @@ export class AudioMixer {
     const audioElement = this._audioMap[fileName];
     if (audioElement) {
       audioElement.state.volume = volume;
-      if (audioElement.isPlaying) audioElement.gainNode.gain.value = volume;
+      if (audioElement.state.isPlaying)
+        audioElement.gainNode.gain.value = volume;
     }
   }
 
@@ -88,7 +89,7 @@ export class AudioMixer {
     const audioElement = this._audioMap[fileName];
     if (audioElement) {
       audioElement.state.pan = pan;
-      if (audioElement.isPlaying) audioElement.panNode.pan.value = pan;
+      if (audioElement.state.isPlaying) audioElement.panNode.pan.value = pan;
     }
   }
 
@@ -96,7 +97,7 @@ export class AudioMixer {
     const audioElement = this._audioMap[fileName];
     if (audioElement) {
       audioElement.state.pitch = pitch;
-      if (audioElement.isPlaying)
+      if (audioElement.state.isPlaying)
         audioElement.source.playbackRate.value = pitch;
     }
   }
@@ -155,11 +156,12 @@ export class AudioMixer {
 
       audioElement.inited = true;
 
+      this._start(fileName, options.startTime ?? 0);
+
       this.setVolume(fileName, options.volume ?? 1);
       this.setPan(fileName, options.pan ?? 0);
       this.setPitch(fileName, options.pitch ?? 1);
       this.setLoop(fileName, options.loop ?? false);
-      this._start(fileName, options.startTime ?? 0);
     }
   }
 
@@ -192,9 +194,9 @@ export class AudioMixer {
     }
   }
 
-  _resume(fileName) {
+  _resume(fileName, options) {
     const audioElement = this._audioMap[fileName];
-    audioElement && this.play(fileName, audioElement.state);
+    audioElement && this._play(fileName, { ...audioElement.state, ...options });
   }
 
   _callFunction(func, fileName, options) {
