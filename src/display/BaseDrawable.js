@@ -24,25 +24,11 @@ export class BaseDrawable extends Item {
   }
 
   /**
-   * Set/Get parent
-   * @type {Container}
-   */
-  get parent() {
-    return this.$parent;
-  }
-  set parent(v) {
-    if (this.$parent !== v) {
-      super.parent = v;
-      this._currentAdditionalPropsUpdateId = -1;
-    }
-  }
-
-  /**
    * Returns with the calculated corder positions
    * @returns {Array<Point>}
    */
   getCorners() {
-    this.$updateAdditionalData();
+    this.$calcCorners();
     return this.$corners;
   }
 
@@ -51,42 +37,7 @@ export class BaseDrawable extends Item {
    * @returns {Rectangle}
    */
   getBounds() {
-    this.$updateAdditionalData();
-    return this.$bounds;
-  }
-
-  /**
-   * @ignore
-   */
-  $calcCorners() {
-    Matrix3Utilities.calcCorners(
-      this.matrixCache,
-      this.$corners,
-      this.stage.renderer
-    );
-  }
-
-  /**
-   * @ignore
-   */
-  $updateAdditionalData() {
-    if (
-      this.renderable &&
-      this._currentAdditionalPropsUpdateId < this.propsUpdateId
-    ) {
-      this._currentAdditionalPropsUpdateId = this.propsUpdateId;
-      this._calcBounds();
-      return true;
-    }
-  }
-
-  /**
-   * @ignore
-   */
-  _calcBounds() {
-    this.$calcCorners();
-
-    const corners = this.$corners,
+    const corners = this.getCorners(),
       bounds = this.$bounds,
       a = corners[0],
       b = corners[1],
@@ -97,5 +48,20 @@ export class BaseDrawable extends Item {
     bounds.y = Math.min(a.y, b.y, c.y, d.y);
     bounds.width = Math.max(a.x, b.x, c.x, d.x);
     bounds.height = Math.max(a.y, b.y, c.y, d.y);
+
+    return bounds;
+  }
+
+  /**
+   * @ignore
+   */
+  $calcCorners() {
+    const stage = this.stage;
+    stage &&
+      Matrix3Utilities.calcCorners(
+        this.$corners,
+        this.matrixCache,
+        stage.renderer
+      );
   }
 }

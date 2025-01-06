@@ -25,7 +25,7 @@ export const noop = () => {};
  * @param {number} from
  * @ignore
  */
-export const arraySet = (target, source, from) => {
+export const arraySet = (target, source, from = 0) => {
   let i = source.length;
   while (--i > -1) target[from + i] = source[i];
 };

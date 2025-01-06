@@ -2,7 +2,11 @@ import { noop } from "../../utils/helpers";
 
 /**
  * Base class for positioning elements
- * @method updateRotation
+ * @property {boolean} updated
+ * @property {number} cosRotationA
+ * @property {number} cosRotationB
+ * @property {number} sinRotationA
+ * @property {number} sinRotationB
  */
 export class BaseTransformProps {
   /**
@@ -10,10 +14,10 @@ export class BaseTransformProps {
    * @constructor
    */
   constructor() {
-    this.updateRotation = noop;
+    this._updateRotationFv = noop;
     this.cosRotationA = this.cosRotationB = 1;
-    this.updateId =
-      this.sinRotationA =
+
+    this.sinRotationA =
       this.sinRotationB =
       this._x =
       this._y =
@@ -33,10 +37,8 @@ export class BaseTransformProps {
     return this._x;
   }
   set x(v) {
-    if (this._x !== v) {
-      this._x = v;
-      ++this.updateId;
-    }
+    this._x = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -47,10 +49,8 @@ export class BaseTransformProps {
     return this._y;
   }
   set y(v) {
-    if (this._y !== v) {
-      this._y = v;
-      ++this.updateId;
-    }
+    this._y = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -61,10 +61,8 @@ export class BaseTransformProps {
     return this._rotation;
   }
   set rotation(v) {
-    if (this._rotation !== v) {
-      this._rotation = v;
-      this.updateRotation = this._updateRotation;
-    }
+    this._rotation = v;
+    this._updateRotationFv = this._updateRotation;
   }
 
   /**
@@ -75,10 +73,8 @@ export class BaseTransformProps {
     return this._anchorX;
   }
   set anchorX(v) {
-    if (this._anchorX !== v) {
-      this._anchorX = v;
-      ++this.updateId;
-    }
+    this._anchorX = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -89,10 +85,8 @@ export class BaseTransformProps {
     return this._anchorY;
   }
   set anchorY(v) {
-    if (this._anchorY !== v) {
-      this._anchorY = v;
-      ++this.updateId;
-    }
+    this._anchorY = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -103,10 +97,8 @@ export class BaseTransformProps {
     return this._skewX;
   }
   set skewX(v) {
-    if (this._skewX !== v) {
-      this._skewX = v;
-      this.updateRotation = this._updateRotation;
-    }
+    this._skewX = v;
+    this._updateRotationFv = this._updateRotation;
   }
 
   /**
@@ -117,10 +109,17 @@ export class BaseTransformProps {
     return this._skewY;
   }
   set skewY(v) {
-    if (this._skewY !== v) {
-      this._skewY = v;
-      this.updateRotation = this._updateRotation;
-    }
+    this._skewY = v;
+    this._updateRotationFv = this._updateRotation;
+  }
+
+  /**
+   * Update values
+   */
+  update() {
+    this._updateRotationFv();
+    this.updated = this.$transformUpdated;
+    this.$transformUpdated = false;
   }
 
   /**
@@ -128,10 +127,10 @@ export class BaseTransformProps {
    * @ignore
    */
   _updateRotation() {
-    this.updateRotation = noop;
-    ++this.updateId;
+    this._updateRotationFv = noop;
+    this.$transformUpdated = true;
 
-    if (this._skewX === 0 && this._skewY === 0) {
+    if (!this._skewX && !this._skewY) {
       this.sinRotationA = this.sinRotationB = Math.sin(this._rotation);
       this.cosRotationA = this.cosRotationB = Math.cos(this._rotation);
     } else {

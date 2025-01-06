@@ -1,5 +1,7 @@
 /**
  * Class for color properties
+ * @property {boolean} updated
+ * @property {Array<number>} cache
  */
 export class ColorProps {
   /**
@@ -7,8 +9,8 @@ export class ColorProps {
    * @constructor
    */
   constructor() {
-    this.updateId = 1;
-    this.cache = [1, 1, 1, 1];
+    this.cache = [];
+    this.set(1, 1, 1, 1);
   }
 
   /**
@@ -19,10 +21,8 @@ export class ColorProps {
     return this.cache[0];
   }
   set r(v) {
-    if (this.cache[0] !== v) {
-      this.cache[0] = v;
-      ++this.updateId;
-    }
+    this.cache[0] = v;
+    this._colorUpdated = true;
   }
 
   /**
@@ -33,10 +33,8 @@ export class ColorProps {
     return this.cache[1];
   }
   set g(v) {
-    if (this.cache[1] !== v) {
-      this.cache[1] = v;
-      ++this.updateId;
-    }
+    this.cache[1] = v;
+    this._colorUpdated = true;
   }
 
   /**
@@ -47,10 +45,8 @@ export class ColorProps {
     return this.cache[2];
   }
   set b(v) {
-    if (this.cache[2] !== v) {
-      this.cache[2] = v;
-      ++this.updateId;
-    }
+    this.cache[2] = v;
+    this._colorUpdated = true;
   }
 
   /**
@@ -61,10 +57,8 @@ export class ColorProps {
     return this.cache[3];
   }
   set a(v) {
-    if (this.cache[3] !== v) {
-      this.cache[3] = v;
-      ++this.updateId;
-    }
+    this.cache[3] = v;
+    this._colorUpdated = true;
   }
 
   /**
@@ -75,9 +69,18 @@ export class ColorProps {
    * @param {number} a
    */
   set(r, g, b, a) {
-    this.r = r;
-    this.g = g;
-    this.b = b;
-    this.a = a;
+    this.cache[0] = r;
+    this.cache[1] = g;
+    this.cache[2] = b;
+    this.cache[3] = a;
+    this._colorUpdated = true;
+  }
+
+  /**
+   * Update calculated color values
+   */
+  update() {
+    this.updated = this._colorUpdated;
+    this._colorUpdated = false;
   }
 }

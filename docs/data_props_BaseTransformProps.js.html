@@ -50,7 +50,11 @@
 
 /**
  * Base class for positioning elements
- * @method updateRotation
+ * @property {boolean} updated
+ * @property {number} cosRotationA
+ * @property {number} cosRotationB
+ * @property {number} sinRotationA
+ * @property {number} sinRotationB
  */
 export class BaseTransformProps {
   /**
@@ -58,10 +62,10 @@ export class BaseTransformProps {
    * @constructor
    */
   constructor() {
-    this.updateRotation = noop;
+    this._updateRotationFv = noop;
     this.cosRotationA = this.cosRotationB = 1;
-    this.updateId =
-      this.sinRotationA =
+
+    this.sinRotationA =
       this.sinRotationB =
       this._x =
       this._y =
@@ -81,10 +85,8 @@ export class BaseTransformProps {
     return this._x;
   }
   set x(v) {
-    if (this._x !== v) {
-      this._x = v;
-      ++this.updateId;
-    }
+    this._x = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -95,10 +97,8 @@ export class BaseTransformProps {
     return this._y;
   }
   set y(v) {
-    if (this._y !== v) {
-      this._y = v;
-      ++this.updateId;
-    }
+    this._y = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -109,10 +109,8 @@ export class BaseTransformProps {
     return this._rotation;
   }
   set rotation(v) {
-    if (this._rotation !== v) {
-      this._rotation = v;
-      this.updateRotation = this._updateRotation;
-    }
+    this._rotation = v;
+    this._updateRotationFv = this._updateRotation;
   }
 
   /**
@@ -123,10 +121,8 @@ export class BaseTransformProps {
     return this._anchorX;
   }
   set anchorX(v) {
-    if (this._anchorX !== v) {
-      this._anchorX = v;
-      ++this.updateId;
-    }
+    this._anchorX = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -137,10 +133,8 @@ export class BaseTransformProps {
     return this._anchorY;
   }
   set anchorY(v) {
-    if (this._anchorY !== v) {
-      this._anchorY = v;
-      ++this.updateId;
-    }
+    this._anchorY = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -151,10 +145,8 @@ export class BaseTransformProps {
     return this._skewX;
   }
   set skewX(v) {
-    if (this._skewX !== v) {
-      this._skewX = v;
-      this.updateRotation = this._updateRotation;
-    }
+    this._skewX = v;
+    this._updateRotationFv = this._updateRotation;
   }
 
   /**
@@ -165,10 +157,17 @@ export class BaseTransformProps {
     return this._skewY;
   }
   set skewY(v) {
-    if (this._skewY !== v) {
-      this._skewY = v;
-      this.updateRotation = this._updateRotation;
-    }
+    this._skewY = v;
+    this._updateRotationFv = this._updateRotation;
+  }
+
+  /**
+   * Update values
+   */
+  update() {
+    this._updateRotationFv();
+    this.updated = this.$transformUpdated;
+    this.$transformUpdated = false;
   }
 
   /**
@@ -176,10 +175,10 @@ export class BaseTransformProps {
    * @ignore
    */
   _updateRotation() {
-    this.updateRotation = noop;
-    ++this.updateId;
+    this._updateRotationFv = noop;
+    this.$transformUpdated = true;
 
-    if (this._skewX === 0 &amp;&amp; this._skewY === 0) {
+    if (!this._skewX &amp;&amp; !this._skewY) {
       this.sinRotationA = this.sinRotationB = Math.sin(this._rotation);
       this.cosRotationA = this.cosRotationB = Math.cos(this._rotation);
     } else {
@@ -203,13 +202,13 @@ export class BaseTransformProps {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="AnimatedImage_Item.html">Item</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseDrawable_Item.html">Item</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Container_Item.html">Item</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="Image_Item.html">Item</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item_Item.html">Item</a></li><li><a href="ItemTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="Light_Item.html">Item</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="LightTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="StageContainer_Item.html">Item</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TextureTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#callbackAfterRender">callbackAfterRender</a></li><li><a href="global.html#updateRotation">updateRotation</a></li><li><a href="global.html#updateScale">updateScale</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 31 Dec 2024 19:44:35 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon, 06 Jan 2025 14:53:53 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

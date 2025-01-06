@@ -34,7 +34,7 @@ export class ChromaticAberrationFilter extends BaseFilter {
    * @type {boolean}
    */
   get isRadial() {
-    return this.v[2] === 1;
+    return this.v[2];
   }
   set isRadial(v) {
     this.v[2] = v ? 1 : 0;

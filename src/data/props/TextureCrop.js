@@ -2,6 +2,9 @@ import "../../geom/RectangleType";
 
 /**
  * Class for texture crop properties
+ * @property {boolean} updated
+ * @property {Array<number>} cache
+ * @property {function} update
  */
 export class TextureCrop {
   /**
@@ -9,9 +12,8 @@ export class TextureCrop {
    * @constructor
    */
   constructor() {
-    this.updateCrop = this._updateCrop;
     this.cache = [0, 0, 1, 1];
-
+    this._updateCacheFv = this._updateCache;
     this._width = this._height = 1;
   }
 
@@ -23,10 +25,8 @@ export class TextureCrop {
     return this.cache[0];
   }
   set x(v) {
-    if (this.cache[0] !== v) {
-      this.cache[0] = v;
-      this.updateCrop = this._updateCrop;
-    }
+    this.cache[0] = v;
+    this._updateCacheFv = this._updateCache;
   }
 
   /**
@@ -37,10 +37,8 @@ export class TextureCrop {
     return this.cache[1];
   }
   set y(v) {
-    if (this.cache[1] !== v) {
-      this.cache[1] = v;
-      this.updateCrop = this._updateCrop;
-    }
+    this.cache[1] = v;
+    this._updateCacheFv = this._updateCache;
   }
 
   /**
@@ -51,10 +49,8 @@ export class TextureCrop {
     return this._width;
   }
   set width(v) {
-    if (this._width !== v) {
-      this._width = v;
-      this.updateCrop = this._updateCrop;
-    }
+    this._width = v;
+    this._updateCacheFv = this._updateCache;
   }
 
   /**
@@ -65,10 +61,8 @@ export class TextureCrop {
     return this._height;
   }
   set height(v) {
-    if (this._height !== v) {
-      this._height = v;
-      this.updateCrop = this._updateCrop;
-    }
+    this._height = v;
+    this._updateCacheFv = this._updateCache;
   }
 
   /**
@@ -82,12 +76,19 @@ export class TextureCrop {
     this.height = rect.height;
   }
 
+  update() {
+    this._updateCacheFv();
+    this.updated = this._cacheUpdated;
+    this._cacheUpdated = false;
+  }
+
   /**
    * Update calculated crop values
    * @ignore
    */
-  _updateCrop() {
-    this.updateCrop = noop;
+  _updateCache() {
+    this._updateCacheFv = noop;
+    this._cacheUpdated = true;
 
     this.cache[2] = this._width - this.cache[0];
     this.cache[3] = this._height - this.cache[1];

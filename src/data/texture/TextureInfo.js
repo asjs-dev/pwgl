@@ -2,6 +2,7 @@ import { Const } from "../../utils/Utils";
 
 /**
  * TextureInfo
+ * @property {number} target
  */
 export class TextureInfo {
   /**
@@ -17,7 +18,8 @@ export class TextureInfo {
     this.type = Const.UNSIGNED_BYTE;
 
     this.$currentAglId = this._currenActiveId = -1;
-    this.$updateId = this.$width = this.$height = 1;
+    this.$updated = true;
+    this.$width = this.$height = 1;
   }
 
   /**
@@ -46,10 +48,8 @@ export class TextureInfo {
     return this._wrapS;
   }
   set wrapS(v) {
-    if (this._wrapS !== v) {
-      this._wrapS = v;
-      ++this.$updateId;
-    }
+    this._wrapS = v;
+    this.$updated = true;
   }
 
   /**
@@ -60,10 +60,8 @@ export class TextureInfo {
     return this._wrapT;
   }
   set wrapT(v) {
-    if (this._wrapT !== v) {
-      this._wrapT = v;
-      ++this.$updateId;
-    }
+    this._wrapT = v;
+    this.$updated = true;
   }
 
   /**
@@ -74,10 +72,8 @@ export class TextureInfo {
     return this._internalFormat;
   }
   set internalFormat(v) {
-    if (this._internalFormat !== v) {
-      this._internalFormat = v;
-      ++this.$updateId;
-    }
+    this._internalFormat = v;
+    this.$updated = true;
   }
 
   /**
@@ -88,10 +84,8 @@ export class TextureInfo {
     return this._format;
   }
   set format(v) {
-    if (this._format !== v) {
-      this._format = v;
-      ++this.$updateId;
-    }
+    this._format = v;
+    this.$updated = true;
   }
 
   /**
@@ -102,10 +96,8 @@ export class TextureInfo {
     return this._minFilter;
   }
   set minFilter(v) {
-    if (this._minFilter !== v) {
-      this._minFilter = v;
-      ++this.$updateId;
-    }
+    this._minFilter = v;
+    this.$updated = true;
   }
 
   /**
@@ -116,10 +108,8 @@ export class TextureInfo {
     return this._magFilter;
   }
   set magFilter(v) {
-    if (this._magFilter !== v) {
-      this._magFilter = v;
-      ++this.$updateId;
-    }
+    this._magFilter = v;
+    this.$updated = true;
   }
 
   /**
@@ -130,10 +120,8 @@ export class TextureInfo {
     return this._maxMipMapLevel;
   }
   set maxMipMapLevel(v) {
-    if (this._maxMipMapLevel !== v) {
-      this._maxMipMapLevel = v;
-      ++this.$updateId;
-    }
+    this._maxMipMapLevel = v;
+    this.$updated = true;
   }
 
   /**
@@ -144,10 +132,8 @@ export class TextureInfo {
     return this._baseMipMapLevel;
   }
   set baseMipMapLevel(v) {
-    if (this._baseMipMapLevel !== v) {
-      this._baseMipMapLevel = v;
-      ++this.$updateId;
-    }
+    this._baseMipMapLevel = v;
+    this.$updated = true;
   }
 
   /**
@@ -158,10 +144,8 @@ export class TextureInfo {
     return this._type;
   }
   set type(v) {
-    if (this._type !== v) {
-      this._type = v;
-      ++this.$updateId;
-    }
+    this._type = v;
+    this.$updated = true;
   }
 
   /**

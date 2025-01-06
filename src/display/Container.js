@@ -35,7 +35,12 @@ export class Container extends Item {
   }
   set parent(v) {
     super.parent = v;
-    this._updatePremultipliedFunctions(v);
+    if (v) {
+      this._getParentPremultipliedUseTint = v.getPremultipliedUseTint.bind(v);
+      this._getParentPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
+    } else
+      this._getParentPremultipliedUseTint = this._getParentPremultipliedAlpha =
+        _noopReturnsOne;
   }
 
   /**
@@ -43,7 +48,7 @@ export class Container extends Item {
    * @type {Container}
    */
   getPremultipliedUseTint() {
-    return this.useTint * this._getPremultipliedUseTint();
+    return this.useTint * this._getParentPremultipliedUseTint();
   }
 
   /**
@@ -51,7 +56,7 @@ export class Container extends Item {
    * @type {Container}
    */
   getPremultipliedAlpha() {
-    return this.alpha * this._getPremultipliedAlpha();
+    return this.alpha * this._getParentPremultipliedAlpha();
   }
 
   /**
@@ -173,7 +178,7 @@ export class Container extends Item {
     bounds.x = bounds.y = 1 / 0;
     bounds.width = bounds.height = -1 / 0;
 
-    for (let i = 0; i < l; ++i) {
+    for (let i = 0; i < l; i++) {
       const childBounds = children[i].getBounds();
 
       bounds.x = Math.min(bounds.x, childBounds.x);
@@ -183,16 +188,6 @@ export class Container extends Item {
     }
 
     return bounds;
-  }
-
-  _updatePremultipliedFunctions(v) {
-    if (v) {
-      this._getPremultipliedUseTint = v.getPremultipliedUseTint.bind(v);
-      this._getPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
-    } else {
-      this._getPremultipliedUseTint = _noopReturnsOne;
-      this._getPremultipliedAlpha = _noopReturnsOne;
-    }
   }
 }
 

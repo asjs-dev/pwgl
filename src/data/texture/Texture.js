@@ -18,8 +18,6 @@ export class Texture extends TextureInfo {
   constructor(source, shouldUpdate) {
     super();
 
-    this.isVideo = false;
-
     this._source = _placeholderImage;
 
     this._parseTextureSize = this._parseTextureSize.bind(this);
@@ -27,7 +25,7 @@ export class Texture extends TextureInfo {
     this.source = source;
     this.shouldUpdate = shouldUpdate;
 
-    this._currentRenderTime = this._loadUpdateId = 0;
+    this._currentRenderTime = 0;
   }
 
   /**
@@ -91,12 +89,12 @@ export class Texture extends TextureInfo {
       this._baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
     } else if (
-      this.$updateId ||
-      this._loadUpdateId ||
+      this.$updated ||
+      this._loaded ||
       (this.shouldUpdate && this._currentRenderTime < renderTime) ||
       (this.isVideo && !this._source.paused)
     ) {
-      this.$updateId = this._loadUpdateId = 0;
+      this.$updated = this._loaded = false;
       this._currentRenderTime = renderTime;
       this.useActiveTexture(gl, id);
     } else if (this._currenActiveId !== id || forceBind)
@@ -137,7 +135,7 @@ export class Texture extends TextureInfo {
 
     if (this._sourceWidth * this._sourceHeight) {
       this.$renderSource = this._source;
-      ++this._loadUpdateId;
+      this._loaded = true;
       return true;
     }
 

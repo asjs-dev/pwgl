@@ -16,11 +16,11 @@ export class EdgeDetectFilter extends BaseFilter {
 
     this.mix = mix;
 
-// prettier-ignore
+    // prettier-ignore
     arraySet(this.kernels, [
       -1, -1, -1,
       -1,  8, -1,
       -1, -1, -1
-    ], 0);
+    ]);
   }
 }

@@ -1,9 +1,12 @@
+import { noop } from "../../utils/helpers";
 import { BaseTransformProps } from "./BaseTransformProps";
 
 /**
  * Class for item transform properties
  * @extends {BaseTransformProps}
- * @method updateScale
+ * @property {function} updateScale
+ * @property {number} scaledWidth
+ * @property {number} scaledHeight
  */
 export class ItemTransformProps extends BaseTransformProps {
   /**
@@ -13,7 +16,7 @@ export class ItemTransformProps extends BaseTransformProps {
   constructor() {
     super();
 
-    this.updateScale = noop;
+    this.$updateScaleFv = noop;
     this.scaledWidth =
       this.scaledHeight =
       this._scaleX =
@@ -31,10 +34,8 @@ export class ItemTransformProps extends BaseTransformProps {
     return this._scaleX;
   }
   set scaleX(v) {
-    if (this._scaleX !== v) {
-      this._scaleX = v;
-      this.updateScale = this._updateScale;
-    }
+    this._scaleX = v;
+    this.$updateScaleFv = this.$updateScale;
   }
 
   /**
@@ -45,10 +46,8 @@ export class ItemTransformProps extends BaseTransformProps {
     return this._scaleY;
   }
   set scaleY(v) {
-    if (this._scaleY !== v) {
-      this._scaleY = v;
-      this.updateScale = this._updateScale;
-    }
+    this._scaleY = v;
+    this.$updateScaleFv = this.$updateScale;
   }
 
   /**
@@ -59,10 +58,8 @@ export class ItemTransformProps extends BaseTransformProps {
     return this.$width;
   }
   set width(v) {
-    if (this.$width !== v) {
-      this.$width = v;
-      this.updateScale = this._updateScale;
-    }
+    this.$width = v;
+    this.$updateScaleFv = this.$updateScale;
   }
 
   /**
@@ -73,19 +70,22 @@ export class ItemTransformProps extends BaseTransformProps {
     return this.$height;
   }
   set height(v) {
-    if (this.$height !== v) {
-      this.$height = v;
-      this.updateScale = this._updateScale;
-    }
+    this.$height = v;
+    this.$updateScaleFv = this.$updateScale;
+  }
+
+  update() {
+    this.$updateScaleFv();
+    super.update();
   }
 
   /**
    * Update calculated scale values
    * @ignore
    */
-  _updateScale() {
-    this.updateScale = noop;
-    ++this.updateId;
+  $updateScale() {
+    this.$updateScaleFv = noop;
+    this.$transformUpdated = true;
 
     this.scaledWidth = this.$width * this._scaleX;
     this.scaledHeight = this.$height * this._scaleY;

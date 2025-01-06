@@ -6,6 +6,9 @@ import "../data/BlendMode";
 /**
  * Context
  * @property {HTMLCanvasElement} canvas
+ * @property {number} contextId
+ * @property {Array<number>} textureIds
+ * @property {WebGL2Context} gl
  */
 export class Context {
   /**
@@ -22,9 +25,10 @@ export class Context {
     this._initContext = this._initContext.bind(this);
     this._restoreContext = this._restoreContext.bind(this);
 
-    this.canvas = this._config.canvas;
-    this.canvas.addEventListener("webglcontextlost", this._onContextLost);
-    this.canvas.addEventListener("webglcontextrestored", this._initContext);
+    const canvas = this._config.canvas;
+    this.canvas = canvas;
+    canvas.addEventListener("webglcontextlost", this._onContextLost);
+    canvas.addEventListener("webglcontextrestored", this._initContext);
 
     this._initContext();
   }
@@ -34,7 +38,8 @@ export class Context {
    * @returns {boolean}
    */
   isLost() {
-    return this.gl && this.gl.isContextLost && this.gl.isContextLost();
+    const gl = this.gl;
+    return gl && gl.isContextLost && gl.isContextLost();
   }
 
   /**
@@ -44,8 +49,9 @@ export class Context {
   useBlendMode(blendMode) {
     this._currentBlendMode = blendMode;
 
-    this.gl[blendMode.equationName].apply(this.gl, blendMode.equations);
-    this.gl[blendMode.functionName].apply(this.gl, blendMode.functions);
+    const gl = this.gl;
+    gl[blendMode.equationName].apply(gl, blendMode.equations);
+    gl[blendMode.functionName].apply(gl, blendMode.functions);
   }
 
   /**
@@ -66,8 +72,9 @@ export class Context {
   destruct() {
     this.gl.useProgram(null);
 
-    this.canvas.removeEventListener("webglcontextlost", this._onContextLost);
-    this.canvas.removeEventListener("webglcontextrestored", this._initContext);
+    const canvas = this.canvas;
+    canvas.removeEventListener("webglcontextlost", this._onContextLost);
+    canvas.removeEventListener("webglcontextrestored", this._initContext);
 
     this._loseContextExt && this._loseContextExt.loseContext();
   }
@@ -78,7 +85,7 @@ export class Context {
   clearTextures() {
     const l = Utils.INFO.maxTextureImageUnits;
 
-    for (let i = 0; i < l; ++i) {
+    for (let i = 0; i < l; i++) {
       this._textureMap[i] = null;
       this._emptyTextureSlots[i] = i;
     }
@@ -99,7 +106,7 @@ export class Context {
 
     let textureId = this._textureMap.indexOf(textureInfo);
     if (textureId < 0) {
-      if (this._emptyTextureSlots.length < 1) {
+      if (!this._emptyTextureSlots.length) {
         callback && callback();
         this.clearTextures();
         textureId = 0;
@@ -166,8 +173,9 @@ export class Context {
    * @param {number} height
    */
   setCanvasSize(width, height) {
-    this.canvas.width = width;
-    this.canvas.height = height;
+    const canvas = this.canvas;
+    canvas.width = width;
+    canvas.height = height;
   }
 
   /**
@@ -180,8 +188,9 @@ export class Context {
       this._width = width;
       this._height = height;
 
-      this.gl.viewport(0, 0, width, height);
-      this.gl.scissor(0, 0, width, height);
+      const gl = this.gl;
+      gl.viewport(0, 0, width, height);
+      gl.scissor(0, 0, width, height);
     }
   }
 

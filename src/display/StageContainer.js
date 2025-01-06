@@ -1,6 +1,6 @@
 import { Container } from "./Container";
-import { Item } from "./Item";
 import { BatchRenderer } from "../renderer/BatchRenderer";
+import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 
 /**
  * Stage container
@@ -17,26 +17,18 @@ export class StageContainer extends Container {
     super();
 
     this.renderer = renderer;
-
-    this.$parent = new Item();
+    this.colorCache = this.color.cache;
+    delete this.parent;
+    delete this.transform;
   }
 
   /**
    * Get stage container
    * @readonly
-   * @type {this}
+   * @type {StageContainer}
    */
   get stage() {
     return this;
-  }
-
-  /**
-   * Get parent
-   * @readonly
-   * @type {Item}
-   */
-  get parent() {
-    return this.$parent;
   }
 
   /**
@@ -53,5 +45,19 @@ export class StageContainer extends Container {
    */
   getPremultipliedAlpha() {
     return this.alpha;
+  }
+
+  update() {
+    const color = this.color,
+      renderer = this.renderer;
+
+    color.update();
+
+    this.colorUpdated = color.updated;
+
+    this.transformUpdated = renderer.resized;
+
+    this.transformUpdated &&
+      Matrix3Utilities.projection(this.matrixCache, renderer);
   }
 }

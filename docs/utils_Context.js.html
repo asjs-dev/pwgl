@@ -54,6 +54,9 @@ import "../data/BlendMode";
 /**
  * Context
  * @property {HTMLCanvasElement} canvas
+ * @property {number} contextId
+ * @property {Array&lt;number>} textureIds
+ * @property {WebGL2Context} gl
  */
 export class Context {
   /**
@@ -70,9 +73,10 @@ export class Context {
     this._initContext = this._initContext.bind(this);
     this._restoreContext = this._restoreContext.bind(this);
 
-    this.canvas = this._config.canvas;
-    this.canvas.addEventListener("webglcontextlost", this._onContextLost);
-    this.canvas.addEventListener("webglcontextrestored", this._initContext);
+    const canvas = this._config.canvas;
+    this.canvas = canvas;
+    canvas.addEventListener("webglcontextlost", this._onContextLost);
+    canvas.addEventListener("webglcontextrestored", this._initContext);
 
     this._initContext();
   }
@@ -82,7 +86,8 @@ export class Context {
    * @returns {boolean}
    */
   isLost() {
-    return this.gl &amp;&amp; this.gl.isContextLost &amp;&amp; this.gl.isContextLost();
+    const gl = this.gl;
+    return gl &amp;&amp; gl.isContextLost &amp;&amp; gl.isContextLost();
   }
 
   /**
@@ -92,8 +97,9 @@ export class Context {
   useBlendMode(blendMode) {
     this._currentBlendMode = blendMode;
 
-    this.gl[blendMode.equationName].apply(this.gl, blendMode.equations);
-    this.gl[blendMode.functionName].apply(this.gl, blendMode.functions);
+    const gl = this.gl;
+    gl[blendMode.equationName].apply(gl, blendMode.equations);
+    gl[blendMode.functionName].apply(gl, blendMode.functions);
   }
 
   /**
@@ -114,8 +120,9 @@ export class Context {
   destruct() {
     this.gl.useProgram(null);
 
-    this.canvas.removeEventListener("webglcontextlost", this._onContextLost);
-    this.canvas.removeEventListener("webglcontextrestored", this._initContext);
+    const canvas = this.canvas;
+    canvas.removeEventListener("webglcontextlost", this._onContextLost);
+    canvas.removeEventListener("webglcontextrestored", this._initContext);
 
     this._loseContextExt &amp;&amp; this._loseContextExt.loseContext();
   }
@@ -126,7 +133,7 @@ export class Context {
   clearTextures() {
     const l = Utils.INFO.maxTextureImageUnits;
 
-    for (let i = 0; i &lt; l; ++i) {
+    for (let i = 0; i &lt; l; i++) {
       this._textureMap[i] = null;
       this._emptyTextureSlots[i] = i;
     }
@@ -147,7 +154,7 @@ export class Context {
 
     let textureId = this._textureMap.indexOf(textureInfo);
     if (textureId &lt; 0) {
-      if (this._emptyTextureSlots.length &lt; 1) {
+      if (!this._emptyTextureSlots.length) {
         callback &amp;&amp; callback();
         this.clearTextures();
         textureId = 0;
@@ -214,8 +221,9 @@ export class Context {
    * @param {number} height
    */
   setCanvasSize(width, height) {
-    this.canvas.width = width;
-    this.canvas.height = height;
+    const canvas = this.canvas;
+    canvas.width = width;
+    canvas.height = height;
   }
 
   /**
@@ -228,8 +236,9 @@ export class Context {
       this._width = width;
       this._height = height;
 
-      this.gl.viewport(0, 0, width, height);
-      this.gl.scissor(0, 0, width, height);
+      const gl = this.gl;
+      gl.viewport(0, 0, width, height);
+      gl.scissor(0, 0, width, height);
     }
   }
 
@@ -294,13 +303,13 @@ export class Context {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="AnimatedImage_Item.html">Item</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseDrawable_Item.html">Item</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Container_Item.html">Item</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="Image_Item.html">Item</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item_Item.html">Item</a></li><li><a href="ItemTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="Light_Item.html">Item</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="LightTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="StageContainer_Item.html">Item</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TextureTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#callbackAfterRender">callbackAfterRender</a></li><li><a href="global.html#updateRotation">updateRotation</a></li><li><a href="global.html#updateScale">updateScale</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 31 Dec 2024 19:44:35 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon, 06 Jan 2025 14:53:53 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

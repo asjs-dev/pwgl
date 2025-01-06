@@ -50,6 +50,7 @@
 
 /**
  * TextureInfo
+ * @property {number} target
  */
 export class TextureInfo {
   /**
@@ -65,7 +66,8 @@ export class TextureInfo {
     this.type = Const.UNSIGNED_BYTE;
 
     this.$currentAglId = this._currenActiveId = -1;
-    this.$updateId = this.$width = this.$height = 1;
+    this.$updated = true;
+    this.$width = this.$height = 1;
   }
 
   /**
@@ -94,10 +96,8 @@ export class TextureInfo {
     return this._wrapS;
   }
   set wrapS(v) {
-    if (this._wrapS !== v) {
-      this._wrapS = v;
-      ++this.$updateId;
-    }
+    this._wrapS = v;
+    this.$updated = true;
   }
 
   /**
@@ -108,10 +108,8 @@ export class TextureInfo {
     return this._wrapT;
   }
   set wrapT(v) {
-    if (this._wrapT !== v) {
-      this._wrapT = v;
-      ++this.$updateId;
-    }
+    this._wrapT = v;
+    this.$updated = true;
   }
 
   /**
@@ -122,10 +120,8 @@ export class TextureInfo {
     return this._internalFormat;
   }
   set internalFormat(v) {
-    if (this._internalFormat !== v) {
-      this._internalFormat = v;
-      ++this.$updateId;
-    }
+    this._internalFormat = v;
+    this.$updated = true;
   }
 
   /**
@@ -136,10 +132,8 @@ export class TextureInfo {
     return this._format;
   }
   set format(v) {
-    if (this._format !== v) {
-      this._format = v;
-      ++this.$updateId;
-    }
+    this._format = v;
+    this.$updated = true;
   }
 
   /**
@@ -150,10 +144,8 @@ export class TextureInfo {
     return this._minFilter;
   }
   set minFilter(v) {
-    if (this._minFilter !== v) {
-      this._minFilter = v;
-      ++this.$updateId;
-    }
+    this._minFilter = v;
+    this.$updated = true;
   }
 
   /**
@@ -164,10 +156,8 @@ export class TextureInfo {
     return this._magFilter;
   }
   set magFilter(v) {
-    if (this._magFilter !== v) {
-      this._magFilter = v;
-      ++this.$updateId;
-    }
+    this._magFilter = v;
+    this.$updated = true;
   }
 
   /**
@@ -178,10 +168,8 @@ export class TextureInfo {
     return this._maxMipMapLevel;
   }
   set maxMipMapLevel(v) {
-    if (this._maxMipMapLevel !== v) {
-      this._maxMipMapLevel = v;
-      ++this.$updateId;
-    }
+    this._maxMipMapLevel = v;
+    this.$updated = true;
   }
 
   /**
@@ -192,10 +180,8 @@ export class TextureInfo {
     return this._baseMipMapLevel;
   }
   set baseMipMapLevel(v) {
-    if (this._baseMipMapLevel !== v) {
-      this._baseMipMapLevel = v;
-      ++this.$updateId;
-    }
+    this._baseMipMapLevel = v;
+    this.$updated = true;
   }
 
   /**
@@ -206,10 +192,8 @@ export class TextureInfo {
     return this._type;
   }
   set type(v) {
-    if (this._type !== v) {
-      this._type = v;
-      ++this.$updateId;
-    }
+    this._type = v;
+    this.$updated = true;
   }
 
   /**
@@ -333,13 +317,13 @@ export class TextureInfo {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="AnimatedImage_Item.html">Item</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseDrawable_Item.html">Item</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Container_Item.html">Item</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="Image_Item.html">Item</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item_Item.html">Item</a></li><li><a href="ItemTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="Light_Item.html">Item</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="LightTransformProps_ItemTransformProps.html">ItemTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="StageContainer_Item.html">Item</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TextureTransformProps_BaseTransformProps.html">BaseTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#callbackAfterRender">callbackAfterRender</a></li><li><a href="global.html#updateRotation">updateRotation</a></li><li><a href="global.html#updateScale">updateScale</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 31 Dec 2024 19:44:35 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon, 06 Jan 2025 14:53:53 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

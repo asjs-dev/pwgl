@@ -57,14 +57,20 @@ export class NormalMapRenderer extends BaseRenderer {
 
     "uniform float " +
       "uFlpY;" +
+    "uniform sampler2D " +
+      "uTex;" +
 
     "out vec2 " +
+      "vIts," +
+      "vTs," +
       "vTUv;" +
 
     "void main(void){" +
       "gl_Position=vec4(aPos*2.-1.,1,1);" +
       "vTUv=vec2(aPos.x,1.-aPos.y);" +
       "gl_Position.y*=uFlpY;" +
+      "vIts=vec2(textureSize(uTex,0));" +
+      "vTs=1./vIts;" +
     "}";
   }
 
@@ -81,6 +87,8 @@ export class NormalMapRenderer extends BaseRenderer {
     Utils.GLSL.DEFINE.Z +
     
     "in vec2 " +
+      "vIts," +
+      "vTs," +
       "vTUv;" +
 
     "uniform sampler2D " +
@@ -91,16 +99,14 @@ export class NormalMapRenderer extends BaseRenderer {
 
     "void main(void){" +
       "vec2 " +
-        "its=vec2(textureSize(uTex,0))," +
-        "ts=1./its," +
-        "p0=floor(vTUv*its)," +
+        "p0=floor(vTUv*vIts)," +
         "p1=p0+Z.yx," +
         "p2=p0+Z.yy;" +
 
       "vec3 " +
-        "A=vec3(p0,texture(uTex,p0*ts).g)," +
-        "B=vec3(p1,texture(uTex,p1*ts).g)," +
-        "C=vec3(p2,texture(uTex,p2*ts).g)," +
+        "A=vec3(p0,texture(uTex,p0*vTs).g)," +
+        "B=vec3(p1,texture(uTex,p1*vTs).g)," +
+        "C=vec3(p2,texture(uTex,p2*vTs).g)," +
         "nm=normalize(cross(B-A,C-A))*HEIGHT*Z.yzy;" +
 
       "oCl=vec4(nm*.5+.5,1);" +

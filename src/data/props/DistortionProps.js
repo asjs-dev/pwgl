@@ -4,6 +4,7 @@
  *  It distorts the corners of the elements
  * <pre>
  * @property {boolean} distortTexture
+ * @property {Array<number>} cache
  */
 export class DistortionProps {
   /**

@@ -8,7 +8,6 @@ import { StageContainer } from "../display/StageContainer";
 import { arraySet, noop } from "../utils/helpers";
 import { Buffer } from "../utils/Buffer";
 import { Utils } from "../utils/Utils";
-import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import "../geom/PointType";
 
 /**
@@ -157,7 +156,7 @@ export class Stage2D extends BatchRenderer {
   _setMousePosition(x, y) {
     this._isMousePositionSet = true;
 
-    const matrixCache = this.container.parent.matrixCache;
+    const matrixCache = this.container.matrixCache;
 
     this._mousePosition.x = (x - this.widthHalf) * matrixCache[0];
     this._mousePosition.y = (y - this.heightHalf) * matrixCache[3];
@@ -182,7 +181,7 @@ export class Stage2D extends BatchRenderer {
     const children = container.children,
       l = children.length;
 
-    for (let i = 0; i < l; ++i) this._drawItem(children[i]);
+    for (let i = 0; i < l; i++) this._drawItem(children[i]);
   }
 
   /**
@@ -199,29 +198,29 @@ export class Stage2D extends BatchRenderer {
     )
       this._eventTarget = image;
 
-    const twId = this._batchItems * 12,
-      matId = this._batchItems * 16,
+    const dataBufferId = this._batchItems * 12,
+      matrixBufferId = this._batchItems * 16,
       itemParent = image.parent,
-      colorCache = image.colorCache,
-      dataBuffer = this._dataBuffer.data,
-      matrixBuffer = this.$matrixBuffer.data;
+      dataBufferData = this._dataBuffer.data,
+      matrixBufferData = this.$matrixBuffer.data;
 
-    arraySet(dataBuffer, colorCache, twId);
-    arraySet(dataBuffer, image.textureRepeatRandomCache, twId + 8);
-    dataBuffer[twId + 4] = image.alpha * itemParent.getPremultipliedAlpha();
-    dataBuffer[twId + 5] =
+    arraySet(dataBufferData, image.colorCache, dataBufferId);
+    arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
+    dataBufferData[dataBufferId + 4] =
+      image.alpha * itemParent.getPremultipliedAlpha();
+    dataBufferData[dataBufferId + 5] =
       image.tintType * itemParent.getPremultipliedUseTint();
-    dataBuffer[twId + 6] = this.context.useTexture(
+    dataBufferData[dataBufferId + 6] = this.context.useTexture(
       image.texture,
       this.$renderTime,
       false,
       this._batchDraw
     );
-    dataBuffer[twId + 7] = image.distortionProps.distortTexture;
+    dataBufferData[dataBufferId + 7] = image.distortionProps.distortTexture;
 
-    arraySet(matrixBuffer, image.matrixCache, matId);
-    arraySet(matrixBuffer, image.textureMatrixCache, matId + 6);
-    arraySet(matrixBuffer, image.textureCropCache, matId + 12);
+    arraySet(matrixBufferData, image.matrixCache, matrixBufferId);
+    arraySet(matrixBufferData, image.textureMatrixCache, matrixBufferId + 6);
+    arraySet(matrixBufferData, image.textureCropCache, matrixBufferId + 12);
 
     arraySet(
       this._distortionBuffer.data,
@@ -269,18 +268,6 @@ export class Stage2D extends BatchRenderer {
   /**
    * @ignore
    */
-  $resize() {
-    super.$resize();
-    if (this.$sizeUpdateId) {
-      this.$sizeUpdateId = 0;
-      Matrix3Utilities.projection(this.container.parent.matrixCache, this);
-      ++this.container.parent.propsUpdateId;
-    }
-  }
-
-  /**
-   * @ignore
-   */
   $uploadBuffers() {
     this._dataBuffer.upload(this.$gl, this.$enableBuffers);
     this._distortionBuffer.upload(this.$gl, this.$enableBuffers);
@@ -302,10 +289,26 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $createVertexShader() {
-    const useRepeatTextures = this._options.useRepeatTextures;
+    const useRepeatTextures = this._options.useRepeatTextures,
+      maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
+      
+    const createGetTextureSizeFunction = () => {
+        let func = "vec2 gtTexS(float i){";
+  
+        for (let i = 0; i < maxTextureImageUnits; i++)
+          func += "if(i<" + (i + 1) + ".)" + 
+            "return .5/vec2(textureSize(uTex[" + i + "],0));";
+
+        func += "return Z.yy;" + 
+        "}";
+  
+        return func;
+      }
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
+
+    Utils.GLSL.DEFINE.Z +
 
     "in vec2 " +
       "aPos;" +
@@ -318,19 +321,24 @@ export class Stage2D extends BatchRenderer {
 
     "uniform float " +
       "uFlpY;" +
+    "uniform sampler2D " +
+      "uTex[" + maxTextureImageUnits + "];" +
 
     "out float " +
       "vACl," +
       "vTId," +
       "vTTp;" +
     "out vec2 " +
-      "vTUv;" +
+      "vTUv," +
+      "vTsh;" +
     "out vec4 " +
       "vTCrop," +
       "vCl" +
     (useRepeatTextures
       ? ",vRR;"
       : ";") +
+
+    createGetTextureSizeFunction() +
 
     "vec2 clcQd(vec2 p){" +
       "return mix(" + 
@@ -371,6 +379,8 @@ export class Stage2D extends BatchRenderer {
       "vTTp=aDt[1].y;" +
       "vTId=aDt[1].z;" +
 
+      "vTsh=gtTexS(vTId);" +
+
       (useRepeatTextures
         ? "vRR=aDt[2].xyzw;" +
           "vRR.w=vRR.x+vRR.y;"
@@ -389,16 +399,13 @@ export class Stage2D extends BatchRenderer {
      useRepeatTextures = options.useRepeatTextures,
      useTint = options.useTint;
 
-     const createGetTextureFunction = (maxTextureImageUnits) => {
-      let func = "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
-        "vec2 " + 
-          "tsh;";
+     const createGetTextureFunction = () => {
+      let func = "vec4 gtTexCl(float i,vec4 s,vec2 m){";
 
-      for (let i = 0; i < maxTextureImageUnits; ++i)
-        func += "if(i<" + (i + 1) + ".){" + 
-          "tsh=.5/vec2(textureSize(uTex[" + i + "],0));" +
-          "return texture(uTex[" + i + "],clamp(s.xy+s.zw*m,s.xy+tsh,s.xy+s.zw-tsh));" +
-        "}";
+      for (let i = 0; i < maxTextureImageUnits; i++)
+        func += "if(i<" + (i + 1) + ".)" + 
+          "return texture(uTex[" + i + "],clamp(s.xy+s.zw*m,s.xy+vTsh,s.xy+s.zw-vTsh));";
+
         func += "return Z.yyyy;" +
       "}";
 
@@ -419,7 +426,8 @@ export class Stage2D extends BatchRenderer {
       "vTId," +
       "vTTp;" +
     "in vec2 " +
-      "vTUv;" +
+      "vTUv," + 
+      "vTsh;" +
     "in vec4 " +
       "vTCrop," +
       "vCl" +
@@ -433,7 +441,7 @@ export class Stage2D extends BatchRenderer {
     "out vec4 " +
       "oCl;" +
 
-    createGetTextureFunction(maxTextureImageUnits) +
+    createGetTextureFunction() +
 
     "float cosine(float a,float b,float v){" +
       "v=abs(v);" +

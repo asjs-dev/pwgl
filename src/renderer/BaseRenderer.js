@@ -10,6 +10,11 @@ import { Utils, Const } from "../utils/Utils";
  * @property {Object} config
  * @property {ColorProps} clearColor
  * @property {WebGL2Context} context
+ * @property {boolean} resized
+ * @property {number} width
+ * @property {number} height
+ * @property {number} widthHalf
+ * @property {number} heightHalf
  */
 
 /**
@@ -24,7 +29,7 @@ export class BaseRenderer {
   constructor(options) {
     this._clearBeforeRenderFunc = noop;
 
-    this.$sizeUpdateId = 1;
+    this.$resizeFv = noop;
 
     this.width =
       this.height =
@@ -47,8 +52,6 @@ export class BaseRenderer {
       "aPos",
       "uTex"
     ];
-
-    this.$enableBuffers = false;
 
     this._elementArrayBuffer = new Buffer(
       "",
@@ -75,14 +78,8 @@ export class BaseRenderer {
   }
 
   /**
-   * Set/Get clear before render
-   * @type {boolean}
-   */
-  get clearBeforeRender() {
-    return this._clearBeforeRenderFunc === this._clear;
-  }
-  /**
-   * Set/Get clear before render
+   * Set clear before render
+   * @param {boolean} v
    */
   set clearBeforeRender(v) {
     this._clearBeforeRenderFunc = v ? this._clear : noop;
@@ -96,8 +93,7 @@ export class BaseRenderer {
   setSize(width, height) {
     this.width = width;
     this.height = height;
-
-    ++this.$sizeUpdateId;
+    this.$resizeFv = this.$resize;
   }
 
   /**
@@ -155,6 +151,8 @@ export class BaseRenderer {
    * @ignore
    */
   $resize() {
+    this.resized = true;
+    this.$resizeFv = noop;
     this.widthHalf = this.width / 2;
     this.heightHalf = this.height / 2;
     this.context.setSize(this.width, this.height);
@@ -205,7 +203,6 @@ export class BaseRenderer {
   $uploadBuffers() {
     this._positionBuffer.upload(this.$gl, this.$enableBuffers);
     this._elementArrayBuffer.upload(this.$gl);
-
     this.$enableBuffers = false;
   }
 
@@ -240,7 +237,8 @@ export class BaseRenderer {
       this._buildProgram();
     } else this._useProgram();
 
-    this.$resize();
+    this.resized = false;
+    this.$resizeFv();
   }
 
   /**

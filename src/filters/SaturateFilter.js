@@ -21,6 +21,9 @@ export class SaturateFilter extends BaseFilter {
    * Set intensity
    * @type {number}
    */
+  get intensity() {
+    return this.v[0];
+  }
   set intensity(v) {
     this.v[0] = v;
     const sv = 1 - v,
@@ -33,6 +36,6 @@ export class SaturateFilter extends BaseFilter {
       svr + v, svg, svb, 0,
       svr, svg + v, svb, 0,
       svr, svg, svb + v, 0
-    ], 0);
+    ]);
   }
 }

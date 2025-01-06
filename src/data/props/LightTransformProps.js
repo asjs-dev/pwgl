@@ -27,10 +27,8 @@ export class LightTransformProps extends ItemTransformProps {
     return this.$width;
   }
   set width(v) {
-    if (this.$width !== v) {
-      this.$width = this.$height = v;
-      this.updateScale = this._updateScale;
-    }
+    this.$width = this.$height = v;
+    this.$updateScaleFv = this.$updateScale;
   }
 
   /**

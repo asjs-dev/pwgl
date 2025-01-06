@@ -40,10 +40,10 @@ export const Matrix3Utilities = {
 
   /**
    * Calculate local transformation
-   * @param {ItemTransformProps} itemTransform
    * @param {Matrix3} destinationMatrix
+   * @param {ItemTransformProps} itemTransform
    */
-  transformLocal: (itemTransform, destinationMatrix) => {
+  transformLocal: (destinationMatrix, itemTransform) => {
     const anchorX = itemTransform.anchorX,
       anchorY = itemTransform.anchorY,
       scaledWidth = itemTransform.scaledWidth,
@@ -65,11 +65,11 @@ export const Matrix3Utilities = {
 
   /**
    * Calculate global transformation
+   * @param {Matrix3} destinationMatrix
    * @param {Matrix3} matrix
    * @param {ItemTransformProps} itemTransform
-   * @param {Matrix3} destinationMatrix
    */
-  transform: (matrix, itemTransform, destinationMatrix) => {
+  transform: (destinationMatrix, matrix, itemTransform) => {
     const x = itemTransform.x,
       y = itemTransform.y,
       anchorX = itemTransform.anchorX,
@@ -106,10 +106,10 @@ export const Matrix3Utilities = {
 
   /**
    * Create inverse matrix
-   * @param {Matrix3} matrix
    * @param {Matrix3} destinationMatrix
+   * @param {Matrix3} matrix
    */
-  inverse: (matrix, destinationMatrix) => {
+  inverse: (destinationMatrix, matrix) => {
     const det = 1 / (matrix[0] * matrix[3] - matrix[2] * matrix[1]);
 
     destinationMatrix[0] = det * matrix[3];
@@ -137,13 +137,13 @@ export const Matrix3Utilities = {
 
   /**
    * Calculate cornrers
-   * @param {Matrix3} matrix
    * @param {Array<Point>} corners
+   * @param {Matrix3} matrix
    * @param {Object} resolution
    * @param {number} resolution.widthHalf
    * @param {number} resolution.heightHalf
    */
-  calcCorners: (matrix, corners, resolution) => {
+  calcCorners: (corners, matrix, resolution) => {
     const widthHalf = resolution.widthHalf,
       heightHalf = resolution.heightHalf;
 

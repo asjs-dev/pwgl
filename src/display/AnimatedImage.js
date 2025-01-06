@@ -18,6 +18,7 @@ import "../geom/RectangleType";
  * Animated Image
  * @extends {Image}
  * @property {number} frameLength
+ * @property {boolean} isPlaying
  */
 export class AnimatedImage extends Image {
   /**
@@ -35,15 +36,6 @@ export class AnimatedImage extends Image {
     this._currentRenderTime = Date.now();
 
     this.stop();
-  }
-
-  /**
-   * Returns is animation playing
-   * @readonly
-   * @type {boolean}
-   */
-  get isPlaying() {
-    return this.updateAnimation === this._updateAnimation;
   }
 
   /**
@@ -85,14 +77,16 @@ export class AnimatedImage extends Image {
    * Stop the animation
    */
   stop() {
-    this.updateAnimation = noop;
+    this._updateAnimationFv = noop;
+    this.isPlaying = false;
   }
 
   /**
    * Play the animation
    */
   play() {
-    this.updateAnimation = this._updateAnimation;
+    this._updateAnimationFv = this._updateAnimation;
+    this.isPlaying = true;
     this._useTextureFrame();
   }
 
@@ -102,7 +96,7 @@ export class AnimatedImage extends Image {
    */
   update(renderTime) {
     super.update();
-    this.updateAnimation(renderTime);
+    this._updateAnimationFv(renderTime);
   }
 
   /**

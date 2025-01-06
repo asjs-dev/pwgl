@@ -13,7 +13,7 @@ export class Framebuffer extends TextureInfo {
   constructor() {
     super();
 
-    this._resizeUpdateId = 1;
+    this._resized = true;
   }
 
   /**
@@ -24,10 +24,8 @@ export class Framebuffer extends TextureInfo {
     return this.$width;
   }
   set width(v) {
-    if (this.$width !== v && v) {
-      this.$width = v;
-      ++this._resizeUpdateId;
-    }
+    this.$width = v;
+    this._resized = true;
   }
 
   /**
@@ -38,10 +36,8 @@ export class Framebuffer extends TextureInfo {
     return this.$height;
   }
   set height(v) {
-    if (this.$height !== v && v) {
-      this.$height = v;
-      ++this._resizeUpdateId;
-    }
+    this.$height = v;
+    this._resized = true;
   }
 
   /**
@@ -95,11 +91,11 @@ export class Framebuffer extends TextureInfo {
       );
 
       this.unbind(gl);
-    } else if (this.$updateId) {
-      this.$updateId = 0;
+    } else if (this.$updated) {
+      this.$updated = false;
       this.useActiveTextureAfterUpdate(gl, id);
-    } else if (this._resizeUpdateId) {
-      this._resizeUpdateId = 0;
+    } else if (this._resized) {
+      this._resized = false;
       this.useActiveTexture(gl, id);
     } else if (this._currenActiveId !== id || forceBind)
       this.bindActiveTexture(gl, id);

@@ -29,14 +29,12 @@ const areTwoLinesCollided = (lineA, lineB) => {
       lambda = (c * e + f * g) / denom,
       gamma = (h * e + b * g) / denom;
 
-    if (0 < lambda && lambda < 1 && 0 < gamma && gamma < 1)
+    if (lambda > 0 && lambda < 1 && gamma > 0 && gamma < 1)
       return {
-        lambda,
-        gamma,
+        lambda: lambda,
+        gamma: gamma,
       };
   }
-
-  return null;
 };
 
 const lineToLineIntersection = (lineA, lineB) => {

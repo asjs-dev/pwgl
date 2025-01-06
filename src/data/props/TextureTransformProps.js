@@ -3,6 +3,7 @@ import { BaseTransformProps } from "./BaseTransformProps";
 /**
  * Class for texture transform properties
  * @extends {BaseTransformProps}
+ * @property {Array<number>} repeatRandomCache
  */
 export class TextureTransformProps extends BaseTransformProps {
   /**
@@ -12,8 +13,7 @@ export class TextureTransformProps extends BaseTransformProps {
   constructor() {
     super();
 
-    this.cache = [0, 0, 0];
-
+    this.repeatRandomCache = [0, 0, 0];
     this._repeatX = this._repeatY = 1;
   }
 
@@ -43,10 +43,8 @@ export class TextureTransformProps extends BaseTransformProps {
     return this._repeatX;
   }
   set repeatX(v) {
-    if (this._repeatX !== v) {
-      this._repeatX = v;
-      ++this.updateId;
-    }
+    this._repeatX = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -57,10 +55,8 @@ export class TextureTransformProps extends BaseTransformProps {
     return this._repeatY;
   }
   set repeatY(v) {
-    if (this._repeatY !== v) {
-      this._repeatY = v;
-      ++this.updateId;
-    }
+    this._repeatY = v;
+    this.$transformUpdated = true;
   }
 
   /**
@@ -71,10 +67,10 @@ export class TextureTransformProps extends BaseTransformProps {
    * @type {number}
    */
   get repeatRandomRotation() {
-    return this.cache[0];
+    return this.repeatRandomCache[0];
   }
   set repeatRandomRotation(v) {
-    this.cache[0] = v;
+    this.repeatRandomCache[0] = v;
   }
 
   /**
@@ -85,10 +81,10 @@ export class TextureTransformProps extends BaseTransformProps {
    * @type {number}
    */
   get repeatRandomAlpha() {
-    return this.cache[1];
+    return this.repeatRandomCache[1];
   }
   set repeatRandomAlpha(v) {
-    this.cache[1] = v;
+    this.repeatRandomCache[1] = v;
   }
 
   /**
@@ -99,9 +95,9 @@ export class TextureTransformProps extends BaseTransformProps {
    * @type {number}
    */
   get repeatRandomBlur() {
-    return this.cache[2];
+    return this.repeatRandomCache[2];
   }
   set repeatRandomBlur(v) {
-    this.cache[2] = v;
+    this.repeatRandomCache[2] = v;
   }
 }

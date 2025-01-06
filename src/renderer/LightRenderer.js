@@ -72,25 +72,26 @@ export class LightRenderer extends BatchRenderer {
    */
   addLightForRender(light) {
     if (this._batchItems < this.$MAX_RENDER_COUNT) {
-      const matId = this._batchItems * 16,
-        extId = this._batchItems * 8,
-        matData = this.$matrixBuffer.data,
-        extData = this._extensionBuffer.data;
+      const matrixBufferId = this._batchItems * 16,
+        extensionBufferId = this._batchItems * 8,
+        matrixBufferData = this.$matrixBuffer.data,
+        extensionBufferData = this._extensionBuffer.data;
 
-      arraySet(matData, light.matrixCache, matId);
-      matData[matId + 6] = light.transform.width;
-      matData[matId + 7] = light.spotAngle;
-      arraySet(matData, light.colorCache, matId + 8);
-      matData[matId + 12] = light.shadowLength;
-      matData[matId + 13] = light.alpha * light.parent.getPremultipliedAlpha();
-      matData[matId + 14] = light.angle;
+      arraySet(matrixBufferData, light.matrixCache, matrixBufferId);
+      matrixBufferData[matrixBufferId + 6] = light.transform.width;
+      matrixBufferData[matrixBufferId + 7] = light.spotAngle;
+      arraySet(matrixBufferData, light.colorCache, matrixBufferId + 8);
+      matrixBufferData[matrixBufferId + 12] = light.shadowLength;
+      matrixBufferData[matrixBufferId + 13] =
+        light.alpha * light.parent.getPremultipliedAlpha();
+      matrixBufferData[matrixBufferId + 14] = light.angle;
 
-      extData[extId] = light.type;
-      extData[extId + 1] = light.flags;
-      extData[extId + 2] = light.transform.z;
-      extData[extId + 3] = light.precision;
-      extData[extId + 4] = light.maxShadowStep;
-      extData[extId + 5] = light.specularStrength;
+      extensionBufferData[extensionBufferId] = light.type;
+      extensionBufferData[extensionBufferId + 1] = light.flags;
+      extensionBufferData[extensionBufferId + 2] = light.transform.z;
+      extensionBufferData[extensionBufferId + 3] = light.precision;
+      extensionBufferData[extensionBufferId + 4] = light.maxShadowStep;
+      extensionBufferData[extensionBufferId + 5] = light.specularStrength;
 
       this._batchItems++;
     }

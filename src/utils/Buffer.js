@@ -2,6 +2,7 @@ import { Const } from "./Utils";
 
 /**
  * Buffer
+ * @property {any} data
  */
 export class Buffer {
   /**

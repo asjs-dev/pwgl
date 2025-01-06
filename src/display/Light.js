@@ -1,15 +1,18 @@
 import { Utils } from "../utils/Utils";
 import { LightTransformProps } from "../data/props/LightTransformProps";
-import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import { BaseDrawable } from "./BaseDrawable";
+import { noop } from "../utils/helpers";
 
 /**
- * <pre>
- *  Light
- * </pre>
+ * Light
  * @extends {BaseDrawable}
  * @property {LightTransformProps} transform
+ * @property {boolean} castShadow
+ * @property {boolean} shading
+ * @property {boolean} centerReflection
+ * @property {number} flags
  * @property {number} type - Type of the Light
+ * @property {number} shadowLength - Length of shadow
  * @property {number} maxShadowStep - The maximum step of shadow caster per pixel
  *                                  - Default value is 128
  * @property {number} specularStrength - Strength of specular light
@@ -31,7 +34,6 @@ export class Light extends BaseDrawable {
     this.RENDERING_TYPE = Light.RENDERING_TYPE;
 
     this.castShadow = this.shading = this.centerReflection = true;
-    this.flattenShadow = false;
     this.angle = 0;
     this.spotAngle = 180 * Utils.THETA;
     this.type = Light.Type.POINT;
@@ -48,7 +50,7 @@ export class Light extends BaseDrawable {
   }
   set castShadow(v) {
     this._castShadow = v;
-    this._updateFlags();
+    this._updateFlagsFv = this._updateFlags;
   }
 
   /**
@@ -60,7 +62,7 @@ export class Light extends BaseDrawable {
   }
   set shading(v) {
     this._shading = v;
-    this._updateFlags();
+    this._updateFlagsFv = this._updateFlags;
   }
 
   /**
@@ -76,7 +78,7 @@ export class Light extends BaseDrawable {
   }
   set flattenShadow(v) {
     this._flattenShadow = v;
-    this._updateFlags();
+    this._updateFlagsFv = this._updateFlags;
   }
 
   /**
@@ -88,7 +90,12 @@ export class Light extends BaseDrawable {
   }
   set centerReflection(v) {
     this._centerReflection = v;
-    this._updateFlags();
+    this._updateFlagsFv = this._updateFlags;
+  }
+
+  update() {
+    super.update();
+    this._updateFlagsFv();
   }
 
   /**
@@ -122,6 +129,7 @@ export class Light extends BaseDrawable {
    * @ignore
    */
   _updateFlags() {
+    this._updateFlagsFv = noop;
     this.flags =
       (this._castShadow * 1) |
       (this._shading * 2) |

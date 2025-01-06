@@ -39,7 +39,7 @@ export class FilterRenderer extends BaseRenderer {
 
     super(options);
 
-    this._attachFramebufferAndClear = this.$attachFramebufferAndClear;
+    this._attachFramebufferAndClearFv = this.$attachFramebufferAndClear;
     this.$attachFramebufferAndClear = noop;
 
     this.filters = options.filters || [];
@@ -82,11 +82,11 @@ export class FilterRenderer extends BaseRenderer {
 
       if (isLast)
         framebuffer
-          ? this._attachFramebufferAndClear(framebuffer)
+          ? this._attachFramebufferAndClearFv(framebuffer)
           : gl.uniform1f(locations.uFlpY, 1);
       else if (useFilter) {
         filterFramebuffer = this._framebuffers[i & 1];
-        this._attachFramebufferAndClear(filterFramebuffer);
+        this._attachFramebufferAndClearFv(filterFramebuffer);
       }
 
       if (useFilter) {
@@ -120,8 +120,11 @@ export class FilterRenderer extends BaseRenderer {
 
     "uniform float " +
       "uFlpY;" +
+    "uniform sampler2D " +
+      "uTex;" +
 
     "out vec2 " +
+      "vTs," +
       "vUv," +
       "vTUv;" +
 
@@ -130,6 +133,7 @@ export class FilterRenderer extends BaseRenderer {
       "vUv=gl_Position.xy;" +
       "gl_Position.y*=uFlpY;" +
       "vTUv=vec2(aPos.x,1.-aPos.y);" +
+      "vTs=vec2(textureSize(uTex,0));" +
     "}";
   }
 
@@ -144,7 +148,7 @@ export class FilterRenderer extends BaseRenderer {
         "poft=clamp(" + 
           "f+ivec2(floor(wh*vec2(cos(i),sin(i))))," + 
           "ivec2(Z.xx)," + 
-          "ts-1" + 
+          "ivec2(vTs)-1" + 
         ");" +
         "clg=texelFetch(uTex,poft,0);" +
         core +
@@ -155,6 +159,11 @@ export class FilterRenderer extends BaseRenderer {
 
     Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIAN_360 +
+    
+    "in vec2 " +
+      "vTs," +
+      "vUv," +
+      "vTUv;" +
 
     "uniform sampler2D " +
       "uTex," +
@@ -165,10 +174,6 @@ export class FilterRenderer extends BaseRenderer {
       "uFtrV[9];" +
     "uniform mat4 " +
       "uFtrK;" +
-
-    "in vec2 " +
-      "vUv," +
-      "vTUv;" +
 
     "out vec4 " +
       "oCl;" +
@@ -187,11 +192,10 @@ export class FilterRenderer extends BaseRenderer {
         "v=vl[0];" +
 
       "ivec2 " +
-        "ts=textureSize(uTex,0)," +
-        "f=ivec2(floor(vTUv*vec2(ts)));" +
+        "f=ivec2(floor(vTUv*vTs));" +
 
       "vec2 " +
-        "vol=v/vec2(ts);" +
+        "vol=v/vTs;" +
 
       "vec3 " +
         "rgb=vec3(vl[2],vl[3],vl[4]);" +

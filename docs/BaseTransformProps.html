@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>JSDoc: Class: Texture</title>
+        <title>JSDoc: Class: BaseTransformProps</title>
 
         <script src="scripts/prettify/prettify.js"> </script>
         <script src="scripts/prettify/lang-css.js"> </script>
@@ -37,7 +37,7 @@
         <div class="container">
             <div id="main">
 
-                <h1 class="page-title">Class: Texture</h1>
+                <h1 class="page-title">Class: BaseTransformProps</h1>
 
                 
 
@@ -48,9 +48,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Texture<span class="signature">(source, shouldUpdate)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>BaseTransformProps<span class="signature">()</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Texture</div>
+            <div class="class-description">Base class for positioning elements</div>
         
     
 </header>
@@ -65,7 +65,7 @@
     
 
     
-    <h4 class="name" id="Texture"><span class="type-signature"></span>new Texture<span class="signature">(source, shouldUpdate)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="BaseTransformProps"><span class="type-signature"></span>new BaseTransformProps<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -73,7 +73,7 @@
 
 
 <div class="description">
-    Creates an instance of Texture.
+    Creates an instance of BaseTransformProps.
 </div>
 
 
@@ -82,78 +82,6 @@
 
 
 
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>source</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">HTMLElement</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>shouldUpdate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
 
 
 
@@ -186,7 +114,7 @@
 
         <tr>
             
-                <td class="name"><code>isVideo</code></td>
+                <td class="name"><code>updated</code></td>
             
 
             <td class="type">
@@ -209,13 +137,82 @@
 
         <tr>
             
-                <td class="name"><code>shouldUpdate</code></td>
+                <td class="name"><code>cosRotationA</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cosRotationB</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sinRotationA</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sinRotationB</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
 
 
             
@@ -264,7 +261,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_Texture.js.html">data/texture/Texture.js</a>, <a href="data_texture_Texture.js.html#line11">line 11</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
@@ -298,17 +295,6 @@
     </div>
 
     
-        <h3 class="subsection-title">Extends</h3>
-
-        
-
-
-    <ul>
-        <li><a href="TextureInfo.html">TextureInfo</a></li>
-    </ul>
-
-
-    
 
     
 
@@ -316,7 +302,7 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="Texture.html">Texture</a></dt>
+            <dt><a href="BaseTransformProps.html">BaseTransformProps</a></dt>
             <dd></dd>
         </dl>
     
@@ -332,13 +318,13 @@
 
         
             
-<h4 class="name" id="baseMipMapLevel"><span class="type-signature"></span>baseMipMapLevel<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="anchorX"><span class="type-signature"></span>anchorX<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get baseMipMapLevel
+    Set/Get anchor x
 </div>
 
 
@@ -366,11 +352,6 @@
     
 
     
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#baseMipMapLevel">TextureInfo#baseMipMapLevel</a>
-    </li></ul></dd>
-    
 
     
 
@@ -391,7 +372,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line131">line 131</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line72">line 72</a>
     </li></ul></dd>
     
 
@@ -409,13 +390,13 @@
 
         
             
-<h4 class="name" id="format"><span class="type-signature"></span>format<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="anchorY"><span class="type-signature"></span>anchorY<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get format
+    Set/Get anchor y
 </div>
 
 
@@ -443,11 +424,6 @@
     
 
     
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#format">TextureInfo#format</a>
-    </li></ul></dd>
-    
 
     
 
@@ -468,7 +444,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line83">line 83</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line84">line 84</a>
     </li></ul></dd>
     
 
@@ -486,13 +462,13 @@
 
         
             
-<h4 class="name" id="height"><span class="type-signature">(readonly) </span>height<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="rotation"><span class="type-signature"></span>rotation<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Get height
+    Set/Get rotation
 </div>
 
 
@@ -520,11 +496,6 @@
     
 
     
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#height">TextureInfo#height</a>
-    </li></ul></dd>
-    
 
     
 
@@ -545,7 +516,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_Texture.js.html">data/texture/Texture.js</a>, <a href="data_texture_Texture.js.html#line45">line 45</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -563,13 +534,13 @@
 
         
             
-<h4 class="name" id="internalFormat"><span class="type-signature"></span>internalFormat<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="skewX"><span class="type-signature"></span>skewX<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get internal format
+    Set/Get skew x
 </div>
 
 
@@ -597,11 +568,6 @@
     
 
     
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#internalFormat">TextureInfo#internalFormat</a>
-    </li></ul></dd>
-    
 
     
 
@@ -622,7 +588,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line71">line 71</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line96">line 96</a>
     </li></ul></dd>
     
 
@@ -640,13 +606,13 @@
 
         
             
-<h4 class="name" id="magFilter"><span class="type-signature"></span>magFilter<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="skewY"><span class="type-signature"></span>skewY<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get magFilter
+    Set/Get skew y
 </div>
 
 
@@ -674,11 +640,6 @@
     
 
     
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#magFilter">TextureInfo#magFilter</a>
-    </li></ul></dd>
-    
 
     
 
@@ -699,7 +660,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line107">line 107</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -717,13 +678,13 @@
 
         
             
-<h4 class="name" id="maxMipMapLevel"><span class="type-signature"></span>maxMipMapLevel<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="x"><span class="type-signature"></span>x<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get maxMipMapLevel
+    Set/Get position x
 </div>
 
 
@@ -751,11 +712,6 @@
     
 
     
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#maxMipMapLevel">TextureInfo#maxMipMapLevel</a>
-    </li></ul></dd>
-    
 
     
 
@@ -776,7 +732,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line119">line 119</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line36">line 36</a>
     </li></ul></dd>
     
 
@@ -794,13 +750,13 @@
 
         
             
-<h4 class="name" id="minFilter"><span class="type-signature"></span>minFilter<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="y"><span class="type-signature"></span>y<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get minFilter
+    Set/Get position y
 </div>
 
 
@@ -828,11 +784,6 @@
     
 
     
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#minFilter">TextureInfo#minFilter</a>
-    </li></ul></dd>
-    
 
     
 
@@ -853,387 +804,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line95">line 95</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="source"><span class="type-signature"></span>source<span class="type-signature"> :HTMLElement</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get source of the texture
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">HTMLElement</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_Texture.js.html">data/texture/Texture.js</a>, <a href="data_texture_Texture.js.html#line53">line 53</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="type"><span class="type-signature"></span>type<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get type
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#type">TextureInfo#type</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line143">line 143</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="width"><span class="type-signature">(readonly) </span>width<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Get width
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#width">TextureInfo#width</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_Texture.js.html">data/texture/Texture.js</a>, <a href="data_texture_Texture.js.html#line36">line 36</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="wrapS"><span class="type-signature"></span>wrapS<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get wrapS
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#wrapS">TextureInfo#wrapS</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line47">line 47</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="wrapT"><span class="type-signature"></span>wrapT<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get wrapT
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#wrapT">TextureInfo#wrapT</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line59">line 59</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line48">line 48</a>
     </li></ul></dd>
     
 
@@ -1261,7 +832,7 @@
     
 
     
-    <h4 class="name" id="activeTexture"><span class="type-signature"></span>activeTexture<span class="signature">(gl, id)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -1269,479 +840,7 @@
 
 
 <div class="description">
-    Active TextureInfo
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#activeTexture">TextureInfo#activeTexture</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line187">line 187</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="bindActiveTexture"><span class="type-signature"></span>bindActiveTexture<span class="signature">(gl, id)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Binf active TextureInfo
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#bindActiveTexture">TextureInfo#bindActiveTexture</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line197">line 197</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="createTexImage2D"><span class="type-signature"></span>createTexImage2D<span class="signature">(gl)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Create TexImage2D
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#createTexImage2D">TextureInfo#createTexImage2D</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line224">line 224</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="destruct"><span class="type-signature"></span>destruct<span class="signature">()</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Destruct the class
+    Update values
 </div>
 
 
@@ -1785,7 +884,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_Texture.js.html">data/texture/Texture.js</a>, <a href="data_texture_Texture.js.html#line75">line 75</a>
+        <a href="data_props_BaseTransformProps.js.html">data/props/BaseTransformProps.js</a>, <a href="data_props_BaseTransformProps.js.html#line119">line 119</a>
     </li></ul></dd>
     
 
@@ -1810,1466 +909,6 @@
 
 
 
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="unbindTexture"><span class="type-signature"></span>unbindTexture<span class="signature">(gl, id)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Unbind TextureInfo
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#unbindTexture">TextureInfo#unbindTexture</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line176">line 176</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="uploadTextureInfo"><span class="type-signature"></span>uploadTextureInfo<span class="signature">(gl)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Upload TextureInfo
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#uploadTextureInfo">TextureInfo#uploadTextureInfo</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line244">line 244</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="use"><span class="type-signature"></span>use<span class="signature">(gl, id, forceBind, renderTime)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Use TextureInfo
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>forceBind</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>renderTime</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_Texture.js.html">data/texture/Texture.js</a>, <a href="data_texture_Texture.js.html#line86">line 86</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="useActiveTexture"><span class="type-signature"></span>useActiveTexture<span class="signature">(gl, id)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Use active TextureInfo
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#useActiveTexture">TextureInfo#useActiveTexture</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line156">line 156</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="useActiveTextureAfterUpdate"><span class="type-signature"></span>useActiveTextureAfterUpdate<span class="signature">(gl, id)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Use active TextureInfo after update
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>id</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#useActiveTextureAfterUpdate">TextureInfo#useActiveTextureAfterUpdate</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line166">line 166</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="useTexture"><span class="type-signature"></span>useTexture<span class="signature">(gl)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Use TextureInfo
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#useTexture">TextureInfo#useTexture</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line206">line 206</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="useTextureAfterUpdate"><span class="type-signature"></span>useTextureAfterUpdate<span class="signature">(gl)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Use TextureInfo after update
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>gl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="global.html#WebGLContext">WebGLContext</a></span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="TextureInfo.html#useTextureAfterUpdate">TextureInfo#useTextureAfterUpdate</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_TextureInfo.js.html">data/texture/TextureInfo.js</a>, <a href="data_texture_TextureInfo.js.html#line215">line 215</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".loadImage"><span class="type-signature">(static) </span>loadImage<span class="signature">(src, shouldUpdate)</span><span class="type-signature"> &rarr; {<a href="Texture.html">Texture</a>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Create a new Texture from an image source
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>src</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">HTMLElement</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>shouldUpdate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_Texture.js.html">data/texture/Texture.js</a>, <a href="data_texture_Texture.js.html#line153">line 153</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Texture.html">Texture</a></span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id=".loadVideo"><span class="type-signature">(static) </span>loadVideo<span class="signature">(src)</span><span class="type-signature"> &rarr; {<a href="Texture.html">Texture</a>}</span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    Create a new Texture from a video source
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>src</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">HTMLVideoElement</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="data_texture_Texture.js.html">data/texture/Texture.js</a>, <a href="data_texture_Texture.js.html#line165">line 165</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="Texture.html">Texture</a></span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
