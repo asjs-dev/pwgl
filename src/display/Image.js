@@ -61,7 +61,7 @@ export class Image extends BaseDrawable {
         textureTransform
       );
 
-    this.transformUpdated &&
+    this.interactive && this.transformUpdated &&
       Matrix3Utilities.inverse(this._inverseMatrixCache, this.matrixCache);
   }
 

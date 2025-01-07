@@ -158,7 +158,6 @@ export class Context {
       this.clearTextures();
 
       const gl = this.gl;
-
       gl.bindVertexArray(null);
       gl.useProgram(program);
       gl.bindVertexArray(vao);

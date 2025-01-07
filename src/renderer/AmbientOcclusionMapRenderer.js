@@ -87,8 +87,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "uTex;" +
 
     "out float " +
-      "vLng," +
-      "vR;" +
+      "vLng;" +
     "out vec2 " +
       "vTUv," + 
       "vTs;" +
@@ -99,7 +98,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "gl_Position.y*=uFlpY;" +
       "vTs=uR/vec2(textureSize(uTex,0));" + 
       "vLng=length(vTs);" +
-      "vR=uR;" +
     "}";
   }
 
@@ -118,8 +116,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     Utils.GLSL.DEFINE.Z +
     
     "in float " +
-      "vLng," +
-      "vR;" +
+      "vLng;" +
     "in vec2 " +
       "vTUv," + 
       "vTs;" +
@@ -128,6 +125,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "uSTTex," +
       "uTex;" +
     "uniform float " +
+      "uR," +
       "uS," +
       "uUSTT," +
       "uDM;" +
@@ -142,7 +140,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
         "tx=texture(uTex,vTUv).g," +
         "v=0.;" +
         
-      "if(uS>0.&&vR>0.){" +
+      "if(uS>0.&&uR>0.){" +
         "vec2 " +
           "dr=Z.yx," +
           "p;" +

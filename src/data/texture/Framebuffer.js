@@ -24,8 +24,10 @@ export class Framebuffer extends TextureInfo {
     return this.$width;
   }
   set width(v) {
-    this.$width = v;
-    this._resized = true;
+    if (this.$width !== v) {
+      this.$width = v;
+      this._resized = true;
+    }
   }
 
   /**
@@ -36,8 +38,10 @@ export class Framebuffer extends TextureInfo {
     return this.$height;
   }
   set height(v) {
-    this.$height = v;
-    this._resized = true;
+    if (this.$height !== v) {
+      this.$height = v;
+      this._resized = true;
+    }
   }
 
   /**

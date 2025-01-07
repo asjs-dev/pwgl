@@ -61,16 +61,16 @@ export class NormalMapRenderer extends BaseRenderer {
       "uTex;" +
 
     "out vec2 " +
-      "vIts," +
       "vTs," +
       "vTUv;" +
 
     "void main(void){" +
       "gl_Position=vec4(aPos*2.-1.,1,1);" +
-      "vTUv=vec2(aPos.x,1.-aPos.y);" +
+      "vec2 " + 
+        "its=vec2(textureSize(uTex,0));" +
+      "vTs=1./its;" +
+      "vTUv=vec2(aPos.x,1.-aPos.y)*its;" +
       "gl_Position.y*=uFlpY;" +
-      "vIts=vec2(textureSize(uTex,0));" +
-      "vTs=1./vIts;" +
     "}";
   }
 
@@ -87,7 +87,6 @@ export class NormalMapRenderer extends BaseRenderer {
     Utils.GLSL.DEFINE.Z +
     
     "in vec2 " +
-      "vIts," +
       "vTs," +
       "vTUv;" +
 
@@ -99,7 +98,7 @@ export class NormalMapRenderer extends BaseRenderer {
 
     "void main(void){" +
       "vec2 " +
-        "p0=floor(vTUv*vIts)," +
+        "p0=floor(vTUv)," +
         "p1=p0+Z.yx," +
         "p2=p0+Z.yy;" +
 

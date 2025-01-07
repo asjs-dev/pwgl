@@ -145,6 +145,8 @@ export class Item {
       parent = this.$parent,
       parentChanged = this._parentChanged;
 
+    this._parentChanged = false;
+
     color.update();
 
     this.colorUpdated = parentChanged || color.updated || parent.colorUpdated;
@@ -171,8 +173,6 @@ export class Item {
         parent.matrixCache,
         transform
       );
-
-    this._parentChanged = false;
   }
 
   /**

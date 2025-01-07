@@ -182,18 +182,26 @@ export const Utils = {
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, Const.LINK_STATUS)) {
+      const vertexShaderInfo = gl.getShaderInfoLog(vertexShader);
+      const fragmentShaderInfo = gl.getShaderInfoLog(fragmentShader);
       console.error(
-        "Program info:",
-        gl.getProgramInfoLog(program),
-        "\n",
-        "Validate status:",
-        gl.getProgramParameter(program, Const.VALIDATE_STATUS),
-        "\n",
-        "Vertex shader info:",
-        gl.getShaderInfoLog(vertexShader),
-        "\n",
-        "Fragment shader info:",
-        gl.getShaderInfoLog(fragmentShader)
+        [
+          "Program info: " + gl.getProgramInfoLog(program),
+          "Validate status: " +
+            gl.getProgramParameter(program, Const.VALIDATE_STATUS),
+          ...(vertexShaderInfo
+            ? [
+                "Vertex shader info: " + gl.getShaderInfoLog(vertexShader),
+                "Vertex shader: " + vertexShaderSource,
+              ]
+            : []),
+          ...(fragmentShaderInfo
+            ? [
+                "Fragment shader info: " + gl.getShaderInfoLog(fragmentShader),
+                "Fragment shader: " + fragmentShaderSource,
+              ]
+            : []),
+        ].join("\n")
       );
 
       gl.deleteShader(vertexShader);

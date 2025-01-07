@@ -67,7 +67,7 @@ export class FilterRenderer extends BaseRenderer {
 
     this.$useTextureAt(this.sourceTexture, locations.uTex, 0);
 
-    for (let i = 0; i < l; ++i) {
+    for (let i = 0; i < l; i++) {
       let filterFramebuffer;
 
       const filter = filters[i],

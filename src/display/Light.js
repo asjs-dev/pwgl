@@ -1,7 +1,6 @@
 import { Utils } from "../utils/Utils";
 import { LightTransformProps } from "../data/props/LightTransformProps";
 import { BaseDrawable } from "./BaseDrawable";
-import { noop } from "../utils/helpers";
 
 /**
  * Light
@@ -50,7 +49,7 @@ export class Light extends BaseDrawable {
   }
   set castShadow(v) {
     this._castShadow = v;
-    this._updateFlagsFv = this._updateFlags;
+    this._updateFlags();
   }
 
   /**
@@ -62,7 +61,7 @@ export class Light extends BaseDrawable {
   }
   set shading(v) {
     this._shading = v;
-    this._updateFlagsFv = this._updateFlags;
+    this._updateFlags();
   }
 
   /**
@@ -78,7 +77,7 @@ export class Light extends BaseDrawable {
   }
   set flattenShadow(v) {
     this._flattenShadow = v;
-    this._updateFlagsFv = this._updateFlags;
+    this._updateFlags();
   }
 
   /**
@@ -90,12 +89,7 @@ export class Light extends BaseDrawable {
   }
   set centerReflection(v) {
     this._centerReflection = v;
-    this._updateFlagsFv = this._updateFlags;
-  }
-
-  update() {
-    super.update();
-    this._updateFlagsFv();
+    this._updateFlags();
   }
 
   /**
@@ -129,7 +123,6 @@ export class Light extends BaseDrawable {
    * @ignore
    */
   _updateFlags() {
-    this._updateFlagsFv = noop;
     this.flags =
       (this._castShadow * 1) |
       (this._shading * 2) |

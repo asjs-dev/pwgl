@@ -291,19 +291,6 @@ export class Stage2D extends BatchRenderer {
   $createVertexShader() {
     const useRepeatTextures = this._options.useRepeatTextures,
       maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
-      
-    const createGetTextureSizeFunction = () => {
-        let func = "vec2 gtTexS(float i){";
-  
-        for (let i = 0; i < maxTextureImageUnits; i++)
-          func += "if(i<" + (i + 1) + ".)" + 
-            "return .5/vec2(textureSize(uTex[" + i + "],0));";
-
-        func += "return Z.yy;" + 
-        "}";
-  
-        return func;
-      }
 
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
@@ -338,7 +325,12 @@ export class Stage2D extends BatchRenderer {
       ? ",vRR;"
       : ";") +
 
-    createGetTextureSizeFunction() +
+    "vec2 gtTexS(float i){" +
+      Array(maxTextureImageUnits).fill().map((v, i) => 
+      "if(i<" + (i + 1) + ".)" + 
+        "return .5/vec2(textureSize(uTex[" + i + "],0));").join("") +
+      "return Z.yy;" +
+    "}" +
 
     "vec2 clcQd(vec2 p){" +
       "return mix(" + 
@@ -399,19 +391,6 @@ export class Stage2D extends BatchRenderer {
      useRepeatTextures = options.useRepeatTextures,
      useTint = options.useTint;
 
-     const createGetTextureFunction = () => {
-      let func = "vec4 gtTexCl(float i,vec4 s,vec2 m){";
-
-      for (let i = 0; i < maxTextureImageUnits; i++)
-        func += "if(i<" + (i + 1) + ".)" + 
-          "return texture(uTex[" + i + "],clamp(s.xy+s.zw*m,s.xy+vTsh,s.xy+s.zw-vTsh));";
-
-        func += "return Z.yyyy;" +
-      "}";
-
-      return func;
-    }
-
     const getSimpleTexColor = (modCoordName) =>
       "gtTexCl(vTId,vTCrop," + modCoordName + ")";
 
@@ -441,7 +420,12 @@ export class Stage2D extends BatchRenderer {
     "out vec4 " +
       "oCl;" +
 
-    createGetTextureFunction() +
+    "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
+      Array(maxTextureImageUnits).fill().map((v, i) => 
+      "if(i<" + (i + 1) + ".)" + 
+        "return texture(uTex[" + i + "],clamp(s.xy+s.zw*m,s.xy+vTsh,s.xy+s.zw-vTsh));").join("") +
+      "return Z.yyyy;" +
+    "}" +
 
     "float cosine(float a,float b,float v){" +
       "v=abs(v);" +
