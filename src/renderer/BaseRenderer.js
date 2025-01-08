@@ -133,8 +133,6 @@ export class BaseRenderer {
   $attachFramebuffer(framebuffer) {
     framebuffer.bind(this.$gl);
     framebuffer.setSize(this.width, this.height);
-    this.context.useTexture(framebuffer, this.$renderTime, false);
-    this.context.deactivateTexture(framebuffer);
     this.$gl.uniform1f(this.$locations.uFlpY, -1);
   }
 
@@ -201,8 +199,9 @@ export class BaseRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    this._positionBuffer.upload(this.$gl, this.$enableBuffers);
-    this._elementArrayBuffer.upload(this.$gl);
+    const gl = this.$gl;
+    this._positionBuffer.upload(gl, this.$enableBuffers);
+    this._elementArrayBuffer.upload(gl);
     this.$enableBuffers = false;
   }
 
@@ -210,8 +209,10 @@ export class BaseRenderer {
    * @ignore
    */
   $createBuffers() {
-    this._elementArrayBuffer.create(this.$gl, this.$locations);
-    this._positionBuffer.create(this.$gl, this.$locations);
+    const gl = this.$gl,
+      locations = this.$locations;
+    this._elementArrayBuffer.create(gl, locations);
+    this._positionBuffer.create(gl, locations);
   }
 
   /**
@@ -221,7 +222,6 @@ export class BaseRenderer {
   _renderBatch(framebuffer) {
     this.$renderTime = Date.now();
     this.$render(framebuffer);
-    this.$gl.flush();
   }
 
   /**
@@ -229,6 +229,7 @@ export class BaseRenderer {
    */
   _switchToProgram() {
     this.$gl = this.context.gl;
+
     const context = this.context,
       contextId = context.contextId;
 

@@ -50,18 +50,21 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @ignore
    */
   $render() {
+    const gl = this.$gl,
+      locations = this.$locations;
+
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$useTextureAt(this.heightMap, this.$locations.uTex, 0);
+    this.$useTextureAt(this.heightMap, locations.uTex, 0);
 
     if (this.sourceTexture) {
-      this.$useTextureAt(this.sourceTexture, this.$locations.uSTTex, 1);
-      this.$gl.uniform1f(this.$locations.uUSTT, 1);
-    } else this.$gl.uniform1f(this.$locations.uUSTT, 0);
+      this.$useTextureAt(this.sourceTexture, locations.uSTTex, 1);
+      gl.uniform1f(locations.uUSTT, 1);
+    } else gl.uniform1f(locations.uUSTT, 0);
 
-    this.$gl.uniform1f(this.$locations.uR, this.radius);
-    this.$gl.uniform1f(this.$locations.uS, this.samples);
-    this.$gl.uniform1f(this.$locations.uDM, this.depthMultiplier);
+    gl.uniform1f(locations.uR, this.radius);
+    gl.uniform1f(locations.uS, this.samples);
+    gl.uniform1f(locations.uDM, this.depthMultiplier);
 
     this.$uploadBuffers();
 
@@ -110,9 +113,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     return Utils.GLSL.VERSION + 
     "precision highp float;\n" +
     
-    Utils.GLSL.DEFINE.HEIGHT +
     Utils.GLSL.DEFINE.RADIAN_360 +
-    Utils.GLSL.DEFINE.PI +
     Utils.GLSL.DEFINE.Z +
     
     "in float " +

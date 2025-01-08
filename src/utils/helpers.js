@@ -18,6 +18,13 @@ export const removeFromArray = (array, item) => {
 export const noop = () => {};
 
 /**
+ * Noop function returns 1
+ * @function
+ * @ignore
+ */
+export const noopReturnsOne = () => 1;
+
+/**
  * Fast array filler
  * @function
  * @param {array} target

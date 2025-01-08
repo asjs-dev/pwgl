@@ -1,4 +1,4 @@
-import { removeFromArray } from "./helpers";
+import { noopReturnsOne, removeFromArray } from "./helpers";
 import { Utils, Const } from "./Utils";
 import { TextureInfo } from "../data/texture/TextureInfo";
 import "../data/BlendMode";
@@ -9,6 +9,7 @@ import "../data/BlendMode";
  * @property {number} contextId
  * @property {Array<number>} textureIds
  * @property {WebGL2Context} gl
+ * @property {function} isLost Returns context lost state
  */
 export class Context {
   /**
@@ -19,11 +20,12 @@ export class Context {
   constructor(config = {}) {
     this.contextId = 0;
 
+    this.isLost = noopReturnsOne;
+
     this._config = Utils.initContextConfig(config);
 
     this._onContextLost = this._onContextLost.bind(this);
     this._initContext = this._initContext.bind(this);
-    this._restoreContext = this._restoreContext.bind(this);
 
     const canvas = this._config.canvas;
     this.canvas = canvas;
@@ -31,15 +33,6 @@ export class Context {
     canvas.addEventListener("webglcontextrestored", this._initContext);
 
     this._initContext();
-  }
-
-  /**
-   * Returns context lost state
-   * @returns {boolean}
-   */
-  isLost() {
-    const gl = this.gl;
-    return gl && gl.isContextLost && gl.isContextLost();
   }
 
   /**
@@ -76,7 +69,7 @@ export class Context {
     canvas.removeEventListener("webglcontextlost", this._onContextLost);
     canvas.removeEventListener("webglcontextrestored", this._initContext);
 
-    this._loseContextExt && this._loseContextExt.loseContext();
+    this._loseContext();
   }
 
   /**
@@ -199,14 +192,7 @@ export class Context {
    */
   _onContextLost(event) {
     event.preventDefault();
-    this._loseContextExt && setTimeout(this._restoreContext, 1);
-  }
-
-  /**
-   * @ignore
-   */
-  _restoreContext() {
-    this._loseContextExt.restoreContext();
+    setTimeout(this._restoreContext, 1);
   }
 
   /**
@@ -220,7 +206,13 @@ export class Context {
 
     gl.agl_id = ++this.contextId;
 
-    this._loseContextExt = gl.getExtension("WEBGL_lose_context");
+    const loseContextExt = gl.getExtension("WEBGL_lose_context");
+    if (loseContextExt) {
+      this._restoreContext = loseContextExt.restoreContext.bind(loseContextExt);
+      this._loseContext = loseContextExt.loseContext.bind(loseContextExt);
+    } else this._restoreContext = this._loseContext = noop;
+
+    this.isLost = gl.isContextLost ? gl.isContextLost.bind(gl) : noopReturnsOne;
 
     gl.pixelStorei(Const.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.enable(Const.BLEND);
@@ -233,13 +225,15 @@ export class Context {
       this._currentBlendMode =
         null;
 
+    this._textureMap &&
+      this._emptyTextureSlots &&
+      this.textureIds &&
+      this.clearTextures();
+    this.setCanvasSize(1, 1);
+
     this._textureMap = [];
     this._emptyTextureSlots = [];
     this.textureIds = [];
-
-    this.clearTextures();
-
-    this.setCanvasSize(1, 1);
 
     this._config.initCallback && setTimeout(this._config.initCallback, 1);
   }

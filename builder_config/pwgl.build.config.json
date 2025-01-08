@@ -12,6 +12,8 @@
     "replaceTexts": {
       "removeFromArray": "$rfa",
       "arraySet": "$as",
+      "noop": "$nf",
+      "noopReturnsOne": "$nfro",
 
       "BaseTransformProps": "DBTP",
       "ColorProps": "DCP",

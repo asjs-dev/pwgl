@@ -1,10 +1,5 @@
-import { removeFromArray } from "../utils/helpers";
+import { removeFromArray, noopReturnsOne } from "../utils/helpers";
 import { Item } from "./Item";
-
-/**
- * @ignore
- */
-const _noopReturnsOne = () => 1;
 
 /**
  * Container
@@ -40,7 +35,7 @@ export class Container extends Item {
       this._getParentPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
     } else
       this._getParentPremultipliedUseTint = this._getParentPremultipliedAlpha =
-        _noopReturnsOne;
+        noopReturnsOne;
   }
 
   /**

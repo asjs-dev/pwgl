@@ -167,10 +167,11 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawItem(item) {
-    item.update(this.$renderTime);
-    item.callbackBeforeRender(item, this.$renderTime);
+    const renderTime = this.$renderTime;
+    item.update(renderTime);
+    item.callbackBeforeRender(item, renderTime);
     item.renderable && this["_draw" + item.RENDERING_TYPE](item);
-    item.callbackAfterRender(item, this.$renderTime);
+    item.callbackAfterRender(item, renderTime);
   }
 
   /**
@@ -269,8 +270,10 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    this._dataBuffer.upload(this.$gl, this.$enableBuffers);
-    this._distortionBuffer.upload(this.$gl, this.$enableBuffers);
+    const gl = this.$gl,
+      enableBuffers = this.$enableBuffers;
+    this._dataBuffer.upload(gl, enableBuffers);
+    this._distortionBuffer.upload(gl, enableBuffers);
     super.$uploadBuffers();
   }
 
@@ -278,9 +281,11 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $createBuffers() {
+    const gl = this.$gl,
+      locations = this.$locations;
     super.$createBuffers();
-    this._dataBuffer.create(this.$gl, this.$locations);
-    this._distortionBuffer.create(this.$gl, this.$locations);
+    this._dataBuffer.create(gl, locations);
+    this._distortionBuffer.create(gl, locations);
   }
 
   // prettier-ignore
