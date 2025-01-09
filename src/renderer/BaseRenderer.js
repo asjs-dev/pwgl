@@ -133,6 +133,8 @@ export class BaseRenderer {
   $attachFramebuffer(framebuffer) {
     framebuffer.bind(this.$gl);
     framebuffer.setSize(this.width, this.height);
+    this.context.useTexture(framebuffer, this.$renderTime, false);
+    this.context.deactivateTexture(framebuffer);
     this.$gl.uniform1f(this.$locations.uFlpY, -1);
   }
 
