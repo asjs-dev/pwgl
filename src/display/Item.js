@@ -90,15 +90,12 @@ export class Item {
    * <pre>
    *  Handle event
    *    - It can handle mouse events if the item is interactive and has [
-   *      onmouseover,
-   *      onmouseout,
-   *      onmousemove,
-   *      onmousedown,
-   *      onmouseup,
-   *      onclick,
-   *      ontouchstart,
-   *      ontouchmove,
-   *      touchend
+   *      onPointerOver,
+   *      onPointerOut,
+   *      onPointerMove,
+   *      onPointerDown,
+   *      onPointerUp,
+   *      onPointerClick
    *    ] function
    * </pre>
    * @param {*} event

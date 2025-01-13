@@ -15,15 +15,61 @@ import "../geom/PointType";
  * @extends {RendererConfig}
  */
 
-const _INTERACTION_EVENT_TYPES = [
-  "mousemove",
-  "mousedown",
-  "mouseup",
-  "click",
-  "touchstart",
-  "touchmove",
-  "touchend",
-];
+// Prefix for rendering functions.
+const _RENDERING_TYPE_PREFIX = "_draw",
+  // Mouse move event type.
+  _INTERACTION_EVENT_TYPE_MOUSE_MOVE = "mousemove",
+  // Mouse down event type.
+  _INTERACTION_EVENT_TYPE_MOUSE_DOWN = "mousedown",
+  // Mouse up event type.
+  _INTERACTION_EVENT_TYPE_MOUSE_UP = "mouseup",
+  // Mouse click event type.
+  _INTERACTION_EVENT_TYPE_CLICK = "click",
+  // Touch start event type.
+  _INTERACTION_EVENT_TYPE_TOUCH_START = "touchstart",
+  // Touch move event type.
+  _INTERACTION_EVENT_TYPE_TOUCH_MOVE = "touchmove",
+  // Touch end event type.
+  _INTERACTION_EVENT_TYPE_TOUCH_END = "touchend",
+  // Mapped pointer move event type.
+  _INTERACTION_EVENT_MAPPED_TYPE_POINTER_CLICK = "PointerClick",
+  // Mapped pointer move event type.
+  _INTERACTION_EVENT_MAPPED_TYPE_POINTER_DOWN = "PointerDown",
+  // Mapped pointer move event type.
+  _INTERACTION_EVENT_MAPPED_TYPE_POINTER_MOVE = "PointerMove",
+  // Mapped pointer move event type.
+  _INTERACTION_EVENT_MAPPED_TYPE_POINTER_UP = "PointerUp",
+  // Mapped pointer move event type.
+  _INTERACTION_EVENT_MAPPED_TYPE_POINTER_OUT = "PointerOut",
+  // Mapped pointer move event type.
+  _INTERACTION_EVENT_MAPPED_TYPE_POINTER_OVER = "PointerOver",
+  // List of interaction event types.
+  _INTERACTION_EVENT_TYPES = [
+    _INTERACTION_EVENT_TYPE_MOUSE_MOVE,
+    _INTERACTION_EVENT_TYPE_MOUSE_DOWN,
+    _INTERACTION_EVENT_TYPE_MOUSE_UP,
+    _INTERACTION_EVENT_TYPE_CLICK,
+    _INTERACTION_EVENT_TYPE_TOUCH_START,
+    _INTERACTION_EVENT_TYPE_TOUCH_MOVE,
+    _INTERACTION_EVENT_TYPE_TOUCH_END,
+  ],
+  // Mapping of interaction event types to pointer event types.
+  _INTERACTION_EVENT_MAPPED_TYPES = {
+    [_INTERACTION_EVENT_TYPE_CLICK]:
+      _INTERACTION_EVENT_MAPPED_TYPE_POINTER_CLICK,
+    [_INTERACTION_EVENT_TYPE_MOUSE_DOWN]:
+      _INTERACTION_EVENT_MAPPED_TYPE_POINTER_DOWN,
+    [_INTERACTION_EVENT_TYPE_TOUCH_START]:
+      _INTERACTION_EVENT_MAPPED_TYPE_POINTER_DOWN,
+    [_INTERACTION_EVENT_TYPE_MOUSE_MOVE]:
+      _INTERACTION_EVENT_MAPPED_TYPE_POINTER_MOVE,
+    [_INTERACTION_EVENT_TYPE_TOUCH_MOVE]:
+      _INTERACTION_EVENT_MAPPED_TYPE_POINTER_MOVE,
+    [_INTERACTION_EVENT_TYPE_MOUSE_UP]:
+      _INTERACTION_EVENT_MAPPED_TYPE_POINTER_UP,
+    [_INTERACTION_EVENT_TYPE_TOUCH_END]:
+      _INTERACTION_EVENT_MAPPED_TYPE_POINTER_UP,
+  };
 
 /**
  * <pre>
@@ -57,10 +103,12 @@ export class Stage2D extends BatchRenderer {
 
     this._batchItems = 0;
 
-    this["_draw" + Item.RENDERING_TYPE] = this["_draw" + Light.RENDERING_TYPE] =
-      noop;
-    this["_draw" + Image.RENDERING_TYPE] = this._drawImage;
-    this["_draw" + Container.RENDERING_TYPE] = this._drawContainer;
+    this[_RENDERING_TYPE_PREFIX + Item.RENDERING_TYPE] = this[
+      _RENDERING_TYPE_PREFIX + Light.RENDERING_TYPE
+    ] = noop;
+    this[_RENDERING_TYPE_PREFIX + Image.RENDERING_TYPE] = this._drawImage;
+    this[_RENDERING_TYPE_PREFIX + Container.RENDERING_TYPE] =
+      this._drawContainer;
     this._batchDraw = this._batchDraw.bind(this);
 
     this._mousePosition = { x: 0, y: 0 };
@@ -69,10 +117,13 @@ export class Stage2D extends BatchRenderer {
     this._distortionBuffer = new Buffer("aDst", maxRenderCount, 4, 2);
 
     this._onMouseEventHandler = this._onMouseEventHandler.bind(this);
-    const body = document.body;
+    const canvas = this.context.canvas;
     _INTERACTION_EVENT_TYPES.forEach((type) =>
-      body.addEventListener(type, this._onMouseEventHandler)
+      canvas.addEventListener(type, this._onMouseEventHandler)
     );
+
+    const lightRenderer = options.lightRenderer;
+    lightRenderer && this.attachLightRenderer(lightRenderer);
   }
 
   /**
@@ -81,14 +132,15 @@ export class Stage2D extends BatchRenderer {
    * @param {LightRenderer} v
    */
   attachLightRenderer(v) {
-    this["_draw" + Light.RENDERING_TYPE] = v.addLightForRender.bind(v);
+    this[_RENDERING_TYPE_PREFIX + Light.RENDERING_TYPE] =
+      v.addLightForRender.bind(v);
   }
 
   /**
    * Detach LightRenderer
    */
   detachLightRenderer() {
-    this["_draw" + Light.RENDERING_TYPE] = noop;
+    this[_RENDERING_TYPE_PREFIX + Light.RENDERING_TYPE] = noop;
   }
 
   /**
@@ -105,9 +157,9 @@ export class Stage2D extends BatchRenderer {
    * Description placeholder
    */
   destruct() {
-    const body = document.body;
+    const canvas = this.context.canvas;
     _INTERACTION_EVENT_TYPES.forEach((type) =>
-      body.removeEventListener(type, this._onMouseEventHandler)
+      canvas.removeEventListener(type, this._onMouseEventHandler)
     );
   }
 
@@ -115,36 +167,36 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _handleMouseEvent() {
-    if (this._latestEvent) {
-      if (this._eventTarget !== this._previousEventTarget) {
-        const newEvent = {};
-        for (let key in this._latestEvent)
-          newEvent[key] = this._latestEvent[key];
+    const latestEvent = this._latestEvent,
+      eventTarget = this._eventTarget,
+      previousEventTarget = this._previousEventTarget;
 
-        this._previousEventTarget &&
-          this._previousEventTarget.callEventHandler(
-            this._previousEventTarget,
-            {
-              ...newEvent,
-              type: "mouseout",
-            }
-          );
+    if (latestEvent) {
+      if (eventTarget !== previousEventTarget) {
+        const newEvent = { ...latestEvent };
 
-        this._eventTarget &&
-          this._eventTarget.callEventHandler(this._eventTarget, {
+        previousEventTarget &&
+          previousEventTarget.callEventHandler(previousEventTarget, {
             ...newEvent,
-            type: "mouseover",
+            type: _INTERACTION_EVENT_MAPPED_TYPE_POINTER_OUT,
+          });
+
+        eventTarget &&
+          eventTarget.callEventHandler(eventTarget, {
+            ...newEvent,
+            type: _INTERACTION_EVENT_MAPPED_TYPE_POINTER_OVER,
           });
       }
 
-      this._eventTarget &&
-        this._eventTarget.callEventHandler(
-          this._eventTarget,
-          this._latestEvent
-        );
+      eventTarget &&
+        eventTarget.callEventHandler(eventTarget, {
+          ...latestEvent,
+          type: _INTERACTION_EVENT_MAPPED_TYPES[latestEvent.type],
+        });
 
-      this._previousEventTarget = this._eventTarget;
+      this._previousEventTarget = eventTarget;
     }
+
     this._latestEvent = null;
   }
 
@@ -156,10 +208,11 @@ export class Stage2D extends BatchRenderer {
   _setMousePosition(x, y) {
     this._isMousePositionSet = true;
 
-    const matrixCache = this.container.matrixCache;
+    const matrixCache = this.container.matrixCache,
+      mousePosition = this._mousePosition;
 
-    this._mousePosition.x = (x - this.widthHalf) * matrixCache[0];
-    this._mousePosition.y = (y - this.heightHalf) * matrixCache[3];
+    mousePosition.x = (x - this.widthHalf) * matrixCache[0];
+    mousePosition.y = (y - this.heightHalf) * matrixCache[3];
   }
 
   /**
@@ -167,11 +220,13 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawItem(item) {
-    const renderTime = this.$renderTime;
-    item.update(renderTime);
-    item.callbackBeforeRender(item, renderTime);
-    item.renderable && this["_draw" + item.RENDERING_TYPE](item);
-    item.callbackAfterRender(item, renderTime);
+    if (item.renderable) {
+      const renderTime = this.$renderTime;
+      item.update(renderTime);
+      item.callbackBeforeRender(item, renderTime);
+      this[_RENDERING_TYPE_PREFIX + item.RENDERING_TYPE](item);
+      item.callbackAfterRender(item, renderTime);
+    }
   }
 
   /**
@@ -248,14 +303,12 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _onMouseEventHandler(event) {
+    this._latestEvent = event;
     const canvas = this.context.canvas;
-    if (event.target === canvas) {
-      this._latestEvent = event;
-      this._setMousePosition(
-        (canvas.width / canvas.offsetWidth) * event.offsetX,
-        (canvas.height / canvas.offsetHeight) * event.offsetY
-      );
-    }
+    this._setMousePosition(
+      (canvas.width / canvas.offsetWidth) * event.offsetX,
+      (canvas.height / canvas.offsetHeight) * event.offsetY
+    );
   }
 
   /**

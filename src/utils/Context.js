@@ -225,15 +225,12 @@ export class Context {
       this._currentBlendMode =
         null;
 
-    this._textureMap &&
-      this._emptyTextureSlots &&
-      this.textureIds &&
-      this.clearTextures();
-    this.setCanvasSize(1, 1);
-
     this._textureMap = [];
     this._emptyTextureSlots = [];
     this.textureIds = [];
+
+    this.clearTextures();
+    this.setCanvasSize(1, 1);
 
     this._config.initCallback && setTimeout(this._config.initCallback, 1);
   }

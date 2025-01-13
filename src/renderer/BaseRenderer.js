@@ -39,6 +39,8 @@ export class BaseRenderer {
       this.$renderTime =
         0;
 
+    this.setSize(1, 1);
+
     this.clearColor = new ColorProps();
 
     this._options = options;
@@ -248,12 +250,9 @@ export class BaseRenderer {
    * @ignore
    */
   _clear() {
-    this.$gl.clearColor(
-      this.clearColor.r,
-      this.clearColor.g,
-      this.clearColor.b,
-      this.clearColor.a
-    );
+    const gl = this.$gl,
+      color = this.clearColor;
+    this.$gl.clearColor(color.r, color.g, color.b, color.a);
     this.$gl.clear(Const.COLOR_BUFFER_BIT);
   }
 
@@ -261,19 +260,21 @@ export class BaseRenderer {
    * @ignore
    */
   _buildProgram() {
+    const gl = this.$gl;
+
     this._program = Utils.createProgram(
-      this.$gl,
+      gl,
       this.$createVertexShader(),
       this.$createFragmentShader()
     );
 
     this.$locations = Utils.getLocationsFor(
-      this.$gl,
+      gl,
       this._program,
       this._options.config.locations
     );
 
-    this._vao = this.$gl.createVertexArray();
+    this._vao = gl.createVertexArray();
 
     this._useProgram();
 
