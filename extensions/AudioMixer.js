@@ -245,6 +245,7 @@ export class AudioMixer {
             reverbFeedbackGain: 0,
             lowPassFilterFrequency: 22050,
             highPassFilterFrequency: 0,
+            ...(file.options ?? {}),
           },
         };
       } catch (e) {
