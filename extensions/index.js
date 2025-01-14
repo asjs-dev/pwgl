@@ -1,10 +1,12 @@
 import { FPS } from "./FPS";
-import { PressState } from "./PressState";
-import { Mouse } from "./Mouse";
-import { Keyboard } from "./Keyboard";
-import { Gamepad } from "./Gamepad";
+import { PressState } from "./controls/PressState";
+import { Mouse } from "./controls/Mouse";
+import { Keyboard } from "./controls/Keyboard";
+import { Gamepad } from "./controls/Gamepad";
 import { DataObserver } from "./DataObserver";
-import { AudioMixer, crossFadeAudioVolumes, fadeAudioVolume } from "./AudioMixer";
+import { crossFadeAudioVolumes, fadeAudioVolume } from "./audio/utils";
+import { AudioItem } from "./audio/AudioItem";
+import { AudioMixer } from "./audio/AudioMixer";
 import { SmoothLight } from "./renderer/SmoothLight";
 import { WaterRenderer } from "./renderer/WaterRenderer";
 import { areObjectsEqual } from "./utils/areObjectsEqual";
@@ -29,6 +31,7 @@ window.PWGLExtensions = window.AGLExtensions = {
   Gamepad,
   DataObserver,
 
+  AudioItem,
   AudioMixer,
   fadeAudioVolume,
   crossFadeAudioVolumes,
