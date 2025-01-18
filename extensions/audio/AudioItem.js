@@ -75,7 +75,7 @@ export class AudioItem extends BaseAudio {
       this.disconnect();
       this._audioMixer = audioMixer;
       this._update();
-      this._audioMixer.connect(this);
+      audioMixer.connect(this);
     }
   }
 
@@ -101,10 +101,11 @@ export class AudioItem extends BaseAudio {
 
     this.isPlaying = true;
 
-    const context = this._audioMixer.context;
+    const audioMixer = this._audioMixer,
+      context = audioMixer.context;
 
     this.$createNodes(context);
-    this.$connectNodes(this._audioMixer.node);
+    this.$connectNodes(audioMixer.node);
 
     if (context) {
       this._startTime = context.currentTime;
@@ -123,10 +124,12 @@ export class AudioItem extends BaseAudio {
   stop() {
     this.isPlaying = false;
 
-    if (this._audioMixer && this._buffer)
+    const audioMixer = this._audioMixer,
+      buffer = this._buffer;
+
+    if (audioMixer && buffer)
       this._startTime =
-        (this._audioMixer.context.currentTime - this._startTime) %
-        this._buffer.duration;
+        (audioMixer.context.currentTime - this._startTime) % buffer.duration;
 
     this.$disconnectNodes();
   }
@@ -142,9 +145,11 @@ export class AudioItem extends BaseAudio {
    * @ignore
    */
   $createNodes(context) {
-    if (context && this._buffer) {
+    const buffer = this._buffer;
+
+    if (context && buffer) {
       this._source = context.createBufferSource();
-      this._source.buffer = this._buffer;
+      this._source.buffer = buffer;
       super.$createNodes(context);
     }
   }
@@ -184,11 +189,12 @@ export class AudioItem extends BaseAudio {
    * @ignore
    */
   async _update() {
-    if (this._audioResponse && this._audioMixer) {
-      const arrayBuffer = await this._audioResponse.arrayBuffer();
-      this._buffer = await this._audioMixer.context.decodeAudioData(
-        arrayBuffer
-      );
+    const audioResponse = this._audioResponse,
+      audioMixer = this._audioMixer;
+
+    if (audioResponse && audioMixer) {
+      const arrayBuffer = await audioResponse.arrayBuffer();
+      this._buffer = await audioMixer.context.decodeAudioData(arrayBuffer);
       this.isPlaying && this.play();
     }
   }

@@ -81,31 +81,31 @@ export const Utils = {
    */
   // prettier-ignore
   GLSL: {
-    VERSION: "#version 300 es\n",
+    VERSION: `#version 300 es\n`,
     DEFINE: {
-      RADIAN_360: "#define RADIAN_360 " + Math.PI * 2 + "\n",
-      HEIGHT: "#define HEIGHT 255.\n",
-      Z: "#define Z vec3(0,1,-1)\n",
-      PI: "#define PI " + Math.PI + "\n",
+      RADIAN_360: `#define RADIAN_360 ${Math.PI * 2}\n`,
+      HEIGHT: `#define HEIGHT 255.\n`,
+      Z: `#define Z vec3(0,1,-1)\n`,
+      PI: `#define PI ${Math.PI}\n`,
     },
     RANDOM: 
-      "float rand(vec2 p,float s){" +
-        "p=mod(p,vec2(10000));" +
-        "return fract(" + 
-          "sin(" + 
-            "dot(" + 
-              "p," + 
-              "vec2(" + 
-                "sin(p.x+p.y)," + 
-                "cos(p.y-p.x)" + 
-              ")" + 
-            ")" + 
-          ")*s" +
-        ");" +
-      "}" +
-      "float rand(vec2 p){" + 
-        "return rand(p,1.);" +
-      "}"
+      `float rand(vec2 p,float s){` +
+        `p=mod(p,vec2(1e4));` +
+        `return fract(` + 
+          `sin(` + 
+            `dot(` + 
+              `p,` + 
+              `vec2(` + 
+                `sin(p.x+p.y),` + 
+                `cos(p.y-p.x)` + 
+              `)` + 
+            `)` + 
+          `)*s` +
+        `);` +
+      `}` +
+      `float rand(vec2 p){` + 
+        `return rand(p,1.);` +
+      `}`
   },
 
   /**
@@ -225,7 +225,7 @@ export const Utils = {
 
     locationsDescriptor.forEach(
       (name) =>
-        (locations[name] = gl["get" + _locationTypes[name[0]] + "Location"](
+        (locations[name] = gl[`get${_locationTypes[name[0]]}Location`](
           program,
           name
         ))

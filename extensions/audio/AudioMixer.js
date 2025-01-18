@@ -15,11 +15,12 @@ export class AudioMixer extends BaseAudio {
   constructor(options = {}) {
     super();
 
-    this._context = new (window.AudioContext || window.webkitAudioContext)();
+    const context = new (window.AudioContext || window.webkitAudioContext)();
+    this._context = context;
 
     this._items = [];
-    this.$createNodes(this._context);
-    this.$connectNodes(this._context.destination);
+    this.$createNodes(context);
+    this.$connectNodes(context.destination);
     this.$setOptions(options);
   }
 

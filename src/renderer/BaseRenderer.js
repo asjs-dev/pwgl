@@ -260,12 +260,13 @@ export class BaseRenderer {
    * @ignore
    */
   _buildProgram() {
-    const gl = this.$gl;
+    const gl = this.$gl,
+      shaderHeader = Utils.GLSL.VERSION + `precision highp float;\n`;
 
     this._program = Utils.createProgram(
       gl,
-      this.$createVertexShader(),
-      this.$createFragmentShader()
+      shaderHeader + this.$createVertexShader(),
+      shaderHeader + this.$createFragmentShader()
     );
 
     this.$locations = Utils.getLocationsFor(

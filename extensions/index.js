@@ -24,12 +24,16 @@ import { random } from "./utils/rand";
 import { mix } from "./utils/mix";
 
 window.PWGLExtensions = window.AGLExtensions = {
+  version: "{{appVersion}}",
+
   FPS,
+
+  DataObserver,
+
   PressState,
   Mouse,
   Keyboard,
   Gamepad,
-  DataObserver,
 
   AudioItem,
   AudioMixer,
@@ -53,3 +57,8 @@ window.PWGLExtensions = window.AGLExtensions = {
   nthCall,
   random,
 };
+
+console.log(
+  `%cPWGL Extensions v${AGLExtensions.version}\nhttps:\/\/github.com/asjs-dev/pwgl`,
+  "background:#222;color:#0F0"
+);

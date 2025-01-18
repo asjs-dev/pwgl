@@ -5,6 +5,12 @@
     "wrapped": true,
     "minify": true,
     "compress": true,
+    "variables": {
+      "{{appVersion}}": "0.0.1"
+    },
+    "replaceTexts": {
+      "BaseAudio": "ABA"
+    },
     "output": "dist/pwgl.extensions.min.js"
   },
   "copyAssets": {
