@@ -281,7 +281,7 @@ export class FilterRenderer extends BaseRenderer {
         `float ` + 
           `cnt=1.,` +
           `rnd=rand(vTUv*100.+50.),` +
-          `t=RADIAN_360/(3.+ceil(3.*rnd));` +
+          `t=max(1.,RADIAN_360/(3.+ceil(3.*rnd)));` +
 
         // BlurFilter
         `if(uFtrT.y<2){` +

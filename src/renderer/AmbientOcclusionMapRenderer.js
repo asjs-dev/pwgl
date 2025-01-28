@@ -138,18 +138,16 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
         `v=0.;` +
         
       `if(uS>0.&&uR>0.){` +
-        `vec2 ` +
-          `dr=Z.yx,` +
-          `p;` +
-          
         `float ` + 
           `l=3.+ceil(uS*rand(vTUv*100.+50.)),` +
-          `t=RADIAN_360/l,` +
+          `t=max(1.,RADIAN_360/l),` +
           `rad;` +
-
+        
         `vec2 ` +
+          `dr=Z.yx,` +
           `sts=vTs*(.8+rand(vTUv*100.+50.)*.4),` +
-          `r=vec2(cos(t),sin(t));` +
+          `r=vec2(cos(t),sin(t)),` +
+          `p;` +
 
         `for(rad=0.;rad<RADIAN_360;rad+=t){` +
           `p=dr*sts;` +
