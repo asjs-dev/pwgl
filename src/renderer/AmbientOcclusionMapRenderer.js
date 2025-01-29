@@ -139,9 +139,8 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
         
       `if(uS>0.&&uR>0.){` +
         `float ` + 
-          `l=3.+ceil(uS*rand(vTUv*100.+50.)),` +
-          `t=max(1.,RADIAN_360/l),` +
-          `rad;` +
+          `l=max(3.,ceil(uS*rand(vTUv*100.+50.))),` +
+          `t=RADIAN_360/l;` +
         
         `vec2 ` +
           `dr=Z.yx,` +
@@ -149,12 +148,12 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           `r=vec2(cos(t),sin(t)),` +
           `p;` +
 
-        `for(rad=0.;rad<RADIAN_360;rad+=t){` +
+        `for(float i=0.;i<l;i++){` +
           `p=dr*sts;` +
-          `v+=(texture(uTex,vTUv+p).g-tx)*length(p)/vLng;` +
           `dr=vec2(dr.x*r.x-dr.y*r.y,dr.x*r.y+dr.y*r.x);` +
+          `v+=(texture(uTex,vTUv+p).g-tx)*length(p)/vLng;` +
         `}` +
-        `v/=l;` +
+        `v/=RADIAN_360;` +
       `}` +
       
       `vec3 ` +
