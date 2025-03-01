@@ -22,6 +22,7 @@ import { getFPS } from "./utils/getFPS";
 import { nthCall } from "./utils/nthCall";
 import { random } from "./utils/rand";
 import { mix } from "./utils/mix";
+import { generateDungeon } from "./utils/dungeon";
 
 window.PWGLExtensions = window.AGLExtensions = {
   version: "{{appVersion}}",
@@ -56,6 +57,7 @@ window.PWGLExtensions = window.AGLExtensions = {
   getFPS,
   nthCall,
   random,
+  generateDungeon,
 };
 
 console.log(
