@@ -291,23 +291,19 @@ export class LightRenderer extends BatchRenderer {
 
       `float ` +
         `ph=tc.g*HEIGHT,` +
-        `shn=tc.b,` +
-        `rgh=1.;` +
+        `vol=vDt.y*vCl.a,` +
+        `spc=0.;` +
+
+      `if(vol<=0.)discard;` +
 
       `vec3 ` +
         `sf=vec3(tUv,ph),` +
         `lp=vec3(tCnt,vHS),` +
         `sftla=lp-sf;` +
 
-      `float ` +
-        `dst=1.-length(sftla)/vD,` +
-        `vol=vDt.y*vCl.a,` +
-        `spc=0.;` +
-
-      `if(vol<=0.)discard;` +
-
       `if(vExt[0].x<1.){` +
-        `vol*=dst;` +
+        `vol*=1.-length(sftla)/vD;` +
+
         `if(vol<=0.)discard;` +
 
         `float ` +
@@ -344,14 +340,21 @@ export class LightRenderer extends BatchRenderer {
           `)-sf),` +
           `hlf=normalize(sftl+sftv);` +
 
-        `float lght=dot(nm,sftl);` +
-        `vol*=lght;` +
+
+        `vol*=dot(nm,sftl);` +
+        
         `if(vol<=0.)discard;` +
+        
+        `float ` + 
+          `rgh=1.,` +
+          `shn=tc.b;` +
+
         `if(uURGT>0.){` + 
           `vec2 rgt=texture(uRGTex,vTUv).rg;` +
           `rgh=rgt.r;` +
           `shn=rgt.g;` +
         `}` +
+
         `spc=pow(dot(nm,hlf),rgh*HEIGHT)*shn*vExt[1].y;` +
       `}` +
 
@@ -373,9 +376,9 @@ export class LightRenderer extends BatchRenderer {
           `l=fltDst-st,` +
           `m=max(st,l-shl);` +
         
-        `if(flg.z>0.){` + 
+        `if(flg.z>0.)` + 
           loop(`if(tc.g>=vHS)discard;`) +
-        `}else{` +
+        `else{` +
           `float ` +
             `rnd=vExt[0].w*rand(vTUv*100.+50.);` +
             
