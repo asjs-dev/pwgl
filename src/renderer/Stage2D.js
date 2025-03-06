@@ -144,16 +144,6 @@ export class Stage2D extends BatchRenderer {
   }
 
   /**
-   * Renders the scene
-   */
-  render() {
-    this._eventTarget = null;
-    super.render();
-    this._isMousePositionSet = false;
-    this._handleMouseEvent();
-  }
-
-  /**
    * Description placeholder
    */
   destruct() {
@@ -315,8 +305,11 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $render() {
+    this._eventTarget = null;
     this._drawItem(this.container);
     this._batchDraw();
+    this._isMousePositionSet = false;
+    this._handleMouseEvent();
   }
 
   /**
