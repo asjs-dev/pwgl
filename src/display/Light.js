@@ -9,6 +9,8 @@ import { BaseDrawable } from "./BaseDrawable";
  * @property {boolean} castShadow
  * @property {boolean} shading
  * @property {boolean} centerReflection
+ * @property {boolean} flattenShadow
+ * @property {boolean} fading
  * @property {number} flags
  * @property {number} type - Type of the Light
  * @property {number} shadowLength - Length of shadow
@@ -38,6 +40,7 @@ export class Light extends BaseDrawable {
     this.type = Light.Type.POINT;
     this.precision = this.shadowLength = this.specularStrength = 1;
     this.maxShadowStep = 128;
+    this.fading = true;
   }
 
   /**
@@ -77,6 +80,20 @@ export class Light extends BaseDrawable {
   }
   set flattenShadow(v) {
     this._flattenShadow = v;
+    this._updateFlags();
+  }
+
+  /**
+   * <pre>
+   *  Set/Get fading the light
+   * </pre>
+   * @type {boolean}
+   */
+  get fading() {
+    return this._fading;
+  }
+  set fading(v) {
+    this._fading = v;
     this._updateFlags();
   }
 
@@ -127,7 +144,8 @@ export class Light extends BaseDrawable {
       (this._castShadow * 1) |
       (this._shading * 2) |
       (this._flattenShadow * 4) |
-      (this._centerReflection * 8);
+      (this._centerReflection * 8) |
+      (this._fading * 16);
   }
 }
 

@@ -191,13 +191,15 @@ export const Utils = {
             gl.getProgramParameter(program, Const.VALIDATE_STATUS),
           ...(vertexShaderInfo
             ? [
-                "Vertex shader info: " + gl.getShaderInfoLog(vertexShader),
+                "",
+                "Vertex shader info: " + vertexShaderInfo,
                 "Vertex shader: " + vertexShaderSource,
               ]
             : []),
           ...(fragmentShaderInfo
             ? [
-                "Fragment shader info: " + gl.getShaderInfoLog(fragmentShader),
+                "",
+                "Fragment shader info: " + fragmentShaderInfo,
                 "Fragment shader: " + fragmentShaderSource,
               ]
             : []),

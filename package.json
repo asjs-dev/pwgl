@@ -1,6 +1,6 @@
 {
   "name": "PWGL",
-  "version": "4.2.4",
+  "version": "4.3.0",
   "main": "./dist/pwgl.min.js",
   "description": "WebGL2 2D framework",
   "homepage": "https://asjs-dev.github.io/pwgl/",
