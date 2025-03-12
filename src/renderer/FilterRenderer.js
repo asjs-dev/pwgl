@@ -42,10 +42,19 @@ export class FilterRenderer extends BaseRenderer {
     this._attachFramebufferAndClearFv = this.$attachFramebufferAndClear;
     this.$attachFramebufferAndClear = noop;
 
-    this.filters = options.filters || [];
+    this._filters = options.filters || [];
     this.sourceTexture = options.sourceTexture;
 
     this._framebuffers = [new Framebuffer(), new Framebuffer()];
+  }
+
+  get filters() {
+    return this._filters;
+  }
+
+  set filters(v) {
+    this._filters = v;
+    this._rendererId++;
   }
 
   /**
@@ -57,7 +66,7 @@ export class FilterRenderer extends BaseRenderer {
       gl = this.$gl,
       renderTime = this.$renderTime,
       locations = this.$locations,
-      filters = this.filters,
+      filters = this._filters,
       l = filters.length || 1,
       minL = l - 2;
 
@@ -142,12 +151,12 @@ export class FilterRenderer extends BaseRenderer {
    */
   $createFragmentShader() {
     const blurFunc = (core) =>
-      `for(float i=0.;i<l;i++){` +
+      `for(int i=0;i<int(l);i++){` +
         `clg=texelFetch(uTex,clamp(` + 
-          `f+ivec2(floor(wh*dr)),` + 
+          `f+ivec2(floor(dr)),` + 
           `mn,mx` +
         `),0);` +
-        `dr=vec2(dr.x*r.x-dr.y*r.y,dr.x*r.y+dr.y*r.x);` +
+        `dr=mat2(r.x,-r.y,r.y,r.x)*dr;` +
         core +
       `}`;
 
@@ -268,13 +277,15 @@ export class FilterRenderer extends BaseRenderer {
       // SAMPLING FILTERS
       `else if(uFtrT.x<5){` +
         `float ` + 
+          `rd=rand(vTUv*100.+50.),` +
+          `rad=radians(rd*360.),` +
           `cnt=1.,` +
-          `l=3.+ceil(3.*rand(vTUv*100.+50.)),` +
+          `l=3.+ceil(3.*rd),` +
           `t=RADIAN_360/l;` +
 
         `vec2 ` +
           `wh=vec2(v,vl[1]),` +
-          `dr=Z.yx,` +
+          `dr=wh*Z.xy*vec2(sin(rad),cos(rad))*(.5+rd*.5),` +
           `r=vec2(cos(t),sin(t));` +
 
         `vec4 ` +

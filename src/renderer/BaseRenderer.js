@@ -31,11 +31,14 @@ export class BaseRenderer {
 
     this.$resizeFv = noop;
 
+    this._rendererId = 1;
+
     this.width =
       this.height =
       this.widthHalf =
       this.heightHalf =
       this._currentContextId =
+      this._currentRendererId =
       this.$renderTime =
         0;
 
@@ -237,8 +240,12 @@ export class BaseRenderer {
     const context = this.context,
       contextId = context.contextId;
 
-    if (this._currentContextId !== contextId) {
+    if (
+      this._currentContextId !== contextId ||
+      this._currentRendererId !== this._rendererId
+    ) {
       this._currentContextId = contextId;
+      this._currentRendererId = this._rendererId;
       this._buildProgram();
     } else this._useProgram();
 
