@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>JSDoc: Class: BaseSamplingFilter</title>
+        <title>JSDoc: Class: BaseTextureFilter</title>
 
         <script src="scripts/prettify/prettify.js"> </script>
         <script src="scripts/prettify/lang-css.js"> </script>
@@ -37,7 +37,7 @@
         <div class="container">
             <div id="main">
 
-                <h1 class="page-title">Class: BaseSamplingFilter</h1>
+                <h1 class="page-title">Class: BaseTextureFilter</h1>
 
                 
 
@@ -48,9 +48,9 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>BaseSamplingFilter<span class="signature">(intensityX, intensityY, isRadial, centerX, centerY, size)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>BaseTextureFilter<span class="signature">(texture, extendedValue, translateX, translateY, cropX, cropY, cropWidth, cropHeight)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Base Sampling filter</div>
+            <div class="class-description">Base Texture filter</div>
         
     
 </header>
@@ -65,7 +65,7 @@
     
 
     
-    <h4 class="name" id="BaseSamplingFilter"><span class="type-signature"></span>new BaseSamplingFilter<span class="signature">(intensityX, intensityY, isRadial, centerX, centerY, size)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="BaseTextureFilter"><span class="type-signature"></span>new BaseTextureFilter<span class="signature">(texture, extendedValue, translateX, translateY, cropX, cropY, cropWidth, cropHeight)</span><span class="type-signature"></span></h4>
     
 
     
@@ -73,7 +73,7 @@
 
 
 <div class="description">
-    Creates an instance of BaseSamplingFilter.
+    Creates an instance of BaseTextureFilter.
 </div>
 
 
@@ -99,8 +99,6 @@
         
 
         
-        <th>Default</th>
-        
 
         <th class="last">Description</th>
     </tr>
@@ -111,7 +109,7 @@
 
         <tr>
             
-                <td class="name"><code>intensityX</code></td>
+                <td class="name"><code>texture</code></td>
             
 
             <td class="type">
@@ -125,10 +123,6 @@
 
             
 
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"></td>
@@ -138,7 +132,7 @@
 
         <tr>
             
-                <td class="name"><code>intensityY</code></td>
+                <td class="name"><code>extendedValue</code></td>
             
 
             <td class="type">
@@ -152,10 +146,6 @@
 
             
 
-            
-                <td class="default">
-                
-                </td>
             
 
             <td class="description last"></td>
@@ -165,7 +155,7 @@
 
         <tr>
             
-                <td class="name"><code>isRadial</code></td>
+                <td class="name"><code>translateX</code></td>
             
 
             <td class="type">
@@ -179,12 +169,6 @@
 
             
 
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
             
 
             <td class="description last"></td>
@@ -194,7 +178,7 @@
 
         <tr>
             
-                <td class="name"><code>centerX</code></td>
+                <td class="name"><code>translateY</code></td>
             
 
             <td class="type">
@@ -208,12 +192,6 @@
 
             
 
-            
-                <td class="default">
-                
-                    0.5
-                
-                </td>
             
 
             <td class="description last"></td>
@@ -223,7 +201,7 @@
 
         <tr>
             
-                <td class="name"><code>centerY</code></td>
+                <td class="name"><code>cropX</code></td>
             
 
             <td class="type">
@@ -237,12 +215,6 @@
 
             
 
-            
-                <td class="default">
-                
-                    0.5
-                
-                </td>
             
 
             <td class="description last"></td>
@@ -252,7 +224,7 @@
 
         <tr>
             
-                <td class="name"><code>size</code></td>
+                <td class="name"><code>cropY</code></td>
             
 
             <td class="type">
@@ -267,11 +239,51 @@
             
 
             
-                <td class="default">
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cropWidth</code></td>
+            
+
+            <td class="type">
+            
                 
-                    1
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>cropHeight</code></td>
+            
+
+            <td class="type">
+            
                 
-                </td>
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
             
 
             <td class="description last"></td>
@@ -315,7 +327,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line7">line 7</a>
+        <a href="filters_BaseTextureFilter.js.html">filters/BaseTextureFilter.js</a>, <a href="filters_BaseTextureFilter.js.html#line8">line 8</a>
     </li></ul></dd>
     
 
@@ -367,7 +379,7 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
-            <dt><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></dt>
+            <dt><a href="BaseTextureFilter.html">BaseTextureFilter</a></dt>
             <dd></dd>
         </dl>
     
@@ -443,150 +455,6 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line90">line 90</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="centerX"><span class="type-signature"></span>centerX<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get center x
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line50">line 50</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="centerY"><span class="type-signature"></span>centerY<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get center y
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line61">line 61</a>
     </li></ul></dd>
     
 
@@ -915,78 +783,6 @@
 
         
             
-<h4 class="name" id="isRadial"><span class="type-signature"></span>isRadial<span class="type-signature"> :boolean</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get is blur radial
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">boolean</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line39">line 39</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id="mix"><span class="type-signature"></span>mix<span class="type-signature"> :number</span></h4>
 
 
@@ -1124,78 +920,6 @@
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line68">line 68</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id="size"><span class="type-signature"></span>size<span class="type-signature"> :number</span></h4>
-
-
-
-
-<div class="description">
-    Set/Get size
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">number</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseSamplingFilter.js.html">filters/BaseSamplingFilter.js</a>, <a href="filters_BaseSamplingFilter.js.html#line72">line 72</a>
     </li></ul></dd>
     
 

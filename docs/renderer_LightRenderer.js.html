@@ -211,72 +211,72 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return `` +
+    return "" +
     Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.PI +
-    `#define P vec4(1,-1,2,-2)\n` +
+    "#define P vec4(1,-1,2,-2)\n" +
 
-    `in vec2 ` +
-      `aPos;` +
-    `in mat4 ` +
-      `aMt;` +
-    `in mat2x4 ` +
-      `aExt;` +
+    "in vec2 " +
+      "aPos;" +
+    "in mat4 " +
+      "aMt;" +
+    "in mat2x4 " +
+      "aExt;" +
 
-    `uniform float ` +
-      `uFlpY;` +
+    "uniform float " +
+      "uFlpY;" +
 
-    `out float ` +
-      `vHS,` +
-      `vD,` +
-      `vShl,` +
-      `vSpt;` +
-    `out vec2 ` +
-      `vTUv,` +
-      `vSln;` +
-    `out vec4 ` +
-      `vUv,` +
-      `vCl,` +
-      `vDt;` +
-    `out mat2x4 ` +
-      `vExt;` +
-    `flat out int[5] ` +
-      `flg;` +
+    "out float " +
+      "vHS," +
+      "vD," +
+      "vShl," +
+      "vSpt;" +
+    "out vec2 " +
+      "vTUv," +
+      "vSln;" +
+    "out vec4 " +
+      "vUv," +
+      "vCl," +
+      "vDt;" +
+    "out mat2x4 " +
+      "vExt;" +
+    "flat out int[5] " +
+      "flg;" +
 
-    `void main(void){` +
-      `vec3 pos=vec3(aPos*2.-1.,1);` +
+    "void main(void){" +
+      "vec3 pos=vec3(aPos*2.-1.,1);" +
 
-      `vExt=aExt;` +
-      `vCl=aMt[2];` +
-      `vDt=aMt[3];` +
+      "vExt=aExt;" +
+      "vCl=aMt[2];" +
+      "vDt=aMt[3];" +
 
-      `int ` +
-        `f=int(vExt[0].y);` +
+      "int " +
+        "f=int(vExt[0].y);" +
       
-      `flg=int[](f&amp;1,f&amp;2,f&amp;4,f&amp;8,f&amp;16);` +
+      "flg=int[](f&amp;1,f&amp;2,f&amp;4,f&amp;8,f&amp;16);" +
 
-      `vUv.xy=pos.xy;` +
-      `vHS=vExt[0].z;` +
+      "vUv.xy=pos.xy;" +
+      "vHS=vExt[0].z;" +
 
-      `mat3 mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1);` +
-      `vD=aMt[1].z;` +
-      `vShl=vD*vDt.x;` +
+      "mat3 mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1);" +
+      "vD=aMt[1].z;" +
+      "vShl=vD*vDt.x;" +
 
-      `if(vExt[0].x&lt;1.){` +
-        `gl_Position=vec4(mt*pos,1);` +
-        `vTUv=(gl_Position.xy+P.xy)/P.zw;` +
-        `vUv.zw=(aMt[1].xy+P.xy)/P.zw;` +
-        `vSpt=PI-aMt[1].w;` +
-        `vSln=vec2(sin(vDt.z),cos(vDt.z));` +
-      `}else{` +
-        `mt[2].xy=Z.zy;` +
-        `gl_Position=vec4(pos,1);` +
-        `vTUv=vec2(aPos.x,1.-aPos.y);` +
-        `vUv.zw=vTUv+((mt*vec3(1)).xy+P.xy)/P.zw;` +
-      `}` +
+      "if(vExt[0].x&lt;1.){" +
+        "gl_Position=vec4(mt*pos,1);" +
+        "vTUv=(gl_Position.xy+P.xy)/P.zw;" +
+        "vUv.zw=(aMt[1].xy+P.xy)/P.zw;" +
+        "vSpt=PI-aMt[1].w;" +
+        "vSln=vec2(sin(vDt.z),cos(vDt.z));" +
+      "}else{" +
+        "mt[2].xy=Z.zy;" +
+        "gl_Position=vec4(pos,1);" +
+        "vTUv=vec2(aPos.x,1.-aPos.y);" +
+        "vUv.zw=vTUv+((mt*vec3(1)).xy+P.xy)/P.zw;" +
+      "}" +
 
-      `gl_Position.y*=uFlpY;` +
-    `}`;
+      "gl_Position.y*=uFlpY;" +
+    "}";
   }
 
   // prettier-ignore
@@ -285,166 +285,166 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    const loop = (core) => `for(i=m;i&lt;l;i+=st){` +
-            `p=ivec2((vUv.zw+i*opdm)*uTS);` +
-            `tc=texelFetch(uTex,p,0)*HEIGHT;` +
+    const loop = (core) => "for(i=m;i&lt;l;i+=st){" +
+            "p=ivec2((vUv.zw+i*opdm)*uTS);" +
+            "tc=texelFetch(uTex,p,0)*HEIGHT;" +
             core +
-          `}`;
+          "}";
 
-    return `` +
+    return "" +
     Utils.GLSL.DEFINE.HEIGHT +
     Utils.GLSL.DEFINE.Z +
 
-    `in float ` +
-      `vHS,` +
-      `vD,` +
-      `vShl,` +
-      `vSpt;` +
-    `in vec2 ` +
-      `vTUv,` +
-      `vSln;` +
-    `in vec4 ` +
-      `vUv,` +
-      `vCl,` +
-      `vDt;` +
-    `in mat2x4 ` +
-      `vExt;` +
-    `flat in int[5] ` +
-      `flg;` +
+    "in float " +
+      "vHS," +
+      "vD," +
+      "vShl," +
+      "vSpt;" +
+    "in vec2 " +
+      "vTUv," +
+      "vSln;" +
+    "in vec4 " +
+      "vUv," +
+      "vCl," +
+      "vDt;" +
+    "in mat2x4 " +
+      "vExt;" +
+    "flat in int[5] " +
+      "flg;" +
 
-    `uniform sampler2D ` +
-      `uNMTex,` +
-      `uSTTex,` +
-      `uRGTex,` +
-      `uTex;` +
-    `uniform float ` +
-      `uUSTT,` +
-      `uURGT,` +
-      `uUNMT;` +
-    `uniform vec2 ` +
-      `uTS;` +
+    "uniform sampler2D " +
+      "uNMTex," +
+      "uSTTex," +
+      "uRGTex," +
+      "uTex;" +
+    "uniform float " +
+      "uUSTT," +
+      "uURGT," +
+      "uUNMT;" +
+    "uniform vec2 " +
+      "uTS;" +
 
-    `out vec4 ` +
-      `oCl;` +
+    "out vec4 " +
+      "oCl;" +
 
     Utils.GLSL.RANDOM +
 
-    `void main(void){` +
-      `vec2 ` +
-        `tUv=vTUv*uTS,` +
-        `tCnt=vUv.zw*uTS;` +
+    "void main(void){" +
+      "vec2 " +
+        "tUv=vTUv*uTS," +
+        "tCnt=vUv.zw*uTS;" +
 
-      `vec4 ` +
-        `tc=texelFetch(uTex,ivec2(tUv),0);` +
+      "vec4 " +
+        "tc=texelFetch(uTex,ivec2(tUv),0);" +
 
-      `float ` +
-        `ph=tc.g*HEIGHT,` +
-        `vol=vDt.y*vCl.a,` +
-        `spc=0.;` +
+      "float " +
+        "ph=tc.g*HEIGHT," +
+        "vol=vDt.y*vCl.a," +
+        "spc=0.;" +
 
-      `if(vol&lt;=0.)discard;` +
+      "if(vol&lt;=0.)discard;" +
 
-      `vec3 ` +
-        `sf=vec3(tUv,ph),` +
-        `lp=vec3(tCnt,vHS),` +
-        `sftla=lp-sf;` +
+      "vec3 " +
+        "sf=vec3(tUv,ph)," +
+        "lp=vec3(tCnt,vHS)," +
+        "sftla=lp-sf;" +
 
-      `if(vExt[0].x&lt;1.){` +
-        `float pc=1.-length(sftla)/vD;` +
-        `vol*=flg[4]>0?pc:ceil(pc);` +
-        `if(vol&lt;=0.)discard;` +
+      "if(vExt[0].x&lt;1.){" +
+        "float pc=1.-length(sftla)/vD;" +
+        "vol*=flg[4]>0?pc:ceil(pc);" +
+        "if(vol&lt;=0.)discard;" +
 
-        `float ` +
-          `slh=(vHS-ph)/HEIGHT;` +
+        "float " +
+          "slh=(vHS-ph)/HEIGHT;" +
 
-        `vec2 ` +
-          `sl=vec2(` +
-            `slh*vSln.y-vUv.x*vSln.x,` +
-            `slh*vSln.x+vUv.x*vSln.y` +
-          `);` +
+        "vec2 " +
+          "sl=vec2(" +
+            "slh*vSln.y-vUv.x*vSln.x," +
+            "slh*vSln.x+vUv.x*vSln.y" +
+          ");" +
 
-        `if(` +
-          `atan(` +
-            `sl.x,` +
-            `length(vec2(sl.y,vUv.y))` +
-          `)+${Utils.ALPHA}-vSpt&lt;0.)discard;` +
-      `}` +
+        "if(" +
+          "atan(" +
+            "sl.x," +
+            "length(vec2(sl.y,vUv.y))" +
+          ")+" + Utils.ALPHA + "-vSpt&lt;0.)discard;" +
+      "}" +
 
-      `float ` +
-        `fltDst=distance(tCnt,tUv),` +
-        `shdw=1.;` +
+      "float " +
+        "fltDst=distance(tCnt,tUv)," +
+        "shdw=1.;" +
 
-      `if(flg[1]>0){` +
-        `vec3 ` +
-          `nm=uUNMT&lt;1.` + 
-            `?Z.xxy` + 
-            `:normalize((texture(uNMTex,vTUv).rgb*2.-1.)*Z.yzy),` +
-          `sftl=normalize(sftla),` +
-          `sftv=normalize(vec3(` +
-            `flg[3]>0` +
-              `?uTS*.5` +
-              `:tUv,` +
-            `HEIGHT` +
-          `)-sf),` +
-          `hlf=normalize(sftl+sftv);` +
+      "if(flg[1]>0){" +
+        "vec3 " +
+          "nm=uUNMT&lt;1." + 
+            "?Z.xxy" + 
+            ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*Z.yzy)," +
+          "sftl=normalize(sftla)," +
+          "sftv=normalize(vec3(" +
+            "flg[3]>0" +
+              "?uTS*.5" +
+              ":tUv," +
+            "HEIGHT" +
+          ")-sf)," +
+          "hlf=normalize(sftl+sftv);" +
 
 
-        `vol*=dot(nm,sftl);` +
+        "vol*=dot(nm,sftl);" +
         
-        `if(vol&lt;=0.)discard;` +
+        "if(vol&lt;=0.)discard;" +
         
-        `float ` + 
-          `rgh=1.,` +
-          `shn=tc.b;` +
+        "float " + 
+          "rgh=1.," +
+          "shn=tc.b;" +
 
-        `if(uURGT>0.){` + 
-          `vec2 rgt=texture(uRGTex,vTUv).rg;` +
-          `rgh=rgt.r;` +
-          `shn=rgt.g;` +
-        `}` +
+        "if(uURGT>0.){" + 
+          "vec2 rgt=texture(uRGTex,vTUv).rg;" +
+          "rgh=rgt.r;" +
+          "shn=rgt.g;" +
+        "}" +
 
-        `spc=pow(dot(nm,hlf),rgh*HEIGHT)*shn*vExt[1].y;` +
-      `}` +
+        "spc=pow(dot(nm,hlf),rgh*HEIGHT)*shn*vExt[1].y;" +
+      "}" +
 
-      `if(flg[0]>0){` +
-        `ivec2 ` +
-          `p;` +
+      "if(flg[0]>0){" +
+        "ivec2 " +
+          "p;" +
 
-        `vec2 ` +
-          `opd=(tUv-tCnt)/fltDst,` +
-          `opdm=opd/uTS;` +
+        "vec2 " +
+          "opd=(tUv-tCnt)/fltDst," +
+          "opdm=opd/uTS;" +
 
-        `float ` +
-          `shl=vShl,` + // shadow length
-          `st=max(1.,ceil(fltDst/vExt[1].x)),` + // loop step length
-          `hst=(ph-vHS)/fltDst,` + // vertical step
-          `opdL=length(opd),` + // horizontal step
-          `i,` +
-          `pc,` +
-          `l=fltDst-st,` +
-          `m=max(st,l-shl);` +
+        "float " +
+          "shl=vShl," + // shadow length
+          "st=max(1.,ceil(fltDst/vExt[1].x))," + // loop step length
+          "hst=(ph-vHS)/fltDst," + // vertical step
+          "opdL=length(opd)," + // horizontal step
+          "i," +
+          "pc," +
+          "l=fltDst-st," +
+          "m=max(st,l-shl);" +
         
-        `if(flg[2]>0)` + 
-          loop(`if(tc.g>=vHS)discard;`) +
-        `else{` +
-          `float ` +
-            `rnd=vExt[0].w*rand(vTUv*100.+50.);` +
+        "if(flg[2]>0)" + 
+          loop("if(tc.g>=vHS)discard;") +
+        "else{" +
+          "float " +
+            "rnd=vExt[0].w*rand(vTUv*100.+50.);" +
             
           loop(
-            `st+=rnd;` +
-            `pc=vHS+i*hst;` +
-            `if(tc.r&lt;=pc&amp;&amp;tc.g>=pc)shdw*=(fltDst-i*opdL)/shl;`
+            "st+=rnd;" +
+            "pc=vHS+i*hst;" +
+            "if(tc.r&lt;=pc&amp;&amp;tc.g>=pc)shdw*=(fltDst-i*opdL)/shl;"
           ) +
-        `}` +
-      `}` +
+        "}" +
+      "}" +
       
-      `if(shdw&lt;=0.)discard;` +
+      "if(shdw&lt;=0.)discard;" +
 
-      `vec3 ` +
-        `stCl=uUSTT&lt;1.?Z.yyy:texture(uSTTex,vTUv).rgb;` +
+      "vec3 " +
+        "stCl=uUSTT&lt;1.?Z.yyy:texture(uSTTex,vTUv).rgb;" +
         
-      `oCl=vec4((stCl+spc)*vCl.rgb*vol*shdw,1);` +
-    `}`;
+      "oCl=vec4((stCl+spc)*vCl.rgb*vol*shdw,1);" +
+    "}";
   }
 }
 </code></pre>
@@ -457,13 +457,13 @@ export class LightRenderer extends BatchRenderer {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 11 Mar 2025 12:01:57 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu, 13 Mar 2025 07:42:18 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>
