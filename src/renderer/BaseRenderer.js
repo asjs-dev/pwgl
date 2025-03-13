@@ -268,7 +268,7 @@ export class BaseRenderer {
    */
   _buildProgram() {
     const gl = this.$gl,
-      shaderHeader = Utils.GLSL.VERSION + `precision highp float;\n`;
+      shaderHeader = Utils.GLSL.VERSION + "precision highp float;\n";
 
     this._program = Utils.createProgram(
       gl,

@@ -1,26 +1,16 @@
 /**
  * Base Filter
- * @property {number} TYPE;
- * @property {number} SUB_TYPE
  * @property {boolean} on
  */
 export class BaseFilter {
   /**
    * Creates an instance of BaseFilter.
    * @constructor
-   * @param {number} type
-   * @param {number} subType
    * @param {number} intensity
    */
-  constructor(type, subType, intensity = 0) {
-    this.TYPE = type;
-    this.SUB_TYPE = subType;
+  constructor(intensity = 0) {
     this.on = true;
-
     this.v = new Float32Array(9);
-
-    this.kernels = new Float32Array(16);
-
     this.intensity = intensity;
   }
 

@@ -1,16 +1,13 @@
 import { BaseFilter } from "./BaseFilter";
 
+const _GLSL = "oCl=oClVl+vec4(vec3(.874,.514,.156)*gtGS(oCl),oCl.a)*v;";
+
 /**
  * Sepia filter
  * @extends {BaseFilter}
  */
 export class SepiaFilter extends BaseFilter {
-  /**
-   * Creates an instance of SepiaFilter.
-   * @constructor
-   * @param {number} intensity
-   */
-  constructor(intensity) {
-    super(3, 2, intensity);
+  get GLSL() {
+    return _GLSL;
   }
 }

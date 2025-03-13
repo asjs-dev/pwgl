@@ -1,16 +1,13 @@
 import { BaseFilter } from "./BaseFilter";
 
+const _GLSL = "oCl.rgb=(round((oCl.rgb*255.)/v)/255.)*v;";
+
 /**
  * Color limit filter
  * @extends {BaseFilter}
  */
 export class ColorLimitFilter extends BaseFilter {
-  /**
-   * Creates an instance of ColorLimitFilter.
-   * @constructor
-   * @param {number} intensity
-   */
-  constructor(intensity) {
-    super(3, 5, intensity);
+  get GLSL() {
+    return _GLSL;
   }
 }

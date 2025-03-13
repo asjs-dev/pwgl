@@ -1,5 +1,10 @@
 import { BaseFilter } from "./BaseFilter";
 
+const _GLSL =
+  "vec2 pv=pow(abs(vUv*v),vec2(vl[1]));" +
+  "float cv=clamp((1.-length(pv))*vl[5],0.,1.);" +
+  "oCl.rgb=oCl.rgb*cv+rgb*(1.-cv);";
+
 /**
  * Vignette filter
  * @extends {BaseFilter}
@@ -16,13 +21,17 @@ export class VignetteFilter extends BaseFilter {
    * @param {number} b
    */
   constructor(intensity, roundness, transition, r, g, b) {
-    super(3, 6, intensity);
+    super(intensity);
 
     this.roundness = roundness;
     this.transition = transition;
     this.r = r;
     this.g = g;
     this.b = b;
+  }
+
+  get GLSL() {
+    return _GLSL;
   }
 
   /**

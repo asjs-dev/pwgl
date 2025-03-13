@@ -1,18 +1,19 @@
 import { BaseSamplingFilter } from "./BaseSamplingFilter";
 
+// prettier-ignore
+const _GLSL = BaseSamplingFilter.$createGLSL(
+  "",
+  "cl+=clg;" + 
+  "cnt++;",
+  "cl/=cnt;"
+);
+
 /**
  * Blur filter
  * @extends {BaseSamplingFilter}
  */
 export class BlurFilter extends BaseSamplingFilter {
-  constructor(
-    intensityX,
-    intensityY,
-    isRadial = false,
-    centerX = 0.5,
-    centerY = 0.5,
-    size = 1
-  ) {
-    super(1, intensityX, intensityY, isRadial, centerX, centerY, size);
+  get GLSL() {
+    return _GLSL;
   }
 }

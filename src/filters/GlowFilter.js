@@ -1,18 +1,23 @@
 import { BaseSamplingFilter } from "./BaseSamplingFilter";
 
+// prettier-ignore
+const _GLSL = BaseSamplingFilter.$createGLSL(
+  "float " +
+    "omx=max(oCl.r,max(oCl.g,oCl.b));" +
+  "cl=vec4(0);",
+  "if(max(clg.r,max(clg.g,clg.b))>omx){" + 
+    "cl+=clg;" + 
+    "cnt++;" + 
+  "}",
+  "cl=(oCl+cl)/cnt;"
+);
+
 /**
  * Blur filter
  * @extends {BaseSamplingFilter}
  */
 export class GlowFilter extends BaseSamplingFilter {
-  constructor(
-    intensityX,
-    intensityY,
-    isRadial = false,
-    centerX = 0.5,
-    centerY = 0.5,
-    size = 1
-  ) {
-    super(2, intensityX, intensityY, isRadial, centerX, centerY, size);
+  get GLSL() {
+    return _GLSL;
   }
 }

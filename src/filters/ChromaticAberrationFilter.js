@@ -1,5 +1,24 @@
 import { BaseFilter } from "./BaseFilter";
 
+// prettier-ignore
+const _GLSL = "" +
+  "vec4 " +
+    "pcl=vec4(" +
+      "texture(uTex,vTUv-vec2(vol.x,0)).r," +
+      "oCl.g," +
+      "texture(uTex,vTUv+vec2(vol.x,0)).b," +
+      "1" +
+    ");" +
+
+  "float " +
+    "dst=vl[2]<1." +
+      "?1." +
+      ":clamp(distance(vec2(vl[3],vl[4]),vTUv),0.,1.)," +
+    "mA=vl[5]==0.?dst:1.-dst," +
+    "mB=1.-mA;" +
+
+  "oCl=mA*pcl+mB*oCl;";
+
 /**
  * Chromatic aberration filter
  * @extends {BaseFilter}
@@ -21,12 +40,16 @@ export class ChromaticAberrationFilter extends BaseFilter {
     centerY = 0.5,
     invertRadial = false
   ) {
-    super(8, 0, intensity);
+    super(intensity);
 
     this.isRadial = isRadial;
     this.centerX = centerX;
     this.centerY = centerY;
     this.invertRadial = invertRadial;
+  }
+
+  get GLSL() {
+    return _GLSL;
   }
 
   /**

@@ -1,20 +1,21 @@
 import { arraySet } from "../utils/helpers";
-import { BaseFilter } from "./BaseFilter";
+import { BaseKernelFilter } from "./BaseKernelFilter";
+
+// prettier-ignore
+const _GLSL = "" +
+  "oCl.rgb=(oCl.rgb*(1.-vl[1]))+vec3(" +
+    "kr[0].r*oCl.r+kr[0].g*oCl.g+kr[0].b*oCl.b," +
+    "kr[1].r*oCl.r+kr[1].g*oCl.g+kr[1].b*oCl.b," +
+    "kr[2].r*oCl.r+kr[2].g*oCl.g+kr[2].b*oCl.b" +
+  ");";
 
 /**
  * Saturate filter
- * @extends {BaseFilter}
+ * @extends {BaseKernelFilter}
  */
-export class SaturateFilter extends BaseFilter {
-  /**
-   * Creates an instance of SaturateFilter.
-   * @constructor
-   * @param {number} intensity
-   */
-  constructor(intensity, mix = 1) {
-    super(2, 0, intensity);
-
-    this.mix = mix;
+export class SaturateFilter extends BaseKernelFilter {
+  get GLSL() {
+    return _GLSL;
   }
 
   /**
@@ -32,10 +33,10 @@ export class SaturateFilter extends BaseFilter {
       svb = sv * 0.11;
 
     // prettier-ignore
-    arraySet(this.kernels, [
+    this.kernels = [
       svr + v, svg, svb, 0,
       svr, svg + v, svb, 0,
       svr, svg, svb + v, 0
-    ]);
+    ];
   }
 }

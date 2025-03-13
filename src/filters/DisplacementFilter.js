@@ -1,44 +1,14 @@
-import { FilterTextureTransformProps } from "../data/props/FilterTextureTransformProps";
-import { BaseFilter } from "./BaseFilter";
+import { BaseTextureFilter } from "./BaseTextureFilter";
 
+const _GLSL = BaseTextureFilter.$createGLSL(
+  "oCl=texture(uTex,vTUv+(Z.yz*(mskCl.rg-.5)*2.*vol));"
+);
 /**
  * Displacement filter
- * @extends {BaseFilter}
+ * @extends {BaseTextureFilter}
  */
-export class DisplacementFilter extends BaseFilter {
-  /**
-   * Creates an instance of DisplacementFilter.
-   * @constructor
-   * @param {number} texture
-   * @param {number} intensity
-   * @param {number} translateX
-   * @param {number} translateY
-   * @param {number} cropX
-   * @param {number} cropY
-   * @param {number} cropWidth
-   * @param {number} cropHeight
-   */
-  constructor(
-    texture,
-    intensity,
-    translateX,
-    translateY,
-    cropX,
-    cropY,
-    cropWidth,
-    cropHeight
-  ) {
-    super(6, 0, intensity);
-
-    this.textureTransform = new FilterTextureTransformProps(
-      this,
-      texture,
-      translateX,
-      translateY,
-      cropX,
-      cropY,
-      cropWidth,
-      cropHeight
-    );
+export class DisplacementFilter extends BaseTextureFilter {
+  get GLSL() {
+    return _GLSL;
   }
 }

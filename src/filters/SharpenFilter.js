@@ -1,11 +1,10 @@
-import { arraySet } from "../utils/helpers";
-import { BaseFilter } from "./BaseFilter";
+import { BaseKernelFilter } from "./BaseKernelFilter";
 
 /**
  * Sharpen filter
- * @extends {BaseFilter}
+ * @extends {BaseKernelFilter}
  */
-export class SharpenFilter extends BaseFilter {
+export class SharpenFilter extends BaseKernelFilter {
   /**
    * Creates an instance of SharpenFilter.
    * @constructor
@@ -13,15 +12,13 @@ export class SharpenFilter extends BaseFilter {
    * @param {number} mix
    */
   constructor(intensity, mix = 1) {
-    super(1, 0, intensity);
-
-    this.mix = mix;
+    super(intensity, mix);
 
     // prettier-ignore
-    arraySet(this.kernels, [
+    this.kernels = [
       0, -1,  0,
      -1,  5, -1,
       0, -1,  0,
-    ]);
+    ];
   }
 }

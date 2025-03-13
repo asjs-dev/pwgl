@@ -210,13 +210,11 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawItem(item) {
-    if (item.renderable) {
-      const renderTime = this.$renderTime;
-      item.update(renderTime);
-      item.callbackBeforeRender(item, renderTime);
-      this[_RENDERING_TYPE_PREFIX + item.RENDERING_TYPE](item);
-      item.callbackAfterRender(item, renderTime);
-    }
+    const renderTime = this.$renderTime;
+    item.update(renderTime);
+    item.callbackBeforeRender(item, renderTime);
+    item.renderable && this[_RENDERING_TYPE_PREFIX + item.RENDERING_TYPE](item);
+    item.callbackAfterRender(item, renderTime);
   }
 
   /**
@@ -343,90 +341,90 @@ export class Stage2D extends BatchRenderer {
     const useRepeatTextures = this._options.useRepeatTextures,
       maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
 
-    return `` +
+    return "" +
     Utils.GLSL.DEFINE.Z +
 
-    `in vec2 ` +
-      `aPos;` +
-    `in mat4x2 ` +
-      `aDst;` +
-    `in mat3x4 ` +
-      `aDt;` +
-    `in mat4 ` +
-      `aMt;` +
+    "in vec2 " +
+      "aPos;" +
+    "in mat4x2 " +
+      "aDst;" +
+    "in mat3x4 " +
+      "aDt;" +
+    "in mat4 " +
+      "aMt;" +
 
-    `uniform float ` +
-      `uFlpY;` +
-    `uniform sampler2D ` +
-      `uTex[${maxTextureImageUnits}];` +
+    "uniform float " +
+      "uFlpY;" +
+    "uniform sampler2D " +
+      "uTex[" + maxTextureImageUnits + "];" +
 
-    `out float ` +
-      `vACl,` +
-      `vTId,` +
-      `vTTp;` +
-    `out vec2 ` +
-      `vTUv,` +
-      `vTsh;` +
-    `out vec4 ` +
-      `vTCrop,` +
-      `vCl` +
+    "out float " +
+      "vACl," +
+      "vTId," +
+      "vTTp;" +
+    "out vec2 " +
+      "vTUv," +
+      "vTsh;" +
+    "out vec4 " +
+      "vTCrop," +
+      "vCl" +
     (useRepeatTextures
-      ? `,vRR;`
-      : `;`) +
+      ? ",vRR;"
+      : ";") +
 
-    `vec2 gtTexS(float i){` +
+    "vec2 gtTexS(float i){" +
       Array(maxTextureImageUnits).fill().map((v, i) => 
-      `if(i<${i + 1}.)` + 
-        `return .5/vec2(textureSize(uTex[${i}],0));`).join(``) +
-      `return Z.yy;` +
-    `}` +
+      "if(i<" + (i + 1) + ".)" + 
+        "return .5/vec2(textureSize(uTex[" + i + "],0));").join("") +
+      "return Z.yy;" +
+    "}" +
 
-    `vec2 clcQd(vec2 p){` +
-      `return mix(` + 
-        `mix(` + 
-          `aDst[0],` + 
-          `aDst[1],` + 
-          `p.x` + 
-        `),` + 
-        `mix(` + 
-          `aDst[3],` + 
-          `aDst[2],` + 
-          `p.x` + 
-        `),` + 
-        `p.y` + 
-      `);` +
-    `}` +
+    "vec2 clcQd(vec2 p){" +
+      "return mix(" + 
+        "mix(" + 
+          "aDst[0]," + 
+          "aDst[1]," + 
+          "p.x" + 
+        ")," + 
+        "mix(" + 
+          "aDst[3]," + 
+          "aDst[2]," + 
+          "p.x" + 
+        ")," + 
+        "p.y" + 
+      ");" +
+    "}" +
 
-    `void main(void){` +
-      `mat3 ` +
-        `mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1),` +
-        `tMt=mat3(aMt[1].zw,0,aMt[2].xy,0,aMt[2].zw,1);` +
+    "void main(void){" +
+      "mat3 " +
+        "mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1)," +
+        "tMt=mat3(aMt[1].zw,0,aMt[2].xy,0,aMt[2].zw,1);" +
 
-      `vec3 ` +
-        `tPos=vec3(` +
-          `clcQd(aPos),` +
-          `1` +
-        `);` +
-      `gl_Position=vec4(mt*tPos,1);` +
-      `gl_Position.y*=uFlpY;` +
-      `float dt=aDt[1].w;` +
-      `vTUv=(tMt*((dt*vec3(aPos,1))+((1.-dt)*tPos))).xy;` + 
+      "vec3 " +
+        "tPos=vec3(" +
+          "clcQd(aPos)," +
+          "1" +
+        ");" +
+      "gl_Position=vec4(mt*tPos,1);" +
+      "gl_Position.y*=uFlpY;" +
+      "float dt=aDt[1].w;" +
+      "vTUv=(tMt*((dt*vec3(aPos,1))+((1.-dt)*tPos))).xy;" + 
 
-      `vTCrop=aMt[3];` +
+      "vTCrop=aMt[3];" +
 
-      `vCl=aDt[0];` +
-      `vACl=aDt[1].x;` +
+      "vCl=aDt[0];" +
+      "vACl=aDt[1].x;" +
 
-      `vTTp=aDt[1].y;` +
-      `vTId=aDt[1].z;` +
+      "vTTp=aDt[1].y;" +
+      "vTId=aDt[1].z;" +
 
-      `vTsh=gtTexS(vTId);` +
+      "vTsh=gtTexS(vTId);" +
 
       (useRepeatTextures
-        ? `vRR=aDt[2].xyzw;` +
-          `vRR.w=vRR.x+vRR.y;`
-        : ``) +
-    `}`;
+        ? "vRR=aDt[2].xyzw;" +
+          "vRR.w=vRR.x+vRR.y;"
+        : "") +
+    "}";
   }
 
   // prettier-ignore
@@ -441,123 +439,123 @@ export class Stage2D extends BatchRenderer {
      useTint = options.useTint;
 
     const getSimpleTexColor = (modCoordName) =>
-      `gtTexCl(vTId,vTCrop,${modCoordName})`;
+      "gtTexCl(vTId,vTCrop," + modCoordName + ")";
 
-    return `` +
+    return "" +
     Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIAN_360 +
 
-    `in float ` +
-      `vACl,` +
-      `vTId,` +
-      `vTTp;` +
-    `in vec2 ` +
-      `vTUv,` + 
-      `vTsh;` +
-    `in vec4 ` +
-      `vTCrop,` +
-      `vCl` +
+    "in float " +
+      "vACl," +
+      "vTId," +
+      "vTTp;" +
+    "in vec2 " +
+      "vTUv," + 
+      "vTsh;" +
+    "in vec4 " +
+      "vTCrop," +
+      "vCl" +
       (useRepeatTextures
-        ? `,vRR;`
-        : `;`) +
+        ? ",vRR;"
+        : ";") +
 
-    `uniform sampler2D ` +
-      `uTex[${maxTextureImageUnits}];` +
+    "uniform sampler2D " +
+      "uTex[" + maxTextureImageUnits + "];" +
 
-    `out vec4 ` +
-      `oCl;` +
+    "out vec4 " +
+      "oCl;" +
 
-    `vec4 gtTexCl(float i,vec4 s,vec2 m){` +
+    "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
       Array(maxTextureImageUnits).fill().map((v, i) => 
-      `if(i<${i + 1}.)` + 
-        `return texture(uTex[${i}],clamp(s.xy+s.zw*m,s.xy+vTsh,s.xy+s.zw-vTsh));`).join(``) +
-      `return Z.yyyy;` +
-    `}` +
+      "if(i<" + (i + 1) + ".)" + 
+        "return texture(uTex[" + i + "],clamp(s.xy+s.zw*m,s.xy+vTsh,s.xy+s.zw-vTsh));").join("") +
+      "return Z.yyyy;" +
+    "}" +
 
-    `float cosine(float a,float b,float v){` +
-      `v=abs(v);` +
-      `v=v<.5?2.*v*v:1.-pow(-2.*v+2.,2.)/2.;` +
-      `return a*(1.-v)+b*v;` +
-    `}` +
+    "float cosine(float a,float b,float v){" +
+      "v=abs(v);" +
+      "v=v<.5?2.*v*v:1.-pow(-2.*v+2.,2.)/2.;" +
+      "return a*(1.-v)+b*v;" +
+    "}" +
 
     (useRepeatTextures
       ? Utils.GLSL.RANDOM +
-        `vec4 gtClBUv(vec2 st){` +
-          `vec2 ` +
-            `uv=vTUv;` +
+        "vec4 gtClBUv(vec2 st){" +
+          "vec2 " +
+            "uv=vTUv;" +
 
-          `float ` +
-            `rnd=rand(floor(uv+st)),` +
-            `rndDg=rnd*RADIAN_360*vRR.x;` +
+          "float " +
+            "rnd=rand(floor(uv+st))," +
+            "rndDg=rnd*RADIAN_360*vRR.x;" +
 
-          `if(rndDg>0.){` +
-            `vec2 ` +
-              `rt=vec2(sin(rndDg),cos(rndDg));` +
-            `uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);` +
-          `}` +
+          "if(rndDg>0.){" +
+            "vec2 " +
+              "rt=vec2(sin(rndDg),cos(rndDg));" +
+            "uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);" +
+          "}" +
 
-          `return ${getSimpleTexColor("mod(uv,Z.yy)")};` +
-        `}` +
+          "return " + getSimpleTexColor("mod(uv,Z.yy)") + ";" +
+        "}" +
 
-        `float gtRClBUv(vec2 st,vec2 uv){` +
-          `float ` +
-            `rnd=rand(floor(vTUv+st));` +
-          `return (1.-(2.*rnd-1.)*vRR.y)*` +
-            `cosine(0.,1.,1.-st.x-uv.x)*cosine(0.,1.,1.-st.y-uv.y);` +
-        `}`
-      : ``) +
+        "float gtRClBUv(vec2 st,vec2 uv){" +
+          "float " +
+            "rnd=rand(floor(vTUv+st));" +
+          "return (1.-(2.*rnd-1.)*vRR.y)*" +
+            "cosine(0.,1.,1.-st.x-uv.x)*cosine(0.,1.,1.-st.y-uv.y);" +
+        "}"
+      : "") +
 
-    `void main(void){` +
-      `if(vTId>-1.){` +
-        `vec2 ` +
-          `uv=mod(vTUv,Z.yy);` +
+    "void main(void){" +
+      "if(vTId>-1.){" +
+        "vec2 " +
+          "uv=mod(vTUv,Z.yy);" +
 
         (useRepeatTextures
-          ? `if(vRR.w>0.){` +
-              `float ` +
-                `rca,` +
-                `rcb,` +
-                `rcc,` +
-                `rcd;` +
-              `if(vRR.y+vRR.z>0.){` +
-                `rca=gtRClBUv(Z.xx,uv);` +
-                `rcb=gtRClBUv(Z.yx,uv);` +
-                `rcc=gtRClBUv(Z.xy,uv);` +
-                `rcd=gtRClBUv(Z.yy,uv);` +
-              `}` +
-              `oCl=vRR.z>0.` +
-                `?clamp(` +
-                  `gtClBUv(Z.xx)*rca+` +
-                  `gtClBUv(Z.yx)*rcb+` +
-                  `gtClBUv(Z.xy)*rcc+` +
-                  `gtClBUv(Z.yy)*rcd` +
-                `,0.,1.)` +
-                `:gtClBUv(Z.xy);` +
-              `if(vRR.y>0.)` +
-                `oCl.a=clamp(` +
-                  `oCl.a*(` +
-                    `rca+` +
-                    `rcb+` +
-                    `rcc+` +
-                    `rcd` +
-                  `),0.,1.);` +
-            `}else oCl=${getSimpleTexColor("uv")};`
-          : `oCl=${getSimpleTexColor("uv")};`) +
-      `}else oCl+=1.;` +
+          ? "if(vRR.w>0.){" +
+              "float " +
+                "rca," +
+                "rcb," +
+                "rcc," +
+                "rcd;" +
+              "if(vRR.y+vRR.z>0.){" +
+                "rca=gtRClBUv(Z.xx,uv);" +
+                "rcb=gtRClBUv(Z.yx,uv);" +
+                "rcc=gtRClBUv(Z.xy,uv);" +
+                "rcd=gtRClBUv(Z.yy,uv);" +
+              "}" +
+              "oCl=vRR.z>0." +
+                "?clamp(" +
+                  "gtClBUv(Z.xx)*rca+" +
+                  "gtClBUv(Z.yx)*rcb+" +
+                  "gtClBUv(Z.xy)*rcc+" +
+                  "gtClBUv(Z.yy)*rcd" +
+                ",0.,1.)" +
+                ":gtClBUv(Z.xy);" +
+              "if(vRR.y>0.)" +
+                "oCl.a=clamp(" +
+                  "oCl.a*(" +
+                    "rca+" +
+                    "rcb+" +
+                    "rcc+" +
+                    "rcd" +
+                  "),0.,1.);" +
+            "}else oCl=" + getSimpleTexColor("uv") + ";"
+          : "oCl=" + getSimpleTexColor("uv") + ";") +
+      "}else oCl+=1.;" +
 
-      `oCl.a*=vACl;` +
+      "oCl.a*=vACl;" +
 
-      `if(oCl.a<=0.)discard;` +
+      "if(oCl.a<=0.)discard;" +
 
       (useTint
-        ? `if(vTTp>0.)` +
-          `if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))` +
-            `oCl*=vCl;` +
-          `else if(vTTp==3.)` +
-            `oCl=vCl;` +
-          `else if(vTTp==4.)` +
-            `oCl+=vCl;` 
-        : ``) +
-    `}`;
+        ? "if(vTTp>0.)" +
+          "if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
+            "oCl*=vCl;" +
+          "else if(vTTp==3.)" +
+            "oCl=vCl;" +
+          "else if(vTTp==4.)" +
+            "oCl+=vCl;" 
+        : "") +
+    "}";
   }
 }

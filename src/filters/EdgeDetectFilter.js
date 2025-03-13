@@ -1,26 +1,23 @@
-import { arraySet } from "../utils/helpers";
-import { BaseFilter } from "./BaseFilter";
+import { BaseKernelFilter } from "./BaseKernelFilter";
 
 /**
  * Edge detect filter
- * @extends {BaseFilter}
+ * @extends {BaseKernelFilter}
  */
-export class EdgeDetectFilter extends BaseFilter {
+export class EdgeDetectFilter extends BaseKernelFilter {
   /**
    * Creates an instance of EdgeDetectFilter.
    * @constructor
    * @param {number} intensity
    */
   constructor(intensity, mix = 1) {
-    super(1, 0, intensity);
-
-    this.mix = mix;
+    super(intensity, mix);
 
     // prettier-ignore
-    arraySet(this.kernels, [
+    this.kernels = [
       -1, -1, -1,
       -1,  8, -1,
       -1, -1, -1
-    ]);
+    ];
   }
 }

@@ -1,16 +1,13 @@
 import { BaseFilter } from "./BaseFilter";
 
+const _GLSL = "oCl.rgb+=vec3(vUv.xy*.15,(vUv.x*vUv.y)*.15)*v;";
+
 /**
  * Rainbow filter
  * @extends {BaseFilter}
  */
 export class RainbowFilter extends BaseFilter {
-  /**
-   * Creates an instance of RainbowFilter.
-   * @constructor
-   * @param {number} intensity
-   */
-  constructor(intensity) {
-    super(3, 7, intensity);
+  get GLSL() {
+    return _GLSL;
   }
 }

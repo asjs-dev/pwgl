@@ -77,29 +77,29 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return `` +
-    `in vec2 ` +
-      `aPos;` +
+    return "" +
+    "in vec2 " +
+      "aPos;" +
 
-    `uniform float ` +
-      `uR,` +
-      `uFlpY;` +
-    `uniform sampler2D ` +
-      `uTex;` +
+    "uniform float " +
+      "uR," +
+      "uFlpY;" +
+    "uniform sampler2D " +
+      "uTex;" +
 
-    `out float ` +
-      `vLng;` +
-    `out vec2 ` +
-      `vTUv,` + 
-      `vTs;` +
+    "out float " +
+      "vLng;" +
+    "out vec2 " +
+      "vTUv," + 
+      "vTs;" +
 
-    `void main(void){` +
-      `gl_Position=vec4(aPos*2.-1.,1,1);` +
-      `vTUv=vec2(aPos.x,1.-aPos.y);` +
-      `gl_Position.y*=uFlpY;` +
-      `vTs=uR/vec2(textureSize(uTex,0));` + 
-      `vLng=length(vTs);` +
-    `}`;
+    "void main(void){" +
+      "gl_Position=vec4(aPos*2.-1.,1,1);" +
+      "vTUv=vec2(aPos.x,1.-aPos.y);" +
+      "gl_Position.y*=uFlpY;" +
+      "vTs=uR/vec2(textureSize(uTex,0));" + 
+      "vLng=length(vTs);" +
+    "}";
   }
 
   // prettier-ignore
@@ -108,59 +108,59 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    return `` +
+    return "" +
     Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIAN_360 +
     
-    `in float ` +
-      `vLng;` +
-    `in vec2 ` +
-      `vTUv,` + 
-      `vTs;` +
+    "in float " +
+      "vLng;" +
+    "in vec2 " +
+      "vTUv," + 
+      "vTs;" +
 
-    `uniform sampler2D ` +
-      `uSTTex,` +
-      `uTex;` +
-    `uniform float ` +
-      `uR,` +
-      `uS,` +
-      `uUSTT,` +
-      `uDM;` +
+    "uniform sampler2D " +
+      "uSTTex," +
+      "uTex;" +
+    "uniform float " +
+      "uR," +
+      "uS," +
+      "uUSTT," +
+      "uDM;" +
 
-    `out vec4 ` +
-      `oCl;` +
+    "out vec4 " +
+      "oCl;" +
 
     Utils.GLSL.RANDOM +
 
-    `void main(void){` +
-      `float ` +
-        `tx=texture(uTex,vTUv).g,` +
-        `v=0.;` +
+    "void main(void){" +
+      "float " +
+        "tx=texture(uTex,vTUv).g," +
+        "v=0.;" +
         
-      `if(uS>0.&&uR>0.){` +
-        `float ` +
-          `rd=rand(vTUv*100.+50.),` +
-          `rad=radians(rd*360.),` + 
-          `l=max(3.,ceil(uS*rd)),` +
-          `t=RADIAN_360/l;` +
+      "if(uS>0.&&uR>0.){" +
+        "float " +
+          "rd=rand(vTUv*100.+50.)," +
+          "rad=radians(rd*360.)," + 
+          "l=max(3.,ceil(uS*rd))," +
+          "t=RADIAN_360/l;" +
         
-        `vec2 ` +
-          `dr=Z.xy*vec2(cos(rad),sin(rad))*vTs*(.5+rd*.5),` +
-          `r=vec2(cos(t),sin(t));` +
+        "vec2 " +
+          "dr=Z.xy*vec2(cos(rad),sin(rad))*vTs*(.5+rd*.5)," +
+          "r=vec2(cos(t),sin(t));" +
 
-        `for(int i=0;i<int(l);i++){` +
-          `v+=(texture(uTex,vTUv+dr).g-tx)*length(dr)/vLng;` +
-          `dr=mat2(r.x,-r.y,r.y,r.x)*dr;` +
-        `}` +
-        `v/=RADIAN_360;` +
-      `}` +
+        "for(int i=0;i<int(l);i++){" +
+          "v+=(texture(uTex,vTUv+dr).g-tx)*length(dr)/vLng;" +
+          "dr=mat2(r.x,-r.y,r.y,r.x)*dr;" +
+        "}" +
+        "v/=RADIAN_360;" +
+      "}" +
       
-      `vec3 ` +
-        `stCl=uUSTT<1.` + 
-          `?Z.yyy` + 
-          `:texture(uSTTex,vTUv).rgb;` +
+      "vec3 " +
+        "stCl=uUSTT<1." + 
+          "?Z.yyy" + 
+          ":texture(uSTTex,vTUv).rgb;" +
 
-      `oCl=vec4(stCl*(1.-(1.-tx)*uDM-clamp(v,0.,1.)),1);` +
-    `}`;
+      "oCl=vec4(stCl*(1.-(1.-tx)*uDM-clamp(v,0.,1.)),1);" +
+    "}";
   }
 }

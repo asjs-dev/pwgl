@@ -1,5 +1,7 @@
 import { BaseFilter } from "./BaseFilter";
 
+const _GLSL = "oCl.rgb=(vl[1]+1.)*oCl.rgb*v-.5*vl[1];";
+
 /**
  * Brightness and contrast filter
  * @extends {BaseFilter}
@@ -12,9 +14,13 @@ export class BrightnessContrastFilter extends BaseFilter {
    * @param {number} contrast
    */
   constructor(brightness, contrast) {
-    super(3, 8, brightness);
-
+    super(brightness);
+    
     this.contrast = contrast;
+  }
+
+  get GLSL() {
+    return _GLSL;
   }
 
   /**

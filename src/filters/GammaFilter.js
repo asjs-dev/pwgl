@@ -1,16 +1,13 @@
 import { BaseFilter } from "./BaseFilter";
 
+const _GLSL = "oCl.rgb=pow(oCl.rgb,vec3(1./v));";
+
 /**
  * Gamma filter
  * @extends {BaseFilter}
  */
 export class GammaFilter extends BaseFilter {
-  /**
-   * Creates an instance of GammaFilter.
-   * @constructor
-   * @param {number} intensity
-   */
-  constructor(intensity) {
-    super(3, 9, intensity);
+  get GLSL() {
+    return _GLSL;
   }
 }

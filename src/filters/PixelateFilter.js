@@ -1,16 +1,13 @@
 import { BaseFilter } from "./BaseFilter";
 
+const _GLSL = "oCl=texture(uTex,floor(vTUv/vol)*vol);";
+
 /**
  * Pixelate filter
  * @extends {BaseFilter}
  */
 export class PixelateFilter extends BaseFilter {
-  /**
-   * Creates an instance of PixelateFilter.
-   * @constructor
-   * @param {number} intensity
-   */
-  constructor(intensity) {
-    super(5, 0, intensity);
+  get GLSL() {
+    return _GLSL;
   }
 }

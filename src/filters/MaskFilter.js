@@ -1,45 +1,16 @@
-import { FilterTextureTransformProps } from "../data/props/FilterTextureTransformProps";
-import { BaseFilter } from "./BaseFilter";
+import { BaseTextureFilter } from "./BaseTextureFilter";
+
+const _GLSL = BaseTextureFilter.$createGLSL(
+  "oCl.a*=v<4.?mskCl[int(v)]:(mskCl.r+mskCl.g+mskCl.b+mskCl.a)/4.;"
+);
 
 /**
  * Mask filter
- * @extends {BaseFilter}
+ * @extends {BaseTextureFilter}
  */
-export class MaskFilter extends BaseFilter {
-  /**
-   * Creates an instance of MaskFilter.
-   * @constructor
-   * @param {number} texture
-   * @param {number} type
-   * @param {number} translateX
-   * @param {number} translateY
-   * @param {number} cropX
-   * @param {number} cropY
-   * @param {number} cropWidth
-   * @param {number} cropHeight
-   */
-  constructor(
-    texture,
-    type,
-    translateX,
-    translateY,
-    cropX,
-    cropY,
-    cropWidth,
-    cropHeight
-  ) {
-    super(7, 0, type);
-
-    this.textureTransform = new FilterTextureTransformProps(
-      this,
-      texture,
-      translateX,
-      translateY,
-      cropX,
-      cropY,
-      cropWidth,
-      cropHeight
-    );
+export class MaskFilter extends BaseTextureFilter {
+  get GLSL() {
+    return _GLSL;
   }
 
   /**
