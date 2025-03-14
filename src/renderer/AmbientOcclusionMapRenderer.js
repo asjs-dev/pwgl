@@ -87,8 +87,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "uniform sampler2D " +
       "uTex;" +
 
-    "out float " +
-      "vLng;" +
     "out vec2 " +
       "vTUv," + 
       "vTs;" +
@@ -98,7 +96,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "vTUv=vec2(aPos.x,1.-aPos.y);" +
       "gl_Position.y*=uFlpY;" +
       "vTs=uR/vec2(textureSize(uTex,0));" + 
-      "vLng=length(vTs);" +
     "}";
   }
 
@@ -110,10 +107,8 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
   $createFragmentShader() {
     return "" +
     Utils.GLSL.DEFINE.Z +
-    Utils.GLSL.DEFINE.RADIAN_360 +
+    Utils.GLSL.DEFINE.RADIANS_360 +
     
-    "in float " +
-      "vLng;" +
     "in vec2 " +
       "vTUv," + 
       "vTs;" +
@@ -138,21 +133,23 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
         "v=0.;" +
         
       "if(uS>0.&&uR>0.){" +
+        "vec2 " +
+          "vh=vTUv*100.+100.;" +
+
         "float " +
-          "rd=rand(vTUv*100.+50.)," +
-          "rad=radians(rd*360.)," + 
-          "l=max(3.,ceil(uS*rd))," +
-          "t=RADIAN_360/l;" +
+          "rad=RADIANS_360*rand(vh-2.)," + 
+          "l=max(1.,ceil(uS*rand(vh-1.)))," +
+          "t=RADIANS_360/l;" +
         
         "vec2 " +
-          "dr=Z.xy*vec2(cos(rad),sin(rad))*vTs*(.5+rd*.5)," +
+          "dr=vec2(cos(rad),sin(rad))," +
           "r=vec2(cos(t),sin(t));" +
 
         "for(int i=0;i<int(l);i++){" +
-          "v+=(texture(uTex,vTUv+dr).g-tx)*length(dr)/vLng;" +
-          "dr=mat2(r.x,-r.y,r.y,r.x)*dr;" +
+          "v+=texture(uTex,vTUv+dr*vTs*rand(vh+float(i))).g-tx;" +
+          "dr*=mat2(r.x,-r.y,r.y,r.x);" +
         "}" +
-        "v/=RADIAN_360;" +
+        "v/=l;" +
       "}" +
       
       "vec3 " +
@@ -160,7 +157,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "?Z.yyy" + 
           ":texture(uSTTex,vTUv).rgb;" +
 
-      "oCl=vec4(stCl*(1.-(1.-tx)*uDM-clamp(v,0.,1.)),1);" +
+      "oCl=vec4(stCl*(1.-(1.-tx)*uDM-v),1);" +
     "}";
   }
 }

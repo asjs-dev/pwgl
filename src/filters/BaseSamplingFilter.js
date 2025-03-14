@@ -80,15 +80,14 @@ export class BaseSamplingFilter extends BaseFilter {
 // prettier-ignore
 BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop) => "" +
   "float " + 
-    "rd=rand(vTUv*100.+50.)," +
-    "rad=radians(rd*360.)," +
+    "rd=rand(vTUv*100.+100.)," +
     "cnt=1.," +
     "l=3.+ceil(3.*rd)," +
-    "t=RADIAN_360/l;" +
+    "t=RADIANS_360/l;" +
 
   "vec2 " +
     "wh=vec2(v,vl[1])," +
-    "dr=wh*Z.xy*vec2(sin(rad),cos(rad))," +
+    "dr=Z.yx," +
     "r=vec2(cos(t),sin(t));" +
 
   "vec4 " +
@@ -101,10 +100,10 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop) => "" +
   beforeLoop +
   "for(int i=0;i<int(l);i++){" +
     "clg=texelFetch(uTex,clamp(" + 
-      "f+ivec2(floor(dr))," + 
+      "f+ivec2(wh*round(dr))," + 
       "mn,mx" +
     "),0);" +
-    "dr=mat2(r.x,-r.y,r.y,r.x)*dr;" +
+    "dr*=mat2(r.x,-r.y,r.y,r.x);" +
     inLoop +
   "}" +
   afterLoop +

@@ -164,7 +164,7 @@ export class FilterRenderer extends BaseRenderer {
   $createFragmentShader() {
     return "" +
     Utils.GLSL.DEFINE.Z +
-    Utils.GLSL.DEFINE.RADIAN_360 +
+    Utils.GLSL.DEFINE.RADIANS_360 +
     
     "in vec2 " +
       "vTs," +

@@ -83,7 +83,7 @@ export const Utils = {
   GLSL: {
     VERSION: "#version 300 es\n",
     DEFINE: {
-      RADIAN_360: `#define RADIAN_360 ${Math.PI * 2}\n`,
+      RADIANS_360: "#define RADIANS_360 radians(360.)\n",
       HEIGHT: "#define HEIGHT 255.\n",
       Z: "#define Z vec3(0,1,-1)\n",
       PI: `#define PI ${Math.PI}\n`,

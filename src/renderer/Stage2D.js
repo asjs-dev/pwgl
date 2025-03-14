@@ -443,7 +443,7 @@ export class Stage2D extends BatchRenderer {
 
     return "" +
     Utils.GLSL.DEFINE.Z +
-    Utils.GLSL.DEFINE.RADIAN_360 +
+    Utils.GLSL.DEFINE.RADIANS_360 +
 
     "in float " +
       "vACl," +
@@ -486,7 +486,7 @@ export class Stage2D extends BatchRenderer {
 
           "float " +
             "rnd=rand(floor(uv+st))," +
-            "rndDg=rnd*RADIAN_360*vRR.x;" +
+            "rndDg=rnd*RADIANS_360*vRR.x;" +
 
           "if(rndDg>0.){" +
             "vec2 " +
