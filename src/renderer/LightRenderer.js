@@ -302,9 +302,11 @@ export class LightRenderer extends BatchRenderer {
         "sftla=lp-sf;" +
 
       "if(vExt[0].x<1.){" +
-        "float pc=1.-length(sftla)/vD;" +
-        "vol*=flg[4]>0?pc:ceil(pc);" +
-        "if(vol<=0.)discard;" +
+        "float " + 
+          "pc=1.-length(sftla)/vD;" +
+        "vol*=flg[4]>0?pc*pc:ceil(pc);" +
+
+        "if(vol<=0.||pc<=0.)discard;" +
 
         "float " +
           "slh=(vHS-ph)/HEIGHT;" +
@@ -340,22 +342,15 @@ export class LightRenderer extends BatchRenderer {
           ")-sf)," +
           "hlf=normalize(sftl+sftv);" +
 
-
         "vol*=dot(nm,sftl);" +
         
         "if(vol<=0.)discard;" +
         
         "float " + 
           "rgh=1.," +
-          "shn=tc.b;" +
+          "shn=uURGT>0.?texture(uRGTex,vTUv).r:tc.b;" +
 
-        "if(uURGT>0.){" + 
-          "vec2 rgt=texture(uRGTex,vTUv).rg;" +
-          "rgh=rgt.r;" +
-          "shn=rgt.g;" +
-        "}" +
-
-        "spc=pow(dot(nm,hlf),rgh*HEIGHT)*shn*vExt[1].y;" +
+        "spc=pow(max(dot(nm,hlf),0.),32.)*shn*vExt[1].y;" +
       "}" +
 
       "if(flg[0]>0){" +
