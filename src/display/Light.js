@@ -14,17 +14,23 @@ import { BaseDrawable } from "./BaseDrawable";
  * @property {number} flags
  * @property {number} type - Type of the Light
  * @property {number} shadowLength - Length of shadow
- * @property {number} maxShadowStep - The maximum step of shadow caster per pixel
+ * @property {number} maxShadowStep - The maximum step of shadow caster per pixel <br>
  *                                  - Default value is 128
  * @property {number} specularStrength - Strength of specular light
- * @property {number} precision - Shadow precision
+ * @property {number} precision - Shadow precision <br>
  *                              - Default value is 1
  * @property {number} angle - Rotation of the light
- * @property {number} spotAngle - Angle of the light source
- *                              - Default value is 180deg [hemisphere]
+ * @property {number} spotAngle - Angle of the light source <br>
+ *                              - Default value is 180deg [hemisphere] <br>
  *                              - 360deg [sphere]
- * @property {number} attenuationStart - Start of the light attenuation
- * @property {number} attenuationEnd - End of the light attenuation
+ * @property {number} attenuationStart - Start of the light attenuation <br>
+ *                                     -- Default value is 100 <br>
+ *                                     - The attenuation is calculated by the following formula: <br>
+ *                                     -- attenuation = 1 - pow(distance, attenuationEnd) - 3 * (1 - distance) * pow(distance, attenuationStart)
+ * @property {number} attenuationEnd - End of the light attenuation <br>
+ *                                   -- Default value is 1 <br>
+ *                                   - The attenuation is calculated by the following formula: <br>
+ *                                   -- attenuation = 1 - pow(distance, attenuationEnd) - 3 * (1 - distance) * pow(distance, attenuationStart)
  */
 export class Light extends BaseDrawable {
   /**
