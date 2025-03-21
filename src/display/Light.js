@@ -23,14 +23,10 @@ import { BaseDrawable } from "./BaseDrawable";
  * @property {number} spotAngle - Angle of the light source <br>
  *                              - Default value is 180deg [hemisphere] <br>
  *                              - 360deg [sphere]
- * @property {number} attenuationStart - Start of the light attenuation <br>
- *                                     -- Default value is 100 <br>
- *                                     - The attenuation is calculated by the following formula: <br>
- *                                     -- attenuation = 1 - pow(distance, attenuationEnd) - 3 * (1 - distance) * pow(distance, attenuationStart)
- * @property {number} attenuationEnd - End of the light attenuation <br>
- *                                   -- Default value is 1 <br>
- *                                   - The attenuation is calculated by the following formula: <br>
- *                                   -- attenuation = 1 - pow(distance, attenuationEnd) - 3 * (1 - distance) * pow(distance, attenuationStart)
+ * @property {number} attenuation - Light attenuation <br>
+ *                                -- Default value is 1 <br>
+ *                                - The attenuation is calculated by the following formula: <br>
+ *                                -- pow(distance, attenuation)
  */
 export class Light extends BaseDrawable {
   /**
@@ -49,8 +45,7 @@ export class Light extends BaseDrawable {
     this.precision = this.shadowLength = this.specularStrength = 1;
     this.maxShadowStep = 128;
     this.fading = true;
-    this.attenuationStart = 100;
-    this.attenuationEnd = 1;
+    this.attenuation = 1;
   }
 
   /**

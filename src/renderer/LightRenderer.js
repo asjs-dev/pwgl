@@ -94,8 +94,8 @@ export class LightRenderer extends BatchRenderer {
       extensionBufferData[extensionBufferId + 3] = light.precision;
       extensionBufferData[extensionBufferId + 4] = light.maxShadowStep;
       extensionBufferData[extensionBufferId + 5] = light.specularStrength;
-      extensionBufferData[extensionBufferId + 6] = light.attenuationStart;
-      extensionBufferData[extensionBufferId + 7] = light.attenuationEnd;
+      extensionBufferData[extensionBufferId + 6] = light.attenuation;
+      // extensionBufferData[extensionBufferId + 7] // empty slot for future use
 
       this._batchItems++;
     }
@@ -308,7 +308,7 @@ export class LightRenderer extends BatchRenderer {
           "d=length(sftla)/vD," +
           "od=1.-d," +
           "dv=flg[4]>0" +
-            "?1.-pow(d,vExt[1].w)-3.*od*pow(d,vExt[1].z)" +
+            "?pow(od,vExt[1].z)" +
             ":ceil(od);" +
 
         "vol*=dv;" +
