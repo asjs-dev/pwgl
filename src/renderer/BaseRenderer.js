@@ -29,7 +29,7 @@ export class BaseRenderer {
   constructor(options) {
     this._clearBeforeRenderFunc = noop;
 
-    this.$resizeFv = noop;
+    this._resizeCalcFv = noop;
 
     this._rendererId = 1;
 
@@ -98,7 +98,7 @@ export class BaseRenderer {
   setSize(width, height) {
     this.width = width;
     this.height = height;
-    this.$resizeFv = this.$resize;
+    this._resizeCalcFv = this._resizeCalc;
   }
 
   /**
@@ -150,17 +150,6 @@ export class BaseRenderer {
   $attachFramebufferAndClear(framebuffer) {
     this.$attachFramebuffer(framebuffer);
     this._clearBeforeRenderFunc();
-  }
-
-  /**
-   * @ignore
-   */
-  $resize() {
-    this.resized = true;
-    this.$resizeFv = noop;
-    this.widthHalf = this.width / 2;
-    this.heightHalf = this.height / 2;
-    this.context.setSize(this.width, this.height);
   }
 
   /**
@@ -223,6 +212,16 @@ export class BaseRenderer {
   }
 
   /**
+   * @ignore
+   */
+  _resizeCalc() {
+    this.resized = true;
+    this._resizeCalcFv = noop;
+    this.widthHalf = this.width / 2;
+    this.heightHalf = this.height / 2;
+  }
+
+  /**
    * @param {Framebuffer} framebuffer
    * @ignore
    */
@@ -250,7 +249,8 @@ export class BaseRenderer {
     } else this._useProgram();
 
     this.resized = false;
-    this.$resizeFv();
+    this._resizeCalcFv();
+    this.context.setSize(this.width, this.height);
   }
 
   /**
