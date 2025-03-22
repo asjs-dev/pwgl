@@ -187,7 +187,7 @@ export class FilterRenderer extends BaseRenderer {
     Utils.GLSL.RANDOM +
     
     "float gtGS(vec4 cl){" + 
-      "return .3*oCl.r+.59*oCl.g+.11*oCl.b;" +
+      "return .3*cl.r+.59*cl.g+.11*cl.b;" +
     "}" +
 
     "void main(void){" +

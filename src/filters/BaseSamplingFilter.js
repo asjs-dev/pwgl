@@ -87,10 +87,9 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
 
   "if(lngWH>0.){" +
     "float " +
-      "lng," +
       "rd=rand(vTUv*100.+100.)," +
       "cnt=1.," +
-      "l=4.+ceil(3.*rd)," +
+      "l=3.+ceil(3.*rd)," +
       "t=RADIANS_360/l;" +
 
     "vec2 " +
@@ -108,7 +107,6 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
     beforeLoop +
     "for(int i=0;i<int(l);i++){" +
       "ps=wh*round(dr)*(.5+rand(vTUv*100.+100.+float(i))*.5);" +
-      "lng=1.-length(ps)/lngWH;" +
       "clg=texelFetch(uTex,clamp(" + 
         "f+ivec2(ps)," + 
         "mn,mx" +

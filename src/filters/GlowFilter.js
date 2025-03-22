@@ -3,8 +3,10 @@ import { BaseSamplingFilter } from "./BaseSamplingFilter";
 // prettier-ignore
 const _GLSL = BaseSamplingFilter.$createGLSL(
   "float " +
-    "omx=(oCl.r+oCl.g+oCl.b)/3.;",
-  "if((clg.r+clg.g+clg.b)/3.>omx){" + 
+    "lng," +
+    "omx=gtGS(oCl);",
+  "if(gtGS(clg)>omx){" + 
+    "lng=1.-length(ps)/lngWH;" +
     "cl+=clg*lng;" + 
     "cnt+=lng;" + 
   "}"
