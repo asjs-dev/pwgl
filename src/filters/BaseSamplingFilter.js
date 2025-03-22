@@ -78,38 +78,49 @@ export class BaseSamplingFilter extends BaseFilter {
 }
 
 // prettier-ignore
-BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop) => "" +
-  "float " + 
-    "rd=rand(vTUv*100.+100.)," +
-    "cnt=1.," +
-    "l=3.+ceil(3.*rd)," +
-    "t=RADIANS_360/l;" +
-
+BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
   "vec2 " +
-    "wh=vec2(v,vl[1])," +
-    "dr=Z.yx," +
-    "r=vec2(cos(t),sin(t));" +
+    "wh=vec2(v,vl[1]);" +
 
-  "vec4 " +
-    "clg," +
-    "cl=oCl;" +
+  "float " + 
+    "lngWH=length(wh);" +
 
-  "ivec2 " +
-    "mn=ivec2(Z.xx)," + 
-    "mx=ivec2(vTs)-1;" +
-  beforeLoop +
-  "for(int i=0;i<int(l);i++){" +
-    "clg=texelFetch(uTex,clamp(" + 
-      "f+ivec2(wh*round(dr))," + 
-      "mn,mx" +
-    "),0);" +
-    "dr*=mat2(r.x,-r.y,r.y,r.x);" +
-    inLoop +
-  "}" +
-  afterLoop +
-  "float " +
-    "dst=vl[2]<1." +
-      "?1." +
-      ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
+  "if(lngWH>0.){" +
+    "float " +
+      "lng," +
+      "rd=rand(vTUv*100.+100.)," +
+      "cnt=1.," +
+      "l=4.+ceil(3.*rd)," +
+      "t=RADIANS_360/l;" +
 
-  "oCl=dst*cl+(1.-dst)*oCl;";
+    "vec2 " +
+      "ps," +
+      "dr=Z.yx," +
+      "r=vec2(cos(t),sin(t));" +
+
+    "vec4 " +
+      "clg," +
+      "cl=oCl;" +
+      
+    "ivec2 " +
+      "mn=ivec2(Z.xx)," + 
+      "mx=ivec2(vTs)-1;" +
+    beforeLoop +
+    "for(int i=0;i<int(l);i++){" +
+      "ps=wh*round(dr)*(.5+rand(vTUv*100.+100.+float(i))*.5);" +
+      "lng=1.-length(ps)/lngWH;" +
+      "clg=texelFetch(uTex,clamp(" + 
+        "f+ivec2(ps)," + 
+        "mn,mx" +
+      "),0);" +
+      "dr*=mat2(r.x,-r.y,r.y,r.x);" +
+      inLoop +
+    "}" +
+    "cl/=cnt;" +
+    "float " +
+      "dst=vl[2]<1." +
+        "?1." +
+        ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
+
+    "oCl=dst*cl+(1.-dst)*oCl;" +
+  "}";

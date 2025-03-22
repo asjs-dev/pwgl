@@ -3,9 +3,8 @@ import { BaseSamplingFilter } from "./BaseSamplingFilter";
 // prettier-ignore
 const _GLSL = BaseSamplingFilter.$createGLSL(
   "",
-  "cl+=clg;" + 
-  "cnt++;",
-  "cl/=cnt;"
+  "cl+=clg*lng;" + 
+  "cnt+=lng;"
 );
 
 /**
