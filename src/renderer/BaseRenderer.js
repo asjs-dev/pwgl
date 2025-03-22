@@ -98,7 +98,7 @@ export class BaseRenderer {
   setSize(width, height) {
     this.width = width;
     this.height = height;
-    this._resizeCalcFv = this._resizeCalc;
+    this._resizeCalcFv = this.$resize;
   }
 
   /**
@@ -214,7 +214,7 @@ export class BaseRenderer {
   /**
    * @ignore
    */
-  _resizeCalc() {
+  $resize() {
     this.resized = true;
     this._resizeCalcFv = noop;
     this.widthHalf = this.width / 2;
