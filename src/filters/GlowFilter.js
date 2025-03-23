@@ -6,7 +6,7 @@ const _GLSL = BaseSamplingFilter.$createGLSL(
     "lng," +
     "omx=gtGS(oCl);",
   "if(gtGS(clg)>omx){" + 
-    "lng=1.-length(ps)/lngWH;" +
+    "lng=lngWH/length(ps);" +
     "cl+=clg*lng;" + 
     "cnt+=lng;" + 
   "}"

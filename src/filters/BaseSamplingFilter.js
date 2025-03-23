@@ -89,7 +89,7 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
     "float " +
       "rd=rand(vTUv*100.+100.)," +
       "cnt=1.," +
-      "l=3.+ceil(3.*rd)," +
+      "l=4.+ceil(4.*rd)," +
       "t=RADIANS_360/l;" +
 
     "vec2 " +
