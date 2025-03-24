@@ -25,10 +25,6 @@
       "TextureTransformProps": "DTTP",
       "TextureInfo": "DTI",
       "StageContainer": "DSC",
-      "BaseFilter": "FBF",
-      "BaseKernelFilter": "FBKF",
-      "BaseSamplingFilter": "FBSF",
-      "BaseTextureFilter": "FBTF",
       "Matrix3Utilities": "GM3U"
     },
     "output": "dist/pwgl.min.js"
