@@ -8,7 +8,7 @@ import { crossFadeAudioVolumes, fadeAudioVolume } from "./audio/utils";
 import { AudioItem } from "./audio/AudioItem";
 import { AudioMixer } from "./audio/AudioMixer";
 import { SmoothLight } from "./renderer/SmoothLight";
-import { WaterRenderer } from "./renderer/WaterRenderer";
+import { AnimatedWater } from "./display/AnimatedWater";
 import { areObjectsEqual } from "./utils/areObjectsEqual";
 import { clamp } from "./utils/clamp";
 import { clone } from "./utils/clone";
@@ -42,7 +42,8 @@ window.PWGLExtensions = window.AGLExtensions = {
   crossFadeAudioVolumes,
 
   SmoothLight,
-  WaterRenderer,
+  
+  AnimatedWater,
 
   areObjectsEqual,
   clamp,
