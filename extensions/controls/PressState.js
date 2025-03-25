@@ -21,6 +21,10 @@ export class PressState {
     return this.isUp(id) && this._duration[id] > 200;
   }
 
+  getDuration(id) {
+    return Date.now() - this._timestamp[id];
+  }
+
   update() {
     for (let key in this._state)
       if (this._state[key]) {
