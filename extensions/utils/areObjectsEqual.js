@@ -8,8 +8,11 @@ export const areObjectsEqual = (a, b) => {
 
   if (ap.length !== bp.length) return false;
 
-  let pn, av, bv, subeq;
-  let i = ap.length;
+  let pn,
+    av,
+    bv,
+    subeq,
+    i = ap.length;
   while ((pn = ap[--i])) {
     av = a[pn];
     bv = b[pn];

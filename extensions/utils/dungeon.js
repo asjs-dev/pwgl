@@ -1,23 +1,23 @@
 export const generateDungeon = (iterations, sampleRooms) => {
   const directions = [
-    { x: 1, y: 0 },
-    { x: 1, y: 1 },
-    { x: 0, y: 1 },
-    { x: -1, y: 1 },
-    { x: -1, y: 0 },
-    { x: -1, y: -1 },
-    { x: 0, y: -1 },
-  ];
+      { x: 1, y: 0 },
+      { x: 1, y: 1 },
+      { x: 0, y: 1 },
+      { x: -1, y: 1 },
+      { x: -1, y: 0 },
+      { x: -1, y: -1 },
+      { x: 0, y: -1 },
+    ],
+    rooms = [];
 
-  const rooms = [];
-  let minX = Infinity;
-  let minY = Infinity;
-  let maxX = -Infinity;
-  let maxY = -Infinity;
+  let minX = Infinity,
+    minY = Infinity,
+    maxX = -Infinity,
+    maxY = -Infinity;
 
   for (let i = 0; i < iterations; i++) {
-    const direction = getRandom(directions);
-    const randomRoom = clone(getRandom(sampleRooms));
+    const direction = getRandom(directions),
+      randomRoom = clone(getRandom(sampleRooms));
 
     if (Math.random() < 0.5) randomRoom.data.reverse();
 
@@ -44,8 +44,8 @@ export const generateDungeon = (iterations, sampleRooms) => {
             }
           )
         ) {
-          const rnd = Math.random() - 0.5;
-          const randomPosition = Math.round((Math.random() - 0.5) * 2);
+          const rnd = Math.random() - 0.5,
+            randomPosition = Math.round((Math.random() - 0.5) * 2);
           room.x += direction.x
             ? rnd >= 0 || !direction.y
               ? direction.x
@@ -73,8 +73,8 @@ export const generateDungeon = (iterations, sampleRooms) => {
   }
 
   const width = maxX - minX,
-    height = maxY - minY;
-  const data = Array(width * height).fill(0);
+    height = maxY - minY,
+    data = Array(width * height).fill(0);
 
   rooms.forEach(({ x, y, width: w, height: h, data: roomData }) => {
     const absX = x - minX,
@@ -89,11 +89,11 @@ export const generateDungeon = (iterations, sampleRooms) => {
     const { x: px, y: py } = vectorToCoord(i, width);
 
     if (px < width - 1 && data[i] > 0) {
-      const bottomIdx = coordToVector(px, py + 1, width);
-      const rightIdx = coordToVector(px + 1, py, width);
-      const bottomRightIdx = coordToVector(px + 1, py + 1, width);
-      const leftIdx = coordToVector(px - 1, py, width);
-      const bottomLeftIdx = coordToVector(px - 1, py + 1, width);
+      const bottomIdx = coordToVector(px, py + 1, width),
+        rightIdx = coordToVector(px + 1, py, width),
+        bottomRightIdx = coordToVector(px + 1, py + 1, width),
+        leftIdx = coordToVector(px - 1, py, width),
+        bottomLeftIdx = coordToVector(px - 1, py + 1, width);
 
       if (
         data[bottomIdx] === data[rightIdx] &&

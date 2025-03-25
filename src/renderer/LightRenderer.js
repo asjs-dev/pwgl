@@ -71,9 +71,10 @@ export class LightRenderer extends BatchRenderer {
    * @param {Light} light
    */
   addLightForRender(light) {
-    const batchItems = this._batchItems;
+    const batchItems = this._batchItems,
+      parent = light.parent;
 
-    if (batchItems < this.$MAX_RENDER_COUNT) {
+    if (batchItems < this.$MAX_RENDER_COUNT && parent) {
       const matrixBufferId = batchItems * 16,
         extensionBufferId = batchItems * 8,
         matrixBufferData = this.$matrixBuffer.data,
@@ -85,7 +86,7 @@ export class LightRenderer extends BatchRenderer {
       arraySet(matrixBufferData, light.colorCache, matrixBufferId + 8);
       matrixBufferData[matrixBufferId + 12] = light.shadowLength;
       matrixBufferData[matrixBufferId + 13] =
-        light.alpha * light.parent.getPremultipliedAlpha();
+        light.alpha * parent.getPremultipliedAlpha();
       matrixBufferData[matrixBufferId + 14] = light.angle;
 
       extensionBufferData[extensionBufferId] = light.type;
@@ -97,7 +98,7 @@ export class LightRenderer extends BatchRenderer {
       extensionBufferData[extensionBufferId + 6] = light.attenuation;
       // extensionBufferData[extensionBufferId + 7] // empty slot for future use
 
-      this._batchItems++;
+      ++this._batchItems;
     }
   }
 

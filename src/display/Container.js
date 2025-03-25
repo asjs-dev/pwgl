@@ -93,7 +93,7 @@ export class Container extends Item {
    */
   addChildAt(child, index) {
     if (child) {
-      child.parent && child.parent.removeChild(child);
+      child.remove();
       this.children.push(child);
       this.setChildIndex(child, index);
       child.parent = this;

@@ -5,25 +5,23 @@ export const enterFrame = (callback) => {
     isPlaying = false;
 
   const render = () => {
-    if (isPlaying) {
-      FPS.update();
-      callback(FPS.fps, FPS.delay);
-      requestAnimationFrameId = requestAnimationFrame(render);
-    }
-  };
-
-  const start = () => {
-    if (!isPlaying) {
-      isPlaying = true;
-      FPS.init();
-      render();
-    }
-  };
-
-  const stop = () => {
-    cancelAnimationFrame(requestAnimationFrameId);
-    isPlaying = false;
-  };
+      if (isPlaying) {
+        FPS.update();
+        callback(FPS.fps, FPS.delay);
+        requestAnimationFrameId = requestAnimationFrame(render);
+      }
+    },
+    start = () => {
+      if (!isPlaying) {
+        isPlaying = true;
+        FPS.init();
+        render();
+      }
+    },
+    stop = () => {
+      cancelAnimationFrame(requestAnimationFrameId);
+      isPlaying = false;
+    };
 
   start();
 

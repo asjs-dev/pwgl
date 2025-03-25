@@ -117,12 +117,13 @@ export class Stage2D extends BatchRenderer {
     this._distortionBuffer = new Buffer("aDst", maxRenderCount, 4, 2);
 
     this._onMouseEventHandler = this._onMouseEventHandler.bind(this);
-    const canvas = this.context.canvas;
+    const canvas = this.context.canvas,
+      lightRenderer = options.lightRenderer;
+
     _INTERACTION_EVENT_TYPES.forEach((type) =>
       canvas.addEventListener(type, this._onMouseEventHandler)
     );
 
-    const lightRenderer = options.lightRenderer;
     lightRenderer && this.attachLightRenderer(lightRenderer);
   }
 
@@ -222,7 +223,7 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawContainer(container) {
-    const children = container.children,
+    const children = [...container.children],
       l = children.length;
 
     for (let i = 0; i < l; i++) this._drawItem(children[i]);
@@ -235,44 +236,51 @@ export class Stage2D extends BatchRenderer {
   _drawImage(image) {
     this.context.setBlendMode(image.blendMode, this._batchDraw);
 
-    if (
-      this._isMousePositionSet &&
-      image.interactive &&
-      image.isContainsPoint(this._mousePosition)
-    )
-      this._eventTarget = image;
-
-    const dataBufferId = this._batchItems * 12,
-      matrixBufferId = this._batchItems * 16,
+    const batchItems = this._batchItems,
+      dataBufferId = batchItems * 12,
+      matrixBufferId = batchItems * 16,
       itemParent = image.parent,
       dataBufferData = this._dataBuffer.data,
       matrixBufferData = this.$matrixBuffer.data;
 
-    arraySet(dataBufferData, image.colorCache, dataBufferId);
-    arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
-    dataBufferData[dataBufferId + 4] =
-      image.alpha * itemParent.getPremultipliedAlpha();
-    dataBufferData[dataBufferId + 5] =
-      image.tintType * itemParent.getPremultipliedUseTint();
-    dataBufferData[dataBufferId + 6] = this.context.useTexture(
-      image.texture,
-      this.$renderTime,
-      false,
-      this._batchDraw
-    );
-    dataBufferData[dataBufferId + 7] = image.distortionProps.distortTexture;
+    if (itemParent) {
+      if (
+        this._isMousePositionSet &&
+        image.interactive &&
+        image.isContainsPoint(this._mousePosition)
+      )
+        this._eventTarget = image;
 
-    arraySet(matrixBufferData, image.matrixCache, matrixBufferId);
-    arraySet(matrixBufferData, image.textureMatrixCache, matrixBufferId + 6);
-    arraySet(matrixBufferData, image.textureCropCache, matrixBufferId + 12);
+      arraySet(dataBufferData, image.colorCache, dataBufferId);
+      arraySet(
+        dataBufferData,
+        image.textureRepeatRandomCache,
+        dataBufferId + 8
+      );
+      dataBufferData[dataBufferId + 4] =
+        image.alpha * itemParent.getPremultipliedAlpha();
+      dataBufferData[dataBufferId + 5] =
+        image.tintType * itemParent.getPremultipliedUseTint();
+      dataBufferData[dataBufferId + 6] = this.context.useTexture(
+        image.texture,
+        this.$renderTime,
+        false,
+        this._batchDraw
+      );
+      dataBufferData[dataBufferId + 7] = image.distortionProps.distortTexture;
 
-    arraySet(
-      this._distortionBuffer.data,
-      image.distortionPropsCache,
-      this._batchItems * 8
-    );
+      arraySet(matrixBufferData, image.matrixCache, matrixBufferId);
+      arraySet(matrixBufferData, image.textureMatrixCache, matrixBufferId + 6);
+      arraySet(matrixBufferData, image.textureCropCache, matrixBufferId + 12);
 
-    ++this._batchItems === this.$MAX_RENDER_COUNT && this._batchDraw();
+      arraySet(
+        this._distortionBuffer.data,
+        image.distortionPropsCache,
+        batchItems * 8
+      );
+
+      ++this._batchItems === this.$MAX_RENDER_COUNT && this._batchDraw();
+    }
   }
 
   /**

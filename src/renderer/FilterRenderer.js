@@ -34,7 +34,8 @@ export class FilterRenderer extends BaseRenderer {
       "uFTex",
       "uFtrT",
       "uFtrV",
-      "uFtrK"
+      "uFtrK",
+      "uFRt",
     ];
 
     super(options);
@@ -84,6 +85,8 @@ export class FilterRenderer extends BaseRenderer {
     context.setBlendMode(BlendMode.NORMAL);
 
     this.$uploadBuffers();
+
+    gl.uniform1f(locations.uFRt, renderTime % 864e5);
 
     this.$useTextureAt(this.sourceTexture, locations.uTex, 0);
 
@@ -177,6 +180,7 @@ export class FilterRenderer extends BaseRenderer {
     "uniform int " +
       "uFtrT;" +
     "uniform float " +
+      "uFRt," +
       "uFtrV[9];" +
     "uniform mat4 " +
       "uFtrK;" +

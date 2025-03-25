@@ -182,8 +182,8 @@ export const Utils = {
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, Const.LINK_STATUS)) {
-      const vertexShaderInfo = gl.getShaderInfoLog(vertexShader);
-      const fragmentShaderInfo = gl.getShaderInfoLog(fragmentShader);
+      const vertexShaderInfo = gl.getShaderInfoLog(vertexShader),
+        fragmentShaderInfo = gl.getShaderInfoLog(fragmentShader);
       console.error(
         [
           "Program info: " + gl.getProgramInfoLog(program),
