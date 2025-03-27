@@ -223,10 +223,11 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _drawContainer(container) {
-    const children = [...container.children],
+    const children = container.children,
       l = children.length;
+    let i = -1;
 
-    for (let i = 0; i < l; i++) this._drawItem(children[i]);
+    while (++i < l) this._drawItem(children[i]);
   }
 
   /**

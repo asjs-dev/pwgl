@@ -81,6 +81,7 @@ export class FilterRenderer extends BaseRenderer {
       filters = this._filters,
       l = filters.length || 1,
       minL = l - 2;
+    let i = -1;
 
     context.setBlendMode(BlendMode.NORMAL);
 
@@ -90,9 +91,7 @@ export class FilterRenderer extends BaseRenderer {
 
     this.$useTextureAt(this.sourceTexture, locations.uTex, 0);
 
-    for (let i = 0; i < l; i++) {
-      let filterFramebuffer;
-
+    while (++i < l) {
       const filter = filters[i],
         useFilter = filter && filter.on,
         isLast = i > minL,
@@ -100,6 +99,8 @@ export class FilterRenderer extends BaseRenderer {
           useFilter &&
           filter.textureTransform &&
           filter.textureTransform.texture;
+
+      let filterFramebuffer;
 
       filterTexture && this.$useTextureAt(filterTexture, locations.uFTex, 1);
 

@@ -77,8 +77,9 @@ export class Context {
    */
   clearTextures() {
     const l = Utils.INFO.maxTextureImageUnits;
+    let i = -1;
 
-    for (let i = 0; i < l; i++) {
+    while (++i < l) {
       this._textureMap[i] = null;
       this._emptyTextureSlots[i] = i;
     }

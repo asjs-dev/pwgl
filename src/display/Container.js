@@ -169,11 +169,12 @@ export class Container extends Item {
     const bounds = this.$bounds,
       children = this.children,
       l = children.length;
+    let i = -1;
 
     bounds.x = bounds.y = 1 / 0;
     bounds.width = bounds.height = -1 / 0;
 
-    for (let i = 0; i < l; i++) {
+    while (++i < l) {
       const childBounds = children[i].getBounds();
 
       bounds.x = Math.min(bounds.x, childBounds.x);
