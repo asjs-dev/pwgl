@@ -146,7 +146,7 @@ export class Light extends BaseDrawable {
    */
   _updateFlags() {
     this.flags =
-      (this._castShadow * 1) |
+      this._castShadow |
       (this._shading * 2) |
       (this._flattenShadow * 4) |
       (this._centerReflection * 8) |
