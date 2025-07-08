@@ -105,7 +105,8 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
       "mn=ivec2(Z.xx)," + 
       "mx=ivec2(vTs)-1;" +
     beforeLoop +
-    "for(int i=0;i<int(l);i++){" +
+    "for(int i=0;i<4096;i++){" +
+      "if(i>=int(l))break;" +
       "ps=wh*round(dr)*(.5+rand(vTUv*100.+100.+float(i))*.5);" +
       "clg=texelFetch(uTex,clamp(" + 
         "f+ivec2(ps)," + 
@@ -116,9 +117,11 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
     "}" +
     "cl/=cnt;" +
     "float " +
-      "dst=vl[2]<1." +
-        "?1." +
-        ":clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.);" +
+      "dst=mix(" +
+        "1.," +
+        "clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.)," +
+        "vl[2]" + 
+      ");" +
 
     "oCl=dst*cl+(1.-dst)*oCl;" +
   "}";

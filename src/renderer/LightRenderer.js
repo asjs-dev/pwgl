@@ -240,7 +240,8 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    const loop = (core) => "for(i=m;i<l;i+=st){" +
+    const loop = (core) => "for(i=m;i<4096.;i+=st){" +
+            "if(i>=l)break;" +
             "p=ivec2((vUv.zw+i*opdm)*uTS);" +
             "tc=texelFetch(uTex,p,0)*HEIGHT;" +
             core +
@@ -314,8 +315,6 @@ export class LightRenderer extends BatchRenderer {
 
         "vol*=dv;" +
 
-        "if(vol<=0.||od<=0.)discard;" +
-
         "float " +
           "slh=(vHS-ph)/HEIGHT;" +
 
@@ -326,6 +325,8 @@ export class LightRenderer extends BatchRenderer {
           ");" +
 
         "if(" +
+          "vol<=0.||" + 
+          "od<=0.||" +
           "atan(" +
             "sl.x," +
             "length(vec2(sl.y,vUv.y))" +
@@ -338,9 +339,11 @@ export class LightRenderer extends BatchRenderer {
 
       "if(flg[1]>0){" +
         "vec3 " +
-          "nm=uUNMT<1." + 
-            "?Z.xxy" + 
-            ":normalize((texture(uNMTex,vTUv).rgb*2.-1.)*Z.yzy)," +
+          "nm=mix(" + 
+            "Z.xxy," + 
+            "normalize((texture(uNMTex,vTUv).rgb*2.-1.)*Z.yzy)," +
+            "uUNMT" + 
+          ")," +
           "sftl=normalize(sftla)," +
           "sftv=normalize(vec3(" +
             "flg[3]>0" +
@@ -356,7 +359,7 @@ export class LightRenderer extends BatchRenderer {
         
         "float " + 
           "rgh=1.," +
-          "shn=uURGT>0.?texture(uRGTex,vTUv).r:tc.b;" +
+          "shn=mix(tc.b,texture(uRGTex,vTUv).r,uURGT);" +
 
         "spc=pow(max(dot(nm,hlf),0.),32.)*shn*vExt[1].y;" +
       "}" +
@@ -396,7 +399,7 @@ export class LightRenderer extends BatchRenderer {
       "if(shdw<=0.)discard;" +
 
       "vec3 " +
-        "stCl=uUSTT<1.?Z.yyy:texture(uSTTex,vTUv).rgb;" +
+        "stCl=mix(Z.yyy,texture(uSTTex,vTUv).rgb,vec3(uUSTT));" +
         
       "oCl=vec4((stCl+spc)*vCl.rgb*vol*shdw,1);" +
     "}";

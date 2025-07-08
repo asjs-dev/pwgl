@@ -11,10 +11,8 @@ const _GLSL = "" +
     ");" +
 
   "float " +
-    "dst=vl[2]<1." +
-      "?1." +
-      ":clamp(distance(vec2(vl[3],vl[4]),vTUv),0.,1.)," +
-    "mA=vl[5]==0.?dst:1.-dst," +
+    "dst=mix(1.,clamp(distance(vec2(vl[3],vl[4]),vTUv),0.,1.),vl[2])," +
+    "mA=mix(dst,1.-dst,vl[5])," +
     "mB=1.-mA;" +
 
   "oCl=mA*pcl+mB*oCl;";

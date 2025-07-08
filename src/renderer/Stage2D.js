@@ -483,7 +483,7 @@ export class Stage2D extends BatchRenderer {
 
     "float cosine(float a,float b,float v){" +
       "v=abs(v);" +
-      "v=v<.5?2.*v*v:1.-pow(-2.*v+2.,2.)/2.;" +
+      "v=mix(2.*v*v,1.-pow(-2.*v+2.,2.)/2.,step(.5,v));" +
       "return a*(1.-v)+b*v;" +
     "}" +
 
@@ -532,14 +532,16 @@ export class Stage2D extends BatchRenderer {
                 "rcc=gtRClBUv(Z.xy,uv);" +
                 "rcd=gtRClBUv(Z.yy,uv);" +
               "}" +
-              "oCl=vRR.z>0." +
-                "?clamp(" +
+              "oCl=mix(" +
+                "gtClBUv(Z.xy)," +
+                "clamp(" +
                   "gtClBUv(Z.xx)*rca+" +
                   "gtClBUv(Z.yx)*rcb+" +
                   "gtClBUv(Z.xy)*rcc+" +
                   "gtClBUv(Z.yy)*rcd" +
-                ",0.,1.)" +
-                ":gtClBUv(Z.xy);" +
+                ",0.,1.)," +
+                "vec4(vRR.z)" + 
+              ");" +
               "if(vRR.y>0.)" +
                 "oCl.a=clamp(" +
                   "oCl.a*(" +

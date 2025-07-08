@@ -145,7 +145,8 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "dr=vec2(cos(rad),sin(rad))," +
           "r=vec2(cos(t),sin(t));" +
 
-        "for(int i=0;i<int(l);i++){" +
+        "for(int i=0;i<4096;i++){" +
+          "if(i>=int(l))break;" +
           "v+=texture(uTex,vTUv+dr*vTs*rand(vh+float(i))).g-tx;" +
           "dr*=mat2(r.x,-r.y,r.y,r.x);" +
         "}" +
@@ -153,9 +154,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "}" +
       
       "vec3 " +
-        "stCl=uUSTT<1." + 
-          "?Z.yyy" + 
-          ":texture(uSTTex,vTUv).rgb;" +
+        "stCl=mix(Z.yyy,texture(uSTTex,vTUv).rgb,vec3(uUSTT));" +
 
       "oCl=vec4(stCl*(1.-(1.-tx)*uDM-v),1);" +
     "}";
