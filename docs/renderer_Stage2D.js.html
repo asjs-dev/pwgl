@@ -165,12 +165,13 @@ export class Stage2D extends BatchRenderer {
     this._distortionBuffer = new Buffer("aDst", maxRenderCount, 4, 2);
 
     this._onMouseEventHandler = this._onMouseEventHandler.bind(this);
-    const canvas = this.context.canvas;
+    const canvas = this.context.canvas,
+      lightRenderer = options.lightRenderer;
+
     _INTERACTION_EVENT_TYPES.forEach((type) =>
       canvas.addEventListener(type, this._onMouseEventHandler)
     );
 
-    const lightRenderer = options.lightRenderer;
     lightRenderer &amp;&amp; this.attachLightRenderer(lightRenderer);
   }
 
@@ -272,8 +273,9 @@ export class Stage2D extends BatchRenderer {
   _drawContainer(container) {
     const children = container.children,
       l = children.length;
+    let i = -1;
 
-    for (let i = 0; i &lt; l; i++) this._drawItem(children[i]);
+    while (++i &lt; l) this._drawItem(children[i]);
   }
 
   /**
@@ -283,44 +285,51 @@ export class Stage2D extends BatchRenderer {
   _drawImage(image) {
     this.context.setBlendMode(image.blendMode, this._batchDraw);
 
-    if (
-      this._isMousePositionSet &amp;&amp;
-      image.interactive &amp;&amp;
-      image.isContainsPoint(this._mousePosition)
-    )
-      this._eventTarget = image;
-
-    const dataBufferId = this._batchItems * 12,
-      matrixBufferId = this._batchItems * 16,
+    const batchItems = this._batchItems,
+      dataBufferId = batchItems * 12,
+      matrixBufferId = batchItems * 16,
       itemParent = image.parent,
       dataBufferData = this._dataBuffer.data,
       matrixBufferData = this.$matrixBuffer.data;
 
-    arraySet(dataBufferData, image.colorCache, dataBufferId);
-    arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
-    dataBufferData[dataBufferId + 4] =
-      image.alpha * itemParent.getPremultipliedAlpha();
-    dataBufferData[dataBufferId + 5] =
-      image.tintType * itemParent.getPremultipliedUseTint();
-    dataBufferData[dataBufferId + 6] = this.context.useTexture(
-      image.texture,
-      this.$renderTime,
-      false,
-      this._batchDraw
-    );
-    dataBufferData[dataBufferId + 7] = image.distortionProps.distortTexture;
+    if (itemParent) {
+      if (
+        this._isMousePositionSet &amp;&amp;
+        image.interactive &amp;&amp;
+        image.isContainsPoint(this._mousePosition)
+      )
+        this._eventTarget = image;
 
-    arraySet(matrixBufferData, image.matrixCache, matrixBufferId);
-    arraySet(matrixBufferData, image.textureMatrixCache, matrixBufferId + 6);
-    arraySet(matrixBufferData, image.textureCropCache, matrixBufferId + 12);
+      arraySet(dataBufferData, image.colorCache, dataBufferId);
+      arraySet(
+        dataBufferData,
+        image.textureRepeatRandomCache,
+        dataBufferId + 8
+      );
+      dataBufferData[dataBufferId + 4] =
+        image.alpha * itemParent.getPremultipliedAlpha();
+      dataBufferData[dataBufferId + 5] =
+        image.tintType * itemParent.getPremultipliedUseTint();
+      dataBufferData[dataBufferId + 6] = this.context.useTexture(
+        image.texture,
+        this.$renderTime,
+        false,
+        this._batchDraw
+      );
+      dataBufferData[dataBufferId + 7] = image.distortionProps.distortTexture;
 
-    arraySet(
-      this._distortionBuffer.data,
-      image.distortionPropsCache,
-      this._batchItems * 8
-    );
+      arraySet(matrixBufferData, image.matrixCache, matrixBufferId);
+      arraySet(matrixBufferData, image.textureMatrixCache, matrixBufferId + 6);
+      arraySet(matrixBufferData, image.textureCropCache, matrixBufferId + 12);
 
-    ++this._batchItems === this.$MAX_RENDER_COUNT &amp;&amp; this._batchDraw();
+      arraySet(
+        this._distortionBuffer.data,
+        image.distortionPropsCache,
+        batchItems * 8
+      );
+
+      ++this._batchItems === this.$MAX_RENDER_COUNT &amp;&amp; this._batchDraw();
+    }
   }
 
   /**
@@ -522,7 +531,7 @@ export class Stage2D extends BatchRenderer {
 
     "float cosine(float a,float b,float v){" +
       "v=abs(v);" +
-      "v=v&lt;.5?2.*v*v:1.-pow(-2.*v+2.,2.)/2.;" +
+      "v=mix(2.*v*v,1.-pow(-2.*v+2.,2.)/2.,step(.5,v));" +
       "return a*(1.-v)+b*v;" +
     "}" +
 
@@ -571,14 +580,16 @@ export class Stage2D extends BatchRenderer {
                 "rcc=gtRClBUv(Z.xy,uv);" +
                 "rcd=gtRClBUv(Z.yy,uv);" +
               "}" +
-              "oCl=vRR.z>0." +
-                "?clamp(" +
+              "oCl=mix(" +
+                "gtClBUv(Z.xy)," +
+                "clamp(" +
                   "gtClBUv(Z.xx)*rca+" +
                   "gtClBUv(Z.yx)*rcb+" +
                   "gtClBUv(Z.xy)*rcc+" +
                   "gtClBUv(Z.yy)*rcd" +
-                ",0.,1.)" +
-                ":gtClBUv(Z.xy);" +
+                ",0.,1.)," +
+                "vec4(vRR.z)" + 
+              ");" +
               "if(vRR.y>0.)" +
                 "oCl.a=clamp(" +
                   "oCl.a*(" +
@@ -623,7 +634,7 @@ export class Stage2D extends BatchRenderer {
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat, 22 Mar 2025 19:02:43 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 08 Jul 2025 05:15:55 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>
