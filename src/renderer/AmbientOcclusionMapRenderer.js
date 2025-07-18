@@ -87,6 +87,8 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "uniform sampler2D " +
       "uTex;" +
 
+    "out float " +
+      "vLv;" +
     "out vec2 " +
       "vTUv," + 
       "vTs;" +
@@ -96,6 +98,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "vTUv=vec2(aPos.x,1.-aPos.y);" +
       "gl_Position.y*=uFlpY;" +
       "vTs=uR/vec2(textureSize(uTex,0));" + 
+      "vLv=length(vTs);" +
     "}";
   }
 
@@ -108,7 +111,9 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     return "" +
     Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIANS_360 +
-    
+
+    "in float " +
+      "vLv;" +
     "in vec2 " +
       "vTUv," + 
       "vTs;" +
@@ -134,20 +139,36 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
         
       "if(uS>0.&&uR>0.){" +
         "vec2 " +
-          "vh=vTUv*100.+100.;" +
+          "vh=vTUv*100.+100.," + 
+          "n," +
+          "rg;" +
 
         "float " +
           "rad=RADIANS_360*rand(vh-2.)," + 
-          "l=max(1.,ceil(uS*rand(vh-1.)))," +
-          "t=RADIANS_360/l;" +
+          "l=max(1.,max(uS*.5,ceil(uS*rand(vh-1.))))," +
+          "t=RADIANS_360/l," + 
+          "a," +
+          "b," +
+          "c," +
+          "ln;" +
         
         "vec2 " +
           "dr=vec2(cos(rad),sin(rad))," +
           "r=vec2(cos(t),sin(t));" +
 
-        "for(int i=0;i<4096;i++){" +
-          "if(i>=int(l))break;" +
-          "v+=texture(uTex,vTUv+dr*vTs*rand(vh+float(i))).g-tx;" +
+        "for(float i=0.;i<1024.;i++){" +
+          "if(i>=l)break;" +
+          "n=vTs*rand(vh+i,i);" +
+          "ln=length(n);" +
+          "rg=texture(uTex,vTUv+dr*n).rg-tx;" +
+          "a=ln/vLv;" +
+          "b=rg.x/ln;" +
+          "c=0.;" +
+          "if(rg.x>0.)" +
+            "c=1.-(b+a)+b*a;" +
+          "if(rg.y>0.)" +
+            "c+=(1.-a)*rg.y/vLv;" +
+          "v+=clamp(c*.5,0.,1.);" +
           "dr*=mat2(r.x,-r.y,r.y,r.x);" +
         "}" +
         "v/=l;" +

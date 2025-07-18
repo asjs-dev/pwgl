@@ -105,9 +105,9 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
       "mn=ivec2(Z.xx)," + 
       "mx=ivec2(vTs)-1;" +
     beforeLoop +
-    "for(int i=0;i<4096;i++){" +
-      "if(i>=int(l))break;" +
-      "ps=wh*round(dr)*(.5+rand(vTUv*100.+100.+float(i))*.5);" +
+    "for(float i=0.;i<4096.;i++){" +
+      "if(i>=l)break;" +
+      "ps=wh*round(dr)*(.5+rand(vTUv*100.+100.+i)*.5);" +
       "clg=texelFetch(uTex,clamp(" + 
         "f+ivec2(ps)," + 
         "mn,mx" +
