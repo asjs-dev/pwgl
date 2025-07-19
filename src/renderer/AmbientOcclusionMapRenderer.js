@@ -9,6 +9,7 @@ import { Utils } from "../utils/Utils";
  * @property {TextureInfo} heightMap
  * @property {number} radius
  * @property {number} samples
+ * @property {number} multiplier
  * @property {number} depthMultiplier
  */
 
@@ -33,6 +34,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "uSTTex",
       "uR",
       "uS",
+      "uM",
       "uDM",
       "uUSTT",
     ];
@@ -43,6 +45,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     this.heightMap = options.heightMap;
     this.radius = options.radius ?? 4;
     this.samples = options.samples ?? 4;
+    this.multiplier = options.multiplier ?? 1;
     this.depthMultiplier = options.depthMultiplier ?? 1;
   }
 
@@ -64,6 +67,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
     gl.uniform1f(locations.uR, this.radius);
     gl.uniform1f(locations.uS, this.samples);
+    gl.uniform1f(locations.uM, this.multiplier);
     gl.uniform1f(locations.uDM, this.depthMultiplier);
 
     this.$uploadBuffers();
@@ -125,6 +129,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "uR," +
       "uS," +
       "uUSTT," +
+      "uM," +
       "uDM;" +
 
     "out vec4 " +
@@ -149,7 +154,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "t=RADIANS_360/l," + 
           "a," +
           "b," +
-          "c," +
           "ln;" +
         
         "vec2 " +
@@ -161,14 +165,11 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "n=vTs*rand(vh+i,i);" +
           "ln=length(n);" +
           "rg=texture(uTex,vTUv+dr*n).rg-tx;" +
-          "a=ln/vLv;" +
-          "b=rg.x/ln;" +
-          "c=0.;" +
-          "if(rg.x>0.)" +
-            "c=1.-(b+a)+b*a;" +
-          "if(rg.y>0.)" +
-            "c+=(1.-a)*rg.y/vLv;" +
-          "v+=clamp(c*.5,0.,1.);" +
+          
+          "a=rg.x>0.?min(1.,ln/rg.x):0.;" +
+          "b=rg.y>0.?vLv*rg.y/max(ln,rg.y):0.;" +
+          "v+=.5*(a+b);" +
+
           "dr*=mat2(r.x,-r.y,r.y,r.x);" +
         "}" +
         "v/=l;" +
@@ -177,7 +178,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "vec3 " +
         "stCl=mix(Z.yyy,texture(uSTTex,vTUv).rgb,vec3(uUSTT));" +
 
-      "oCl=vec4(stCl*(1.-(1.-tx)*uDM-v),1);" +
+      "oCl=vec4(stCl*(1.-(1.-tx)*uDM-v*uM),1);" +
     "}";
   }
 }
