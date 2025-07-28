@@ -386,7 +386,7 @@ export class LightRenderer extends BatchRenderer {
           loop("if(tc.g>=vHS)discard;") +
         "else{" +
           "float " +
-            "rnd=vExt[0].w*rand(vTUv*100.+50.);" +
+            "rnd=vExt[0].w*rand(vTUv);" +
             
           loop(
             "st+=rnd;" +

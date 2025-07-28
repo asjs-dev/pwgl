@@ -37,6 +37,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "uM",
       "uDM",
       "uUSTT",
+      "uOs",
     ];
 
     super(options);
@@ -47,6 +48,47 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     this.samples = options.samples ?? 4;
     this.multiplier = options.multiplier ?? 1;
     this.depthMultiplier = options.depthMultiplier ?? 1;
+    this._offset = options.offset ?? new Float32Array(2);
+  }
+
+  /**
+   * Gets the x offset for the ambient occlusion map.
+   * @returns {number}
+   */
+  get offsetX() {
+    return this._offset[0];
+  }
+  /**
+   * Sets the x offset for the ambient occlusion map.
+   * @param {number} value
+   */
+  set offsetX(value) {
+    this._offset[0] = value;
+  }
+
+  /**
+   * Gets the y offset for the ambient occlusion map.
+   * @returns {number}
+   */
+  get offsetY() {
+    return this._offset[1];
+  }
+  /**
+   * Sets the y offset for the ambient occlusion map.
+   * @param {number} value
+   */
+  set offsetY(value) {
+    this._offset[1] = value;
+  }
+
+  /**
+   * Sets the offset for the ambient occlusion map.
+   * @param {number} x - The x offset.
+   * @param {number} y - The y offset.
+   */
+  setOffset(x, y) {
+    this._offset[0] = x;
+    this._offset[1] = y;
   }
 
   /**
@@ -69,6 +111,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     gl.uniform1f(locations.uS, this.samples);
     gl.uniform1f(locations.uM, this.multiplier);
     gl.uniform1f(locations.uDM, this.depthMultiplier);
+    gl.uniform2fv(locations.uOs, this._offset);
 
     this.$uploadBuffers();
 
@@ -88,12 +131,15 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "uniform float " +
       "uR," +
       "uFlpY;" +
+    "uniform vec2 " +
+      "uOs;" +
     "uniform sampler2D " +
       "uTex;" +
 
     "out float " +
       "vLv;" +
     "out vec2 " +
+      "vOs," +
       "vTUv," + 
       "vTs;" +
 
@@ -101,8 +147,10 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "gl_Position=vec4(aPos*2.-1.,1,1);" +
       "vTUv=vec2(aPos.x,1.-aPos.y);" +
       "gl_Position.y*=uFlpY;" +
-      "vTs=uR/vec2(textureSize(uTex,0));" + 
+      "vec2 ts=vec2(textureSize(uTex,0));" +
+      "vTs=uR/ts;" + 
       "vLv=length(vTs);" +
+      "vOs=vTUv+uOs/ts;" +
     "}";
   }
 
@@ -119,6 +167,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "in float " +
       "vLv;" +
     "in vec2 " +
+      "vOs," +
       "vTUv," + 
       "vTs;" +
 
@@ -144,13 +193,12 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
         
       "if(uS>0.&&uR>0.){" +
         "vec2 " +
-          "vh=vTUv*100.+100.," + 
           "n," +
           "rg;" +
 
         "float " +
-          "rad=RADIANS_360*rand(vh-2.)," + 
-          "l=max(1.,max(uS*.5,ceil(uS*rand(vh-1.))))," +
+          "rad=RADIANS_360*rand(vOs,2.)," + 
+          "l=max(1.,max(uS*.5,ceil(uS*rand(vOs))))," +
           "t=RADIANS_360/l," + 
           "a," +
           "b," +
@@ -162,7 +210,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
         "for(float i=0.;i<1024.;i++){" +
           "if(i>=l)break;" +
-          "n=vTs*rand(vh+i,i);" +
+          "n=vTs*rand(vOs,i);" +
           "ln=length(n);" +
           "rg=texture(uTex,vTUv+dr*n).rg-tx;" +
           
