@@ -430,8 +430,7 @@ export class Stage2D extends BatchRenderer {
       "vTsh=gtTexS(vTId);" +
 
       (useRepeatTextures
-        ? "vRR=aDt[2].xyzw;" +
-          "vRR.w=vRR.x+vRR.y;"
+        ? "vRR=aDt[2];"
         : "") +
     "}";
   }
@@ -509,7 +508,7 @@ export class Stage2D extends BatchRenderer {
         "float gtRClBUv(vec2 st,vec2 uv){" +
           "float " +
             "rnd=rand(floor(vTUv+st));" +
-          "return (1.-(2.*rnd-1.)*vRR.y)*" +
+          "return (1.-(vRR.w*rnd-vRR.w*.5)*vRR.y)*" +
             "cosine(0.,1.,1.-st.x-uv.x)*cosine(0.,1.,1.-st.y-uv.y);" +
         "}"
       : "") +
@@ -520,36 +519,35 @@ export class Stage2D extends BatchRenderer {
           "uv=mod(vTUv,Z.yy);" +
 
         (useRepeatTextures
-          ? "if(vRR.w>0.){" +
-              "float " +
-                "rca," +
-                "rcb," +
-                "rcc," +
-                "rcd;" +
-              "if(vRR.y+vRR.z>0.){" +
-                "rca=gtRClBUv(Z.xx,uv);" +
-                "rcb=gtRClBUv(Z.yx,uv);" +
-                "rcc=gtRClBUv(Z.xy,uv);" +
-                "rcd=gtRClBUv(Z.yy,uv);" +
-              "}" +
+          ? "if(vRR.x>0.||vRR.y>0.){" +
+              "vec4 " +
+                "rc=vec4(" + 
+                  "gtRClBUv(Z.xx,uv)," +
+                  "gtRClBUv(Z.yx,uv)," +
+                  "gtRClBUv(Z.xy,uv)," +
+                  "gtRClBUv(Z.yy,uv)" +
+                ");" +
               "oCl=mix(" +
                 "gtClBUv(Z.xy)," +
                 "clamp(" +
-                  "gtClBUv(Z.xx)*rca+" +
-                  "gtClBUv(Z.yx)*rcb+" +
-                  "gtClBUv(Z.xy)*rcc+" +
-                  "gtClBUv(Z.yy)*rcd" +
+                  "gtClBUv(Z.xx)*rc.x+" +
+                  "gtClBUv(Z.yx)*rc.y+" +
+                  "gtClBUv(Z.xy)*rc.z+" +
+                  "gtClBUv(Z.yy)*rc.w" +
                 ",0.,1.)," +
                 "vec4(vRR.z)" + 
               ");" +
-              "if(vRR.y>0.)" +
-                "oCl.a=clamp(" +
+              "oCl.a=mix(" + 
+                "oCl.a," + 
+                "clamp(" +
                   "oCl.a*(" +
-                    "rca+" +
-                    "rcb+" +
-                    "rcc+" +
-                    "rcd" +
-                  "),0.,1.);" +
+                    "rc.x+" +
+                    "rc.y+" +
+                    "rc.z+" +
+                    "rc.w" +
+                  "),0.,1.)," + 
+                  "vRR.y" +
+                ");" +
             "}else oCl=" + getSimpleTexColor("uv") + ";"
           : "oCl=" + getSimpleTexColor("uv") + ";") +
       "}else oCl+=1.;" +

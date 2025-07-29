@@ -125,11 +125,14 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    */
   $createVertexShader() {
     return "" +
+    Utils.GLSL.DEFINE.RADIANS_360 +
+
     "in vec2 " +
       "aPos;" +
 
     "uniform float " +
       "uR," +
+      "uS," +
       "uFlpY;" +
     "uniform vec2 " +
       "uOs;" +
@@ -141,16 +144,20 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "out vec2 " +
       "vOs," +
       "vTUv," + 
-      "vTs;" +
+      "vTs," +
+      "vT;" +
 
     "void main(void){" +
       "gl_Position=vec4(aPos*2.-1.,1,1);" +
       "vTUv=vec2(aPos.x,1.-aPos.y);" +
       "gl_Position.y*=uFlpY;" +
-      "vec2 ts=vec2(textureSize(uTex,0));" +
-      "vTs=uR/ts;" + 
+      "vec2 ts=1./vec2(textureSize(uTex,0));" +
+      "vTs=uR*ts;" + 
       "vLv=length(vTs);" +
-      "vOs=vTUv+uOs/ts;" +
+      "vOs=vTUv+uOs*ts;" +
+      "float " + 
+        "r=RADIANS_360/uS;" + 
+      "vT=vec2(cos(r),sin(r));" +
     "}";
   }
 
@@ -169,7 +176,8 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "in vec2 " +
       "vOs," +
       "vTUv," + 
-      "vTs;" +
+      "vTs," +
+      "vT;" +
 
     "uniform sampler2D " +
       "uSTTex," +
@@ -197,20 +205,17 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "rg;" +
 
         "float " +
-          "rad=RADIANS_360*rand(vOs,2.)," + 
-          "l=max(1.,max(uS*.5,ceil(uS*rand(vOs))))," +
-          "t=RADIANS_360/l," + 
           "a," +
           "b," +
           "ln;" +
         
         "vec2 " +
-          "dr=vec2(cos(rad),sin(rad))," +
-          "r=vec2(cos(t),sin(t));" +
+          "dr=Z.yx," +
+          "r=vT;" +
 
         "for(float i=0.;i<1024.;i++){" +
-          "if(i>=l)break;" +
-          "n=vTs*rand(vOs,i);" +
+          "if(i>=uS)break;" +
+          "n=vTs*rand(vOs+i,i);" +
           "ln=length(n);" +
           "rg=texture(uTex,vTUv+dr*n).rg-tx;" +
           
@@ -220,7 +225,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
           "dr*=mat2(r.x,-r.y,r.y,r.x);" +
         "}" +
-        "v/=l;" +
+        "v/=uS;" +
       "}" +
       
       "vec3 " +

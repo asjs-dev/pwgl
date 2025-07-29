@@ -13,7 +13,7 @@ export class TextureTransformProps extends BaseTransformProps {
   constructor() {
     super();
 
-    this.repeatRandomCache = [0, 0, 0];
+    this.repeatRandomCache = [0, 0, 0, 2];
     this._repeatX = this._repeatY = 1;
   }
 
@@ -99,5 +99,18 @@ export class TextureTransformProps extends BaseTransformProps {
   }
   set repeatRandomBlur(v) {
     this.repeatRandomCache[2] = v;
+  }
+
+  /**
+   * <pre>
+   *  Set/Get repeat random offset
+   * </pre>
+   * @type {number}
+   */
+  get repeatRandomOffset() {
+    return this.repeatRandomCache[3];
+  }
+  set repeatRandomOffset(v) {
+    this.repeatRandomCache[3] = v;
   }
 }
