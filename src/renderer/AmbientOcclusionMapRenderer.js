@@ -198,7 +198,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           "rg;" +
 
         "float " +
-          "maxIt=min(uP.y,1024.)," +
+          "l=min(uP.y,1024.)," +
           "ln;" +
         
         "vec2 " +
@@ -207,7 +207,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
         "mat2 " + 
           "rot=mat2(vT.x,-vT.y,vT.y,vT.x);" +
 
-        "for(float i=0.;i<maxIt;i++){" +
+        "for(float i=0.;i<l;i++){" +
           "n=vTs*rand(vOs+i,i);" +
           "ln=length(n);" +
           "rg=max(texture(uTx,vTUv+dr*n).rg-tx,Z.xx);" +
@@ -216,7 +216,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
           "dr*=rot;" +
         "}" +
-        "v/=maxIt;" +
+        "v/=l;" +
       "}" +
       
       "vec3 " +

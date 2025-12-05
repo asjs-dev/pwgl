@@ -396,7 +396,7 @@ export class LightRenderer extends BatchRenderer {
           "st=max(1.,ceil(fltDst/vExt[1].x))," + // loop step length
           "i," +
           "pc," +
-          "l=min(4096.,fltDst-st)," +
+          "l=min(fltDst-st,4096.)," +
           "m=max(st,l-vShl);" +
         
         "if(flg[2]>0)" + 
