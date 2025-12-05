@@ -155,8 +155,6 @@ export class Context {
       gl.bindVertexArray(null);
       gl.useProgram(program);
       gl.bindVertexArray(vao);
-
-      return true;
     }
   }
 

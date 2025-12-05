@@ -9,12 +9,12 @@ export class AudioItem extends BaseAudio {
    * Creates an instance of AudioItem.
    *
    * @param {string|null} [url=null] - The URL of the audio file to load.
-   * @param {Object} [options={}] - Configuration options for the audio item.
+   * @param {Object} [config={}] - Configuration for the audio item.
    */
-  constructor(url = null, options = {}) {
+  constructor(url = null, config = {}) {
     super();
 
-    this.$setOptions(options);
+    this.$setConfig(config);
     this.load(url);
   }
 
@@ -114,7 +114,7 @@ export class AudioItem extends BaseAudio {
       } catch (e) {}
     }
 
-    this.$setOptions(this);
+    this.$setConfig(this);
   }
 
   /**
@@ -179,10 +179,10 @@ export class AudioItem extends BaseAudio {
   /**
    * @ignore
    */
-  $setOptions(options = {}) {
-    this.loop = options.loop ?? false;
-    this.pitch = options.pitch ?? 1;
-    super.$setOptions(options);
+  $setConfig(config = {}) {
+    this.loop = config.loop ?? false;
+    this.pitch = config.pitch ?? 1;
+    super.$setConfig(config);
   }
 
   /**

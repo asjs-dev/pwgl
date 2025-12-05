@@ -24,31 +24,28 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
   /**
    * Creates an instance of AmbientOcclusionMapRenderer.
    * @constructor
-   * @param {AmbientOcclusionMapRendererConfig} options
+   * @param {AmbientOcclusionMapRendererConfig} config
    */
-  constructor(options = {}) {
-    options.config = Utils.initRendererConfig(options.config);
+  constructor(config = {}) {
+    config = Utils.initRendererConfig(config);
 
     // prettier-ignore
-    options.config.locations = [
-      "uSTTex",
-      "uR",
-      "uS",
-      "uM",
-      "uDM",
+    config.locations = [
+      "uSTTx",
+      "uP",
       "uUSTT",
       "uOs",
     ];
 
-    super(options);
+    super(config);
 
-    this.sourceTexture = options.sourceTexture;
-    this.heightMap = options.heightMap;
-    this.radius = options.radius ?? 4;
-    this.samples = options.samples ?? 4;
-    this.multiplier = options.multiplier ?? 1;
-    this.depthMultiplier = options.depthMultiplier ?? 1;
-    this._offset = options.offset ?? new Float32Array(2);
+    this.sourceTexture = config.sourceTexture;
+    this.heightMap = config.heightMap;
+    this.radius = config.radius ?? 4;
+    this.samples = config.samples ?? 4;
+    this.multiplier = config.multiplier ?? 1;
+    this.depthMultiplier = config.depthMultiplier ?? 1;
+    this._offset = config.offset ?? new Float32Array(2);
   }
 
   /**
@@ -96,21 +93,24 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    */
   $render() {
     const gl = this.$gl,
-      locations = this.$locations;
+      locations = this.$locations,
+      sourceTextureBoolean = !!this.sourceTexture;
 
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$useTextureAt(this.heightMap, locations.uTex, 0);
+    this.$useTextureAt(this.heightMap, locations.uTx, 0);
 
-    if (this.sourceTexture) {
-      this.$useTextureAt(this.sourceTexture, locations.uSTTex, 1);
-      gl.uniform1f(locations.uUSTT, 1);
-    } else gl.uniform1f(locations.uUSTT, 0);
+    sourceTextureBoolean &&
+      this.$useTextureAt(this.sourceTexture, locations.uSTTx, 1);
 
-    gl.uniform1f(locations.uR, this.radius);
-    gl.uniform1f(locations.uS, this.samples);
-    gl.uniform1f(locations.uM, this.multiplier);
-    gl.uniform1f(locations.uDM, this.depthMultiplier);
+    gl.uniform1f(locations.uUSTT, sourceTextureBoolean);
+    gl.uniform4f(
+      locations.uP,
+      this.radius,
+      this.samples,
+      this.multiplier,
+      this.depthMultiplier
+    );
     gl.uniform2fv(locations.uOs, this._offset);
 
     this.$uploadBuffers();
@@ -128,19 +128,17 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     Utils.GLSL.DEFINE.RADIANS_360 +
 
     "in vec2 " +
-      "aPos;" +
+      "aPs;" +
 
     "uniform float " +
-      "uR," +
-      "uS," +
       "uFlpY;" +
     "uniform vec2 " +
       "uOs;" +
+    "uniform vec4 " +
+      "uP;" +
     "uniform sampler2D " +
-      "uTex;" +
+      "uTx;" +
 
-    "out float " +
-      "vLv;" +
     "out vec2 " +
       "vOs," +
       "vTUv," + 
@@ -148,15 +146,14 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "vT;" +
 
     "void main(void){" +
-      "gl_Position=vec4(aPos*2.-1.,1,1);" +
-      "vTUv=vec2(aPos.x,1.-aPos.y);" +
+      "gl_Position=vec4(aPs*2.-1.,1,1);" +
       "gl_Position.y*=uFlpY;" +
-      "vec2 ts=1./vec2(textureSize(uTex,0));" +
-      "vTs=uR*ts;" + 
-      "vLv=length(vTs);" +
-      "vOs=vTUv+uOs*ts;" +
+      "vTUv=vec2(aPs.x,1.-aPs.y);" +
+      "vec2 ts=1./vec2(textureSize(uTx,0));" +
+      "vTs=uP.x*ts;" + 
+      "vOs=(vTUv+uOs*ts)*100.;" +
       "float " + 
-        "r=RADIANS_360/uS;" + 
+        "r=RADIANS_360/uP.y;" + 
       "vT=vec2(cos(r),sin(r));" +
     "}";
   }
@@ -171,8 +168,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIANS_360 +
 
-    "in float " +
-      "vLv;" +
     "in vec2 " +
       "vOs," +
       "vTUv," + 
@@ -180,14 +175,12 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       "vT;" +
 
     "uniform sampler2D " +
-      "uSTTex," +
-      "uTex;" +
+      "uSTTx," +
+      "uTx;" +
     "uniform float " +
-      "uR," +
-      "uS," +
-      "uUSTT," +
-      "uM," +
-      "uDM;" +
+      "uUSTT;" +
+    "uniform vec4 " +
+      "uP;" +
 
     "out vec4 " +
       "oCl;" +
@@ -196,42 +189,40 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
     "void main(void){" +
       "float " +
-        "tx=texture(uTex,vTUv).g," +
+        "tx=texture(uTx,vTUv).g," +
         "v=0.;" +
         
-      "if(uS>0.&&uR>0.){" +
+      "if(uP.y>0.&&uP.x>0.){" +
         "vec2 " +
           "n," +
           "rg;" +
 
         "float " +
-          "a," +
-          "b," +
+          "maxIt=min(uP.y,1024.)," +
           "ln;" +
         
         "vec2 " +
-          "dr=Z.yx," +
-          "r=vT;" +
+          "dr=Z.yx;" +
 
-        "for(float i=0.;i<1024.;i++){" +
-          "if(i>=uS)break;" +
+        "mat2 " + 
+          "rot=mat2(vT.x,-vT.y,vT.y,vT.x);" +
+
+        "for(float i=0.;i<maxIt;i++){" +
           "n=vTs*rand(vOs+i,i);" +
           "ln=length(n);" +
-          "rg=texture(uTex,vTUv+dr*n).rg-tx;" +
-          
-          "a=rg.x>0.?min(1.,ln/rg.x):0.;" +
-          "b=rg.y>0.?vLv*rg.y/max(ln,rg.y):0.;" +
-          "v+=.5*(a+b);" +
+          "rg=max(texture(uTx,vTUv+dr*n).rg-tx,Z.xx);" +
 
-          "dr*=mat2(r.x,-r.y,r.y,r.x);" +
+          "v+=(rg.y*(1.-rg.y))/(1.+ln*uP.x);" +
+
+          "dr*=rot;" +
         "}" +
-        "v/=uS;" +
+        "v/=maxIt;" +
       "}" +
       
       "vec3 " +
-        "stCl=mix(Z.yyy,texture(uSTTex,vTUv).rgb,vec3(uUSTT));" +
+        "stCl=uUSTT>0.?texture(uSTTx,vTUv).rgb:Z.yyy;" +
 
-      "oCl=vec4(stCl*(1.-(1.-tx)*uDM-v*uM),1);" +
+      "oCl=vec4(stCl*(mix(1.,tx,uP.w)-v*uP.z),1);" +
     "}";
   }
 }

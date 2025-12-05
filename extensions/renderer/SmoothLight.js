@@ -12,36 +12,35 @@ export class SmoothLight extends AGL.Image {
   /**
    * Creates an instance of SmoothLight.
    * @constructor
-   * @param {SmoothLightRendererConfig} options
+   * @param {SmoothLightRendererConfig} config
    */
-  constructor(options = {}) {
+  constructor(config = {}) {
     super();
 
     this._framebuffer = new AGL.Framebuffer();
 
-    this.lightRenderer = new AGL.LightRenderer(options);
+    this.lightRenderer = new AGL.LightRenderer(config);
 
     this._filter = new AGL.BlurFilter();
 
     this.filterRenderer = new AGL.FilterRenderer({
-      config: {
-        context: this.lightRenderer.context,
-      },
+      context: this.lightRenderer.context,
       sourceTexture: this._framebuffer,
       filters: [this._filter],
     });
     this.filterRenderer.clearColor.set(0, 0, 0, 0);
     this.filterRenderer.clearBeforeRender = true;
 
-    this.addLightForRender =
-      this.lightRenderer.addLightForRender.bind(this.lightRenderer);
+    this.addLightForRender = this.lightRenderer.addLightForRender.bind(
+      this.lightRenderer
+    );
 
     this.blendMode = AGL.BlendMode.SHADOW;
 
     this._filterFramebuffer = new AGL.Framebuffer();
     this.texture = this._filterFramebuffer;
 
-    this.blur = typeof options.blur === "number" ? options.blur : 1;
+    this.blur = typeof config.blur === "number" ? config.blur : 1;
   }
 
   /**

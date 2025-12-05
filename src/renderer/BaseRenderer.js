@@ -7,7 +7,6 @@ import { Utils, Const } from "../utils/Utils";
 /**
  * @typedef {Object} BaseRendererConfig
  * @extends {RendererConfig}
- * @property {Object} config
  * @property {ColorProps} clearColor
  * @property {WebGL2Context} context
  * @property {boolean} resized
@@ -24,9 +23,9 @@ export class BaseRenderer {
   /**
    * Creates an instance of BaseRenderer.
    * @constructor
-   * @param {BaseRendererConfig} options
+   * @param {BaseRendererConfig} config
    */
-  constructor(options) {
+  constructor(config) {
     this._clearBeforeRenderFunc = noop;
 
     this._resizeCalcFv = noop;
@@ -46,16 +45,15 @@ export class BaseRenderer {
 
     this.clearColor = new ColorProps();
 
-    this._options = options;
-    const config = this._options.config;
+    this._config = config;
     this.context = config.context;
 
     // prettier-ignore
     config.locations = [
       ...config.locations,
       "uFlpY",
-      "aPos",
-      "uTex"
+      "aPs",
+      "uTx"
     ];
 
     this._elementArrayBuffer = new Buffer(
@@ -69,7 +67,7 @@ export class BaseRenderer {
 
     // prettier-ignore
     this._positionBuffer = new Buffer(
-      "aPos", new Float32Array([
+      "aPs", new Float32Array([
         0, 0,
         1, 0,
         1, 1,
@@ -196,9 +194,8 @@ export class BaseRenderer {
    */
   $uploadBuffers() {
     const gl = this.$gl;
-    this._positionBuffer.upload(gl, this.$enableBuffers);
+    this._positionBuffer.upload(gl);
     this._elementArrayBuffer.upload(gl);
-    this.$enableBuffers = false;
   }
 
   /**
@@ -275,11 +272,11 @@ export class BaseRenderer {
       shaderHeader + this.$createVertexShader(),
       shaderHeader + this.$createFragmentShader()
     );
-
+    
     this.$locations = Utils.getLocationsFor(
       gl,
       this._program,
-      this._options.config.locations
+      this._config.locations
     );
 
     this._vao = gl.createVertexArray();
@@ -293,7 +290,6 @@ export class BaseRenderer {
    * @ignore
    */
   _useProgram() {
-    if (this.context.useProgram(this._program, this._vao))
-      this.$enableBuffers = true;
+    this.context.useProgram(this._program, this._vao);
   }
 }

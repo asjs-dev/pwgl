@@ -136,12 +136,12 @@ export class BaseAudio {
   /**
    * @ignore
    */
-  $setOptions(options) {
-    this.volume = options.volume ?? 1;
-    this.pan = options.pan ?? 0;
-    this.reverbDelayTime = options.reverbDelayTime ?? 0;
-    this.reverbFeedbackGain = options.reverbFeedbackGain ?? 0;
-    this.lowPassFilterFrequency = options.lowPassFilterFrequency ?? 22050;
-    this.highPassFilterFrequency = options.highPassFilterFrequency ?? 0;
+  $setConfig(config) {
+    this.volume = config.volume ?? 1;
+    this.pan = config.pan ?? 0;
+    this.reverbDelayTime = config.reverbDelayTime ?? 0;
+    this.reverbFeedbackGain = config.reverbFeedbackGain ?? 0;
+    this.lowPassFilterFrequency = config.lowPassFilterFrequency ?? 22050;
+    this.highPassFilterFrequency = config.highPassFilterFrequency ?? 0;
   }
 }

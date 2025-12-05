@@ -1,7 +1,7 @@
 import { BaseTextureFilter } from "./BaseTextureFilter";
 
 const _GLSL = BaseTextureFilter.$createGLSL(
-  "oCl=texture(uTex,vTUv+(Z.yz*(mskCl.rg-.5)*2.*vol));"
+  "oCl=texture(uTx,vTUv+(Z.yz*(mskCl.rg-.5)*2.*vol));"
 );
 /**
  * Displacement filter

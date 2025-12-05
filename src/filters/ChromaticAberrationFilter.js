@@ -4,9 +4,9 @@ import { BaseFilter } from "./BaseFilter";
 const _GLSL = "" +
   "vec4 " +
     "pcl=vec4(" +
-      "texture(uTex,vTUv-vec2(vol.x,0)).r," +
+      "texture(uTx,vTUv-vec2(vol.x,0)).r," +
       "oCl.g," +
-      "texture(uTex,vTUv+vec2(vol.x,0)).b," +
+      "texture(uTx,vTUv+vec2(vol.x,0)).b," +
       "1" +
     ");" +
 

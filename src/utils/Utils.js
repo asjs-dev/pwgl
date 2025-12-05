@@ -90,7 +90,7 @@ export const Utils = {
     },
     RANDOM: 
       "float rand(vec2 p,float s){" +
-        "p=mod(p*100.,vec2(1e4))+100.;" +
+        "p=mod(p,vec2(1e4))+100.;" +
         "return fract(" +
           "dot(" +
             "p," +
@@ -122,11 +122,9 @@ export const Utils = {
     canvas: document.createElement("canvas"),
     ...config,
     contextAttributes: {
-      ...{
-        powerPreference: "high-performance",
-        preserveDrawingBuffer: false,
-        premultipliedAlpha: false,
-      },
+      powerPreference: "high-performance",
+      preserveDrawingBuffer: false,
+      premultipliedAlpha: false,
       ...(config.contextAttributes || {}),
     },
   }),
@@ -137,8 +135,12 @@ export const Utils = {
    * @returns {RendererConfig}
    */
   initRendererConfig: (config = {}) => ({
-    locations: config.locations || [],
-    context: config.context || new Context(),
+    ...config,
+    locations: config.locations ?? [],
+    context:
+      (config.config && config.config.context) ??
+      config.context ??
+      new Context(),
   }),
 
   /**

@@ -36,34 +36,70 @@ export class LightRenderer extends BatchRenderer {
   /**
    * Creates an instance of LightRenderer.
    * @constructor
-   * @param {LightRendererConfig} options
+   * @param {LightRendererConfig} config
    */
-  constructor(options = {}) {
-    options.config = Utils.initRendererConfig(options.config);
+  constructor(config = {}) {
+    config = Utils.initRendererConfig(config);
 
     // prettier-ignore
-    options.config.locations = [
+    config.locations = [
       "aExt",
-      "uNMTex",
-      "uSTTex",
-      "uRGTex",
+      "uNMTx",
+      "uSTTx",
+      "uRGTx",
       "uTS",
-      "uUSTT",
-      "uUNMT",
-      "uURGT"
+      "uUT"
     ];
 
-    super(options);
+    super(config);
 
     this.clearBeforeRender = true;
     this.clearColor.set(0, 0, 0, 1);
 
-    this.sourceTexture = options.sourceTexture;
-    this.normalMap = options.normalMap;
-    this.heightMap = options.heightMap;
-    this.roughnessMap = options.roughnessMap;
+    this._sizable = this;
+
+    this.sourceTexture = config.sourceTexture;
+    this.normalMap = config.normalMap;
+    this.heightMap = config.heightMap;
+    this.roughnessMap = config.roughnessMap;
 
     this._extensionBuffer = new Buffer("aExt", this.$MAX_RENDER_COUNT, 2, 4);
+  }
+
+  get sourceTexture() {
+    return this._sourceTexture;
+  }
+
+  set sourceTexture(v) {
+    this._sourceTexture = v;
+    if (v) this._sizable = v;
+  }
+
+  get normalMap() {
+    return this._normalMap;
+  }
+
+  set normalMap(v) {
+    this._normalMap = v;
+    if (v) this._sizable = v;
+  }
+
+  get heightMap() {
+    return this._heightMap;
+  }
+
+  set heightMap(v) {
+    this._heightMap = v;
+    if (v) this._sizable = v;
+  }
+
+  get roughnessMap() {
+    return this._roughnessMap;
+  }
+
+  set roughnessMap(v) {
+    this._roughnessMap = v;
+    if (v) this._sizable = v;
   }
 
   /**
@@ -107,36 +143,29 @@ export class LightRenderer extends BatchRenderer {
    */
   $render() {
     const gl = this.$gl,
-      locations = this.$locations;
+      locations = this.$locations,
+      sourceTextureBoolean = !!this.sourceTexture,
+      normalMapBoolean = !!this.normalMap,
+      roughnessMapBoolean = !!this.roughnessMap,
+      heightMapBoolean = !!this.heightMap;
 
     this.context.setBlendMode(BlendMode.ADD);
 
-    let sizable = this;
+    sourceTextureBoolean && this.$useTexture(this._sourceTexture, locations.uSTTx);
 
-    if (this.sourceTexture) {
-      this.$useTexture(this.sourceTexture, locations.uSTTex);
-      sizable = this.sourceTexture;
-      gl.uniform1f(locations.uUSTT, 1);
-    } else gl.uniform1f(locations.uUSTT, 0);
+    normalMapBoolean && this.$useTexture(this._normalMap, locations.uNMTx);
 
-    if (this.normalMap) {
-      this.$useTexture(this.normalMap, locations.uNMTex);
-      sizable = this.normalMap;
-      gl.uniform1f(locations.uUNMT, 1);
-    } else gl.uniform1f(locations.uUNMT, 0);
+    roughnessMapBoolean && this.$useTexture(this._roughnessMap, locations.uRGTx);
 
-    if (this.roughnessMap) {
-      this.$useTexture(this.roughnessMap, locations.uRGTex);
-      sizable = this.roughnessMap;
-      gl.uniform1f(locations.uURGT, 1);
-    } else gl.uniform1f(locations.uURGT, 0);
+    heightMapBoolean && this.$useTexture(this._heightMap, locations.uTx);
 
-    if (this.heightMap) {
-      this.$useTexture(this.heightMap, locations.uTex);
-      sizable = this.heightMap;
-    }
-
-    gl.uniform2f(locations.uTS, sizable.width, sizable.height);
+    gl.uniform3f(
+      locations.uUT,
+      sourceTextureBoolean,
+      roughnessMapBoolean,
+      normalMapBoolean
+    );
+    gl.uniform2f(locations.uTS, this._sizable.width, this._sizable.height);
 
     this.$uploadBuffers();
 
@@ -148,7 +177,7 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    this._extensionBuffer.upload(this.$gl, this.$enableBuffers);
+    this._extensionBuffer.upload(this.$gl);
     super.$uploadBuffers();
   }
 
@@ -172,7 +201,7 @@ export class LightRenderer extends BatchRenderer {
     "#define P vec4(1,-1,2,-2)\n" +
 
     "in vec2 " +
-      "aPos;" +
+      "aPs;" +
     "in mat4 " +
       "aMt;" +
     "in mat2x4 " +
@@ -199,7 +228,7 @@ export class LightRenderer extends BatchRenderer {
       "flg;" +
 
     "void main(void){" +
-      "vec3 pos=vec3(aPos*2.-1.,1);" +
+      "vec3 pos=vec3(aPs*2.-1.,1);" +
 
       "vExt=aExt;" +
       "vCl=aMt[2];" +
@@ -226,7 +255,7 @@ export class LightRenderer extends BatchRenderer {
       "}else{" +
         "mt[2].xy=Z.zy;" +
         "gl_Position=vec4(pos,1);" +
-        "vTUv=vec2(aPos.x,1.-aPos.y);" +
+        "vTUv=vec2(aPs.x,1.-aPs.y);" +
         "vUv.zw=vTUv+((mt*vec3(1)).xy+P.xy)/P.zw;" +
       "}" +
 
@@ -240,10 +269,9 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    const loop = (core) => "for(i=m;i<4096.;i+=st){" +
-            "if(i>=l)break;" +
+    const loop = (core) => "for(i=m;i<l;i+=st){" +
             "p=ivec2((vUv.zw+i*opdm)*uTS);" +
-            "tc=texelFetch(uTex,p,0)*HEIGHT;" +
+            "tc=texelFetch(uTx,p,0)*HEIGHT;" +
             core +
           "}";
 
@@ -268,17 +296,15 @@ export class LightRenderer extends BatchRenderer {
     "flat in int[5] " +
       "flg;" +
 
-    "uniform sampler2D " +
-      "uNMTex," +
-      "uSTTex," +
-      "uRGTex," +
-      "uTex;" +
-    "uniform float " +
-      "uUSTT," +
-      "uURGT," +
-      "uUNMT;" +
     "uniform vec2 " +
       "uTS;" +
+    "uniform vec3 " +
+      "uUT;" +
+    "uniform sampler2D " +
+      "uNMTx," +
+      "uSTTx," +
+      "uRGTx," +
+      "uTx;" +
 
     "out vec4 " +
       "oCl;" +
@@ -286,19 +312,19 @@ export class LightRenderer extends BatchRenderer {
     Utils.GLSL.RANDOM +
 
     "void main(void){" +
+      "if(vDt.y*vCl.a<=0.)discard;" +
+
       "vec2 " +
         "tUv=vTUv*uTS," +
         "tCnt=vUv.zw*uTS;" +
 
       "vec4 " +
-        "tc=texelFetch(uTex,ivec2(tUv),0);" +
+        "tc=texelFetch(uTx,ivec2(tUv),0);" +
 
       "float " +
         "ph=tc.g*HEIGHT," +
         "vol=vDt.y*vCl.a," +
         "spc=0.;" +
-
-      "if(vol<=0.)discard;" +
 
       "vec3 " +
         "sf=vec3(tUv,ph)," +
@@ -309,9 +335,7 @@ export class LightRenderer extends BatchRenderer {
         "float " + 
           "d=length(sftla)/vD," +
           "od=1.-d," +
-          "dv=flg[4]>0" +
-            "?pow(od,vExt[1].z)" +
-            ":ceil(od);" +
+          "dv=flg[4]>0?pow(od,vExt[1].z):1.;" +
 
         "vol*=dv;" +
 
@@ -339,16 +363,12 @@ export class LightRenderer extends BatchRenderer {
 
       "if(flg[1]>0){" +
         "vec3 " +
-          "nm=mix(" + 
-            "Z.xxy," + 
-            "normalize((texture(uNMTex,vTUv).rgb*2.-1.)*Z.yzy)," +
-            "uUNMT" + 
-          ")," +
+          "nm=uUT.z>0." + 
+            "?normalize((texture(uNMTx,vTUv).rgb*2.-1.)*Z.yzy)" +
+            ":Z.xxy," +
           "sftl=normalize(sftla)," +
           "sftv=normalize(vec3(" +
-            "flg[3]>0" +
-              "?uTS*.5" +
-              ":tUv," +
+            "flg[3]>0?uTS*.5:tUv," +
             "HEIGHT" +
           ")-sf)," +
           "hlf=normalize(sftl+sftv);" +
@@ -359,7 +379,7 @@ export class LightRenderer extends BatchRenderer {
         
         "float " + 
           "rgh=1.," +
-          "shn=mix(tc.b,texture(uRGTex,vTUv).r,uURGT);" +
+          "shn=uUT.y>0.?texture(uRGTx,vTUv).r:tc.b;" +
 
         "spc=pow(max(dot(nm,hlf),0.),32.)*shn*vExt[1].y;" +
       "}" +
@@ -373,33 +393,30 @@ export class LightRenderer extends BatchRenderer {
           "opdm=opd/uTS;" +
 
         "float " +
-          "shl=vShl," + // shadow length
           "st=max(1.,ceil(fltDst/vExt[1].x))," + // loop step length
-          "hst=(ph-vHS)/fltDst," + // vertical step
-          "opdL=length(opd)," + // horizontal step
           "i," +
           "pc," +
-          "l=fltDst-st," +
-          "m=max(st,l-shl);" +
+          "l=min(4096.,fltDst-st)," +
+          "m=max(st,l-vShl);" +
         
         "if(flg[2]>0)" + 
           loop("if(tc.g>=vHS)discard;") +
         "else{" +
           "float " +
-            "rnd=vExt[0].w*rand(vTUv);" +
+            "opdL=length(opd)," + // horizontal step
+            "hst=(ph-vHS)/fltDst," + // vertical step
+            "rnd=vExt[0].w*rand(vTUv*100.);" +
             
           loop(
             "st+=rnd;" +
             "pc=vHS+i*hst;" +
-            "if(tc.r<=pc&&tc.g>=pc)shdw*=(fltDst-i*opdL)/shl;"
+            "shdw*=mix(1.,(fltDst-i*opdL)/vShl,step(tc.r,pc)*step(pc,tc.g));"
           ) +
         "}" +
       "}" +
-      
-      "if(shdw<=0.)discard;" +
 
       "vec3 " +
-        "stCl=mix(Z.yyy,texture(uSTTex,vTUv).rgb,vec3(uUSTT));" +
+        "stCl=uUT.x>0.?texture(uSTTx,vTUv).rgb:Z.yyy;" +
         
       "oCl=vec4((stCl+spc)*vCl.rgb*vol*shdw,1);" +
     "}";

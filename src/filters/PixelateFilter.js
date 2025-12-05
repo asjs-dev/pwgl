@@ -1,6 +1,6 @@
 import { BaseFilter } from "./BaseFilter";
 
-const _GLSL = "oCl=texture(uTex,floor(vTUv/vol)*vol);";
+const _GLSL = "oCl=texture(uTx,floor(vTUv/vol)*vol);";
 
 /**
  * Pixelate filter

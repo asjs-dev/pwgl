@@ -8,11 +8,11 @@ import { BaseAudio } from "./BaseAudio";
 export class AudioMixer extends BaseAudio {
   /**
    * Creates an instance of AudioMixer.
-   * Initializes the audio context, creates and connects audio nodes, and sets options.
+   * Initializes the audio context, creates and connects audio nodes, and sets config.
    *
-   * @param {Object} [options={}] - Configuration options for the audio mixer.
+   * @param {Object} [config={}] - Configuration for the audio mixer.
    */
-  constructor(options = {}) {
+  constructor(config = {}) {
     super();
 
     const context = new (window.AudioContext || window.webkitAudioContext)();
@@ -21,7 +21,7 @@ export class AudioMixer extends BaseAudio {
     this._items = [];
     this.$createNodes(context);
     this.$connectNodes(context.destination);
-    this.$setOptions(options);
+    this.$setConfig(config);
   }
 
   /**

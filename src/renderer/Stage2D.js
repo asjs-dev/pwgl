@@ -83,19 +83,19 @@ export class Stage2D extends BatchRenderer {
   /**
    * Creates an instance of Stage2D.
    * @constructor
-   * @param {Stage2DConfig} options
+   * @param {Stage2DConfig} config
    */
-  constructor(options = {}) {
-    options.config = Utils.initRendererConfig(options.config);
-    options.useTint = options.useTint ?? true;
+  constructor(config = {}) {
+    config = Utils.initRendererConfig(config);
+    config.useTint = config.useTint ?? true;
 
     // prettier-ignore
-    options.config.locations = [
+    config.locations = [
       "aDt",
       "aDst"
     ];
 
-    super(options);
+    super(config);
 
     const maxRenderCount = this.$MAX_RENDER_COUNT;
 
@@ -118,7 +118,7 @@ export class Stage2D extends BatchRenderer {
 
     this._onMouseEventHandler = this._onMouseEventHandler.bind(this);
     const canvas = this.context.canvas,
-      lightRenderer = options.lightRenderer;
+      lightRenderer = config.lightRenderer;
 
     _INTERACTION_EVENT_TYPES.forEach((type) =>
       canvas.addEventListener(type, this._onMouseEventHandler)
@@ -290,7 +290,7 @@ export class Stage2D extends BatchRenderer {
   _batchDraw() {
     if (this._batchItems) {
       this.$uploadBuffers();
-      this.$gl.uniform1iv(this.$locations.uTex, this.context.textureIds);
+      this.$gl.uniform1iv(this.$locations.uTx, this.context.textureIds);
       this.$drawInstanced(this._batchItems);
       this._batchItems = 0;
     }
@@ -323,10 +323,9 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    const gl = this.$gl,
-      enableBuffers = this.$enableBuffers;
-    this._dataBuffer.upload(gl, enableBuffers);
-    this._distortionBuffer.upload(gl, enableBuffers);
+    const gl = this.$gl;
+    this._dataBuffer.upload(gl);
+    this._distortionBuffer.upload(gl);
     super.$uploadBuffers();
   }
 
@@ -347,14 +346,14 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $createVertexShader() {
-    const useRepeatTextures = this._options.useRepeatTextures,
+    const useRepeatTextures = this._config.useRepeatTextures,
       maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
 
     return "" +
     Utils.GLSL.DEFINE.Z +
 
     "in vec2 " +
-      "aPos;" +
+      "aPs;" +
     "in mat4x2 " +
       "aDst;" +
     "in mat3x4 " +
@@ -365,7 +364,7 @@ export class Stage2D extends BatchRenderer {
     "uniform float " +
       "uFlpY;" +
     "uniform sampler2D " +
-      "uTex[" + maxTextureImageUnits + "];" +
+      "uTx[" + maxTextureImageUnits + "];" +
 
     "out float " +
       "vACl," +
@@ -384,7 +383,7 @@ export class Stage2D extends BatchRenderer {
     "vec2 gtTexS(float i){" +
       Array(maxTextureImageUnits).fill().map((v, i) => 
       "if(i<" + (i + 1) + ".)" + 
-        "return .5/vec2(textureSize(uTex[" + i + "],0));").join("") +
+        "return .5/vec2(textureSize(uTx[" + i + "],0));").join("") +
       "return Z.yy;" +
     "}" +
 
@@ -405,19 +404,25 @@ export class Stage2D extends BatchRenderer {
     "}" +
 
     "void main(void){" +
-      "mat3 " +
-        "mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1)," +
-        "tMt=mat3(aMt[1].zw,0,aMt[2].xy,0,aMt[2].zw,1);" +
-
-      "vec3 " +
-        "tPos=vec3(" +
-          "clcQd(aPos)," +
-          "1" +
-        ");" +
-      "gl_Position=vec4(mt*tPos,1);" +
+      "vec2 " +
+        "tPs=clcQd(aPs);" +
+      "gl_Position=vec4(" + 
+        "mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1)*" + 
+        "vec3(tPs,1.)," + 
+        "1" + 
+      ");" +
       "gl_Position.y*=uFlpY;" +
-      "float dt=aDt[1].w;" +
-      "vTUv=(tMt*((dt*vec3(aPos,1))+((1.-dt)*tPos))).xy;" + 
+      "vTUv=(" + 
+        "mat3(aMt[1].zw,0,aMt[2].xy,0,aMt[2].zw,1)*" + 
+        "vec3(" +
+          "mix(" + 
+            "tPs," + 
+            "aPs," + 
+            "aDt[1].w" + 
+          ")," +
+          "1." +
+        ")" + 
+      ").xy;" + 
 
       "vTCrop=aMt[3];" +
 
@@ -441,10 +446,10 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    const options = this._options,
+    const config = this._config,
      maxTextureImageUnits = Utils.INFO.maxTextureImageUnits,
-     useRepeatTextures = options.useRepeatTextures,
-     useTint = options.useTint;
+     useRepeatTextures = config.useRepeatTextures,
+     useTint = config.useTint;
 
     const getSimpleTexColor = (modCoordName) =>
       "gtTexCl(vTId,vTCrop," + modCoordName + ")";
@@ -468,7 +473,7 @@ export class Stage2D extends BatchRenderer {
         : ";") +
 
     "uniform sampler2D " +
-      "uTex[" + maxTextureImageUnits + "];" +
+      "uTx[" + maxTextureImageUnits + "];" +
 
     "out vec4 " +
       "oCl;" +
@@ -476,13 +481,15 @@ export class Stage2D extends BatchRenderer {
     "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
       Array(maxTextureImageUnits).fill().map((v, i) => 
       "if(i<" + (i + 1) + ".)" + 
-        "return texture(uTex[" + i + "],clamp(s.xy+s.zw*m,s.xy+vTsh,s.xy+s.zw-vTsh));").join("") +
+        "return texture(uTx[" + i + "],clamp(s.xy+s.zw*m,s.xy+vTsh,s.xy+s.zw-vTsh));").join("") +
       "return Z.yyyy;" +
     "}" +
 
     "float cosine(float a,float b,float v){" +
       "v=abs(v);" +
-      "v=mix(2.*v*v,1.-pow(-2.*v+2.,2.)/2.,step(.5,v));" +
+      "float " + 
+        "t=-2.*v+2.;" +
+      "v=mix(2.*v*v,1.-t*t*.5,step(.5,v));" +
       "return a*(1.-v)+b*v;" +
     "}" +
 

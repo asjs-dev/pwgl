@@ -17,18 +17,18 @@ export class BatchRenderer extends BaseRenderer {
   /**
    * Creates an instance of BatchRenderer.
    * @constructor
-   * @param {RendererConfig} options
+   * @param {RendererConfig} config
    */
-  constructor(options) {
+  constructor(config) {
     // prettier-ignore
-    options.config.locations = [
-      ...options.config.locations,
+    config.locations = [
+      ...config.locations,
       "aMt"
     ];
 
-    super(options);
+    super(config);
 
-    this.$MAX_RENDER_COUNT = options.maxRenderCount || 10000;
+    this.$MAX_RENDER_COUNT = config.maxRenderCount || 10000;
 
     this.$matrixBuffer = new Buffer("aMt", this.$MAX_RENDER_COUNT, 4, 4);
   }
@@ -37,7 +37,7 @@ export class BatchRenderer extends BaseRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    this.$matrixBuffer.upload(this.$gl, this.$enableBuffers);
+    this.$matrixBuffer.upload(this.$gl);
     super.$uploadBuffers();
   }
 

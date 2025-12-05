@@ -55,11 +55,10 @@ export class Buffer {
   /**
    * Upload buffer
    * @param {WebGLContext} gl
-   * @param {boolean} enable
    */
-  upload(gl, enable) {
+  upload(gl) {
     this.bind(gl);
-    enable && this._enable(gl);
+    this._enable(gl);
     gl.bufferData(this._target, this.data, this._type);
   }
 

@@ -89,7 +89,7 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
     "float " +
       "rd=rand(vTUv)," +
       "cnt=1.," +
-      "l=4.+ceil(4.*rd)," +
+      "l=min(256.,4.+ceil(4.*rd))," +
       "t=RADIANS_360/l;" +
 
     "vec2 " +
@@ -104,15 +104,18 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
     "ivec2 " +
       "mn=ivec2(Z.xx)," + 
       "mx=ivec2(vTs)-1;" +
+
+    "mat2 " + 
+      "rot=mat2(r.x,-r.y,r.y,r.x);" +
+      
     beforeLoop +
-    "for(float i=0.;i<4096.;i++){" +
-      "if(i>=l)break;" +
+    "for(float i=0.;i<l;i++){" +
       "ps=wh*round(dr)*(.5+rand(vTUv+i)*.5);" +
-      "clg=texelFetch(uTex,clamp(" + 
+      "clg=texelFetch(uTx,clamp(" + 
         "f+ivec2(ps)," + 
         "mn,mx" +
       "),0);" +
-      "dr*=mat2(r.x,-r.y,r.y,r.x);" +
+      "dr*=rot;" +
       inLoop +
     "}" +
     "cl/=cnt;" +

@@ -5,15 +5,15 @@ import { BaseFilter } from "./BaseFilter";
 const _GLSL = "" +
   "kr*=v;" +
   "oCl.rgb=(oCl.rgb*(1.-vl[1]))+(" +
-    "texelFetch(uTex,f-ivec2(1),0)*kr[0].x+" +
-    "texelFetch(uTex,f+ivec2(0,-1),0)*kr[0].y+" +
-    "texelFetch(uTex,f+ivec2(1,-1),0)*kr[0].z+" +
-    "texelFetch(uTex,f+ivec2(-1,0),0)*kr[0].w+" +
+    "texelFetch(uTx,f-ivec2(1),0)*kr[0].x+" +
+    "texelFetch(uTx,f+ivec2(0,-1),0)*kr[0].y+" +
+    "texelFetch(uTx,f+ivec2(1,-1),0)*kr[0].z+" +
+    "texelFetch(uTx,f+ivec2(-1,0),0)*kr[0].w+" +
     "oCl*kr[1].x+" +
-    "texelFetch(uTex,f+ivec2(1,0),0)*kr[1].y+" +
-    "texelFetch(uTex,f+ivec2(-1,1),0)*kr[1].z+" +
-    "texelFetch(uTex,f+ivec2(0,1),0)*kr[1].w+" +
-    "texelFetch(uTex,f+ivec2(1),0)*kr[2].x" +
+    "texelFetch(uTx,f+ivec2(1,0),0)*kr[1].y+" +
+    "texelFetch(uTx,f+ivec2(-1,1),0)*kr[1].z+" +
+    "texelFetch(uTx,f+ivec2(0,1),0)*kr[1].w+" +
+    "texelFetch(uTx,f+ivec2(1),0)*kr[2].x" +
   ").rgb*vl[1];";
 
 /**

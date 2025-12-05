@@ -24,27 +24,27 @@ export class FilterRenderer extends BaseRenderer {
   /**
    * Creates an instance of FilterRenderer.
    * @constructor
-   * @param {FilterRendererConfig} options
+   * @param {FilterRendererConfig} config
    */
-  constructor(options = {}) {
-    options.config = Utils.initRendererConfig(options.config);
+  constructor(config = {}) {
+    config = Utils.initRendererConfig(config);
 
     // prettier-ignore
-    options.config.locations = [
-      "uFTex",
+    config.locations = [
+      "uFTx",
       "uFtrT",
       "uFtrV",
       "uFtrK",
       "uFRt",
     ];
 
-    super(options);
+    super(config);
 
     this._attachFramebufferAndClearFv = this.$attachFramebufferAndClear;
     this.$attachFramebufferAndClear = noop;
 
-    this.filters = options.filters || [];
-    this.sourceTexture = options.sourceTexture;
+    this.filters = config.filters || [];
+    this.sourceTexture = config.sourceTexture;
 
     this._framebuffers = [new Framebuffer(), new Framebuffer()];
   }
@@ -89,7 +89,7 @@ export class FilterRenderer extends BaseRenderer {
 
     gl.uniform1f(locations.uFRt, renderTime % 864e5);
 
-    this.$useTextureAt(this.sourceTexture, locations.uTex, 0);
+    this.$useTextureAt(this.sourceTexture, locations.uTx, 0);
 
     while (++i < l) {
       const filter = filters[i],
@@ -102,7 +102,7 @@ export class FilterRenderer extends BaseRenderer {
 
       let filterFramebuffer;
 
-      filterTexture && this.$useTextureAt(filterTexture, locations.uFTex, 1);
+      filterTexture && this.$useTextureAt(filterTexture, locations.uFTx, 1);
 
       if (isLast)
         framebuffer
@@ -139,12 +139,12 @@ export class FilterRenderer extends BaseRenderer {
   $createVertexShader() {
     return "" +
     "in vec2 " +
-      "aPos;" +
+      "aPs;" +
 
     "uniform float " +
       "uFlpY;" +
     "uniform sampler2D " +
-      "uTex;" +
+      "uTx;" +
 
     "out vec2 " +
       "vTs," +
@@ -152,11 +152,11 @@ export class FilterRenderer extends BaseRenderer {
       "vTUv;" +
 
     "void main(void){" +
-      "gl_Position=vec4(aPos*2.-1.,1,1);" +
+      "gl_Position=vec4(aPs*2.-1.,1,1);" +
       "vUv=gl_Position.xy;" +
       "gl_Position.y*=uFlpY;" +
-      "vTUv=vec2(aPos.x,1.-aPos.y);" +
-      "vTs=vec2(textureSize(uTex,0));" +
+      "vTUv=vec2(aPs.x,1.-aPs.y);" +
+      "vTs=vec2(textureSize(uTx,0));" +
     "}";
   }
 
@@ -175,9 +175,6 @@ export class FilterRenderer extends BaseRenderer {
       "vUv," +
       "vTUv;" +
 
-    "uniform sampler2D " +
-      "uTex," +
-      "uFTex;" +
     "uniform int " +
       "uFtrT;" +
     "uniform float " +
@@ -185,6 +182,9 @@ export class FilterRenderer extends BaseRenderer {
       "uFtrV[9];" +
     "uniform mat4 " +
       "uFtrK;" +
+    "uniform sampler2D " +
+      "uTx," +
+      "uFTx;" +
 
     "out vec4 " +
       "oCl;" +
@@ -196,7 +196,7 @@ export class FilterRenderer extends BaseRenderer {
     "}" +
 
     "void main(void){" +
-      "oCl=texture(uTex,vTUv);" +
+      "oCl=texture(uTx,vTUv);" +
 
       "float " +
         "vl[]=uFtrV," +

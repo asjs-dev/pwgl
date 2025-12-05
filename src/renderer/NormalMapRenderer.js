@@ -20,14 +20,14 @@ export class NormalMapRenderer extends BaseRenderer {
   /**
    * Creates an instance of NormalMapRenderer.
    * @constructor
-   * @param {NormalMapRendererConfig} options
+   * @param {NormalMapRendererConfig} config
    */
-  constructor(options = {}) {
-    options.config = Utils.initRendererConfig(options.config);
+  constructor(config = {}) {
+    config = Utils.initRendererConfig(config);
 
-    super(options);
+    super(config);
 
-    this.heightMap = options.heightMap;
+    this.heightMap = config.heightMap;
   }
 
   /**
@@ -35,8 +35,8 @@ export class NormalMapRenderer extends BaseRenderer {
    */
   $render() {
     this.context.setBlendMode(BlendMode.NORMAL);
-
-    this.$useTextureAt(this.heightMap, this.$locations.uTex, 0);
+    
+    this.$useTextureAt(this.heightMap, this.$locations.uTx, 0);
 
     this.$uploadBuffers();
 
@@ -51,23 +51,23 @@ export class NormalMapRenderer extends BaseRenderer {
   $createVertexShader() {
     return "" +
     "in vec2 " +
-      "aPos;" +
+      "aPs;" +
 
     "uniform float " +
       "uFlpY;" +
     "uniform sampler2D " +
-      "uTex;" +
+      "uTx;" +
 
     "out vec2 " +
       "vTs," +
       "vTUv;" +
 
     "void main(void){" +
-      "gl_Position=vec4(aPos*2.-1.,1,1);" +
+      "gl_Position=vec4(aPs*2.-1.,1,1);" +
       "vec2 " + 
-        "its=vec2(textureSize(uTex,0));" +
+        "its=vec2(textureSize(uTx,0));" +
       "vTs=1./its;" +
-      "vTUv=vec2(aPos.x,1.-aPos.y)*its;" +
+      "vTUv=vec2(aPs.x,1.-aPs.y)*its;" +
       "gl_Position.y*=uFlpY;" +
     "}";
   }
@@ -87,7 +87,7 @@ export class NormalMapRenderer extends BaseRenderer {
       "vTUv;" +
 
     "uniform sampler2D " +
-      "uTex;" +
+      "uTx;" +
 
     "out vec4 " +
       "oCl;" +
@@ -99,9 +99,9 @@ export class NormalMapRenderer extends BaseRenderer {
         "p2=p0+Z.yy;" +
 
       "vec3 " +
-        "A=vec3(p0,texture(uTex,p0*vTs).g)," +
-        "B=vec3(p1,texture(uTex,p1*vTs).g)," +
-        "C=vec3(p2,texture(uTex,p2*vTs).g)," +
+        "A=vec3(p0,texture(uTx,p0*vTs).g)," +
+        "B=vec3(p1,texture(uTx,p1*vTs).g)," +
+        "C=vec3(p2,texture(uTx,p2*vTs).g)," +
         "nm=normalize(cross(B-A,C-A))*HEIGHT*Z.yzy;" +
 
       "oCl=vec4(nm*.5+.5,1);" +
