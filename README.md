@@ -70,9 +70,7 @@ class Application {
 
     // create stage 2d renderer
     this._stage2DRenderer = new PWGL.Stage2D({
-      config: {
-        context: this._context,
-      },
+      context: this._context,
     });
 
     this._stageContainer.appendChild(this._context.canvas);
@@ -163,16 +161,12 @@ class Application {
 
     // create stage 2d renderer
     this._stage2DRenderer = new PWGL.Stage2D({
-      config: {
-        context: this._context,
-      },
+      context: this._context,
     });
 
     // create filter renderer and set the framebuffer as texture source
     this._filterRenderer = new PWGL.FilterRenderer({
-      config: {
-        context: this._context,
-      },
+      context: this._context,
       sourceTexture: this._stage2DRendererFramebuffer,
       filters: [
         new PWGL.PixelateFilter(5),
