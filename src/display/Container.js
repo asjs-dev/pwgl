@@ -1,4 +1,5 @@
-import { removeFromArray, noopReturnsOne } from "../utils/helpers";
+import { noopReturnsOne } from "../../extensions/utils/noopReturnsOne";
+import { removeFromArray } from "../../extensions/utils/removeFromArray";
 import { Item } from "./Item";
 
 /**

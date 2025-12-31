@@ -4,6 +4,8 @@
  * @property {number} blur
  */
 
+import { noop } from "../utils/noop";
+
 /**
  * SmoothLight
  * @extends {AGL.Image}
@@ -79,7 +81,7 @@ export class SmoothLight extends AGL.Image {
    * @ignore
    */
   _resize() {
-    this._resizeFunc = () => {};
+    this._resizeFunc = noop;
 
     this.lightRenderer.setSize(this._width, this._height);
     this.filterRenderer.setSize(this._width, this._height);

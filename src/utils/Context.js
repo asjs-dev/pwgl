@@ -1,4 +1,6 @@
-import { noopReturnsOne, removeFromArray } from "./helpers";
+import { noop } from "../../extensions/utils/noop";
+import { noopReturnsOne } from "../../extensions/utils/noopReturnsOne";
+import { removeFromArray } from "../../extensions/utils/removeFromArray";
 import { Utils, Const } from "./Utils";
 import { TextureInfo } from "../data/texture/TextureInfo";
 import "../data/BlendMode";

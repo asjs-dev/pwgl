@@ -1,3 +1,4 @@
+import { arraySet } from "../../extensions/utils/arraySet";
 import { BatchRenderer } from "./BatchRenderer";
 import { BlendMode } from "../data/BlendMode";
 import { Light } from "../display/Light";

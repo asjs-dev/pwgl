@@ -1,4 +1,4 @@
-import { noop } from "../utils/helpers";
+import { noop } from "../../extensions/utils/noop";
 import { ItemTransformProps } from "../data/props/ItemTransformProps";
 import { ColorProps } from "../data/props/ColorProps";
 import { Matrix3Utilities } from "../geom/Matrix3Utilities";

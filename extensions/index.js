@@ -23,6 +23,10 @@ import { nthCall } from "./utils/nthCall";
 import { random } from "./utils/rand";
 import { mix } from "./utils/mix";
 import { generateDungeon } from "./utils/dungeon";
+import { noop } from "./utils/noop";
+import { noopReturnsOne } from "./utils/noopReturnsOne";
+import { arraySet } from "./utils/arraySet";
+import { removeFromArray } from "./utils/removeFromArray";
 
 window.PWGLExtensions = window.AGLExtensions = {
   version: "{{appVersion}}",
@@ -42,7 +46,7 @@ window.PWGLExtensions = window.AGLExtensions = {
   crossFadeAudioVolumes,
 
   SmoothLight,
-  
+
   AnimatedWater,
 
   areObjectsEqual,
@@ -59,6 +63,10 @@ window.PWGLExtensions = window.AGLExtensions = {
   nthCall,
   random,
   generateDungeon,
+  noop,
+  noopReturnsOne,
+  arraySet,
+  removeFromArray,
 };
 
 console.log(

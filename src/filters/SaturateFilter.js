@@ -1,4 +1,3 @@
-import { arraySet } from "../utils/helpers";
 import { BaseKernelFilter } from "./BaseKernelFilter";
 
 // prettier-ignore

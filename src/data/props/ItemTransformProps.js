@@ -1,4 +1,4 @@
-import { noop } from "../../utils/helpers";
+import { noop } from "../../../extensions/utils/noop";
 import { BaseTransformProps } from "./BaseTransformProps";
 
 /**

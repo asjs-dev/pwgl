@@ -1,4 +1,4 @@
-import { arraySet } from "../utils/helpers";
+import { arraySet } from "../../extensions/utils/arraySet";
 import { BaseFilter } from "./BaseFilter";
 
 // prettier-ignore

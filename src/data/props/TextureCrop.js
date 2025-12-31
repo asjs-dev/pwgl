@@ -1,3 +1,4 @@
+import { noop } from "../../../extensions/utils/noop";
 import "../../geom/RectangleType";
 
 /**

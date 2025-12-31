@@ -1,3 +1,5 @@
+import { noop } from "../../extensions/utils/noop";
+import { arraySet } from "../../extensions/utils/arraySet";
 import { BatchRenderer } from "./BatchRenderer";
 import { LightRenderer } from "./LightRenderer";
 import { Item } from "../display/Item";
@@ -5,7 +7,6 @@ import { Image } from "../display/Image";
 import { Light } from "../display/Light";
 import { Container } from "../display/Container";
 import { StageContainer } from "../display/StageContainer";
-import { arraySet, noop } from "../utils/helpers";
 import { Buffer } from "../utils/Buffer";
 import { Utils } from "../utils/Utils";
 import "../geom/PointType";

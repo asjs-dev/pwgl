@@ -1,5 +1,5 @@
+import { noop } from "../../extensions/utils/noop";
 import { TextureInfo } from "../data/texture/TextureInfo";
-import { noop } from "../utils/helpers";
 import { Image } from "./Image";
 import "../geom/RectangleType";
 

@@ -1,7 +1,7 @@
+import { noop } from "../../extensions/utils/noop";
 import { BaseRenderer } from "./BaseRenderer";
 import { Framebuffer } from "../data/texture/Framebuffer";
 import { BlendMode } from "../data/BlendMode";
-import { noop } from "../utils/helpers";
 import { Utils } from "../utils/Utils";
 
 /**

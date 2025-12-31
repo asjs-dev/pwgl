@@ -1,6 +1,6 @@
+import { noop } from "../../extensions/utils/noop";
 import { ColorProps } from "../data/props/ColorProps";
 import { Framebuffer } from "../data/texture/Framebuffer";
-import { noop } from "../utils/helpers";
 import { Buffer } from "../utils/Buffer";
 import { Utils, Const } from "../utils/Utils";
 
