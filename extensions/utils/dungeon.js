@@ -3,7 +3,8 @@ import { getRandom } from "./getRandom";
 import { gridMapping } from "./gridMapping";
 
 export const generateDungeon = (iterations, sampleRooms) => {
-  const directions = [
+  const { vectorToCoord, coordToVector } = gridMapping,
+    directions = [
       { x: 1, y: 0 },
       { x: 1, y: 1 },
       { x: 0, y: 1 },
@@ -84,20 +85,20 @@ export const generateDungeon = (iterations, sampleRooms) => {
     const absX = x - minX,
       absY = y - minY;
     roomData.forEach((value, index) => {
-      const { x: px, y: py } = gridMapping.vectorToCoord(index, w);
-      data[gridMapping.coordToVector(absX + px, absY + py, width)] = value;
+      const { x: px, y: py } = vectorToCoord(index, w);
+      data[coordToVector(absX + px, absY + py, width)] = value;
     });
   });
 
   for (let i = 0, len = data.length - width; i < len; i++) {
-    const { x: px, y: py } = gridMapping.vectorToCoord(i, width);
+    const { x: px, y: py } = vectorToCoord(i, width);
 
     if (px < width - 1 && data[i] > 0) {
-      const bottomIdx = gridMapping.coordToVector(px, py + 1, width),
-        rightIdx = gridMapping.coordToVector(px + 1, py, width),
-        bottomRightIdx = gridMapping.coordToVector(px + 1, py + 1, width),
-        leftIdx = gridMapping.coordToVector(px - 1, py, width),
-        bottomLeftIdx = gridMapping.coordToVector(px - 1, py + 1, width);
+      const bottomIdx = coordToVector(px, py + 1, width),
+        rightIdx = coordToVector(px + 1, py, width),
+        bottomRightIdx = coordToVector(px + 1, py + 1, width),
+        leftIdx = coordToVector(px - 1, py, width),
+        bottomLeftIdx = coordToVector(px - 1, py + 1, width);
       if (
         data[bottomIdx] === data[rightIdx] &&
         data[i] === data[bottomRightIdx] &&
