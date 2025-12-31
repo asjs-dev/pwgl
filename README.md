@@ -96,9 +96,6 @@ class Application {
 
     window.addEventListener("beforeunload", this._onBeforeUnloadBound);
 
-    // set fps meter
-    PWGLExtensions.FPS.init();
-
     // start render cycle
     this._requestAnimationFrameId = requestAnimationFrame(this._renderBound);
   }
@@ -197,9 +194,6 @@ class Application {
     this._requestAnimationFrameId;
 
     window.addEventListener("beforeunload", this._onBeforeUnloadBound);
-
-    // set fps meter
-    PWGLExtensions.FPS.init();
 
     // start render cycle
     this._requestAnimationFrameId = requestAnimationFrame(this._renderBound);

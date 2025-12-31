@@ -27,6 +27,8 @@ import { noop } from "./utils/noop";
 import { noopReturnsOne } from "./utils/noopReturnsOne";
 import { arraySet } from "./utils/arraySet";
 import { removeFromArray } from "./utils/removeFromArray";
+import { gridMapping } from "./utils/gridMapping";
+import { getRandom } from "./utils/getRandom";
 
 window.PWGLExtensions = window.AGLExtensions = {
   version: "{{appVersion}}",
@@ -67,6 +69,8 @@ window.PWGLExtensions = window.AGLExtensions = {
   noopReturnsOne,
   arraySet,
   removeFromArray,
+  gridMapping,
+  getRandom,
 };
 
 console.log(
