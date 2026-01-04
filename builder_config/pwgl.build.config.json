@@ -10,6 +10,11 @@
       "{{date}}": "date"
     },
     "replaceTexts": {
+      "removeFromArray": "$rfa",
+      "arraySet": "$as",
+      "noop": "$nf",
+      "noopReturnsWith": "$nfrw",
+
       "BaseTransformProps": "DBTP",
       "ColorProps": "DCP",
       "DistortionProps": "DDP",

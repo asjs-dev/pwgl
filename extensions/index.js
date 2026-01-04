@@ -24,7 +24,7 @@ import { random } from "./utils/rand";
 import { mix } from "./utils/mix";
 import { generateDungeon } from "./utils/dungeon";
 import { noop } from "./utils/noop";
-import { noopReturnsOne } from "./utils/noopReturnsOne";
+import { noopReturnsWith } from "./utils/noopReturnsWith";
 import { arraySet } from "./utils/arraySet";
 import { removeFromArray } from "./utils/removeFromArray";
 import { gridMapping } from "./utils/gridMapping";
@@ -66,7 +66,7 @@ window.PWGLExtensions = window.AGLExtensions = {
   random,
   generateDungeon,
   noop,
-  noopReturnsOne,
+  noopReturnsWith,
   arraySet,
   removeFromArray,
   gridMapping,

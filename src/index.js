@@ -73,7 +73,6 @@ window.PWGL = window.AGL = {
   LightRenderer,
   Stage2D,
 
-
   BaseFilter,
   BaseKernelFilter,
   BaseSamplingFilter,

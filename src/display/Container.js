@@ -1,4 +1,4 @@
-import { noopReturnsOne } from "../../extensions/utils/noopReturnsOne";
+import { noopReturnsWith } from "../../extensions/utils/noopReturnsWith";
 import { removeFromArray } from "../../extensions/utils/removeFromArray";
 import { Item } from "./Item";
 
@@ -36,7 +36,7 @@ export class Container extends Item {
       this._getParentPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
     } else
       this._getParentPremultipliedUseTint = this._getParentPremultipliedAlpha =
-        noopReturnsOne;
+        noopReturnsWith(1);
   }
 
   /**

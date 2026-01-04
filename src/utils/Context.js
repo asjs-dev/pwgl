@@ -1,5 +1,5 @@
 import { noop } from "../../extensions/utils/noop";
-import { noopReturnsOne } from "../../extensions/utils/noopReturnsOne";
+import { noopReturnsWith } from "../../extensions/utils/noopReturnsWith";
 import { removeFromArray } from "../../extensions/utils/removeFromArray";
 import { Utils, Const } from "./Utils";
 import { TextureInfo } from "../data/texture/TextureInfo";
@@ -22,7 +22,7 @@ export class Context {
   constructor(config = {}) {
     this.contextId = 0;
 
-    this.isLost = noopReturnsOne;
+    this.isLost = noopReturnsWith(1);
 
     this._config = Utils.initContextConfig(config);
 
@@ -213,7 +213,7 @@ export class Context {
       this._loseContext = loseContextExt.loseContext.bind(loseContextExt);
     } else this._restoreContext = this._loseContext = noop;
 
-    this.isLost = gl.isContextLost ? gl.isContextLost.bind(gl) : noopReturnsOne;
+    this.isLost = gl.isContextLost ? gl.isContextLost.bind(gl) : noopReturnsWith(1);
 
     gl.pixelStorei(Const.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.enable(Const.BLEND);
