@@ -1,10 +1,10 @@
+import { noop } from "../utils/noop";
+
 /**
  * @typedef {Object} SmoothLightRendererConfig
  * @extends {LightRendererConfig}
  * @property {number} blur
  */
-
-import { noop } from "../utils/noop";
 
 /**
  * SmoothLight

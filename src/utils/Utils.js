@@ -90,7 +90,7 @@ export const Utils = {
     },
     RANDOM: 
       "float rand(vec2 p,float s){" +
-        "p=mod(p,vec2(1e4))+100.;" +
+        "p=mod(p*100.,vec2(1e4))+100.;" +
         "return fract(" +
           "dot(" +
             "p," +

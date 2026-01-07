@@ -406,7 +406,7 @@ export class LightRenderer extends BatchRenderer {
           "float " +
             "opdL=length(opd)," + // horizontal step
             "hst=(ph-vHS)/fltDst," + // vertical step
-            "rnd=vExt[0].w*rand(vTUv*100.);" +
+            "rnd=vExt[0].w*rand(vTUv);" +
             
           loop(
             "st+=rnd;" +

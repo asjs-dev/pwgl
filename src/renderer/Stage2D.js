@@ -501,7 +501,7 @@ export class Stage2D extends BatchRenderer {
             "uv=vTUv;" +
 
           "float " +
-            "rnd=rand(floor(uv+st))," +
+            "rnd=rand(floor(uv+st)/100.)," +
             "rndDg=rnd*RADIANS_360*vRR.x;" +
 
           "if(rndDg>0.){" +
@@ -515,7 +515,7 @@ export class Stage2D extends BatchRenderer {
 
         "float gtRClBUv(vec2 st,vec2 uv){" +
           "float " +
-            "rnd=rand(floor(vTUv+st));" +
+            "rnd=rand(floor(vTUv+st)/100.);" +
           "return (1.-(vRR.w*rnd-vRR.w*.5)*vRR.y)*" +
             "cosine(0.,1.,1.-st.x-uv.x)*cosine(0.,1.,1.-st.y-uv.y);" +
         "}"
