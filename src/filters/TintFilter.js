@@ -1,7 +1,5 @@
 import { BaseFilter } from "./BaseFilter";
 
-const _GLSL = "oCl.rgb*=rgb*v;";
-
 /**
  * Tint filter
  * @extends {BaseFilter}
@@ -24,6 +22,6 @@ export class TintFilter extends BaseFilter {
   }
 
   get GLSL() {
-    return _GLSL;
+    return "oCl.rgb*=rgb*v;";
   }
 }

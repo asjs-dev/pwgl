@@ -49,12 +49,11 @@ export class BaseRenderer {
     this.context = config.context;
 
     // prettier-ignore
-    config.locations = [
-      ...config.locations,
+    Utils.setLocations(config, [
       "uFlpY",
       "aPs",
       "uTx"
-    ];
+    ]);
 
     this._elementArrayBuffer = new Buffer(
       "",

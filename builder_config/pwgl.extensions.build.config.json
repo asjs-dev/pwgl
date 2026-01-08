@@ -6,7 +6,7 @@
     "minify": true,
     "compress": true,
     "variables": {
-      "{{appVersion}}": "0.3.0"
+      "{{appVersion}}": "0.3.1"
     },
     "replaceTexts": {
       "BaseAudio": "ABA"

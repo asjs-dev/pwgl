@@ -43,14 +43,14 @@ export class LightRenderer extends BatchRenderer {
     config = Utils.initRendererConfig(config);
 
     // prettier-ignore
-    config.locations = [
+    Utils.setLocations(config, [
       "aExt",
       "uNMTx",
       "uSTTx",
       "uRGTx",
       "uTS",
       "uUT"
-    ];
+    ]);
 
     super(config);
 

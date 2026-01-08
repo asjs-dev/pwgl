@@ -1,10 +1,5 @@
 import { BaseFilter } from "./BaseFilter";
 
-const _GLSL =
-  "vec2 pv=pow(abs(vUv*v),vec2(vl[1]));" +
-  "float cv=clamp((1.-length(pv))*vl[5],0.,1.);" +
-  "oCl.rgb=oCl.rgb*cv+rgb*(1.-cv);";
-
 /**
  * Vignette filter
  * @extends {BaseFilter}
@@ -31,7 +26,11 @@ export class VignetteFilter extends BaseFilter {
   }
 
   get GLSL() {
-    return _GLSL;
+    // prettier-ignore
+    return "" +
+      "vec2 pv=pow(abs(vUv*v),vec2(vl[1]));" +
+      "float cv=clamp((1.-length(pv))*vl[5],0.,1.);" +
+      "oCl.rgb=oCl.rgb*cv+rgb*(1.-cv);";
   }
 
   /**

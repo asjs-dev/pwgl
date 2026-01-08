@@ -143,6 +143,9 @@ export const Utils = {
       new Context(),
   }),
 
+  setLocations: (config, locations) =>
+    (config.locations = [...config.locations, ...locations]),
+
   /**
    * Call the callback function if the document.readyState interactive or complete
    * @param {function} callback Callback function

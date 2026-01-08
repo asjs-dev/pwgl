@@ -1,20 +1,18 @@
 import { BaseKernelFilter } from "./BaseKernelFilter";
 
-// prettier-ignore
-const _GLSL = "" +
-  "oCl.rgb=(oCl.rgb*(1.-vl[1]))+vec3(" +
-    "kr[0].r*oCl.r+kr[0].g*oCl.g+kr[0].b*oCl.b," +
-    "kr[1].r*oCl.r+kr[1].g*oCl.g+kr[1].b*oCl.b," +
-    "kr[2].r*oCl.r+kr[2].g*oCl.g+kr[2].b*oCl.b" +
-  ");";
-
 /**
  * Saturate filter
  * @extends {BaseKernelFilter}
  */
 export class SaturateFilter extends BaseKernelFilter {
   get GLSL() {
-    return _GLSL;
+    // prettier-ignore
+    return "" +
+      "oCl.rgb=(oCl.rgb*(1.-vl[1]))+vec3(" +
+        "kr[0].r*oCl.r+kr[0].g*oCl.g+kr[0].b*oCl.b," +
+        "kr[1].r*oCl.r+kr[1].g*oCl.g+kr[1].b*oCl.b," +
+        "kr[2].r*oCl.r+kr[2].g*oCl.g+kr[2].b*oCl.b" +
+      ");";
   }
 
   /**

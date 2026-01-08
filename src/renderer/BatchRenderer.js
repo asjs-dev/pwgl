@@ -21,10 +21,9 @@ export class BatchRenderer extends BaseRenderer {
    */
   constructor(config) {
     // prettier-ignore
-    config.locations = [
-      ...config.locations,
+    Utils.setLocations(config, [
       "aMt"
-    ];
+    ]);
 
     super(config);
 

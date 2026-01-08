@@ -30,12 +30,12 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     config = Utils.initRendererConfig(config);
 
     // prettier-ignore
-    config.locations = [
+    Utils.setLocations(config, [
       "uSTTx",
       "uP",
       "uUSTT",
       "uOs",
-    ];
+    ]);
 
     super(config);
 

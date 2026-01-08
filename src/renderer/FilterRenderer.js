@@ -30,13 +30,13 @@ export class FilterRenderer extends BaseRenderer {
     config = Utils.initRendererConfig(config);
 
     // prettier-ignore
-    config.locations = [
+    Utils.setLocations(config, [
       "uFTx",
       "uFtrT",
       "uFtrV",
       "uFtrK",
       "uFRt",
-    ];
+    ]);
 
     super(config);
 

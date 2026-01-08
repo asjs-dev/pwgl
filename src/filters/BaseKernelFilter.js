@@ -1,21 +1,6 @@
 import { arraySet } from "../../extensions/utils/arraySet";
 import { BaseFilter } from "./BaseFilter";
 
-// prettier-ignore
-const _GLSL = "" +
-  "kr*=v;" +
-  "oCl.rgb=(oCl.rgb*(1.-vl[1]))+(" +
-    "texelFetch(uTx,f-ivec2(1),0)*kr[0].x+" +
-    "texelFetch(uTx,f+ivec2(0,-1),0)*kr[0].y+" +
-    "texelFetch(uTx,f+ivec2(1,-1),0)*kr[0].z+" +
-    "texelFetch(uTx,f+ivec2(-1,0),0)*kr[0].w+" +
-    "oCl*kr[1].x+" +
-    "texelFetch(uTx,f+ivec2(1,0),0)*kr[1].y+" +
-    "texelFetch(uTx,f+ivec2(-1,1),0)*kr[1].z+" +
-    "texelFetch(uTx,f+ivec2(0,1),0)*kr[1].w+" +
-    "texelFetch(uTx,f+ivec2(1),0)*kr[2].x" +
-  ").rgb*vl[1];";
-
 /**
  * Base kernel filter
  * @extends {BaseFilter}
@@ -34,7 +19,20 @@ export class BaseKernelFilter extends BaseFilter {
   }
 
   get GLSL() {
-    return _GLSL;
+    // prettier-ignore
+    return "" +
+      "kr*=v;" +
+      "oCl.rgb=(oCl.rgb*(1.-vl[1]))+(" +
+        "texelFetch(uTx,f-ivec2(1),0)*kr[0].x+" +
+        "texelFetch(uTx,f+ivec2(0,-1),0)*kr[0].y+" +
+        "texelFetch(uTx,f+ivec2(1,-1),0)*kr[0].z+" +
+        "texelFetch(uTx,f+ivec2(-1,0),0)*kr[0].w+" +
+        "oCl*kr[1].x+" +
+        "texelFetch(uTx,f+ivec2(1,0),0)*kr[1].y+" +
+        "texelFetch(uTx,f+ivec2(-1,1),0)*kr[1].z+" +
+        "texelFetch(uTx,f+ivec2(0,1),0)*kr[1].w+" +
+        "texelFetch(uTx,f+ivec2(1),0)*kr[2].x" +
+      ").rgb*vl[1];";
   }
 
   get kernels() {

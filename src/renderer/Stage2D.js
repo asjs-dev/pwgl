@@ -91,10 +91,10 @@ export class Stage2D extends BatchRenderer {
     config.useTint = config.useTint ?? true;
 
     // prettier-ignore
-    config.locations = [
+    Utils.setLocations(config, [
       "aDt",
       "aDst"
-    ];
+    ]);
 
     super(config);
 

@@ -10,80 +10,83 @@ import { noop } from "../utils/noop";
  * SmoothLight
  * @extends {AGL.Image}
  */
-export class SmoothLight extends AGL.Image {
-  /**
-   * Creates an instance of SmoothLight.
-   * @constructor
-   * @param {SmoothLightRendererConfig} config
-   */
-  constructor(config = {}) {
-    super();
 
-    this._framebuffer = new AGL.Framebuffer();
+export const SmoothLight = window.AGL
+  ? class SmoothLight extends AGL.Image {
+      /**
+       * Creates an instance of SmoothLight.
+       * @constructor
+       * @param {SmoothLightRendererConfig} config
+       */
+      constructor(config = {}) {
+        super();
 
-    this.lightRenderer = new AGL.LightRenderer(config);
+        this._framebuffer = new AGL.Framebuffer();
 
-    this._filter = new AGL.BlurFilter();
+        this.lightRenderer = new AGL.LightRenderer(config);
 
-    this.filterRenderer = new AGL.FilterRenderer({
-      context: this.lightRenderer.context,
-      sourceTexture: this._framebuffer,
-      filters: [this._filter],
-    });
-    this.filterRenderer.clearColor.set(0, 0, 0, 0);
-    this.filterRenderer.clearBeforeRender = true;
+        this._filter = new AGL.BlurFilter();
 
-    this.addLightForRender = this.lightRenderer.addLightForRender.bind(
-      this.lightRenderer
-    );
+        this.filterRenderer = new AGL.FilterRenderer({
+          context: this.lightRenderer.context,
+          sourceTexture: this._framebuffer,
+          filters: [this._filter],
+        });
+        this.filterRenderer.clearColor.set(0, 0, 0, 0);
+        this.filterRenderer.clearBeforeRender = true;
 
-    this.blendMode = AGL.BlendMode.SHADOW;
+        this.addLightForRender = this.lightRenderer.addLightForRender.bind(
+          this.lightRenderer
+        );
 
-    this._filterFramebuffer = new AGL.Framebuffer();
-    this.texture = this._filterFramebuffer;
+        this.blendMode = AGL.BlendMode.SHADOW;
 
-    this.blur = typeof config.blur === "number" ? config.blur : 1;
-  }
+        this._filterFramebuffer = new AGL.Framebuffer();
+        this.texture = this._filterFramebuffer;
 
-  /**
-   * Set/Get blur value
-   * @type {number}
-   */
-  get blur() {
-    return this._blur;
-  }
-  set blur(v) {
-    this._blur = this._filter.intensityX = this._filter.intensityY = v;
-  }
+        this.blur = typeof config.blur === "number" ? config.blur : 1;
+      }
 
-  /**
-   * Render
-   */
-  render() {
-    this._resizeFunc();
-    this.lightRenderer.renderToFramebuffer(this._framebuffer);
-    this.filterRenderer.renderToFramebuffer(this._filterFramebuffer);
-  }
+      /**
+       * Set/Get blur value
+       * @type {number}
+       */
+      get blur() {
+        return this._blur;
+      }
+      set blur(v) {
+        this._blur = this._filter.intensityX = this._filter.intensityY = v;
+      }
 
-  /**
-   * Set Renderer Size
-   * @param {number} w
-   * @param {number} h
-   */
-  setSize(w, h) {
-    this._width = w;
-    this._height = h;
+      /**
+       * Render
+       */
+      render() {
+        this._resizeFunc();
+        this.lightRenderer.renderToFramebuffer(this._framebuffer);
+        this.filterRenderer.renderToFramebuffer(this._filterFramebuffer);
+      }
 
-    this._resizeFunc = this._resize;
-  }
+      /**
+       * Set Renderer Size
+       * @param {number} w
+       * @param {number} h
+       */
+      setSize(w, h) {
+        this._width = w;
+        this._height = h;
 
-  /**
-   * @ignore
-   */
-  _resize() {
-    this._resizeFunc = noop;
+        this._resizeFunc = this._resize;
+      }
 
-    this.lightRenderer.setSize(this._width, this._height);
-    this.filterRenderer.setSize(this._width, this._height);
-  }
-}
+      /**
+       * @ignore
+       */
+      _resize() {
+        this._resizeFunc = noop;
+
+        this.lightRenderer.setSize(this._width, this._height);
+        this.filterRenderer.setSize(this._width, this._height);
+      }
+    }
+  : null;
