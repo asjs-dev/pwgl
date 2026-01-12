@@ -45,9 +45,9 @@ export class LightRenderer extends BatchRenderer {
     // prettier-ignore
     Utils.setLocations(config, [
       "aExt",
-      "uNMTx",
-      "uSTTx",
-      "uRGTx",
+      "uNTx",
+      "uSTx",
+      "uRTx",
       "uTS",
       "uUT"
     ]);
@@ -64,7 +64,7 @@ export class LightRenderer extends BatchRenderer {
     this.heightMap = config.heightMap;
     this.roughnessMap = config.roughnessMap;
 
-    this._extensionBuffer = new Buffer("aExt", this.$MAX_RENDER_COUNT, 2, 4);
+    this._extensionBuffer = new Buffer("aExt", this.$MAX_RENDER_COUNT, 2, 3);
   }
 
   get sourceTexture() {
@@ -113,7 +113,7 @@ export class LightRenderer extends BatchRenderer {
 
     if (batchItems < this.$MAX_RENDER_COUNT && parent) {
       const matrixBufferId = batchItems * 16,
-        extensionBufferId = batchItems * 8,
+        extensionBufferId = batchItems * 6,
         matrixBufferData = this.$matrixBuffer.data,
         extensionBufferData = this._extensionBuffer.data;
 
@@ -125,15 +125,14 @@ export class LightRenderer extends BatchRenderer {
       matrixBufferData[matrixBufferId + 13] =
         light.alpha * parent.getPremultipliedAlpha();
       matrixBufferData[matrixBufferId + 14] = light.angle;
+      matrixBufferData[matrixBufferId + 15] = light.type;
 
-      extensionBufferData[extensionBufferId] = light.type;
-      extensionBufferData[extensionBufferId + 1] = light.flags;
-      extensionBufferData[extensionBufferId + 2] = light.transform.z;
-      extensionBufferData[extensionBufferId + 3] = light.precision;
-      extensionBufferData[extensionBufferId + 4] = light.maxShadowStep;
-      extensionBufferData[extensionBufferId + 5] = light.specularStrength;
-      extensionBufferData[extensionBufferId + 6] = light.attenuation;
-      // extensionBufferData[extensionBufferId + 7] // empty slot for future use
+      extensionBufferData[extensionBufferId] = light.flags;
+      extensionBufferData[extensionBufferId + 1] = light.transform.z;
+      extensionBufferData[extensionBufferId + 2] = light.precision;
+      extensionBufferData[extensionBufferId + 3] = light.maxShadowStep;
+      extensionBufferData[extensionBufferId + 4] = light.specularStrength;
+      extensionBufferData[extensionBufferId + 5] = light.attenuation;
 
       ++this._batchItems;
     }
@@ -152,11 +151,13 @@ export class LightRenderer extends BatchRenderer {
 
     this.context.setBlendMode(BlendMode.ADD);
 
-    sourceTextureBoolean && this.$useTexture(this._sourceTexture, locations.uSTTx);
+    sourceTextureBoolean &&
+      this.$useTexture(this._sourceTexture, locations.uSTx);
 
-    normalMapBoolean && this.$useTexture(this._normalMap, locations.uNMTx);
+    normalMapBoolean && this.$useTexture(this._normalMap, locations.uNTx);
 
-    roughnessMapBoolean && this.$useTexture(this._roughnessMap, locations.uRGTx);
+    roughnessMapBoolean &&
+      this.$useTexture(this._roughnessMap, locations.uRTx);
 
     heightMapBoolean && this.$useTexture(this._heightMap, locations.uTx);
 
@@ -205,62 +206,50 @@ export class LightRenderer extends BatchRenderer {
       "aPs;" +
     "in mat4 " +
       "aMt;" +
-    "in mat2x4 " +
+    "in mat2x3 " +
       "aExt;" +
 
     "uniform float " +
-      "uFlpY;" +
+      "uFY;" +
 
-    "out float " +
-      "vHS," +
-      "vD," +
-      "vShl," +
-      "vSpt;" +
     "out vec2 " +
-      "vTUv," +
-      "vSln;" +
+      "v0;" +
     "out vec4 " +
-      "vUv," +
-      "vCl," +
-      "vDt;" +
-    "out mat2x4 " +
-      "vExt;" +
-    "flat out int[5] " +
-      "flg;" +
+      "v1," +
+      "v2," +
+      "v3," +
+      "v4," +
+      "v5;" +
 
     "void main(void){" +
-      "vec3 pos=vec3(aPs*2.-1.,1);" +
-
-      "vExt=aExt;" +
-      "vCl=aMt[2];" +
-      "vDt=aMt[3];" +
-
-      "int " +
-        "f=int(vExt[0].y);" +
+      "vec3 " + 
+        "pos=vec3(aPs*2.-1.,1);" +
       
-      "flg=int[](f&1,f&2,f&4,f&8,f&16);" +
+      "v2=vec4(aMt[3].w,aExt[0]);" +
+      "v1=vec4(aExt[1],PI-aMt[1].w);" +
+      "v5=aMt[2];" +
+      "v5.a*=aMt[3].y;" +
 
-      "vUv.xy=pos.xy;" +
-      "vHS=vExt[0].z;" +
+      "v4.xy=pos.xy;" +
 
       "mat3 mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1);" +
-      "vD=aMt[1].z;" +
-      "vShl=vD*vDt.x;" +
+      "v0.x=aMt[1].z;" + 
+      "v0.y=v0.x*aMt[3].x;" +
 
-      "if(vExt[0].x<1.){" +
+      "if(v2.x<1.){" +
         "gl_Position=vec4(mt*pos,1);" +
-        "vTUv=(gl_Position.xy+P.xy)/P.zw;" +
-        "vUv.zw=(aMt[1].xy+P.xy)/P.zw;" +
-        "vSpt=PI-aMt[1].w;" +
-        "vSln=vec2(sin(vDt.z),cos(vDt.z));" +
+        "v3.xy=(gl_Position.xy+P.xy)/P.zw;" +
+        "v4.zw=(aMt[1].xy+P.xy)/P.zw;" +
+        "float amtz=aMt[3].z;" +
+        "v3.zw=vec2(sin(amtz),cos(amtz));" +
       "}else{" +
         "mt[2].xy=Z.zy;" +
         "gl_Position=vec4(pos,1);" +
-        "vTUv=vec2(aPs.x,1.-aPs.y);" +
-        "vUv.zw=vTUv+((mt*vec3(1)).xy+P.xy)/P.zw;" +
+        "v3.xy=(gl_Position.xy+P.xy)/P.zw;" +
+        "v4.zw=v3.xy+((mt*vec3(1)).xy+P.xy)/P.zw;" +
       "}" +
 
-      "gl_Position.y*=uFlpY;" +
+      "gl_Position.y*=uFY;" +
     "}";
   }
 
@@ -271,7 +260,7 @@ export class LightRenderer extends BatchRenderer {
    */
   $createFragmentShader() {
     const loop = (core) => "for(i=m;i<l;i+=st){" +
-            "p=ivec2((vUv.zw+i*opdm)*uTS);" +
+            "p=ivec2((v4.zw+i*opdm)*uTS);" +
             "tc=texelFetch(uTx,p,0)*HEIGHT;" +
             core +
           "}";
@@ -280,31 +269,23 @@ export class LightRenderer extends BatchRenderer {
     Utils.GLSL.DEFINE.HEIGHT +
     Utils.GLSL.DEFINE.Z +
 
-    "in float " +
-      "vHS," +
-      "vD," +
-      "vShl," +
-      "vSpt;" +
     "in vec2 " +
-      "vTUv," +
-      "vSln;" +
+      "v0;" +
     "in vec4 " +
-      "vUv," +
-      "vCl," +
-      "vDt;" +
-    "in mat2x4 " +
-      "vExt;" +
-    "flat in int[5] " +
-      "flg;" +
+      "v1," +
+      "v2," +
+      "v3," +
+      "v4," +
+      "v5;" +
 
     "uniform vec2 " +
       "uTS;" +
     "uniform vec3 " +
       "uUT;" +
     "uniform sampler2D " +
-      "uNMTx," +
-      "uSTTx," +
-      "uRGTx," +
+      "uNTx," +
+      "uSTx," +
+      "uRTx," +
       "uTx;" +
 
     "out vec4 " +
@@ -313,40 +294,46 @@ export class LightRenderer extends BatchRenderer {
     Utils.GLSL.RANDOM +
 
     "void main(void){" +
-      "if(vDt.y*vCl.a<=0.)discard;" +
+      "float " +
+        "vol=v5.a;" +
+
+      "if(vol<=0.)discard;" +
 
       "vec2 " +
-        "tUv=vTUv*uTS," +
-        "tCnt=vUv.zw*uTS;" +
+        "p2xy=v3.xy," +
+        "tUv=p2xy*uTS," +
+        "tCnt=v4.zw*uTS;" +
 
       "vec4 " +
         "tc=texelFetch(uTx,ivec2(tUv),0);" +
 
+      "int " + 
+        "flg=int(v2.y);" +
+
       "float " +
         "ph=tc.g*HEIGHT," +
-        "vol=vDt.y*vCl.a," +
         "spc=0.;" +
 
       "vec3 " +
         "sf=vec3(tUv,ph)," +
-        "lp=vec3(tCnt,vHS)," +
+        "lp=vec3(tCnt,v2.z)," +
         "sftla=lp-sf;" +
 
-      "if(vExt[0].x<1.){" +
+      "if(v2.x<1.){" +
         "float " + 
-          "d=length(sftla)/vD," +
+          "d=length(sftla)/v0.x," +
           "od=1.-d," +
-          "dv=flg[4]>0?pow(od,vExt[1].z):1.;" +
+          "dv=(flg&16)>0?pow(od,v1.z):1.;" +
 
         "vol*=dv;" +
 
         "float " +
-          "slh=(vHS-ph)/HEIGHT;" +
+          "slh=(v2.z-ph)/HEIGHT;" +
 
         "vec2 " +
           "sl=vec2(" +
-            "slh*vSln.y-vUv.x*vSln.x," +
-            "slh*vSln.x+vUv.x*vSln.y" +
+            "slh*v3.w-v4.x*v3.z," +
+            "slh*v3.z+v4.x*v3.w" +
           ");" +
 
         "if(" +
@@ -354,22 +341,22 @@ export class LightRenderer extends BatchRenderer {
           "od<=0.||" +
           "atan(" +
             "sl.x," +
-            "length(vec2(sl.y,vUv.y))" +
-          ")+" + Utils.ALPHA + "-vSpt<0.)discard;" +
+            "length(vec2(sl.y,v4.y))" +
+          ")+" + Utils.ALPHA + "-v1.w<0.)discard;" +
       "}" +
 
       "float " +
         "fltDst=distance(tCnt,tUv)," +
         "shdw=1.;" +
 
-      "if(flg[1]>0){" +
+      "if((flg&2)>0){" +
         "vec3 " +
           "nm=uUT.z>0." + 
-            "?normalize((texture(uNMTx,vTUv).rgb*2.-1.)*Z.yzy)" +
+            "?normalize((texture(uNTx,p2xy).rgb*2.-1.)*Z.yzy)" +
             ":Z.xxy," +
           "sftl=normalize(sftla)," +
           "sftv=normalize(vec3(" +
-            "flg[3]>0?uTS*.5:tUv," +
+            "(flg&8)>0?uTS*.5:tUv," +
             "HEIGHT" +
           ")-sf)," +
           "hlf=normalize(sftl+sftv);" +
@@ -380,12 +367,12 @@ export class LightRenderer extends BatchRenderer {
         
         "float " + 
           "rgh=1.," +
-          "shn=uUT.y>0.?texture(uRGTx,vTUv).r:tc.b;" +
+          "shn=uUT.y>0.?texture(uRTx,p2xy).r:tc.b;" +
 
-        "spc=pow(max(dot(nm,hlf),0.),32.)*shn*vExt[1].y;" +
+        "spc=pow(max(dot(nm,hlf),0.),32.)*shn*v1.y;" +
       "}" +
 
-      "if(flg[0]>0){" +
+      "if((flg&1)>0){" +
         "ivec2 " +
           "p;" +
 
@@ -394,32 +381,32 @@ export class LightRenderer extends BatchRenderer {
           "opdm=opd/uTS;" +
 
         "float " +
-          "st=max(1.,ceil(fltDst/vExt[1].x))," + // loop step length
+          "st=max(1.,ceil(fltDst/v1.x))," + // loop step length
           "i," +
           "pc," +
           "l=min(fltDst-st,4096.)," +
-          "m=max(st,l-vShl);" +
+          "m=max(st,l-v0.y);" +
         
-        "if(flg[2]>0)" + 
-          loop("if(tc.g>=vHS)discard;") +
+        "if((flg&4)>0)" + 
+          loop("if(tc.g>=v2.z)discard;") +
         "else{" +
           "float " +
             "opdL=length(opd)," + // horizontal step
-            "hst=(ph-vHS)/fltDst," + // vertical step
-            "rnd=vExt[0].w*rand(vTUv);" +
-            
+            "hst=(ph-v2.z)/fltDst," + // vertical step
+            "rnd=v2.w*rand(p2xy);" +
+
           loop(
             "st+=rnd;" +
-            "pc=vHS+i*hst;" +
-            "shdw*=mix(1.,(fltDst-i*opdL)/vShl,step(tc.r,pc)*step(pc,tc.g));"
+            "pc=v2.z+i*hst;" +
+            "shdw*=mix(1.,(fltDst-i*opdL)/v0.y,step(tc.r,pc)*step(pc,tc.g));"
           ) +
         "}" +
       "}" +
 
       "vec3 " +
-        "stCl=uUT.x>0.?texture(uSTTx,vTUv).rgb:Z.yyy;" +
+        "stCl=uUT.x>0.?texture(uSTx,p2xy).rgb:Z.yyy;" +
         
-      "oCl=vec4((stCl+spc)*vCl.rgb*vol*shdw,1);" +
+      "oCl=vec4((stCl+spc)*v5.rgb*vol*shdw,1);" +
     "}";
   }
 }

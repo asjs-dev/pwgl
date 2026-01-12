@@ -14,6 +14,8 @@
       "arraySet": "$as",
       "noop": "$nf",
       "noopReturnsWith": "$nfrw",
+      "BASE_VERTEX_SHADER": "BVS",
+      "BASE_VERTEX_SHADER_POSITION": "BVSP",
 
       "BaseTransformProps": "DBTP",
       "ColorProps": "DCP",

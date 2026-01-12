@@ -28,7 +28,7 @@ export class VignetteFilter extends BaseFilter {
   get GLSL() {
     // prettier-ignore
     return "" +
-      "vec2 pv=pow(abs(vUv*v),vec2(vl[1]));" +
+      "vec2 pv=pow(abs(v0.xy*v),vec2(vl[1]));" +
       "float cv=clamp((1.-length(pv))*vl[5],0.,1.);" +
       "oCl.rgb=oCl.rgb*cv+rgb*(1.-cv);";
   }

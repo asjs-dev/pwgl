@@ -78,16 +78,17 @@ export class BaseSamplingFilter extends BaseFilter {
 }
 
 // prettier-ignore
-BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
+BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop = "") => "" +
   "vec2 " +
     "wh=vec2(v,vl[1]);" +
 
   "float " + 
-    "lngWH=length(wh);" +
+    "lngWH=length(wh/ts);" +
 
   "if(lngWH>0.){" +
     "float " +
-      "rd=rand(vTUv)," +
+      "rd=rand(v0.zw)," +
+      "rd2=.5+rand(v0.zw)*.5," +
       "cnt=1.," +
       "l=4.+ceil(4.*rd)," +
       "t=RADIANS_360/l;" +
@@ -103,14 +104,14 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
       
     "ivec2 " +
       "mn=ivec2(Z.xx)," + 
-      "mx=ivec2(vTs)-1;" +
+      "mx=ivec2(ts)-1;" +
 
     "mat2 " + 
       "rot=mat2(r.x,-r.y,r.y,r.x);" +
       
     beforeLoop +
     "for(float i=0.;i<l;i++){" +
-      "ps=wh*round(dr)*(.5+rand(vTUv+i)*.5);" +
+      "ps=wh*rd2*round(dr);" +
       "clg=texelFetch(uTx,clamp(" + 
         "f+ivec2(ps)," + 
         "mn,mx" +
@@ -118,11 +119,12 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop) => "" +
       "dr*=rot;" +
       inLoop +
     "}" +
+    afterLoop +
     "cl/=cnt;" +
     "float " +
       "dst=mix(" +
         "1.," +
-        "clamp(distance(vec2(vl[3],vl[4]),vTUv)*vl[5],0.,1.)," +
+        "clamp(distance(vec2(vl[3],vl[4]),v0.zw)*vl[5],0.,1.)," +
         "vl[2]" + 
       ");" +
 

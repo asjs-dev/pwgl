@@ -6,6 +6,6 @@ import { BaseFilter } from "./BaseFilter";
  */
 export class PixelateFilter extends BaseFilter {
   get GLSL() {
-    return "oCl=texture(uTx,floor(vTUv/vol)*vol);";
+    return "oCl=texture(uTx,floor(v0.zw/vol)*vol);";
   }
 }

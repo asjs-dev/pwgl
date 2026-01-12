@@ -50,7 +50,7 @@ export class BaseRenderer {
 
     // prettier-ignore
     Utils.setLocations(config, [
-      "uFlpY",
+      "uFY",
       "aPs",
       "uTx"
     ]);
@@ -117,7 +117,7 @@ export class BaseRenderer {
   render() {
     if (!this.context.isLost()) {
       this._switchToProgram();
-      this.$gl.uniform1f(this.$locations.uFlpY, 1);
+      this.$gl.uniform1f(this.$locations.uFY, 1);
       this._clearBeforeRenderFunc();
       this._renderBatch();
     }
@@ -137,7 +137,7 @@ export class BaseRenderer {
     framebuffer.setSize(this.width, this.height);
     this.context.useTexture(framebuffer, this.$renderTime, false);
     this.context.deactivateTexture(framebuffer);
-    this.$gl.uniform1f(this.$locations.uFlpY, -1);
+    this.$gl.uniform1f(this.$locations.uFY, -1);
   }
 
   /**

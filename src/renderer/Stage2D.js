@@ -363,22 +363,18 @@ export class Stage2D extends BatchRenderer {
       "aMt;" +
 
     "uniform float " +
-      "uFlpY;" +
+      "uFY;" +
     "uniform sampler2D " +
       "uTx[" + maxTextureImageUnits + "];" +
 
-    "out float " +
-      "vACl," +
-      "vTId," +
-      "vTTp;" +
-    "out vec2 " +
-      "vTUv," +
-      "vTsh;" +
+    "out vec3 " +
+      "v0;" +
     "out vec4 " +
-      "vTCrop," +
-      "vCl" +
+      "v1," +
+      "v2," +
+      "v3" +
     (useRepeatTextures
-      ? ",vRR;"
+      ? ",v4;"
       : ";") +
 
     "vec2 gtTexS(float i){" +
@@ -411,32 +407,31 @@ export class Stage2D extends BatchRenderer {
         "mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1)*" + 
         "vec3(tPs,1.)," + 
         "1" + 
+      ")*vec4(1.,uFY,1.,1.);" +
+
+      "v0=aDt[1].xyz;" +
+
+      "v1=vec4(" + 
+        "(" + 
+          "mat3(aMt[1].zw,0,aMt[2].xy,0,aMt[2].zw,1)*" + 
+          "vec3(" +
+            "mix(" + 
+              "tPs," + 
+              "aPs," + 
+              "aDt[1].w" + 
+            ")," +
+            "1." +
+          ")" + 
+        ").xy," + 
+        "gtTexS(v0.z)" + 
       ");" +
-      "gl_Position.y*=uFlpY;" +
-      "vTUv=(" + 
-        "mat3(aMt[1].zw,0,aMt[2].xy,0,aMt[2].zw,1)*" + 
-        "vec3(" +
-          "mix(" + 
-            "tPs," + 
-            "aPs," + 
-            "aDt[1].w" + 
-          ")," +
-          "1." +
-        ")" + 
-      ").xy;" + 
 
-      "vTCrop=aMt[3];" +
+      "v2=aMt[3];" +
 
-      "vCl=aDt[0];" +
-      "vACl=aDt[1].x;" +
-
-      "vTTp=aDt[1].y;" +
-      "vTId=aDt[1].z;" +
-
-      "vTsh=gtTexS(vTId);" +
+      "v3=aDt[0];" +
 
       (useRepeatTextures
-        ? "vRR=aDt[2];"
+        ? "v4=aDt[2];"
         : "") +
     "}";
   }
@@ -453,24 +448,20 @@ export class Stage2D extends BatchRenderer {
      useTint = config.useTint;
 
     const getSimpleTexColor = (modCoordName) =>
-      "gtTexCl(vTId,vTCrop," + modCoordName + ")";
+      "gtTexCl(v0.z,v2," + modCoordName + ")";
 
     return "" +
     Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIANS_360 +
 
-    "in float " +
-      "vACl," +
-      "vTId," +
-      "vTTp;" +
-    "in vec2 " +
-      "vTUv," + 
-      "vTsh;" +
+    "in vec3 " +
+      "v0;" +
     "in vec4 " +
-      "vTCrop," +
-      "vCl" +
+      "v1," +
+      "v2," +
+      "v3" +
       (useRepeatTextures
-        ? ",vRR;"
+        ? ",v4;"
         : ";") +
 
     "uniform sampler2D " +
@@ -480,9 +471,19 @@ export class Stage2D extends BatchRenderer {
       "oCl;" +
 
     "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
+      "vec2 " + 
+        "sxy=s.xy," +
+        "szw=s.zw," +
+        "ofs=szw*m," +
+        "vpzw=v1.zw," +
+        "cp=clamp(" +
+          "sxy+ofs," +
+          "sxy+vpzw," +
+          "sxy+szw-vpzw" +
+        ");" +
       Array(maxTextureImageUnits).fill().map((v, i) => 
       "if(i<" + (i + 1) + ".)" + 
-        "return texture(uTx[" + i + "],clamp(s.xy+s.zw*m,s.xy+vTsh,s.xy+s.zw-vTsh));").join("") +
+        "return texture(uTx[" + i + "],cp);").join("") +
       "return Z.yyyy;" +
     "}" +
 
@@ -495,14 +496,14 @@ export class Stage2D extends BatchRenderer {
     "}" +
 
     (useRepeatTextures
-      ? Utils.GLSL.RANDOM +
+      ? Utils.GLSL.RANDOM2 +
         "vec4 gtClBUv(vec2 st){" +
           "vec2 " +
-            "uv=vTUv;" +
+            "uv=v1.xy;" +
 
           "float " +
-            "rnd=rand(floor(uv+st)/100.)," +
-            "rndDg=rnd*RADIANS_360*vRR.x;" +
+            "rnd=rand2(floor(uv+st)/100.)," +
+            "rndDg=rnd*RADIANS_360*v4.x;" +
 
           "if(rndDg>0.){" +
             "vec2 " +
@@ -515,19 +516,19 @@ export class Stage2D extends BatchRenderer {
 
         "float gtRClBUv(vec2 st,vec2 uv){" +
           "float " +
-            "rnd=rand(floor(vTUv+st)/100.);" +
-          "return (1.-(vRR.w*rnd-vRR.w*.5)*vRR.y)*" +
+            "rnd=rand2(floor(v1.xy+st)/100.);" +
+          "return (1.-(v4.w*rnd-v4.w*.5)*v4.y)*" +
             "cosine(0.,1.,1.-st.x-uv.x)*cosine(0.,1.,1.-st.y-uv.y);" +
         "}"
       : "") +
 
     "void main(void){" +
-      "if(vTId>-1.){" +
+      "if(v0.z>-1.){" +
         "vec2 " +
-          "uv=mod(vTUv,Z.yy);" +
+          "uv=mod(v1.xy,Z.yy);" +
 
         (useRepeatTextures
-          ? "if(vRR.x>0.||vRR.y>0.){" +
+          ? "if(v4.x>0.||v4.y>0.){" +
               "vec4 " +
                 "rc=vec4(" + 
                   "gtRClBUv(Z.xx,uv)," +
@@ -543,7 +544,7 @@ export class Stage2D extends BatchRenderer {
                   "gtClBUv(Z.xy)*rc.z+" +
                   "gtClBUv(Z.yy)*rc.w" +
                 ",0.,1.)," +
-                "vec4(vRR.z)" + 
+                "vec4(v4.z)" + 
               ");" +
               "oCl.a=mix(" + 
                 "oCl.a," + 
@@ -554,24 +555,24 @@ export class Stage2D extends BatchRenderer {
                     "rc.z+" +
                     "rc.w" +
                   "),0.,1.)," + 
-                  "vRR.y" +
+                  "v4.y" +
                 ");" +
             "}else oCl=" + getSimpleTexColor("uv") + ";"
           : "oCl=" + getSimpleTexColor("uv") + ";") +
       "}else oCl+=1.;" +
 
-      "oCl.a*=vACl;" +
+      "oCl.a*=v0.x;" +
 
       "if(oCl.a<=0.)discard;" +
 
       (useTint
-        ? "if(vTTp>0.)" +
-          "if(vTTp==1.||(vTTp==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
-            "oCl*=vCl;" +
-          "else if(vTTp==3.)" +
-            "oCl=vCl;" +
-          "else if(vTTp==4.)" +
-            "oCl+=vCl;" 
+        ? "if(v0.y>0.)" +
+          "if(v0.y==1.||(v0.y==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
+            "oCl*=v3;" +
+          "else if(v0.y==3.)" +
+            "oCl=v3;" +
+          "else if(v0.y==4.)" +
+            "oCl+=v3;" 
         : "") +
     "}";
   }

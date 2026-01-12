@@ -89,7 +89,14 @@ export const Utils = {
       PI: `#define PI ${Math.PI}\n`,
     },
     RANDOM: 
-      "float rand(vec2 p,float s){" +
+      "float rand(vec2 p,float s){" + 
+        "return fract(sin((p.x*12.9898+p.y*78.233)*s)*43758.5453);" +
+      "}" +
+      "float rand(vec2 p){" + 
+        "return rand(p,1.);" +
+      "}",
+    RANDOM2:
+      "float rand2(vec2 p,float s){" +
         "p=mod(p*100.,vec2(1e4))+100.;" +
         "return fract(" +
           "dot(" +
@@ -101,9 +108,9 @@ export const Utils = {
           ")" +
         ");" +
       "}" +
-      "float rand(vec2 p){" + 
-        "return rand(p,1.);" +
-      "}"
+      "float rand2(vec2 p){" + 
+        "return rand2(p,1.);" +
+      "}",
   },
 
   /**
