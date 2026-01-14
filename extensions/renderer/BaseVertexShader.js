@@ -8,3 +8,16 @@ export const BASE_VERTEX_SHADER =
 // prettier-ignore
 export const BASE_VERTEX_SHADER_POSITION =
   "vec2(aPs.x,1.-aPs.y)";
+
+// prettier-ignore
+export const BASE_VERTEX_SHADER_ATTRIBUTES = "" +
+  "in vec2 " +
+    "aPs;";
+
+// prettier-ignore
+export const BASE_VERTEX_SHADER_UNIFORMS = "" +
+  "uniform float " +
+    "uFY;";
+
+export const BASE_VERTEX_SHADER_INITIALIZATION =
+  BASE_VERTEX_SHADER_ATTRIBUTES + BASE_VERTEX_SHADER_UNIFORMS;

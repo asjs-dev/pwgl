@@ -1,7 +1,11 @@
 import { BaseRenderer } from "./BaseRenderer";
 import { BlendMode } from "../data/BlendMode";
 import { Utils } from "../utils/Utils";
-import { BASE_VERTEX_SHADER, BASE_VERTEX_SHADER_POSITION } from "../../extensions/renderer/BaseVertexShader";
+import {
+  BASE_VERTEX_SHADER,
+  BASE_VERTEX_SHADER_INITIALIZATION,
+  BASE_VERTEX_SHADER_POSITION,
+} from "../../extensions/renderer/BaseVertexShader";
 
 /**
  * @typedef {Object} AmbientOcclusionMapRendererConfig
@@ -125,14 +129,10 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return "" +
-    Utils.GLSL.DEFINE.RADIANS_360 +
+    return Utils.GLSL.DEFINE.RADIANS_360 +
+    
+    BASE_VERTEX_SHADER_INITIALIZATION +
 
-    "in vec2 " +
-      "aPs;" +
-
-    "uniform float " +
-      "uFY;" +
     "uniform vec4 " +
       "uP;" +
 
@@ -154,9 +154,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    return "" +
-    Utils.GLSL.DEFINE.Z +
-    Utils.GLSL.DEFINE.RADIANS_360 +
+    return Utils.GLSL.DEFINE.Z +
 
     "in vec4 " +
       "v0;" +

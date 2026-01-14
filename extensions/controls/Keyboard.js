@@ -19,10 +19,10 @@ export class Keyboard extends PressState {
   }
 
   _onKeyDown(event) {
-    this.$setDownState(event.keyCode);
+    this.$setDownState(event.key);
   }
 
   _onKeyUp(event) {
-    this.$setUpState(event.keyCode);
+    this.$setUpState(event.key);
   }
 }

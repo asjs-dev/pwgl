@@ -3,7 +3,11 @@ import { BaseRenderer } from "./BaseRenderer";
 import { Framebuffer } from "../data/texture/Framebuffer";
 import { BlendMode } from "../data/BlendMode";
 import { Utils } from "../utils/Utils";
-import { BASE_VERTEX_SHADER, BASE_VERTEX_SHADER_POSITION } from "../../extensions/renderer/BaseVertexShader";
+import {
+  BASE_VERTEX_SHADER,
+  BASE_VERTEX_SHADER_INITIALIZATION,
+  BASE_VERTEX_SHADER_POSITION,
+} from "../../extensions/renderer/BaseVertexShader";
 
 /**
  * @typedef {Object} FilterRendererConfig
@@ -138,12 +142,7 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return "" +
-    "in vec2 " +
-      "aPs;" +
-
-    "uniform float " +
-      "uFY;" +
+    return BASE_VERTEX_SHADER_INITIALIZATION +
 
     "out vec4 " +
       "v0;" +
@@ -161,8 +160,7 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    return "" +
-    Utils.GLSL.DEFINE.Z +
+    return Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIANS_360 +
     
     "in vec4 " +

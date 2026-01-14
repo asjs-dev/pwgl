@@ -16,6 +16,9 @@
       "noopReturnsWith": "$nfrw",
       "BASE_VERTEX_SHADER": "BVS",
       "BASE_VERTEX_SHADER_POSITION": "BVSP",
+      "BASE_VERTEX_SHADER_ATTRIBUTES": "BVSA",
+      "BASE_VERTEX_SHADER_UNIFORMS": "BVSU",
+      "BASE_VERTEX_SHADER_INITIALIZATION": "BVSI",
 
       "BaseTransformProps": "DBTP",
       "ColorProps": "DCP",

@@ -10,6 +10,10 @@ import { StageContainer } from "../display/StageContainer";
 import { Buffer } from "../utils/Buffer";
 import { Utils } from "../utils/Utils";
 import "../geom/PointType";
+import {
+  BASE_VERTEX_SHADER_ATTRIBUTES,
+  BASE_VERTEX_SHADER_UNIFORMS,
+} from "../../extensions/renderer/BaseVertexShader";
 
 /**
  * @typedef {Object} Stage2DConfig
@@ -350,11 +354,9 @@ export class Stage2D extends BatchRenderer {
     const useRepeatTextures = this._config.useRepeatTextures,
       maxTextureImageUnits = Utils.INFO.maxTextureImageUnits;
 
-    return "" +
-    Utils.GLSL.DEFINE.Z +
+    return Utils.GLSL.DEFINE.Z +
 
-    "in vec2 " +
-      "aPs;" +
+    BASE_VERTEX_SHADER_ATTRIBUTES +
     "in mat4x2 " +
       "aDst;" +
     "in mat3x4 " +
@@ -362,8 +364,7 @@ export class Stage2D extends BatchRenderer {
     "in mat4 " +
       "aMt;" +
 
-    "uniform float " +
-      "uFY;" +
+    BASE_VERTEX_SHADER_UNIFORMS +
     "uniform sampler2D " +
       "uTx[" + maxTextureImageUnits + "];" +
 
@@ -450,8 +451,7 @@ export class Stage2D extends BatchRenderer {
     const getSimpleTexColor = (modCoordName) =>
       "gtTexCl(v0.z,v2," + modCoordName + ")";
 
-    return "" +
-    Utils.GLSL.DEFINE.Z +
+    return Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIANS_360 +
 
     "in vec3 " +

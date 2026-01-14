@@ -1,7 +1,11 @@
 import { BaseRenderer } from "./BaseRenderer";
 import { BlendMode } from "../data/BlendMode";
 import { Utils } from "../utils/Utils";
-import { BASE_VERTEX_SHADER, BASE_VERTEX_SHADER_POSITION } from "../../extensions/renderer/BaseVertexShader";
+import {
+  BASE_VERTEX_SHADER,
+  BASE_VERTEX_SHADER_INITIALIZATION,
+  BASE_VERTEX_SHADER_POSITION,
+} from "../../extensions/renderer/BaseVertexShader";
 
 /**
  * @typedef {Object} NormalMapRendererConfig
@@ -36,7 +40,7 @@ export class NormalMapRenderer extends BaseRenderer {
    */
   $render() {
     this.context.setBlendMode(BlendMode.NORMAL);
-    
+
     this.$useTextureAt(this.heightMap, this.$locations.uTx, 0);
 
     this.$uploadBuffers();
@@ -50,12 +54,8 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return "" +
-    "in vec2 " +
-      "aPs;" +
+    return BASE_VERTEX_SHADER_INITIALIZATION +
 
-    "uniform float " +
-      "uFY;" +
     "uniform sampler2D " +
       "uTx;" +
 
@@ -75,8 +75,7 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    return "" +
-    Utils.GLSL.DEFINE.Z +
+    return Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.HEIGHT +
     
     "in vec2 " +

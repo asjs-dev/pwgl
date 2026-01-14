@@ -4,6 +4,10 @@ import { BlendMode } from "../data/BlendMode";
 import { Light } from "../display/Light";
 import { Utils } from "../utils/Utils";
 import { Buffer } from "../utils/Buffer";
+import {
+  BASE_VERTEX_SHADER_ATTRIBUTES,
+  BASE_VERTEX_SHADER_UNIFORMS,
+} from "../../extensions/renderer/BaseVertexShader";
 
 /**
  * @typedef {Object} LightRendererConfig
@@ -156,8 +160,7 @@ export class LightRenderer extends BatchRenderer {
 
     normalMapBoolean && this.$useTexture(this._normalMap, locations.uNTx);
 
-    roughnessMapBoolean &&
-      this.$useTexture(this._roughnessMap, locations.uRTx);
+    roughnessMapBoolean && this.$useTexture(this._roughnessMap, locations.uRTx);
 
     heightMapBoolean && this.$useTexture(this._heightMap, locations.uTx);
 
@@ -197,20 +200,17 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return "" +
-    Utils.GLSL.DEFINE.Z +
+    return Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.PI +
     "#define P vec4(1,-1,2,-2)\n" +
 
-    "in vec2 " +
-      "aPs;" +
+    BASE_VERTEX_SHADER_ATTRIBUTES +
     "in mat4 " +
       "aMt;" +
     "in mat2x3 " +
       "aExt;" +
 
-    "uniform float " +
-      "uFY;" +
+    BASE_VERTEX_SHADER_UNIFORMS +
 
     "out vec2 " +
       "v0;" +
@@ -265,8 +265,7 @@ export class LightRenderer extends BatchRenderer {
             core +
           "}";
 
-    return "" +
-    Utils.GLSL.DEFINE.HEIGHT +
+    return Utils.GLSL.DEFINE.HEIGHT +
     Utils.GLSL.DEFINE.Z +
 
     "in vec2 " +
