@@ -8,12 +8,6 @@ A JavaScript framework for creating **2D WebGL2 applications**.
 
 ## Demos
 
-  <iframe
-    src="https://codepen.io/iroshan/full/rNMKbWv"
-    style="border:1px solid #ccc; width: 100%; height: 50vw;"
-    title="PWGL Demo">
-  </iframe>
-
 - [Top View Game Demo](https://asjs-dev.github.io/pwgl/example/shGameDemo.html)
 - [Custom Renderer - Wolfenstein 3D](https://asjs-dev.github.io/pwgl/example/wolfenstein.html)
 - [Card Game Demo](https://asjs-dev.github.io/pwgl/example/cardGameDemo.html)
