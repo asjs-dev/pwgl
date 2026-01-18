@@ -1,31 +1,66 @@
-A JavaScript framework for creating 2D WebGL2 applications
+# PWGL – 2D WebGL2 JavaScript Framework
+
+A JavaScript framework for creating **2D WebGL2 applications**.
 
 ![Game Demo](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/game.png?raw=true)
 
-### Demos:
+---
+
+## Demos
+
+  <iframe
+    src="https://codepen.io/iroshan/full/rNMKbWv"
+    style="border:1px solid #ccc; width: 100%; height: 50vw;"
+    title="PWGL Demo">
+  </iframe>
 
 - [Top View Game Demo](https://asjs-dev.github.io/pwgl/example/shGameDemo.html)
+- [Custom Renderer - Wolfenstein 3D](https://asjs-dev.github.io/pwgl/example/wolfenstein.html)
 - [Card Game Demo](https://asjs-dev.github.io/pwgl/example/cardGameDemo.html)
 - [Displacement Filter](https://asjs-dev.github.io/pwgl/example/rainDropsDemo.html)
 - [2D Lights and Shadows](https://asjs-dev.github.io/pwgl/example/lightDemo.html)
 - [Lights, Shadows and Filters](https://asjs-dev.github.io/pwgl/example/boatDemo.html)
 - [Journey](https://asjs-dev.github.io/pwgl/example/journeyDemo.html)
 
-### Features:
+---
 
-- Batch rendering (10.000 elements - 60fps)
+## Features
+
+- High-performance batch rendering (10.000+ elements at 60fps)
 - Dynamic 2D lights and shadows
-- Element picker (can click on rendered items)
+- Element picker (clickable renderables)
 - Image filters (Blur, Pixelate, Distortion, etc.)
-  - [Filters](https://github.com/asjs-dev/pwgl/blob/main/src/filters)
+  - [Filters folder](https://github.com/asjs-dev/pwgl/blob/main/src/filters)
 - Video textures
-- and many other features...
+- Framebuffer and filter renderers
+- Minified and lightweight builds for faster load
+- Fully WebGL2 compatible, falls back gracefully if WebGL2 is not supported
 
-### Minified version
+---
 
-- [pwgl.min.js](https://github.com/asjs-dev/pwgl/blob/main/dist/pwgl.min.js)
+## Builds
 
-### How to use
+PWGL provides multiple builds for different use cases.
+
+**Vite 4 production builds:**
+
+| File                             | Format                              |
+| -------------------------------- | ----------------------------------- |
+| `dist/pwgl.es.min.js`            | ES Module, minified                 |
+| `dist/pwgl.umd.min.js`           | UMD, minified                       |
+| `dist/pwgl.extensions.es.min.js` | ES Module with extensions, minified |
+| `dist/pwgl.extensions.umd.js`    | UMD with extensions, minified       |
+
+**Extra highly compressed builds (auto-generated during development/optimization build):**
+
+- `dist/pwgl.min.js` – minimal core build
+- `dist/pwgl.extensions.min.js` – minimal build with extensions
+
+> ⚠️ These extra compressed builds are **not standalone build targets** and are produced automatically during the development/optimization build process.
+
+---
+
+## How to use
 
 Create your index html ( include pwgl.min.js )
 

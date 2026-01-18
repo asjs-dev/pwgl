@@ -1,21 +1,37 @@
 {
   "name": "PWGL",
-  "version": "5.0.6",
-  "main": "./dist/pwgl.min.js",
+  "version": "5.0.7",
+  "main": "./dist/pwgl.umd.min.js",
+  "module": "dist/pwgl.es.min.js",
   "description": "WebGL2 2D framework",
   "homepage": "https://asjs-dev.github.io/pwgl/",
   "repository": {
     "type": "git",
     "url": "https://github.com/asjs-dev/pwgl.git"
   },
+  "author": "ASJS",
+  "license": "MIT",
   "keywords": [
-    "javascript",
-    "webgl"
+    "webgl2",
+    "2d",
+    "renderer",
+    "game",
+    "graphics"
+  ],
+  "files": [
+    "dist"
   ],
   "scripts": {
-    "docs": "./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json -R README.md"
+    "docs": "./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json -R README.md",
+    "build:pwgl": "vite build --config vite.config.js",
+    "build:ext": "vite build --config extensions/vite.config.js",
+    "build:asjs": "./build.sh",
+    "build:all": "npm run build:pwgl && npm run build:ext && npm run build:asjs"
   },
   "devDependencies": {
-    "jsdoc": "^4.0.2"
+    "@rollup/plugin-replace": "^6.0.3",
+    "jsdoc": "^4.0.2",
+    "terser": "^5.46.0",
+    "vite": "^7.3.1"
   }
 }
