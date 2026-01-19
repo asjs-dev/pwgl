@@ -63,6 +63,7 @@ Create your index html ( include pwgl.min.js )
 <html>
   <head>
     <script src="pwgl.min.js" type="text/javascript"></script>
+    <script src="pwgl.extensions.min.js" type="text/javascript"></script>
   </head>
   <body></body>
 </html>
@@ -74,6 +75,7 @@ Add your script
 class Application {
   constructor() {}
 }
+
 PWGL.Utils.initApplication(function (isWebGl2Supported) {
   if (!isWebGl2Supported) {
     // WebGL 2 is not supported
@@ -104,9 +106,14 @@ class Application {
 
     this._stageContainer.appendChild(this._context.canvas);
 
+    const imageUrl = "https://picsum.photos/500/300";
+    const image = new Image();
+    image.crossOrigin = "Anonymous";
+    image.src = imageUrl;
+    
     // create renderable element
     this._image = new PWGL.Image(
-      PWGL.Texture.loadImage("your/image/path/here")
+      new PWGL.Texture(image)
     );
     this._image.transform.x = width * 0.5;
     this._image.transform.y = height * 0.5;
@@ -126,25 +133,18 @@ class Application {
     window.addEventListener("beforeunload", this._onBeforeUnloadBound);
 
     // start render cycle
-    this._requestAnimationFrameId = requestAnimationFrame(this._renderBound);
+    PWGLExtensions.enterFrame(this._renderBound);
   }
 
-  _render() {
-    if (this._requestAnimationFrameId) {
-      PWGLExtensions.FPS.update();
-      let delay = PWGLExtensions.FPS.delay;
+  _render(fps, delay) {
+    console.log("delay:", PWGLExtensions.FPS.delay);
+    console.log("fps:", PWGLExtensions.FPS.fps.toFixed(2));
 
-      console.log("delay:", PWGLExtensions.FPS.delay);
-      console.log("fps:", PWGLExtensions.FPS.fps.toFixed(2));
+    // rotate the image
+    this._image.transform.rotation += 0.001;
 
-      // rotate the image
-      this._image.transform.rotation += 0.001;
-
-      // render the state
-      this._stage2DRenderer.render();
-
-      this._requestAnimationFrameId = requestAnimationFrame(this._renderBound);
-    }
+    // render the state
+    this._stage2DRenderer.render();
   }
 
   _destruct() {
@@ -171,6 +171,7 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
 
 Add filter renderer
 
+[Demo](https://codepen.io/iroshan/pen/MYemWXe)
 ```javascript
 class Application {
   constructor() {
@@ -202,9 +203,14 @@ class Application {
 
     this._stageContainer.appendChild(this._context.canvas);
 
+    const imageUrl = "https://picsum.photos/500/300";
+    const image = new Image();
+    image.crossOrigin = "Anonymous";
+    image.src = imageUrl;
+    
     // create renderable element
     this._image = new PWGL.Image(
-      PWGL.Texture.loadImage("your/image/path/here")
+      new PWGL.Texture(image)
     );
     this._image.transform.x = width * 0.5;
     this._image.transform.y = height * 0.5;
@@ -225,29 +231,22 @@ class Application {
     window.addEventListener("beforeunload", this._onBeforeUnloadBound);
 
     // start render cycle
-    this._requestAnimationFrameId = requestAnimationFrame(this._renderBound);
+    PWGLExtensions.enterFrame(this._renderBound);
   }
 
-  _render() {
-    if (this._requestAnimationFrameId) {
-      PWGLExtensions.FPS.update();
-      let delay = PWGLExtensions.FPS.delay;
+  _render(fps, delay) {
+    console.log("delay:", PWGLExtensions.FPS.delay);
+    console.log("fps:", PWGLExtensions.FPS.fps.toFixed(2));
 
-      console.log("delay:", PWGLExtensions.FPS.delay);
-      console.log("fps:", PWGLExtensions.FPS.fps.toFixed(2));
+    // rotate the image
+    this._image.transform.rotation += 0.001;
 
-      // rotate the image
-      this._image.transform.rotation += 0.001;
-
-      // render the state to framebuffer
-      this._stage2DRenderer.renderToFramebuffer(
-        this._stage2DRendererFramebuffer
-      );
-      // render filters
-      this._filterRenderer.render();
-
-      this._requestAnimationFrameId = requestAnimationFrame(this._renderBound);
-    }
+    // render the state to framebuffer
+    this._stage2DRenderer.renderToFramebuffer(
+      this._stage2DRendererFramebuffer
+    );
+    // render filters
+    this._filterRenderer.render();
   }
 
   _destruct() {
