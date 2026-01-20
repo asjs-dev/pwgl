@@ -133,12 +133,12 @@ class Application {
     window.addEventListener("beforeunload", this._onBeforeUnloadBound);
 
     // start render cycle
-    PWGLExtensions.enterFrame(this._renderBound);
+    PWGLExtensions.utils.enterFrame(this._renderBound);
   }
 
   _render(fps, delay) {
-    console.log("delay:", PWGLExtensions.FPS.delay);
-    console.log("fps:", PWGLExtensions.FPS.fps.toFixed(2));
+    // console.log("delay:", delay);
+    // console.log("fps:", fps.toFixed(2));
 
     // rotate the image
     this._image.transform.rotation += 0.001;
@@ -231,12 +231,12 @@ class Application {
     window.addEventListener("beforeunload", this._onBeforeUnloadBound);
 
     // start render cycle
-    PWGLExtensions.enterFrame(this._renderBound);
+    PWGLExtensions.utils.enterFrame(this._renderBound);
   }
 
   _render(fps, delay) {
-    console.log("delay:", PWGLExtensions.FPS.delay);
-    console.log("fps:", PWGLExtensions.FPS.fps.toFixed(2));
+    // console.log("delay:", delay);
+    // console.log("fps:", fps.toFixed(2));
 
     // rotate the image
     this._image.transform.rotation += 0.001;
