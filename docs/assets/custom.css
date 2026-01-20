@@ -1,23 +1,69 @@
+:root {
+  --bg-main: #0b1220;
+  --bg-panel: #0f192c;
+  --bg-code: #0d1628;
+
+  --text-main: #a9b4c2;
+  --text-muted: #6b7c93;
+  --text-strong: #ffffff;
+
+  --accent-primary: #2dd4ff; /* cyan */
+  --accent-secondary: #3b82f6; /* blue */
+  --accent-soft: rgba(45, 212, 255, 0.15);
+
+  --border-soft: rgba(255, 255, 255, 0.08);
+}
+
+/* ---- Base ---- */
+
 html,
 body,
 section {
-  background: #09101a;
+  background: var(--bg-main);
+}
+
+* {
+  box-sizing: border-box;
+  word-break: break-word;
 }
 
 body {
-  color: #a6afb0;
+  color: var(--text-main);
+  line-height: 1.6;
 }
 
+/* ---- Typography ---- */
+
 h1 {
-  color: white;
+  color: var(--text-strong);
 }
 
 h2 {
   font-size: 24px;
+  color: var(--text-strong);
 }
 
 h4 {
-  color: #03a9f4;
+  color: var(--accent-primary);
+}
+
+.page-title {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  color: var(--text-strong);
+}
+
+pre {
+  white-space: pre-wrap;
+}
+
+/* ---- Code ---- */
+
+.source {
+  border: 1px solid var(--border-soft);
+  background: var(--bg-code);
+  border-radius: 8px;
 }
 
 .source code {
@@ -26,88 +72,30 @@ h4 {
 
 .prettyprint.linenums li {
   border: none;
-  background-color: rgba(0, 0, 0, 0.3);
-}
-
-.page-title {
-  font-size: 22px;
-  letter-spacing: 0px;
-  word-break: break-word;
-  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.25);
 }
 
 .prettyprint.linenums li.selected {
   background-color: transparent;
-}
-
-.prettyprint.linenums li.selected code,
-.prettyprint.linenums li.selected code * {
-  background-color: #0f192c;
-}
-
-.prettyprint.linenums li.selected {
   padding-top: 100px;
   margin-top: -100px;
 }
 
-.source {
-  border: 1px solid rgba(255, 255, 255, 0.3);
+.prettyprint.linenums li.selected code,
+.prettyprint.linenums li.selected code * {
+  background-color: var(--bg-panel);
 }
 
-nav ul a,
-nav ul a:visited,
-nav ul a:active {
-  color: #607d8b;
+/* ---- Names / Params ---- */
+
+.params .name,
+.props .name,
+.name code {
+  color: var(--accent-primary);
+  font-weight: 500;
 }
 
-thead {
-  color: #090e1a;
-}
-
-header.docs-header {
-  padding: 10px;
-  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.3);
-  position: fixed;
-  width: 100vw;
-  background: #09101a;
-  top: 0;
-  left: 0;
-  height: 60px;
-}
-
-header.docs-header img {
-  height: 60px;
-  position: absolute;
-  top: 10px;
-  left: 8px;
-}
-
-header.docs-header label {
-  font-size: 20px;
-  margin-left: 130px;
-  line-height: 60px;
-  color: #2196f3;
-}
-
-header.docs-header a#github-link,
-header.docs-header a#codepen-link {
-  float: right;
-  display: inline-block;
-  width: 25px;
-  height: 25px;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  margin: 36px 5px 0;
-}
-
-header.docs-header a#github-link {
-  margin-right: 32px;
-}
-
-.container {
-  margin-top: 100px;
-}
+/* ---- Navigation ---- */
 
 nav {
   position: fixed;
@@ -117,12 +105,226 @@ nav {
   overflow: auto;
 }
 
-.params .name,
-.props .name,
-.name code {
-  color: #e91e63;
+nav ul a,
+nav ul a:visited,
+nav ul a:active {
+  color: var(--text-muted);
+  transition: color 0.15s ease;
+}
+
+nav ul a:hover {
+  color: var(--accent-primary);
+}
+
+/* ---- Tables ---- */
+
+thead,
+th {
+  color: var(--text-strong);
+  background-color: #080e18;
+}
+
+/* ---- Header ---- */
+
+header.docs-header {
+  padding: 10px;
+  height: 80px;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+
+  background: linear-gradient(
+    180deg,
+    rgba(11, 18, 32, 0.95),
+    rgba(11, 18, 32, 0.85)
+  );
+
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--border-soft);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+}
+
+header.docs-header img {
+  height: 62px;
+  position: absolute;
+  top: 9px;
+  left: 12px;
+}
+
+header.docs-header label {
+  font-size: 20px;
+  margin-left: 110px;
+  line-height: 60px;
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+/* ---- Header Icons ---- */
+
+header.docs-header a#extensions-link,
+header.docs-header a#github-link,
+header.docs-header a#codepen-link {
+  float: right;
+  height: 24px;
+  margin: 18px 10px 0;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+header.docs-header a#github-link,
+header.docs-header a#codepen-link {
+  width: 24px;
+  background-position: center;
+  background-size: contain;
+}
+
+header.docs-header a:hover {
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+header.docs-header a#github-link {
+  margin-right: 28px;
+}
+
+/* ---- Layout ---- */
+
+.container {
+  margin-top: 100px;
 }
 
 #main {
   min-height: calc(100vh - 151px);
+}
+
+@media (max-width: 1024px) {
+  nav {
+    right: 0;
+    top: 80px;
+    max-height: calc(100vh - 100px);
+    padding-right: 8px;
+  }
+
+  header.docs-header label {
+    margin-left: 100px;
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  /* ---- Header ---- */
+
+  header.docs-header {
+    height: 56px;
+    padding: 8px;
+  }
+
+  header.docs-header img {
+    height: 40px;
+    top: 8px;
+    left: 8px;
+  }
+
+  header.docs-header label {
+    margin-left: 56px;
+    font-size: 16px;
+    line-height: 56px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  header.docs-header a#extensions-link,
+  header.docs-header a#github-link,
+  header.docs-header a#codepen-link {
+    margin-top: 16px;
+    height: 22px;
+  }
+
+  header.docs-header a#github-link,
+  header.docs-header a#codepen-link {
+    width: 22px;
+  }
+
+  /* ---- Layout ---- */
+
+  .container {
+    margin-top: 80px;
+    padding: 0 12px;
+  }
+
+  #main {
+    min-height: auto;
+    width: 100%;
+  }
+
+  /* ---- Navigation ---- */
+
+  nav {
+    position: static;
+    width: 100%;
+    max-height: none;
+    margin-bottom: 24px;
+    padding: 12px;
+    background: var(--bg-panel);
+    border: 1px solid var(--border-soft);
+    border-radius: 8px;
+  }
+
+  nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  nav ul li {
+    list-style: none;
+  }
+
+  nav ul a {
+    font-size: 14px;
+  }
+
+  /* ---- Typography ---- */
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 20px;
+  }
+
+  .page-title {
+    font-size: 18px;
+  }
+
+  /* ---- Code ---- */
+
+  .source {
+    overflow-x: auto;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  header.docs-header label {
+    display: none;
+  }
+
+  header.docs-header a#extensions-link,
+  header.docs-header a#github-link,
+  header.docs-header a#codepen-link {
+    margin: 16px 6px 0;
+  }
+
+  nav ul {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .source {
+    border-radius: 6px;
+  }
 }

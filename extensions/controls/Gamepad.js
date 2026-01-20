@@ -1,3 +1,7 @@
+/**
+ * Gamepad input handling
+ * @class Gamepad
+ */
 export class Gamepad {
   get gamepads() {
     return navigator.getGamepads

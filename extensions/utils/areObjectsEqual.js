@@ -1,28 +1,35 @@
+/**
+ * Deeply compares two objects for equality
+ * @param {object} a The first object to compare
+ * @param {object} b The second object to compare
+ * @returns {boolean} True if the objects are equal, otherwise false
+ */
 export const areObjectsEqual = (a, b) => {
+  if (a === b) return true;
+
   if (typeof a !== typeof b) return false;
 
-  if (typeof a !== "object") return a === b;
+  if (typeof a !== "object" || a === null || b === null) return false;
 
-  const ap = Object.getOwnPropertyNames(a),
-    bp = Object.getOwnPropertyNames(b);
+  const aProps = Object.getOwnPropertyNames(a),
+    bProps = Object.getOwnPropertyNames(b);
 
-  if (ap.length !== bp.length) return false;
+  if (aProps.length !== bProps.length) return false;
 
-  let pn,
-    av,
-    bv,
+  let propName,
+    aPropValue,
+    bPropValue,
     subeq,
-    i = ap.length;
-  while ((pn = ap[--i])) {
-    av = a[pn];
-    bv = b[pn];
+    i = aProps.length;
+  while ((propName = aProps[--i])) {
+    aPropValue = a[propName];
+    bPropValue = b[propName];
 
-    if (av !== bv) {
+    if (aPropValue !== bPropValue) {
       subeq = false;
 
-      if (typeof av === "object" && typeof bv === "object")
-        subeq = areObjectsEqual(av, bv);
-
+      if (typeof aPropValue === "object" && typeof bPropValue === "object")
+        subeq = areObjectsEqual(aPropValue, bPropValue);
       if (!subeq) return false;
     }
   }

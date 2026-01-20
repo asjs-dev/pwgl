@@ -1,10 +1,15 @@
-import { collisionDetection } from "./collisionDetection";
+import { areTwoRectsCollided } from "./collisionDetection";
 import { getRandom } from "./getRandom";
-import { gridMapping } from "./gridMapping";
+import { vectorToCoord, coordToVector } from "./gridMapping";
 
+/**
+ * Generates a dungeon layout by randomly placing rooms and resolving collisions
+ * @param {number} iterations The number of rooms to attempt to place
+ * @param {Array} sampleRooms An array of room templates to use for placement
+ * @returns {{width: number, height: number, data: Array}} The generated dungeon layout
+ */
 export const generateDungeon = (iterations, sampleRooms) => {
-  const { vectorToCoord, coordToVector } = gridMapping,
-    directions = [
+  const directions = [
       { x: 1, y: 0 },
       { x: 1, y: 1 },
       { x: 0, y: 1 },
@@ -34,7 +39,7 @@ export const generateDungeon = (iterations, sampleRooms) => {
 
       for (const roomToTest of rooms) {
         if (
-          collisionDetection.areTwoRectsCollided(
+          areTwoRectsCollided(
             {
               x: roomToTest.x,
               y: roomToTest.y,

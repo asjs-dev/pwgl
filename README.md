@@ -271,3 +271,264 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
   new Application();
 });
 ```
+
+---
+
+## Core Library Architecture
+
+PWGL is organized into modular components within the `src/` directory, each responsible for specific functionality in the 2D WebGL rendering pipeline.
+
+### Utils (`src/utils/`)
+
+Low-level utilities providing WebGL context management and helper functions.
+
+#### **Context** (`Context.js`)
+Manages the WebGL2 rendering context and canvas lifecycle.
+- Canvas creation and initialization
+- WebGL2 context management with fallback detection
+- Texture tracking and resource management
+- Context loss/restoration handling
+- Canvas size configuration
+
+#### **Buffer** (`Buffer.js`)
+Wraps WebGL buffer objects for efficient vertex and index data management.
+- Vertex buffer object (VBO) handling
+- Index buffer management
+- Dynamic buffer updates
+- Data type conversions
+
+#### **Utils** (`Utils.js`)
+General-purpose utilities and initialization functions.
+- `initApplication()` - Detect WebGL2 support and bootstrap the application
+- Constants and configuration defaults
+- Helper functions for color, matrix, and data manipulation
+
+### Data (`src/data/`)
+
+Data structures and properties for rendering state management.
+
+#### **BlendMode** (`BlendMode.js`)
+Enum and constants for blend modes (NORMAL, ADD, MULTIPLY, SCREEN, etc.)
+- Determines how pixels are combined when overlapping
+- Supports all standard WebGL blend operations
+
+#### **Texture** (`data/texture/Texture.js`)
+Represents 2D textures loaded from images, canvas, or video elements.
+- Automatic texture binding and management
+- Supports filtering modes (LINEAR, NEAREST)
+- Mipmap generation
+- Video texture streaming
+
+#### **Framebuffer** (`data/texture/Framebuffer.js`)
+Off-screen rendering target for advanced effects.
+- Used for filter chains and custom rendering passes
+- Supports multiple color attachments
+- Enables render-to-texture workflows
+
+#### **TextureInfo** (`data/texture/TextureInfo.js`)
+Metadata about textures including dimensions and format information.
+
+#### **Properties** (`data/props/`)
+Configuration objects for transformations and visual properties:
+- **BaseTransformProps** - Position, rotation, scale, anchor point
+- **ColorProps** - RGBA color values
+- **TextureTransformProps** - Texture tiling, rotation, offset
+- **DistortionProps** - Image distortion parameters
+- **TextureCrop** - Crop region for texture sampling
+
+### Display (`src/display/`)
+
+Visual elements and scene graph nodes.
+
+#### **Item** (`Item.js`)
+Base class for all renderable objects with transform properties.
+- Position (`x`, `y`)
+- Rotation and scale
+- Visibility toggling
+- Anchor point for rotation and scaling
+- Hierarchical parent-child relationships
+
+#### **BaseDrawable** (`BaseDrawable.js`)
+Abstract base for renderable elements with rendering-specific properties.
+- Rendering type identification
+- Blend mode management
+- Color tinting
+- Matrix cache for performance
+
+#### **Container** (`Container.js`)
+Hierarchical node for organizing display objects.
+- Add/remove child elements
+- Recursive rendering of children
+- Transform inheritance
+- Bounds calculation
+
+#### **Image** (`Image.js`)
+Textured sprite with advanced visual properties.
+- Texture mapping with UV coordinates
+- Blend modes and tint effects
+- Texture transformations (scale, rotation, offset)
+- Texture cropping
+- Distortion effects
+
+#### **AnimatedImage** (`AnimatedImage.js`)
+Image with frame-based animation support.
+- Sprite sheet animation
+- Frame sequencing
+- Playback control (play, pause, stop)
+- Frame rate configuration
+
+#### **Light** (`Light.js`)
+Dynamic 2D light source for realistic lighting.
+- Point and directional lighting
+- Attenuation and falloff
+- Color and intensity
+- Shadows calculation
+
+#### **StageContainer** (`StageContainer.js`)
+Root container for the scene graph with camera support.
+- Defines the visible area
+- Coordinate transformation
+- Viewport management
+
+### Renderer (`src/renderer/`)
+
+Rendering pipeline and frame composition.
+
+#### **BaseRenderer** (`BaseRenderer.js`)
+Abstract base for all rendering operations.
+- WebGL state management
+- Matrix operations
+- Shader program linking
+
+#### **BatchRenderer** (`BatchRenderer.js`)
+High-performance batch rendering system for optimal GPU utilization.
+- Dynamic batching of geometry
+- Reduces draw calls significantly (10,000+ elements at 60fps)
+- Automatic batch splitting
+- Texture atlas support
+
+#### **Stage2D** (`Stage2D.js`)
+Main 2D rendering engine with scene graph management.
+- Renders hierarchical display objects
+- Viewport management
+- Interactive element picking (mouse/touch)
+- Event propagation (click, hover, drag)
+- Supports stable fps rendering at high element counts
+
+#### **FilterRenderer** (`FilterRenderer.js`)
+Post-processing effects chain.
+- Applies sequential filters to rendered output
+- Offscreen rendering to framebuffers
+- Multiple filter composition
+- Screen-space effects
+
+#### **LightRenderer** (`LightRenderer.js`)
+Specialized renderer for dynamic lighting and shadows.
+- Real-time shadow map generation
+- Soft shadow rendering
+- Multiple light support
+- Optimized light frustum culling
+
+#### **NormalMapRenderer** (`NormalMapRenderer.js`)
+Generates normal maps for surface detail and lighting calculations.
+- Converts height maps to normal maps
+- Real-time generation
+- Used for advanced lighting techniques
+
+#### **AmbientOcclusionMapRenderer** (`AmbientOcclusionMapRenderer.js`)
+Generates ambient occlusion maps for realistic shadowing.
+- Screen-space ambient occlusion (SSAO)
+- Real-time computation
+- Enhances visual depth
+
+### Filters (`src/filters/`)
+
+Post-processing effects and image manipulation filters.
+
+#### **BaseFilter** (`BaseFilter.js`)
+Abstract base for all filter implementations.
+- Intensity parameter
+- On/off toggling
+- Uniform value storage
+
+#### **Specialized Filter Base Classes:**
+- **BaseKernelFilter** - Convolution filters (3x3, 5x5 kernels)
+- **BaseSamplingFilter** - Sampling-based effects (blur, bokeh)
+- **BaseTextureFilter** - Texture-dependent effects
+
+#### **Available Filters:**
+
+| Filter | Purpose |
+| --- | --- |
+| **BlurFilter** | Gaussian blur with adjustable radius |
+| **PixelateFilter** | Pixelation/mosaic effect |
+| **EdgeDetectFilter** | Edge detection (Sobel operator) |
+| **SharpenFilter** | Image sharpening/unsharp mask |
+| **GrayscaleFilter** | Desaturate to grayscale |
+| **SepiaFilter** | Warm vintage tone |
+| **InvertFilter** | Color inversion |
+| **SaturateFilter** | Increase/decrease saturation |
+| **BrightnessContrastFilter** | Brightness and contrast adjustment |
+| **GammaFilter** | Gamma correction |
+| **TintFilter** | Color overlay tinting |
+| **ColorLimitFilter** | Posterization/color reduction |
+| **VignetteFilter** | Dark corners vignette effect |
+| **RainbowFilter** | Chromatic rainbow shift |
+| **DisplacementFilter** | Vertex displacement mapping |
+| **MaskFilter** | Selective region masking |
+| **ChromaticAberrationFilter** | RGB channel separation effect |
+| **GlowFilter** | Bloom/glow effect |
+
+### Geometry (`src/geom/`)
+
+Mathematical types and utilities for geometric calculations.
+
+#### **Matrix3Utilities** (`Matrix3Utilities.js`)
+3x3 matrix operations for 2D transformations.
+- Matrix multiplication
+- Inverse calculation
+- Identity matrix
+- Efficient transformation composition
+
+#### **PointType** (`PointType.js`)
+Point/Vector representation with methods.
+- 2D coordinates
+- Distance calculations
+- Vector operations
+
+#### **RectangleType** (`RectangleType.js`)
+Rectangle/Bounding box representation.
+- Intersection testing
+- Containment checking
+- Area calculations
+
+---
+
+## Rendering Pipeline
+
+The typical rendering flow in PWGL:
+
+1. **Setup** - Create Context, Stage2D, and display objects
+2. **Update** - Modify transforms, properties, and states
+3. **Render** - Call `stage2DRenderer.render()` each frame
+4. **Post-Process** - Apply filters via FilterRenderer (optional)
+5. **Display** - Canvas composites to screen
+
+## Performance Tips
+
+- Use **batch rendering** by grouping similar objects
+- Reuse **textures** and **framebuffers**
+- Apply **filters selectively** only when needed
+- Use **WebGL2 features** for optimization
+- Consider **frustum culling** for large scenes
+- Monitor **draw calls** using browser DevTools
+
+## Browser Support
+
+- **Modern browsers** with WebGL2 support: Chrome, Firefox, Edge, Safari (11+)
+- **Fallback** to WebGL1 with graceful degradation
+- **Mobile support** on iOS Safari and Android Chrome
+
+## Extensions
+
+For additional utilities, input handling, audio, and convenience functions, see the [PWGL Extensions documentation](./extensions/).

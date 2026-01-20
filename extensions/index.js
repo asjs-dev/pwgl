@@ -1,9 +1,9 @@
-import { FPS } from "./FPS";
+import { FPS, getFPS } from "./utils/FPS";
 import { PressState } from "./controls/PressState";
 import { Mouse } from "./controls/Mouse";
 import { Keyboard } from "./controls/Keyboard";
 import { Gamepad } from "./controls/Gamepad";
-import { DataObserver } from "./DataObserver";
+import { createDataObserver } from "./utils/dataObserver";
 import { crossFadeAudioVolumes, fadeAudioVolume } from "./audio/utils";
 import { AudioItem } from "./audio/AudioItem";
 import { AudioMixer } from "./audio/AudioMixer";
@@ -12,65 +12,90 @@ import { AnimatedWater } from "./display/AnimatedWater";
 import { areObjectsEqual } from "./utils/areObjectsEqual";
 import { clamp } from "./utils/clamp";
 import { clone } from "./utils/clone";
-import { collisionDetection } from "./utils/collisionDetection";
+import {
+  areTwoLinesCollided,
+  areTwoRectsCollided,
+  distanceBetweenPointAndLine,
+  lineToLineIntersection,
+  rectToRectIntersection,
+} from "./utils/collisionDetection";
 import { cross } from "./utils/cross";
 import { dot } from "./utils/dot";
 import { enterFrame } from "./utils/enterFrame";
 import { enumCheck } from "./utils/enumCheck";
 import { fract } from "./utils/fract";
-import { getFPS } from "./utils/getFPS";
 import { nthCall } from "./utils/nthCall";
-import { random } from "./utils/rand";
+import { hashNoise2D, stepNoise } from "./utils/random";
 import { mix } from "./utils/mix";
 import { generateDungeon } from "./utils/dungeon";
 import { noop } from "./utils/noop";
 import { noopReturnsWith } from "./utils/noopReturnsWith";
 import { arraySet } from "./utils/arraySet";
 import { removeFromArray } from "./utils/removeFromArray";
-import { gridMapping } from "./utils/gridMapping";
+import { coordToVector, vectorToCoord } from "./utils/gridMapping";
 import { getRandom } from "./utils/getRandom";
 
 window.PWGLExtensions = window.AGLExtensions = {
   version: "{{appVersion}}",
 
-  FPS,
+  controls: {
+    PressState,
+    Mouse,
+    Keyboard,
+    Gamepad,
+  },
 
-  DataObserver,
+  audio: {
+    AudioItem,
+    AudioMixer,
+    fadeAudioVolume,
+    crossFadeAudioVolumes,
+  },
 
-  PressState,
-  Mouse,
-  Keyboard,
-  Gamepad,
+  display: {
+    AnimatedWater,
+  },
 
-  AudioItem,
-  AudioMixer,
-  fadeAudioVolume,
-  crossFadeAudioVolumes,
+  renderer: {
+    SmoothLight,
+  },
 
-  SmoothLight,
-
-  AnimatedWater,
-
-  areObjectsEqual,
-  clamp,
-  mix,
-  clone,
-  collisionDetection,
-  cross,
-  dot,
-  enterFrame,
-  enumCheck,
-  fract,
-  getFPS,
-  nthCall,
-  random,
-  generateDungeon,
-  noop,
-  noopReturnsWith,
-  arraySet,
-  removeFromArray,
-  gridMapping,
-  getRandom,
+  utils: {
+    FPS,
+    createDataObserver,
+    areObjectsEqual,
+    clamp,
+    mix,
+    clone,
+    collisionDetection: {
+      distanceBetweenPointAndLine,
+      areTwoLinesCollided,
+      lineToLineIntersection,
+      areTwoRectsCollided,
+      rectToRectIntersection,
+    },
+    cross,
+    dot,
+    enterFrame,
+    enumCheck,
+    fract,
+    getFPS,
+    nthCall,
+    generateDungeon,
+    noop,
+    noopReturnsWith,
+    arraySet,
+    removeFromArray,
+    gridMapping: {
+      coordToVector,
+      vectorToCoord,
+    },
+    random: {
+      hashNoise2D,
+      stepNoise,
+      getRandom,
+    },
+  },
 };
 
 console.log(

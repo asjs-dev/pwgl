@@ -22,11 +22,11 @@
     "dist"
   ],
   "scripts": {
-    "docs": "./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json -R README.md",
+    "docs": "./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json && ./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.extensions.conf.json && node scripts/clean-folder.js",
     "build:pwgl": "vite build --config vite.config.js",
     "build:ext": "vite build --config extensions/vite.config.js",
-    "build:asjs": "./build.sh",
-    "build:all": "npm run build:pwgl && npm run build:ext && npm run build:asjs"
+    "build:asjs": "node scripts/build-pwgl.js",
+    "build:all": "npm run build:pwgl && npm run build:ext && npm run build:asjs && npm run docs"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.3",

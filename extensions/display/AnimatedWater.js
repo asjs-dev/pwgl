@@ -1,3 +1,7 @@
+/**
+ * Animated water effect using a noise texture for displacement
+ * @class AnimatedWater
+ */
 export const AnimatedWater = window.AGL
   ? class AnimatedWater extends AGL.Container {
       constructor(noiseTexture, speed = 1, level = 0, scale = 1) {
@@ -36,6 +40,10 @@ export const AnimatedWater = window.AGL
         this._wave = 0;
       }
 
+      /**
+       * Gets or sets the speed of the water animation
+       * @type {number}
+       */
       get speed() {
         return this._speed;
       }
@@ -44,6 +52,10 @@ export const AnimatedWater = window.AGL
         this._speed = v;
       }
 
+      /**
+       * Gets or sets the scale of the water displacement
+       * @type {number}
+       */
       get scale() {
         return this._scale;
       }
@@ -54,6 +66,10 @@ export const AnimatedWater = window.AGL
         this._waterDisplacementImageSmall.color.set(0, 0.06 * v, 0.75, 1);
       }
 
+      /**
+       * Gets or sets the water level (green channel of the backdrop)
+       * @type {number}
+       */
       get level() {
         return this._level;
       }
@@ -63,6 +79,11 @@ export const AnimatedWater = window.AGL
         this._backdropImage.color.g = v;
       }
 
+      /**
+       * Sets the size of the animated water effect
+       * @param {number} w The width
+       * @param {number} h The height
+       */
       setSize(w, h) {
         this._width = w;
         this._height = h;
@@ -86,6 +107,10 @@ export const AnimatedWater = window.AGL
           this._waterDisplacementImageLarge.textureTransform.repeatX * ratio;
       }
 
+      /**
+       * Renders the animated water effect
+       * @param {number} delay The time delay since the last render
+       */
       render(delay) {
         const waveSpeedX = this._speed * delay,
           waveSpeedY = waveSpeedX * 2;

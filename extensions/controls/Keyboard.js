@@ -1,5 +1,9 @@
 import { PressState } from "./PressState";
 
+/**
+ * Keyboard input handling
+ * @class Keyboard
+ */
 export class Keyboard extends PressState {
   constructor(target) {
     super();

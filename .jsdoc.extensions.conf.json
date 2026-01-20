@@ -1,0 +1,25 @@
+{
+  "plugins": [],
+  "recurseDepth": 10,
+  "opts": {
+    "recurse": true,
+    "destination": "./docs/extensions/"
+  },
+  "source": {
+    "include": ["extensions", "extensions/README.md"],
+    "includePattern": ".+\\.js(doc|x)?$",
+    "excludePattern": "node_modules"
+  },
+  "sourceType": "module",
+  "tags": {
+    "allowUnknownTags": true,
+    "dictionaries": ["jsdoc", "closure"]
+  },
+  "templates": {
+    "default": {
+      "layoutFile": "./docs/assets/custom.extensions.tmpl"
+    },
+    "cleverLinks": false,
+    "monospaceLinks": false
+  }
+}

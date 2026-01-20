@@ -1,5 +1,9 @@
 import { PressState } from "./PressState";
 
+/**
+ * Mouse input handling
+ * @class Mouse
+ */
 export class Mouse extends PressState {
   constructor(target) {
     super();

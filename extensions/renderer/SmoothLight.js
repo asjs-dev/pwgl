@@ -7,7 +7,8 @@ import { noop } from "../utils/noop";
  */
 
 /**
- * SmoothLight
+ * Renders smooth light effects using AGL.LightRenderer and AGL.BlurFilter
+ * @class SmoothLight
  * @extends {AGL.Image}
  */
 
