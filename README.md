@@ -1,6 +1,7 @@
 # PWGL – 2D WebGL2 JavaScript Framework
 
-A JavaScript framework for creating **2D WebGL2 applications**.
+![PWGL](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/logo.v2x0.5.png?raw=true)
+PWGL (Programmable WebGL) is a JavaScript framework for creating **2D WebGL2 applications**.
 
 ![Game Demo](https://github.com/asjs-dev/pwgl/blob/main/docs/assets/game.png?raw=true)
 
