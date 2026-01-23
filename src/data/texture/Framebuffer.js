@@ -77,8 +77,8 @@ export class Framebuffer extends TextureInfo {
    * @param {boolean} forceBind
    */
   use(gl, id, forceBind) {
-    if (this.$currentAglId < gl.agl_id) {
-      this.$currentAglId = gl.agl_id;
+    if (this.$currentAglId < gl.gl_id) {
+      this.$currentAglId = gl.gl_id;
       this._baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
 

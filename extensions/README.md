@@ -130,7 +130,7 @@ Advanced spatial collision algorithms for game development:
 - **`random()`** - Seeded random number generation
 - **`hashNoise2D(x, y)`** - 2D hash noise function for terrain generation
 - **`stepNoise(value, steps)`** - Quantized noise for stylized effects
-- **`getRandom(array)`** - Get random element from array
+- **`getRandomFrom(array)`** - Get random element from array
 
 ### Animation and Timing
 

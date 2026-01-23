@@ -25,7 +25,6 @@ import { enterFrame } from "./utils/enterFrame";
 import { enumCheck } from "./utils/enumCheck";
 import { fract } from "./utils/fract";
 import { nthCall } from "./utils/nthCall";
-import { hashNoise2D, stepNoise } from "./utils/random";
 import { mix } from "./utils/mix";
 import { generateDungeon } from "./utils/dungeon";
 import { noop } from "./utils/noop";
@@ -33,7 +32,9 @@ import { noopReturnsWith } from "./utils/noopReturnsWith";
 import { arraySet } from "./utils/arraySet";
 import { removeFromArray } from "./utils/removeFromArray";
 import { coordToVector, vectorToCoord } from "./utils/gridMapping";
-import { getRandom } from "./utils/getRandom";
+import { getRandomFrom } from "./utils/getRandomFrom";
+import { hashNoise2D } from "./utils/hashNoise2D";
+import { stepNoise } from "./utils/stepNoise";
 
 window.PWGLExtensions = window.AGLExtensions = {
   version: "{{appVersion}}",
@@ -91,14 +92,14 @@ window.PWGLExtensions = window.AGLExtensions = {
       vectorToCoord,
     },
     random: {
+      getRandomFrom,
       hashNoise2D,
       stepNoise,
-      getRandom,
     },
   },
 };
 
 console.log(
   `%cPWGL Extensions v${AGLExtensions.version}\nhttps:\/\/github.com/asjs-dev/pwgl`,
-  "background:#222;color:#0F0"
+  "background:#222;color:#0F0",
 );

@@ -2,33 +2,33 @@
  * Animated water effect using a noise texture for displacement
  * @class AnimatedWater
  */
-export const AnimatedWater = window.AGL
-  ? class AnimatedWater extends AGL.Container {
+export const AnimatedWater = window.PWGL
+  ? class AnimatedWater extends PWGL.Container {
       constructor(noiseTexture, speed = 1, level = 0, scale = 1) {
         super();
 
         this._width = 1;
         this._height = 1;
 
-        const heightMapTexture = AGL.Texture.loadImage(noiseTexture);
-        heightMapTexture.magFilter = AGL.Const.LINEAR;
+        const heightMapTexture = PWGL.Texture.loadImage(noiseTexture);
+        heightMapTexture.magFilter = PWGL.Const.LINEAR;
 
-        this._backdropImage = new AGL.Image();
+        this._backdropImage = new PWGL.Image();
         this.addChild(this._backdropImage);
 
-        this._waterDisplacementImageLarge = new AGL.Image(heightMapTexture);
-        this._waterDisplacementImageLarge.blendMode = AGL.BlendMode.ADD;
+        this._waterDisplacementImageLarge = new PWGL.Image(heightMapTexture);
+        this._waterDisplacementImageLarge.blendMode = PWGL.BlendMode.ADD;
         this._waterDisplacementImageLarge.textureTransform.repeatX = 0.7;
         this._waterDisplacementImageLarge.tintType =
-          AGL.Image.TintType.GRAYSCALE;
+          PWGL.Image.TintType.GRAYSCALE;
         this.addChild(this._waterDisplacementImageLarge);
 
-        this._waterDisplacementImageSmall = new AGL.Image(heightMapTexture);
-        this._waterDisplacementImageSmall.blendMode = AGL.BlendMode.ADD;
+        this._waterDisplacementImageSmall = new PWGL.Image(heightMapTexture);
+        this._waterDisplacementImageSmall.blendMode = PWGL.BlendMode.ADD;
         this._waterDisplacementImageSmall.textureTransform.repeatX = 4;
         this._waterDisplacementImageSmall.textureTransform.repeatRandomRotation = 1;
         this._waterDisplacementImageSmall.tintType =
-          AGL.Image.TintType.GRAYSCALE;
+          PWGL.Image.TintType.GRAYSCALE;
         this.addChild(this._waterDisplacementImageSmall);
 
         this.speed = speed;

@@ -205,7 +205,7 @@ export class Context {
       this._config.contextAttributes
     ));
 
-    gl.agl_id = ++this.contextId;
+    gl.gl_id = ++this.contextId;
 
     const loseContextExt = gl.getExtension("WEBGL_lose_context");
     if (loseContextExt) {

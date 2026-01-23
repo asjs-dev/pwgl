@@ -1,5 +1,5 @@
 import { areTwoRectsCollided } from "./collisionDetection";
-import { getRandom } from "./getRandom";
+import { getRandomFrom } from "./getRandomFrom";
 import { vectorToCoord, coordToVector } from "./gridMapping";
 
 /**
@@ -26,8 +26,8 @@ export const generateDungeon = (iterations, sampleRooms) => {
     maxY = -Infinity;
 
   for (let i = 0; i < iterations; i++) {
-    const direction = getRandom(directions),
-      randomRoom = clone(getRandom(sampleRooms));
+    const direction = getRandomFrom(directions),
+      randomRoom = clone(getRandomFrom(sampleRooms));
 
     if (Math.random() < 0.5) randomRoom.data.reverse();
 
@@ -51,7 +51,7 @@ export const generateDungeon = (iterations, sampleRooms) => {
               y: room.y,
               width: room.x + room.width,
               height: room.y + room.height,
-            }
+            },
           )
         ) {
           const rnd = Math.random() - 0.5,

@@ -2,6 +2,13 @@ import { TextureInfo } from "./TextureInfo";
 
 const _placeholderImage = document.createElement("img");
 
+const create = (tag, src) => {
+  const element = document.createElement(tag);
+  element.crossOrigin = "anonymous";
+  element.src = src;
+  return element;
+};
+
 /**
  * Texture
  * @extends {TextureInfo}
@@ -84,8 +91,8 @@ export class Texture extends TextureInfo {
    * @param {number} renderTime
    */
   use(gl, id, forceBind, renderTime) {
-    if (this.$currentAglId < gl.agl_id) {
-      this.$currentAglId = gl.agl_id;
+    if (this.$currentAglId < gl.gl_id) {
+      this.$currentAglId = gl.gl_id;
       this._baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
     } else if (
@@ -150,11 +157,8 @@ export class Texture extends TextureInfo {
  * @param {boolean} shouldUpdate
  * @returns {Texture}
  */
-Texture.loadImage = (src, shouldUpdate) => {
-  const image = document.createElement("img");
-  image.src = src;
-  return new Texture(image, shouldUpdate);
-};
+Texture.loadImage = (src, shouldUpdate) =>
+  new Texture(create("img", src), shouldUpdate);
 
 /**
  * Create a new Texture from a video source
@@ -162,8 +166,4 @@ Texture.loadImage = (src, shouldUpdate) => {
  * @param {HTMLVideoElement} src
  * @returns {Texture}
  */
-Texture.loadVideo = (src) => {
-  const video = document.createElement("video");
-  video.src = src;
-  return new Texture(video);
-};
+Texture.loadVideo = (src) => new Texture(create("video", src));

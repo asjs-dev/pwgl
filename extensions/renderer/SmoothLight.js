@@ -7,13 +7,13 @@ import { noop } from "../utils/noop";
  */
 
 /**
- * Renders smooth light effects using AGL.LightRenderer and AGL.BlurFilter
+ * Renders smooth light effects using PWGL.LightRenderer and PWGL.BlurFilter
  * @class SmoothLight
- * @extends {AGL.Image}
+ * @extends {PWGL.Image}
  */
 
-export const SmoothLight = window.AGL
-  ? class SmoothLight extends AGL.Image {
+export const SmoothLight = window.PWGL
+  ? class SmoothLight extends PWGL.Image {
       /**
        * Creates an instance of SmoothLight.
        * @constructor
@@ -22,13 +22,13 @@ export const SmoothLight = window.AGL
       constructor(config = {}) {
         super();
 
-        this._framebuffer = new AGL.Framebuffer();
+        this._framebuffer = new PWGL.Framebuffer();
 
-        this.lightRenderer = new AGL.LightRenderer(config);
+        this.lightRenderer = new PWGL.LightRenderer(config);
 
-        this._filter = new AGL.BlurFilter();
+        this._filter = new PWGL.BlurFilter();
 
-        this.filterRenderer = new AGL.FilterRenderer({
+        this.filterRenderer = new PWGL.FilterRenderer({
           context: this.lightRenderer.context,
           sourceTexture: this._framebuffer,
           filters: [this._filter],
@@ -40,9 +40,9 @@ export const SmoothLight = window.AGL
           this.lightRenderer
         );
 
-        this.blendMode = AGL.BlendMode.SHADOW;
+        this.blendMode = PWGL.BlendMode.SHADOW;
 
-        this._filterFramebuffer = new AGL.Framebuffer();
+        this._filterFramebuffer = new PWGL.Framebuffer();
         this.texture = this._filterFramebuffer;
 
         this.blur = typeof config.blur === "number" ? config.blur : 1;

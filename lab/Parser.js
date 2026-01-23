@@ -14,7 +14,7 @@ const _getAllProperties = (obj) => {
   return allProps;
 };
 
-const _getClassInstance = (type) => new (AGL[type] || window[type])();
+const _getClassInstance = (type) => new (PWGL[type] || window[type])();
 
 export const Parser = {
   get: (obj, stack = []) => {

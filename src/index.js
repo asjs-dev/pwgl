@@ -44,6 +44,7 @@ import { GammaFilter } from "./filters/GammaFilter";
 import { BlurFilter } from "./filters/BlurFilter";
 import { GlowFilter } from "./filters/GlowFilter";
 import { ChromaticAberrationFilter } from "./filters/ChromaticAberrationFilter";
+import { Text } from "./display/Text";
 
 window.PWGL = window.AGL = {
   version: "{{appVersion}}",
@@ -64,6 +65,7 @@ window.PWGL = window.AGL = {
   AnimatedImage,
   Container,
   Image,
+  Text,
 
   BaseRenderer,
   BatchRenderer,
