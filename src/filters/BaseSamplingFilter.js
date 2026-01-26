@@ -128,5 +128,5 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop = "") => "" +
         "vl[2]" + 
       ");" +
 
-    "oCl=dst*cl+(1.-drndst)*oCl;" +
+    "oCl=dst*cl+(1.-dst)*oCl;" +
   "}";
