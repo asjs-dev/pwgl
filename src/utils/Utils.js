@@ -90,6 +90,7 @@ export const Utils = {
     },
     RANDOM: 
       "float rand(vec2 p,float s){" + 
+        "p=mod(p,vec2(1e4));" +
         "return fract(sin((p.x*12.9898+p.y*78.233)*s)*43758.5453);" +
       "}" +
       "float rand(vec2 p){" + 
