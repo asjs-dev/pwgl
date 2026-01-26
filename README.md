@@ -9,13 +9,13 @@ PWGL (Programmable WebGL) is a JavaScript framework for creating **2D WebGL2 app
 
 ## Demos
 
-- [Top View Game Demo](https://asjs-dev.github.io/pwgl/example/shGameDemo.html)
-- [Custom Renderer - Wolfenstein 3D](https://asjs-dev.github.io/pwgl/example/wolfenstein.html)
-- [Card Game Demo](https://asjs-dev.github.io/pwgl/example/cardGameDemo.html)
-- [Displacement Filter](https://asjs-dev.github.io/pwgl/example/rainDropsDemo.html)
-- [2D Lights and Shadows](https://asjs-dev.github.io/pwgl/example/lightDemo.html)
-- [Lights, Shadows and Filters](https://asjs-dev.github.io/pwgl/example/boatDemo.html)
-- [Journey](https://asjs-dev.github.io/pwgl/example/journeyDemo.html)
+- [Top View Game Demo](https://asjs-dev.github.io/pwgl/examples/shGameDemo.html)
+- [Custom Renderer - Wolfenstein 3D](https://asjs-dev.github.io/pwgl/examples/wolfenstein.html)
+- [Card Game Demo](https://asjs-dev.github.io/pwgl/examples/cardGameDemo.html)
+- [Displacement Filter](https://asjs-dev.github.io/pwgl/examples/rainDropsDemo.html)
+- [2D Lights and Shadows](https://asjs-dev.github.io/pwgl/examples/lightDemo.html)
+- [Lights, Shadows and Filters](https://asjs-dev.github.io/pwgl/examples/boatDemo.html)
+- [Journey](https://asjs-dev.github.io/pwgl/examples/journeyDemo.html)
 
 ---
 

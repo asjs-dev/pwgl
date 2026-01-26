@@ -22,7 +22,7 @@
     "dist"
   ],
   "scripts": {
-    "docs": "./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json && ./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.extensions.conf.json && node scripts/clean-folder.js",
+    "docs": "./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json && ./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.extensions.conf.json && node scripts/clean-folder.js && node scripts/build-examples.js",
     "build:pwgl": "vite build --config vite.config.js",
     "build:ext": "vite build --config extensions/vite.config.js",
     "build:asjs": "node scripts/build-pwgl.js",

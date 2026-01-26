@@ -36,7 +36,7 @@
     "output": "dist/pwgl.min.js"
   },
   "copyAssets": {
-    "./dist/pwgl.min.js": "./docs/assets/pwgl.latest.min.js",
+    "./dist/pwgl.min.js": "./docs/assets/pwgl.min.js",
     "./dist/pwgl.umd.min.js": "./docs/assets/pwgl.umd.min.js",
     "./dist/pwgl.es.min.js": "./docs/assets/pwgl.es.min.js"
   }

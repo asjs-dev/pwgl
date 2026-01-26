@@ -1,13 +1,31 @@
 <html>
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PWGL - WebGL 2 - Game Demo</title>
+    <!-- Google tag (gtag.js) -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=G-HZMQ56T4JS"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-HZMQ56T4JS");
+    </script>
     <style>
-      html, body {
+      html,
+      body {
         margin: 0;
         padding: 0;
         width: 100vw;
         height: 100vh;
       }
-      
+
       iframe {
         margin: 0;
         padding: 0;
@@ -15,10 +33,11 @@
         height: 100vh;
       }
     </style>
-    <title>PWGL - Game Demo</title>
   </head>
   <body>
     <iframe
+      height="300"
+      style="width: 100%"
       scrolling="no"
       title="WebGL 2 - Game Demo"
       src="https://codepen.io/iroshan/embed/rNMKbWv?default-tab=html%2Cresult&editable=true&theme-id=dark"
@@ -28,7 +47,7 @@
       allowfullscreen="true"
     >
       See the Pen
-      <a href="https://codepen.io/iroshan/pen/rNMKbWv"> WebGL 2 - Game Demo</a>
+      <a href="https://codepen.io/iroshan/pen/rNMKbWv"> WebGL 2 - Game Demo </a>
       by ASJS (<a href="https://codepen.io/iroshan">@iroshan</a>) on
       <a href="https://codepen.io">CodePen</a>.
     </iframe>

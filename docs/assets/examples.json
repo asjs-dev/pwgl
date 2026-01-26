@@ -1,0 +1,37 @@
+[
+  {
+    "title": "WebGL 2 - Ocean (2d lights & shadows)",
+    "id": "NWbzLaE",
+    "file": "boatDemo.html"
+  },
+  {
+    "title": "WebGL 2 - Card Game",
+    "id": "wvELEmN",
+    "file": "cardGameDemo.html"
+  },
+  {
+    "title": "WebGl 2 - Journey",
+    "id": "WNwPVde",
+    "file": "journeyDemo.html"
+  },
+  {
+    "title": "WebGl 2 - Generative art",
+    "id": "vYZjoJB",
+    "file": "lightDemo.html"
+  },
+  {
+    "title": "WebGL 2 - Rain drops",
+    "id": "MWEwYww",
+    "file": "rainDropsDemo.html"
+  },
+  {
+    "title": "WebGL 2 - Game Demo",
+    "id": "rNMKbWv",
+    "file": "shGameDemo.html"
+  },
+  {
+    "title": "WebGL 2 - Wolfenstein 3d Random Dungeon",
+    "id": "Kwzbbza",
+    "file": "wolfenstein.html"
+  }
+]
