@@ -41,6 +41,7 @@ export class FilterRenderer extends BaseRenderer {
       "uFV",
       "uFK",
       "uRT",
+      "uSz",
     ]);
 
     super(config);
@@ -93,6 +94,7 @@ export class FilterRenderer extends BaseRenderer {
     this.$uploadBuffers();
 
     gl.uniform1f(locations.uRT, renderTime % 864e5);
+    gl.uniform2i(locations.uSz, this.$width, this.$height);
 
     this.$useTextureAt(this.sourceTexture, locations.uTx, 0);
 
@@ -171,6 +173,8 @@ export class FilterRenderer extends BaseRenderer {
     "uniform float " +
       "uRT," +
       "uFV[9];" +
+    "uniform ivec2 " +
+      "uSz;" +
     "uniform mat4 " +
       "uFK;" +
     "uniform sampler2D " +
