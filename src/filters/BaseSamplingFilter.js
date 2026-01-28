@@ -21,7 +21,7 @@ export class BaseSamplingFilter extends BaseFilter {
     isRadial = false,
     centerX = 0.5,
     centerY = 0.5,
-    size = 1
+    size = 1,
   ) {
     super(intensityX);
 
@@ -87,14 +87,17 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop = "") => "" +
 
   "if(lngWH>0.){" +
     "float " +
-      "cnt=1.," +
       "rnd=rand(v0.zw)," +
-      "l=clamp(max(wh.x,wh.y)/8.,3.,8.)+4.*rnd," +
-      "ta=RADIANS_360*rnd," +
-      "t=RADIANS_360/l;" +
+      "ta=RADIANS_360*rnd;" +
+
+    "int " +
+      "l=int(clamp(max(wh.x,wh.y)/8.,3.,8.)+4.*rnd);" +
+
+    "float " +
+      "ln=length(wh)," +
+      "t=RADIANS_360/float(l);" +
 
     "vec2 " +
-      "ps," +
       "dr=vec2(cos(ta),sin(ta))," +
       "r=vec2(cos(t),sin(t));" +
 
@@ -105,22 +108,22 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop = "") => "" +
     "ivec2 " +
       "mn=ivec2(Z.xx)," + 
       "mx=ivec2(ts)-1;" +
-
-    "mat2 " + 
-      "rt=mat2(r.x,-r.y,r.y,r.x);" +
       
     beforeLoop +
-    "for(float i=0.;i<l;i++){" +
-      "ps=wh*dr;" +
+    "for(int i=0;i<l;i++){" +
       "clg=texelFetch(uTx,clamp(" + 
-        "f+ivec2(ps)," + 
+        "f+ivec2(wh*dr)," + 
         "mn,mx" +
       "),0);" +
-      "dr*=rt;" +
+      
+      "dr=vec2(" + 
+        "r.x*dr.x-r.y*dr.y," +
+        "r.y*dr.x+r.x*dr.y" +
+      ");" +
+
       inLoop +
     "}" +
     afterLoop +
-    "cl/=cnt;" +
     "float " +
       "dst=mix(" +
         "1.," +

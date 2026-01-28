@@ -9,14 +9,14 @@ export class FilterTextureTransformProps {
   /**
    * Creates an instance of FilterTextureTransformProps.
    * @constructor
-   * @param {BaseFilter} filter
-   * @param {TextureInfo} texture
-   * @param {number} translateX
-   * @param {number} translateY
-   * @param {number} cropX
-   * @param {number} cropY
-   * @param {number} cropWidth
-   * @param {number} cropHeight
+   * @param {BaseFilter} filter - The filter
+   * @param {TextureInfo} texture - The texture
+   * @param {number} translateX - Translate x
+   * @param {number} translateY - Translate y
+   * @param {number} cropX - Crop x
+   * @param {number} cropY - Crop y
+   * @param {number} cropWidth - Crop width
+   * @param {number} cropHeight - Crop height
    */
   constructor(
     filter,

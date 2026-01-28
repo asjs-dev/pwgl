@@ -46,8 +46,8 @@ export class Framebuffer extends TextureInfo {
 
   /**
    * Set size
-   * @param {number} w
-   * @param {number} h
+   * @param {number} w - Width
+   * @param {number} h - Height
    */
   setSize(w, h) {
     this.width = w;
@@ -56,7 +56,7 @@ export class Framebuffer extends TextureInfo {
 
   /**
    * Bind to WebGlContext
-   * @param {WebGLContext} gl
+   * @param {WebGLContext} gl - The WebGL context
    */
   bind(gl) {
     gl.bindFramebuffer(Const.FRAMEBUFFER, this._framebuffer);
@@ -64,7 +64,7 @@ export class Framebuffer extends TextureInfo {
 
   /**
    * Unbind from WebGLContext
-   * @param {WebGLContext} gl
+   * @param {WebGLContext} gl - The WebGL context
    */
   unbind(gl) {
     gl.bindFramebuffer(Const.FRAMEBUFFER, null);
@@ -72,9 +72,9 @@ export class Framebuffer extends TextureInfo {
 
   /**
    * Use TextureInfo
-   * @param {WebGLContext} gl
-   * @param {number} id
-   * @param {boolean} forceBind
+   * @param {WebGLContext} gl - The WebGL context
+   * @param {number} id - The texture id
+   * @param {boolean} forceBind - Force bind
    */
   use(gl, id, forceBind) {
     if (this.$currentAglId < gl.gl_id) {
@@ -101,7 +101,7 @@ export class Framebuffer extends TextureInfo {
     } else if (this._resized) {
       this._resized = false;
       this.useActiveTexture(gl, id);
-    } else if (this._currenActiveId !== id || forceBind)
+    } else if (this._currentActiveId !== id || forceBind)
       this.bindActiveTexture(gl, id);
   }
 

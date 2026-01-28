@@ -55,6 +55,7 @@ export class BaseRenderer {
       "uTx"
     ]);
 
+    // prettier-ignore
     this._elementArrayBuffer = new Buffer(
       "",
       new Uint16Array([0, 1, 3, 2]),
@@ -66,13 +67,15 @@ export class BaseRenderer {
 
     // prettier-ignore
     this._positionBuffer = new Buffer(
-      "aPs", new Float32Array([
+      "aPs",
+      new Float32Array([
         0, 0,
         1, 0,
         1, 1,
         0, 1
       ]),
-      1, 2,
+      1,
+      2,
       Const.ARRAY_BUFFER,
       Const.STATIC_DRAW,
       0
@@ -159,7 +162,7 @@ export class BaseRenderer {
       4,
       Const.UNSIGNED_SHORT,
       0,
-      count
+      count,
     );
   }
 
@@ -172,7 +175,7 @@ export class BaseRenderer {
   $useTextureAt(texture, location, index, forceBind) {
     this.$gl.uniform1i(
       location,
-      this.context.useTextureAt(texture, index, this.$renderTime, forceBind)
+      this.context.useTextureAt(texture, index, this.$renderTime, forceBind),
     );
   }
 
@@ -184,7 +187,7 @@ export class BaseRenderer {
   $useTexture(texture, location, forceBind) {
     this.$gl.uniform1i(
       location,
-      this.context.useTexture(texture, this.$renderTime, forceBind)
+      this.context.useTexture(texture, this.$renderTime, forceBind),
     );
   }
 
@@ -269,13 +272,13 @@ export class BaseRenderer {
     this._program = Utils.createProgram(
       gl,
       shaderHeader + this.$createVertexShader(),
-      shaderHeader + this.$createFragmentShader()
+      shaderHeader + this.$createFragmentShader(),
     );
-    
+
     this.$locations = Utils.getLocationsFor(
       gl,
       this._program,
-      this._config.locations
+      this._config.locations,
     );
 
     this._vao = gl.createVertexArray();

@@ -2,8 +2,8 @@ import { FPS } from "./FPS";
 
 /**
  * Creates an enter frame loop that calls a callback function at a specified FPS limit
- * @param {function} callback The function to call on each frame
- * @param {number} fpsLimit The maximum FPS limit (0 for unlimited)
+ * @param {function} callback - The function to call on each frame
+ * @param {number} fpsLimit - The maximum FPS limit (0 for unlimited)
  * @returns {object} An object with methods to control the loop
  */
 export const enterFrame = (callback, fpsLimit = 0) => {
@@ -61,7 +61,7 @@ export const enterFrame = (callback, fpsLimit = 0) => {
 
   /**
    * Sets the maximum FPS limit
-   * @param {number} fpsLimit The maximum FPS limit (0 for unlimited)
+   * @param {number} fpsLimit - The maximum FPS limit (0 for unlimited)
    */
   scope.setMaxFPS = (fpsLimit) => {
     if (!fpsLimit || fpsLimit <= 0) return scope.clearMaxFPS();

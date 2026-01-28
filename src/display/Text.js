@@ -141,5 +141,7 @@ export class Text extends Image {
 
       ctx.fillText(line, x, y);
     }
+
+    this.texture.updateSize();
   }
 }

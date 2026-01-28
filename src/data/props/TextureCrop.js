@@ -68,7 +68,7 @@ export class TextureCrop {
 
   /**
    * Set all values with a rectangle
-   * @param {Rectangle} rect
+   * @param {Rectangle} rect - The rectangle
    */
   setRect(rect) {
     this.x = rect.x;

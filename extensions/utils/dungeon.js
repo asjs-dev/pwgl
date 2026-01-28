@@ -4,8 +4,8 @@ import { vectorToCoord, coordToVector } from "./gridMapping";
 
 /**
  * Generates a dungeon layout by randomly placing rooms and resolving collisions
- * @param {number} iterations The number of rooms to attempt to place
- * @param {Array} sampleRooms An array of room templates to use for placement
+ * @param {number} iterations - The number of rooms to attempt to place
+ * @param {Array} sampleRooms - An array of room templates to use for placement
  * @returns {{width: number, height: number, data: Array}} The generated dungeon layout
  */
 export const generateDungeon = (iterations, sampleRooms) => {

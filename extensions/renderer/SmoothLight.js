@@ -17,7 +17,7 @@ export const SmoothLight = window.PWGL
       /**
        * Creates an instance of SmoothLight.
        * @constructor
-       * @param {SmoothLightRendererConfig} config
+       * @param {SmoothLightRendererConfig} config - Configuration object
        */
       constructor(config = {}) {
         super();
@@ -70,8 +70,8 @@ export const SmoothLight = window.PWGL
 
       /**
        * Set Renderer Size
-       * @param {number} w
-       * @param {number} h
+       * @param {number} w - Width
+       * @param {number} h - Height
        */
       setSize(w, h) {
         this._width = w;

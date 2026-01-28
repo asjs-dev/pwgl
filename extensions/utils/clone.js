@@ -1,6 +1,6 @@
 /**
  * Deep clones an object or array
- * @param {object|array} from The object or array to clone
+ * @param {object|array} from - The object or array to clone
  * @returns {object|array} The cloned object or array
  */
 export const clone = (from) => {

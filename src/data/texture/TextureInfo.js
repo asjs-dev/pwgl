@@ -17,7 +17,7 @@ export class TextureInfo {
     this.maxMipMapLevel = this.baseMipMapLevel = 0;
     this.type = Const.UNSIGNED_BYTE;
 
-    this.$currentAglId = this._currenActiveId = -1;
+    this.$currentAglId = this._currentActiveId = -1;
     this.$updated = true;
     this.$width = this.$height = 1;
   }
@@ -150,8 +150,8 @@ export class TextureInfo {
 
   /**
    * Use active TextureInfo
-   * @param {WebGLContext} gl
-   * @param {number} id
+   * @param {WebGLContext} gl - The WebGL context
+   * @param {number} id - The texture id
    */
   useActiveTexture(gl, id) {
     this.activeTexture(gl, id);
@@ -160,8 +160,8 @@ export class TextureInfo {
 
   /**
    * Use active TextureInfo after update
-   * @param {WebGLContext} gl
-   * @param {number} id
+   * @param {WebGLContext} gl - The WebGL context
+   * @param {number} id - The texture id
    */
   useActiveTextureAfterUpdate(gl, id) {
     this.activeTexture(gl, id);
@@ -170,29 +170,29 @@ export class TextureInfo {
 
   /**
    * Unbind TextureInfo
-   * @param {WebGLContext} gl
-   * @param {number} id
+   * @param {WebGLContext} gl - The WebGL context
+   * @param {number} id - The texture id
    */
   unbindTexture(gl, id) {
     this.activeTexture(gl, id);
-    this._currenActiveId = -1;
+    this._currentActiveId = -1;
     gl.bindTexture(this.target, null);
   }
 
   /**
    * Active TextureInfo
-   * @param {WebGLContext} gl
-   * @param {number} id
+   * @param {WebGLContext} gl - The WebGL context
+   * @param {number} id - The texture id
    */
   activeTexture(gl, id) {
-    this._currenActiveId = id;
+    this._currentActiveId = id;
     gl.activeTexture(Const.TEXTURE0 + id);
   }
 
   /**
    * Binf active TextureInfo
-   * @param {WebGLContext} gl
-   * @param {number} id
+   * @param {WebGLContext} gl - The WebGL context
+   * @param {number} id - The texture id
    */
   bindActiveTexture(gl, id) {
     this.activeTexture(gl, id);
@@ -201,7 +201,7 @@ export class TextureInfo {
 
   /**
    * Use TextureInfo
-   * @param {WebGLContext} gl
+   * @param {WebGLContext} gl - The WebGL context
    */
   useTexture(gl) {
     gl.bindTexture(this.target, this._baseTexture);
@@ -210,7 +210,7 @@ export class TextureInfo {
 
   /**
    * Use TextureInfo after update
-   * @param {WebGLContext} gl
+   * @param {WebGLContext} gl - The WebGL context
    */
   useTextureAfterUpdate(gl) {
     gl.bindTexture(this.target, this._baseTexture);
@@ -219,7 +219,7 @@ export class TextureInfo {
 
   /**
    * Create TexImage2D
-   * @param {WebGLContext} gl
+   * @param {WebGLContext} gl - The WebGL context
    */
   createTexImage2D(gl) {
     gl.texImage2D(
@@ -231,7 +231,7 @@ export class TextureInfo {
       0,
       this._format,
       this._type,
-      this.$renderSource
+      this.$renderSource,
     );
 
     this.uploadTextureInfo(gl);
@@ -239,7 +239,7 @@ export class TextureInfo {
 
   /**
    * Upload TextureInfo
-   * @param {WebGLContext} gl
+   * @param {WebGLContext} gl - The WebGL context
    */
   uploadTextureInfo(gl) {
     gl.texParameteri(this.target, Const.TEXTURE_WRAP_S, this._wrapS);
@@ -249,12 +249,12 @@ export class TextureInfo {
     gl.texParameteri(
       this.target,
       Const.TEXTURE_MAX_LEVEL,
-      this._maxMipMapLevel
+      this._maxMipMapLevel,
     );
     gl.texParameteri(
       this.target,
       Const.TEXTURE_BASE_LEVEL,
-      this._baseMipMapLevel
+      this._baseMipMapLevel,
     );
     gl.generateMipmap(this.target);
   }

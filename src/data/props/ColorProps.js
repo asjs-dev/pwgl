@@ -63,10 +63,10 @@ export class ColorProps {
 
   /**
    * Set all color values
-   * @param {number} r
-   * @param {number} g
-   * @param {number} b
-   * @param {number} a
+   * @param {number} r - Red value
+   * @param {number} g - Green value
+   * @param {number} b - Blue value
+   * @param {number} a - Alpha value
    */
   set(r, g, b, a) {
     this.cache[0] = r;

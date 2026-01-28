@@ -30,6 +30,11 @@ export class NormalMapRenderer extends BaseRenderer {
   constructor(config = {}) {
     config = Utils.initRendererConfig(config);
 
+    // prettier-ignore
+    Utils.setLocations(config, [
+      "uTS"
+    ]);
+
     super(config);
 
     this.heightMap = config.heightMap;
@@ -39,9 +44,14 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $render() {
+    const locations = this.$locations,
+      heightMap = this.heightMap;
+
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$useTextureAt(this.heightMap, this.$locations.uTx, 0);
+    this.$useTextureAt(heightMap, locations.uTx, 0);
+
+    this.$gl.uniform2f(locations.uTS, heightMap.width, heightMap.height);
 
     this.$uploadBuffers();
 
@@ -55,9 +65,6 @@ export class NormalMapRenderer extends BaseRenderer {
    */
   $createVertexShader() {
     return BASE_VERTEX_SHADER_INITIALIZATION +
-
-    "uniform sampler2D " +
-      "uTx;" +
 
     "out vec2 " +
       "v0;" +
@@ -81,6 +88,8 @@ export class NormalMapRenderer extends BaseRenderer {
     "in vec2 " +
       "v0;" +
 
+    "uniform vec2 " +
+      "uTS;" +
     "uniform sampler2D " +
       "uTx;" +
 
@@ -89,17 +98,21 @@ export class NormalMapRenderer extends BaseRenderer {
 
     "void main(void){" +
       "vec2 " +
-        "ts=vec2(textureSize(uTx,0))," +
+        "ts=floor(uTS)," +
         "p=1./ts," +
-        "p0=floor(v0.xy*ts)," +
-        "p1=p0+Z.yx," +
-        "p2=p0+Z.yy;" +
+        "p0=floor(v0.xy*ts);" +
 
-      "vec3 " +
-        "A=vec3(p0,texture(uTx,p0*p).g)," +
-        "B=vec3(p1,texture(uTx,p1*p).g)," +
-        "C=vec3(p2,texture(uTx,p2*p).g)," +
-        "nm=normalize(cross(B-A,C-A))*HEIGHT*Z.yzy;" +
+      "float " + 
+        "h0=texture(uTx,p0*p).g," +
+        "h1=texture(uTx,(p0+Z.yx)*p).g," +
+        "h2=texture(uTx,(p0+Z.xy)*p).g;" +
+
+      "vec3 " + 
+        "nm=normalize(" + 
+          "cross(" + 
+            "vec3(1,0,h1-h0)," + 
+            "vec3(0,1,h2-h0)" + 
+          "))*HEIGHT*Z.yzy;" +
 
       "oCl=vec4(nm*.5+.5,1);" +
     "}";

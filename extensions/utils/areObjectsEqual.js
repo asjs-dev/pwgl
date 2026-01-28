@@ -1,7 +1,7 @@
 /**
  * Deeply compares two objects for equality
- * @param {object} a The first object to compare
- * @param {object} b The second object to compare
+ * @param {object} a - The first object to compare
+ * @param {object} b - The second object to compare
  * @returns {boolean} True if the objects are equal, otherwise false
  */
 export const areObjectsEqual = (a, b) => {

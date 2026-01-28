@@ -68,7 +68,13 @@ export class LightRenderer extends BatchRenderer {
     this.heightMap = config.heightMap;
     this.roughnessMap = config.roughnessMap;
 
-    this._extensionBuffer = new Buffer("aExt", this.$MAX_RENDER_COUNT, 2, 3);
+    // prettier-ignore
+    this._extensionBuffer = new Buffer(
+      "aExt",
+      this.$MAX_RENDER_COUNT,
+      2,
+      3
+    );
   }
 
   get sourceTexture() {
@@ -125,11 +131,11 @@ export class LightRenderer extends BatchRenderer {
       matrixBufferData[matrixBufferId + 6] = light.transform.width;
       matrixBufferData[matrixBufferId + 7] = light.spotAngle;
       arraySet(matrixBufferData, light.colorCache, matrixBufferId + 8);
+      matrixBufferData[matrixBufferId + 11] *= light.alpha * parent.getPremultipliedAlpha();
       matrixBufferData[matrixBufferId + 12] = light.shadowLength;
-      matrixBufferData[matrixBufferId + 13] =
-        light.alpha * parent.getPremultipliedAlpha();
-      matrixBufferData[matrixBufferId + 14] = light.angle;
-      matrixBufferData[matrixBufferId + 15] = light.type;
+      matrixBufferData[matrixBufferId + 13] = light.angle;
+      matrixBufferData[matrixBufferId + 14] = light.type;
+      // matrixBufferData[matrixBufferId + 15] = reserved
 
       extensionBufferData[extensionBufferId] = light.flags;
       extensionBufferData[extensionBufferId + 1] = light.transform.z;
@@ -168,13 +174,14 @@ export class LightRenderer extends BatchRenderer {
       locations.uUT,
       sourceTextureBoolean,
       roughnessMapBoolean,
-      normalMapBoolean
+      normalMapBoolean,
     );
     gl.uniform2f(locations.uTS, this._sizable.width, this._sizable.height);
 
     this.$uploadBuffers();
 
     this.$drawInstanced(this._batchItems);
+
     this._batchItems = 0;
   }
 
@@ -215,7 +222,8 @@ export class LightRenderer extends BatchRenderer {
     "out vec2 " +
       "v0;" +
     "out vec4 " +
-      "v1," +
+      "v1;" +
+    "flat out vec4 " +
       "v2," +
       "v3," +
       "v4," +
@@ -225,28 +233,26 @@ export class LightRenderer extends BatchRenderer {
       "vec3 " + 
         "pos=vec3(aPs*2.-1.,1);" +
       
-      "v2=vec4(aMt[3].w,aExt[0]);" +
-      "v1=vec4(aExt[1],PI-aMt[1].w);" +
-      "v5=aMt[2];" +
-      "v5.a*=aMt[3].y;" +
-
-      "v4.xy=pos.xy;" +
+      "v1.xy=pos.xy;" +
 
       "mat3 mt=mat3(aMt[0].xy,0,aMt[0].zw,0,aMt[1].xy,1);" +
-      "v0.x=aMt[1].z;" + 
-      "v0.y=v0.x*aMt[3].x;" +
+      "v2.x=aMt[1].z;" + 
+      "v2.y=v2.x*aMt[3].x;" +
 
-      "if(v2.x<1.){" +
+      "v3=vec4(aExt[1],PI-aMt[1].w);" +
+      "v4=vec4(aMt[3].z,aExt[0]);" +
+      "v5=aMt[2];" +
+
+      "if(v4.x<1.){" +
         "gl_Position=vec4(mt*pos,1);" +
-        "v3.xy=(gl_Position.xy+P.xy)/P.zw;" +
-        "v4.zw=(aMt[1].xy+P.xy)/P.zw;" +
-        "float amtz=aMt[3].z;" +
-        "v3.zw=vec2(sin(amtz),cos(amtz));" +
+        "v0=(gl_Position.xy+P.xy)/P.zw;" +
+        "v1.zw=(aMt[1].xy+P.xy)/P.zw;" +
+        "v2.zw=vec2(sin(aMt[3].y),cos(aMt[3].y));" +
       "}else{" +
         "mt[2].xy=Z.zy;" +
         "gl_Position=vec4(pos,1);" +
-        "v3.xy=(gl_Position.xy+P.xy)/P.zw;" +
-        "v4.zw=v3.xy+((mt*vec3(1)).xy+P.xy)/P.zw;" +
+        "v0=(gl_Position.xy+P.xy)/P.zw;" +
+        "v1.zw=v0+((mt*vec3(1)).xy+P.xy)/P.zw;" +
       "}" +
 
       "gl_Position.y*=uFY;" +
@@ -260,7 +266,7 @@ export class LightRenderer extends BatchRenderer {
    */
   $createFragmentShader() {
     const loop = (core) => "for(i=m;i<l;i+=st){" +
-            "p=ivec2((v4.zw+i*opdm)*uTS);" +
+            "p=ivec2((v1.zw+i*opdm)*uTS);" +
             "tc=texelFetch(uTx,p,0)*HEIGHT;" +
             core +
           "}";
@@ -271,7 +277,8 @@ export class LightRenderer extends BatchRenderer {
     "in vec2 " +
       "v0;" +
     "in vec4 " +
-      "v1," +
+      "v1;" +
+    "flat in vec4 " +
       "v2," +
       "v3," +
       "v4," +
@@ -299,15 +306,14 @@ export class LightRenderer extends BatchRenderer {
       "if(vol<=0.)discard;" +
 
       "vec2 " +
-        "p2xy=v3.xy," +
-        "tUv=p2xy*uTS," +
-        "tCnt=v4.zw*uTS;" +
+        "tUv=v0*uTS," +
+        "tCnt=v1.zw*uTS;" +
 
       "vec4 " +
         "tc=texelFetch(uTx,ivec2(tUv),0);" +
 
       "int " + 
-        "flg=int(v2.y);" +
+        "flg=int(v4.y);" +
 
       "float " +
         "ph=tc.g*HEIGHT," +
@@ -315,24 +321,24 @@ export class LightRenderer extends BatchRenderer {
 
       "vec3 " +
         "sf=vec3(tUv,ph)," +
-        "lp=vec3(tCnt,v2.z)," +
+        "lp=vec3(tCnt,v4.z)," +
         "sftla=lp-sf;" +
 
-      "if(v2.x<1.){" +
+      "if(v4.x<1.){" +
         "float " + 
-          "d=length(sftla)/v0.x," +
+          "d=length(sftla)/v2.x," +
           "od=1.-d," +
-          "dv=(flg&16)>0?pow(od,v1.z):1.;" +
+          "dv=(flg&16)>0?pow(od,v3.z):1.;" +
 
         "vol*=dv;" +
 
         "float " +
-          "slh=(v2.z-ph)/HEIGHT;" +
+          "slh=(v4.z-ph)/HEIGHT;" +
 
         "vec2 " +
           "sl=vec2(" +
-            "slh*v3.w-v4.x*v3.z," +
-            "slh*v3.z+v4.x*v3.w" +
+            "slh*v2.w-v1.x*v2.z," +
+            "slh*v2.z+v1.x*v2.w" +
           ");" +
 
         "if(" +
@@ -340,8 +346,8 @@ export class LightRenderer extends BatchRenderer {
           "od<=0.||" +
           "atan(" +
             "sl.x," +
-            "length(vec2(sl.y,v4.y))" +
-          ")+" + Utils.ALPHA + "-v1.w<0.)discard;" +
+            "length(vec2(sl.y,v1.y))" +
+          ")+" + Utils.ALPHA + "-v3.w<0.)discard;" +
       "}" +
 
       "float " +
@@ -351,7 +357,7 @@ export class LightRenderer extends BatchRenderer {
       "if((flg&2)>0){" +
         "vec3 " +
           "nm=uUT.z>0." + 
-            "?normalize((texture(uNTx,p2xy).rgb*2.-1.)*Z.yzy)" +
+            "?normalize((texture(uNTx,v0).rgb*2.-1.)*Z.yzy)" +
             ":Z.xxy," +
           "sftl=normalize(sftla)," +
           "sftv=normalize(vec3(" +
@@ -366,9 +372,9 @@ export class LightRenderer extends BatchRenderer {
         
         "float " + 
           "rgh=1.," +
-          "shn=uUT.y>0.?texture(uRTx,p2xy).r:tc.b;" +
+          "shn=uUT.y>0.?texture(uRTx,v0).r:tc.b;" +
 
-        "spc=pow(max(dot(nm,hlf),0.),32.)*shn*v1.y;" +
+        "spc=pow(max(dot(nm,hlf),0.),32.)*shn*v3.y;" +
       "}" +
 
       "if((flg&1)>0){" +
@@ -380,30 +386,30 @@ export class LightRenderer extends BatchRenderer {
           "opdm=opd/uTS;" +
 
         "float " +
-          "st=max(1.,ceil(fltDst/v1.x))," + // loop step length
           "i," +
           "pc," +
+          "st=max(1.,ceil(fltDst/v3.x))," + // loop step length
           "l=min(fltDst-st,4096.)," +
-          "m=max(st,l-v0.y);" +
+          "m=max(st,l-v2.y);" +
         
         "if((flg&4)>0)" + 
-          loop("if(tc.g>=v2.z)discard;") +
+          loop("if(tc.g>=v4.z)discard;") +
         "else{" +
           "float " +
             "opdL=length(opd)," + // horizontal step
-            "hst=(ph-v2.z)/fltDst," + // vertical step
-            "rnd=v2.w*rand(p2xy);" +
+            "hst=(ph-v4.z)/fltDst," + // vertical step
+            "rnd=v4.w*rand(v0);" +
 
           loop(
             "st+=rnd;" +
-            "pc=v2.z+i*hst;" +
-            "shdw*=mix(1.,(fltDst-i*opdL)/v0.y,step(tc.r,pc)*step(pc,tc.g));"
+            "pc=v4.z+i*hst;" +
+            "shdw*=mix(1.,(fltDst-i*opdL)/v2.y,step(tc.r,pc)*step(pc,tc.g));"
           ) +
         "}" +
       "}" +
 
       "vec3 " +
-        "stCl=uUT.x>0.?texture(uSTx,p2xy).rgb:Z.yyy;" +
+        "stCl=uUT.x>0.?texture(uSTx,v0).rgb:Z.yyy;" +
         
       "oCl=vec4((stCl+spc)*v5.rgb*vol*shdw,1);" +
     "}";

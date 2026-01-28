@@ -81,8 +81,8 @@ export const AnimatedWater = window.PWGL
 
       /**
        * Sets the size of the animated water effect
-       * @param {number} w The width
-       * @param {number} h The height
+       * @param {number} w - Width
+       * @param {number} h - Height
        */
       setSize(w, h) {
         this._width = w;
@@ -109,7 +109,7 @@ export const AnimatedWater = window.PWGL
 
       /**
        * Renders the animated water effect
-       * @param {number} delay The time delay since the last render
+       * @param {number} delay - The time delay since the last render
        */
       render(delay) {
         const waveSpeedX = this._speed * delay,

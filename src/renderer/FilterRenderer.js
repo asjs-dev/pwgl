@@ -41,7 +41,7 @@ export class FilterRenderer extends BaseRenderer {
       "uFV",
       "uFK",
       "uRT",
-      "uSz",
+      "uTS"
     ]);
 
     super(config);
@@ -85,6 +85,7 @@ export class FilterRenderer extends BaseRenderer {
       renderTime = this.$renderTime,
       locations = this.$locations,
       filters = this._filters,
+      sourceTexture = this.sourceTexture,
       l = filters.length || 1,
       minL = l - 2;
     let i = -1;
@@ -94,9 +95,10 @@ export class FilterRenderer extends BaseRenderer {
     this.$uploadBuffers();
 
     gl.uniform1f(locations.uRT, renderTime % 864e5);
-    gl.uniform2i(locations.uSz, this.$width, this.$height);
 
-    this.$useTextureAt(this.sourceTexture, locations.uTx, 0);
+    this.$useTextureAt(sourceTexture, locations.uTx, 0);
+
+    gl.uniform2f(locations.uTS, sourceTexture.width, sourceTexture.height);
 
     while (++i < l) {
       const filter = filters[i],
@@ -173,8 +175,8 @@ export class FilterRenderer extends BaseRenderer {
     "uniform float " +
       "uRT," +
       "uFV[9];" +
-    "uniform ivec2 " +
-      "uSz;" +
+    "uniform vec2 " +
+      "uTS;" +
     "uniform mat4 " +
       "uFK;" +
     "uniform sampler2D " +
@@ -206,7 +208,7 @@ export class FilterRenderer extends BaseRenderer {
         "v=vl[0];" +
 
       "vec2 " + 
-        "ts=vec2(textureSize(uTx,0));" +
+        "ts=floor(uTS);" +
       
       "ivec2 " +
         "f=ivec2(floor(v0.zw*ts));" +

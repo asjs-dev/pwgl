@@ -2,7 +2,7 @@ import { TextureInfo } from "./TextureInfo";
 
 const _placeholderImage = document.createElement("img");
 
-const create = (tag, src) => {
+const _createElement = (tag, src) => {
   const element = document.createElement(tag);
   element.crossOrigin = "anonymous";
   element.src = src;
@@ -19,38 +19,20 @@ export class Texture extends TextureInfo {
   /**
    * Creates an instance of Texture.
    * @constructor
-   * @param {HTMLElement} source
-   * @param {boolean} shouldUpdate
+   * @param {HTMLElement} source - The source of the texture
+   * @param {boolean} shouldUpdate - Whether the texture should update every frame
    */
   constructor(source, shouldUpdate) {
     super();
 
     this._source = _placeholderImage;
 
-    this._parseTextureSize = this._parseTextureSize.bind(this);
+    this.updateSize = this.updateSize.bind(this);
 
     this.source = source;
     this.shouldUpdate = shouldUpdate;
 
     this._currentRenderTime = 0;
-  }
-
-  /**
-   * Get width
-   * @readonly
-   * @type {number}
-   */
-  get width() {
-    return this._sourceWidth || 1;
-  }
-
-  /**
-   * Get height
-   * @readonly
-   * @type {number}
-   */
-  get height() {
-    return this._sourceHeight || 1;
   }
 
   /**
@@ -60,17 +42,18 @@ export class Texture extends TextureInfo {
   get source() {
     return this._source;
   }
-  set source(value) {
-    if (value) {
-      this._source.removeEventListener(this._eventType, this._parseTextureSize);
 
+  set source(value) {
+    this.destruct();
+
+    if (value) {
       this._source = value;
 
       this.isVideo = value.tagName.toLowerCase() === "video";
       this._eventType = this.isVideo ? "canplay" : "load";
 
-      !this._parseTextureSize() &&
-        value.addEventListener(this._eventType, this._parseTextureSize, {
+      !this.updateSize() &&
+        value.addEventListener(this._eventType, this.updateSize, {
           once: true,
         });
     }
@@ -80,15 +63,17 @@ export class Texture extends TextureInfo {
    * Destruct the class
    */
   destruct() {
-    this._source.removeEventListener(this._eventType, this._parseTextureSize);
+    this._source &&
+      this._source.removeEventListener(this._eventType, this.updateSize);
+    this.$renderSource = null;
   }
 
   /**
    * Use TextureInfo
-   * @param {WebGLContext} gl
-   * @param {number} id
-   * @param {boolean} forceBind
-   * @param {number} renderTime
+   * @param {WebGLContext} gl - The WebGL context
+   * @param {number} id - The texture id
+   * @param {boolean} forceBind - Force bind
+   * @param {number} renderTime - The current render time
    */
   use(gl, id, forceBind, renderTime) {
     if (this.$currentAglId < gl.gl_id) {
@@ -104,66 +89,43 @@ export class Texture extends TextureInfo {
       this.$updated = this._loaded = false;
       this._currentRenderTime = renderTime;
       this.useActiveTexture(gl, id);
-    } else if (this._currenActiveId !== id || forceBind)
+    } else if (this._currentActiveId !== id || forceBind)
       this.bindActiveTexture(gl, id);
   }
 
   /**
-   * @readonly
-   * @type {number}
-   * @ignore
+   * Update texture size
+   * @returns {boolean}
    */
-  get _sourceWidth() {
-    return this._source[this._dimensionWidthName];
-  }
+  updateSize() {
+    const source = this._source,
+      sourceWidth = source.videoWidth || source.naturalWidth || source.width,
+      sourceHeight =
+        source.videoHeight || source.naturalHeight || source.height;
 
-  /**
-   * @readonly
-   * @type {number}
-   * @ignore
-   */
-  get _sourceHeight() {
-    return this._source[this._dimensionHeightName];
-  }
-
-  /**
-   * @ignore
-   */
-  _parseTextureSize() {
-    this._dimensionWidthName = "width";
-    this._dimensionHeightName = "height";
-    if (this._source.naturalWidth) {
-      this._dimensionWidthName = "naturalWidth";
-      this._dimensionHeightName = "naturalHeight";
-    } else if (this._source.videoWidth) {
-      this._dimensionWidthName = "videoWidth";
-      this._dimensionHeightName = "videoHeight";
-    }
-
-    if (this._sourceWidth * this._sourceHeight) {
+    if (sourceWidth * sourceHeight) {
+      this.$width = sourceWidth;
+      this.$height = sourceHeight;
       this.$renderSource = this._source;
-      this._loaded = true;
-      return true;
+      return this._loaded = this.$updated = true;
     }
-
-    this.$renderSource = null;
   }
 }
 
 /**
  * Create a new Texture from an image source
  * @function
- * @param {HTMLElement} src
- * @param {boolean} shouldUpdate
+ * @param {HTMLElement} src - The source of the texture
+ * @param {boolean} shouldUpdate - Whether the texture should update every frame
  * @returns {Texture}
  */
 Texture.loadImage = (src, shouldUpdate) =>
-  new Texture(create("img", src), shouldUpdate);
+  new Texture(_createElement("img", src), shouldUpdate);
 
 /**
  * Create a new Texture from a video source
  * @function
- * @param {HTMLVideoElement} src
+ * @param {HTMLVideoElement} src - The source of the texture
  * @returns {Texture}
  */
-Texture.loadVideo = (src) => new Texture(create("video", src));
+Texture.loadVideo = (src) => new Texture(_createElement("video", src));

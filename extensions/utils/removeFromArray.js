@@ -1,7 +1,7 @@
 /**
  * Remove an item from an array
- * @param {*} array
- * @param {*} item
+ * @param {*} array - The array to remove the item from
+ * @param {*} item - The item to remove
  */
 export const removeFromArray = (array, item) => {
   const index = array.indexOf(item);

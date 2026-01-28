@@ -3,8 +3,8 @@ import { dot } from "./dot";
 
 /**
  * Calculates the shortest distance between a point and a line segment
- * @param {object} p The point with x and y properties
- * @param {object} l The line segment with a and b properties (each having x and y)
+ * @param {object} p - The point with x and y properties
+ * @param {object} l - The line segment with a and b properties (each having x and y)
  * @returns {number} The shortest distance between the point and the line segment
  */
 export const distanceBetweenPointAndLine = (p, l) => {
@@ -22,8 +22,8 @@ export const distanceBetweenPointAndLine = (p, l) => {
 
 /**
  * Determines if two line segments are collided
- * @param {object} lineA The first line segment with a and b properties (each having x and y)
- * @param {object} lineB The second line segment with a and b properties (each having x and y)
+ * @param {object} lineA - The first line segment with a and b properties (each having x and y)
+ * @param {object} lineB - The second line segment with a and b properties (each having x and y)
  * @returns {object|undefined} An object with lambda and gamma properties if collided, otherwise undefined
  */
 export const areTwoLinesCollided = (lineA, lineB) => {
@@ -51,8 +51,8 @@ export const areTwoLinesCollided = (lineA, lineB) => {
 
 /**
  * Calculates the intersection point of two line segments if they collide
- * @param {object} lineA The first line segment with a and b properties (each having x and y)
- * @param {object} lineB The second line segment with a and b properties (each having x and y)
+ * @param {object} lineA - The first line segment with a and b properties (each having x and y)
+ * @param {object} lineB - The second line segment with a and b properties (each having x and y)
  * @returns {object|null} The intersection point with x and y properties if collided, otherwise null
  */
 export const lineToLineIntersection = (lineA, lineB) => {
@@ -67,8 +67,8 @@ export const lineToLineIntersection = (lineA, lineB) => {
 
 /**
  * Determines if two rectangles are collided
- * @param {object} rectA The first rectangle with x, y, width, and height properties
- * @param {object} rectB The second rectangle with x, y, width, and height properties
+ * @param {object} rectA - The first rectangle with x, y, width, and height properties
+ * @param {object} rectB - The second rectangle with x, y, width, and height properties
  * @returns {boolean} True if the rectangles are collided, otherwise false
  */
 export const areTwoRectsCollided = (rectA, rectB) =>
@@ -79,8 +79,8 @@ export const areTwoRectsCollided = (rectA, rectB) =>
 
 /**
  * Calculates the intersection rectangle of two rectangles if they collide
- * @param {object} rectA The first rectangle with x, y, width, and height properties
- * @param {object} rectB The second rectangle with x, y, width, and height properties
+ * @param {object} rectA - The first rectangle with x, y, width, and height properties
+ * @param {object} rectB - The second rectangle with x, y, width, and height properties
  * @returns {object|null} The intersection rectangle with x, y, width, and height properties if collided, otherwise null
  */
 export const rectToRectIntersection = (rectA, rectB) =>
