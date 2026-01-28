@@ -44,14 +44,13 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $render() {
-    const locations = this.$locations,
-      heightMap = this.heightMap;
+    const locations = this.$locations;
 
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$useTextureAt(heightMap, locations.uTx, 0);
+    this.$useTextureAt(this.heightMap, locations.uTx, 0);
 
-    this.$gl.uniform2f(locations.uTS, heightMap.width, heightMap.height);
+    this.$gl.uniform2f(locations.uTS, this.width, this.height);
 
     this.$uploadBuffers();
 

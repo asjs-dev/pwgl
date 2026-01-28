@@ -73,14 +73,13 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
   $render() {
     const gl = this.$gl,
       locations = this.$locations,
-      heightMap = this.heightMap,
       sourceTextureBoolean = !!this.sourceTexture;
 
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$useTextureAt(heightMap, locations.uTx, 0);
+    this.$useTextureAt(this.heightMap, locations.uTx, 0);
 
-    gl.uniform2f(locations.uTS, heightMap.width, heightMap.height);
+    gl.uniform2f(locations.uTS, this.width, this.height);
 
     sourceTextureBoolean &&
       this.$useTextureAt(this.sourceTexture, locations.uSTx, 1);
@@ -124,7 +123,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       
       "float " + 
         "r=RADIANS_360/uP.y;" + 
-        
+
       "v0=" + BASE_VERTEX_SHADER_POSITION + ";" +
       "v1=vec2(cos(r),sin(r));" +
     "}";

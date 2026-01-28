@@ -85,7 +85,6 @@ export class FilterRenderer extends BaseRenderer {
       renderTime = this.$renderTime,
       locations = this.$locations,
       filters = this._filters,
-      sourceTexture = this.sourceTexture,
       l = filters.length || 1,
       minL = l - 2;
     let i = -1;
@@ -96,9 +95,9 @@ export class FilterRenderer extends BaseRenderer {
 
     gl.uniform1f(locations.uRT, renderTime % 864e5);
 
-    this.$useTextureAt(sourceTexture, locations.uTx, 0);
+    this.$useTextureAt(this.sourceTexture, locations.uTx, 0);
 
-    gl.uniform2f(locations.uTS, sourceTexture.width, sourceTexture.height);
+    gl.uniform2f(locations.uTS, this.width, this.height);
 
     while (++i < l) {
       const filter = filters[i],
