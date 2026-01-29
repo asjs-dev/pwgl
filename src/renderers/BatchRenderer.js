@@ -23,7 +23,7 @@ export class BatchRenderer extends BaseRenderer {
   constructor(config) {
     // prettier-ignore
     Utils.setLocations(config, [
-      "aMt"
+      "aB"
     ]);
 
     super(config);
@@ -32,7 +32,7 @@ export class BatchRenderer extends BaseRenderer {
 
     // prettier-ignore
     this.$matrixBuffer = new Buffer(
-      "aMt",
+      "aB",
       this.$MAX_RENDER_COUNT,
       4,
       4

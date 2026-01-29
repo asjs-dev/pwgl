@@ -47,7 +47,7 @@ export class BaseTextureFilter extends BaseFilter {
 BaseTextureFilter.$createGLSL = (core) => "" +
   "vec4 " +
     "mskCl=texture(" +
-      "uFTx," +
+      "uH," +
       "mod(vec2(vl[1],vl[2])+v0.zw,1.)*vec2(vl[5]-vl[3],vl[6]-vl[4])" +
     ");" +
   core;

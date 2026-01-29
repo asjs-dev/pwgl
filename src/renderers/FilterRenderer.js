@@ -36,12 +36,12 @@ export class FilterRenderer extends BaseRenderer {
 
     // prettier-ignore
     Utils.setLocations(config, [
-      "uFTx",
-      "uId",
-      "uFV",
-      "uFK",
-      "uRT",
-      "uTS"
+      "uF",
+      "uH",
+      "uI",
+      "uJ",
+      "uK",
+      "uL",
     ]);
 
     super(config);
@@ -93,11 +93,11 @@ export class FilterRenderer extends BaseRenderer {
 
     this.$uploadBuffers();
 
-    gl.uniform1f(locations.uRT, renderTime % 864e5);
+    gl.uniform1f(locations.uL, renderTime % 864e5);
 
-    this.$useTextureAt(this.sourceTexture, locations.uTx, 0);
+    this.$useTextureAt(this.sourceTexture, locations.uB, 0);
 
-    gl.uniform2f(locations.uTS, this.width, this.height);
+    gl.uniform2f(locations.uF, this.width, this.height);
 
     while (++i < l) {
       const filter = filters[i],
@@ -110,22 +110,22 @@ export class FilterRenderer extends BaseRenderer {
 
       let filterFramebuffer;
 
-      filterTexture && this.$useTextureAt(filterTexture, locations.uFTx, 1);
+      filterTexture && this.$useTextureAt(filterTexture, locations.uH, 1);
 
       if (isLast)
         framebuffer
           ? this._attachFramebufferAndClearFv(framebuffer)
-          : gl.uniform1f(locations.uFY, 1);
+          : gl.uniform1f(locations.uA, 1);
       else if (useFilter) {
         filterFramebuffer = this._framebuffers[i & 1];
         this._attachFramebufferAndClearFv(filterFramebuffer);
       }
 
       if (useFilter) {
-        gl.uniform1i(locations.uId, filter.uniqueId);
-        gl.uniform1fv(locations.uFV, filter.v);
+        gl.uniform1i(locations.uI, filter.uniqueId);
+        gl.uniform1fv(locations.uJ, filter.v);
         filter.kernels &&
-          gl.uniformMatrix4fv(locations.uFK, false, filter.kernels);
+          gl.uniformMatrix4fv(locations.uK, false, filter.kernels);
       }
 
       (useFilter || isLast) && this.$drawInstanced(1);
@@ -170,17 +170,17 @@ export class FilterRenderer extends BaseRenderer {
       "v0;" +
 
     "uniform int " +
-      "uId;" +
+      "uI;" +
     "uniform float " +
-      "uRT," +
-      "uFV[9];" +
+      "uL," +
+      "uJ[9];" +
     "uniform vec2 " +
-      "uTS;" +
+      "uF;" +
     "uniform mat4 " +
-      "uFK;" +
+      "uK;" +
     "uniform sampler2D " +
-      "uTx," +
-      "uFTx;" +
+      "uB," +
+      "uH;" +
 
     "out vec4 " +
       "oCl;" +
@@ -200,14 +200,14 @@ export class FilterRenderer extends BaseRenderer {
     "}" +
 
     "void main(void){" +
-      "oCl=texture(uTx,v0.zw);" +
+      "oCl=texture(uB,v0.zw);" +
 
       "float " +
-        "vl[]=uFV," +
+        "vl[]=uJ," +
         "v=vl[0];" +
 
       "vec2 " + 
-        "ts=floor(uTS);" +
+        "ts=floor(uF);" +
       
       "ivec2 " +
         "f=ivec2(floor(v0.zw*ts));" +
@@ -222,14 +222,14 @@ export class FilterRenderer extends BaseRenderer {
         "oClVl=oCl*(1.-v);" +
 
       "mat4 " +
-        "kr=uFK;"+
+        "kr=uK;"+
     
       this.filters.reduce((acc, item) => {
         let index = acc.findIndex((record) => record.GLSL === item.GLSL);
         if (index < 0) index = acc.push(item) - 1;
         item.uniqueId = index;
         return acc;
-      }, []).map((item) => "if(uId==" + item.uniqueId + "){" + item.GLSL + "}").join("else ") + 
+      }, []).map((item) => "if(uI==" + item.uniqueId + "){" + item.GLSL + "}").join("else ") + 
 
     "}";
   }

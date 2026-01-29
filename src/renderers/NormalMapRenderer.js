@@ -32,7 +32,7 @@ export class NormalMapRenderer extends BaseRenderer {
 
     // prettier-ignore
     Utils.setLocations(config, [
-      "uTS"
+      "uF"
     ]);
 
     super(config);
@@ -48,9 +48,9 @@ export class NormalMapRenderer extends BaseRenderer {
 
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$useTextureAt(this.heightMap, locations.uTx, 0);
+    this.$useTextureAt(this.heightMap, locations.uB, 0);
 
-    this.$gl.uniform2f(locations.uTS, this.width, this.height);
+    this.$gl.uniform2f(locations.uF, this.width, this.height);
 
     this.$uploadBuffers();
 
@@ -88,23 +88,23 @@ export class NormalMapRenderer extends BaseRenderer {
       "v0;" +
 
     "uniform vec2 " +
-      "uTS;" +
+      "uF;" +
     "uniform sampler2D " +
-      "uTx;" +
+      "uB;" +
 
     "out vec4 " +
       "oCl;" +
 
     "void main(void){" +
       "vec2 " +
-        "ts=floor(uTS)," +
+        "ts=floor(uF)," +
         "p=1./ts," +
         "p0=floor(v0.xy*ts);" +
 
       "float " + 
-        "h0=texture(uTx,p0*p).g," +
-        "h1=texture(uTx,(p0+Z.yx)*p).g," +
-        "h2=texture(uTx,(p0+Z.xy)*p).g;" +
+        "h0=texture(uB,p0*p).g," +
+        "h1=texture(uB,(p0+Z.yx)*p).g," +
+        "h2=texture(uB,(p0+Z.xy)*p).g;" +
 
       "vec3 " + 
         "nm=normalize(" + 

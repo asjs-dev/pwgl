@@ -111,7 +111,7 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop = "") => "" +
       
     beforeLoop +
     "for(int i=0;i<l;i++){" +
-      "clg=texelFetch(uTx,clamp(" + 
+      "clg=texelFetch(uB,clamp(" + 
         "f+ivec2(wh*dr)," + 
         "mn,mx" +
       "),0);" +

@@ -34,9 +34,9 @@ export class ChromaticAberrationFilter extends BaseFilter {
     return "" +
       "vec4 " +
         "pcl=vec4(" +
-          "texture(uTx,v0.zw-vec2(vol.x,0)).r," +
+          "texture(uB,v0.zw-vec2(vol.x,0)).r," +
           "oCl.g," +
-          "texture(uTx,v0.zw+vec2(vol.x,0)).b," +
+          "texture(uB,v0.zw+vec2(vol.x,0)).b," +
           "1" +
         ");" +
 

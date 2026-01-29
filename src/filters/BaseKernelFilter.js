@@ -23,15 +23,15 @@ export class BaseKernelFilter extends BaseFilter {
     return "" +
       "kr*=v;" +
       "oCl.rgb=(oCl.rgb*(1.-vl[1]))+(" +
-        "texelFetch(uTx,f-ivec2(1),0)*kr[0].x+" +
-        "texelFetch(uTx,f+ivec2(0,-1),0)*kr[0].y+" +
-        "texelFetch(uTx,f+ivec2(1,-1),0)*kr[0].z+" +
-        "texelFetch(uTx,f+ivec2(-1,0),0)*kr[0].w+" +
+        "texelFetch(uB,f-ivec2(1),0)*kr[0].x+" +
+        "texelFetch(uB,f+ivec2(0,-1),0)*kr[0].y+" +
+        "texelFetch(uB,f+ivec2(1,-1),0)*kr[0].z+" +
+        "texelFetch(uB,f+ivec2(-1,0),0)*kr[0].w+" +
         "oCl*kr[1].x+" +
-        "texelFetch(uTx,f+ivec2(1,0),0)*kr[1].y+" +
-        "texelFetch(uTx,f+ivec2(-1,1),0)*kr[1].z+" +
-        "texelFetch(uTx,f+ivec2(0,1),0)*kr[1].w+" +
-        "texelFetch(uTx,f+ivec2(1),0)*kr[2].x" +
+        "texelFetch(uB,f+ivec2(1,0),0)*kr[1].y+" +
+        "texelFetch(uB,f+ivec2(-1,1),0)*kr[1].z+" +
+        "texelFetch(uB,f+ivec2(0,1),0)*kr[1].w+" +
+        "texelFetch(uB,f+ivec2(1),0)*kr[2].x" +
       ").rgb*vl[1];";
   }
 
