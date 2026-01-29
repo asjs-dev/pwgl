@@ -1,6 +1,6 @@
 import { Container } from "./Container";
-import { BatchRenderer } from "../renderer/BatchRenderer";
-import { Matrix3Utilities } from "../geom/Matrix3Utilities";
+import { BatchRenderer } from "../renderers/BatchRenderer";
+import { Matrix3Utilities } from "../math/Matrix3Utilities";
 
 /**
  * Stage container

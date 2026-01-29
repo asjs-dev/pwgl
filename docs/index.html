@@ -352,7 +352,7 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
 <hr>
 <h2>Core Library Architecture</h2>
 <p>PWGL is organized into modular components within the <code>src/</code> directory, each responsible for specific functionality in the 2D WebGL rendering pipeline.</p>
-<h3>Utils (<code>src/utils/</code>)</h3>
+<h3>Core (<code>src/core/</code>)</h3>
 <p>Low-level utilities providing WebGL context management and helper functions.</p>
 <h4><strong>Context</strong> (<code>Context.js</code>)</h4>
 <p>Manages the WebGL2 rendering context and canvas lifecycle.</p>
@@ -378,15 +378,17 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
 <li>Constants and configuration defaults</li>
 <li>Helper functions for color, matrix, and data manipulation</li>
 </ul>
-<h3>Data (<code>src/data/</code>)</h3>
-<p>Data structures and properties for rendering state management.</p>
+<h3>Rendering (<code>src/attributes/</code>)</h3>
+<p>Reusable attributes for display elements.</p>
+<h3>Rendering (<code>src/rendering/</code>)</h3>
 <h4><strong>BlendMode</strong> (<code>BlendMode.js</code>)</h4>
 <p>Enum and constants for blend modes (NORMAL, ADD, MULTIPLY, SCREEN, etc.)</p>
 <ul>
 <li>Determines how pixels are combined when overlapping</li>
 <li>Supports all standard WebGL blend operations</li>
 </ul>
-<h4><strong>Texture</strong> (<code>data/texture/Texture.js</code>)</h4>
+<h3>Textures (<code>src/textures/</code>)</h3>
+<h4><strong>Texture</strong> (<code>Texture.js</code>)</h4>
 <p>Represents 2D textures loaded from images, canvas, or video elements.</p>
 <ul>
 <li>Automatic texture binding and management</li>
@@ -394,24 +396,15 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
 <li>Mipmap generation</li>
 <li>Video texture streaming</li>
 </ul>
-<h4><strong>Framebuffer</strong> (<code>data/texture/Framebuffer.js</code>)</h4>
+<h4><strong>Framebuffer</strong> (<code>Framebuffer.js</code>)</h4>
 <p>Off-screen rendering target for advanced effects.</p>
 <ul>
 <li>Used for filter chains and custom rendering passes</li>
 <li>Supports multiple color attachments</li>
 <li>Enables render-to-texture workflows</li>
 </ul>
-<h4><strong>TextureInfo</strong> (<code>data/texture/TextureInfo.js</code>)</h4>
-<p>Metadata about textures including dimensions and format information.</p>
-<h4><strong>Properties</strong> (<code>data/props/</code>)</h4>
-<p>Configuration objects for transformations and visual properties:</p>
-<ul>
-<li><strong>BaseTransformProps</strong> - Position, rotation, scale, anchor point</li>
-<li><strong>ColorProps</strong> - RGBA color values</li>
-<li><strong>TextureTransformProps</strong> - Texture tiling, rotation, offset</li>
-<li><strong>DistortionProps</strong> - Image distortion parameters</li>
-<li><strong>TextureCrop</strong> - Crop region for texture sampling</li>
-</ul>
+<h4><strong>Attributes</strong> (<code>attributes/</code>)</h4>
+<p>Configuration objects for transformations and visual properties</p>
 <h3>Display (<code>src/display/</code>)</h3>
 <p>Visual elements and scene graph nodes.</p>
 <h4><strong>Item</strong> (<code>Item.js</code>)</h4>
@@ -465,13 +458,20 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
 <li>Shadows calculation</li>
 </ul>
 <h4><strong>StageContainer</strong> (<code>StageContainer.js</code>)</h4>
-<p>Root container for the scene graph with camera support.</p>
+<p>Root container for the scene.</p>
 <ul>
 <li>Defines the visible area</li>
 <li>Coordinate transformation</li>
 <li>Viewport management</li>
 </ul>
-<h3>Renderer (<code>src/renderer/</code>)</h3>
+<h4><strong>Text</strong> (<code>Text.js</code>)</h4>
+<p>Drawable text object for rendering strings in the 2D/WebGL canvas.</p>
+<ul>
+<li>Positioning, alignment, and rotation controls</li>
+<li>Style options (font size, color, weight)</li>
+<li>Text wrapping and baseline handling</li>
+</ul>
+<h3>Renderer (<code>src/renderers/</code>)</h3>
 <p>Rendering pipeline and frame composition.</p>
 <h4><strong>BaseRenderer</strong> (<code>BaseRenderer.js</code>)</h4>
 <p>Abstract base for all rendering operations.</p>
@@ -625,7 +625,7 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
 </tr>
 </tbody>
 </table>
-<h3>Geometry (<code>src/geom/</code>)</h3>
+<h3>Math (<code>src/math/</code>)</h3>
 <p>Mathematical types and utilities for geometric calculations.</p>
 <h4><strong>Matrix3Utilities</strong> (<code>Matrix3Utilities.js</code>)</h4>
 <p>3x3 matrix operations for 2D transformations.</p>
@@ -686,13 +686,13 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransformProps.html">BaseTransformProps</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="ColorProps.html">ColorProps</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="DistortionProps.html">DistortionProps</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransformProps.html">FilterTextureTransformProps</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransformProps.html">ItemTransformProps</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransformProps.html">LightTransformProps</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransformProps.html">TextureTransformProps</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransform.html">FilterTextureTransform</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 28 Jan 2026 12:59:28 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Thu, 29 Jan 2026 16:59:59 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

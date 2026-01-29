@@ -279,7 +279,7 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
 
 PWGL is organized into modular components within the `src/` directory, each responsible for specific functionality in the 2D WebGL rendering pipeline.
 
-### Utils (`src/utils/`)
+### Core (`src/core/`)
 
 Low-level utilities providing WebGL context management and helper functions.
 
@@ -304,38 +304,35 @@ General-purpose utilities and initialization functions.
 - Constants and configuration defaults
 - Helper functions for color, matrix, and data manipulation
 
-### Data (`src/data/`)
+### Rendering (`src/attributes/`)
 
-Data structures and properties for rendering state management.
+Reusable attributes for display elements.
+
+### Rendering (`src/rendering/`)
 
 #### **BlendMode** (`BlendMode.js`)
 Enum and constants for blend modes (NORMAL, ADD, MULTIPLY, SCREEN, etc.)
 - Determines how pixels are combined when overlapping
 - Supports all standard WebGL blend operations
 
-#### **Texture** (`data/texture/Texture.js`)
+### Textures (`src/textures/`)
+
+#### **Texture** (`Texture.js`)
 Represents 2D textures loaded from images, canvas, or video elements.
 - Automatic texture binding and management
 - Supports filtering modes (LINEAR, NEAREST)
 - Mipmap generation
 - Video texture streaming
 
-#### **Framebuffer** (`data/texture/Framebuffer.js`)
+#### **Framebuffer** (`Framebuffer.js`)
 Off-screen rendering target for advanced effects.
 - Used for filter chains and custom rendering passes
 - Supports multiple color attachments
 - Enables render-to-texture workflows
 
-#### **TextureInfo** (`data/texture/TextureInfo.js`)
-Metadata about textures including dimensions and format information.
+#### **Attributes** (`attributes/`)
 
-#### **Properties** (`data/props/`)
-Configuration objects for transformations and visual properties:
-- **BaseTransformProps** - Position, rotation, scale, anchor point
-- **ColorProps** - RGBA color values
-- **TextureTransformProps** - Texture tiling, rotation, offset
-- **DistortionProps** - Image distortion parameters
-- **TextureCrop** - Crop region for texture sampling
+Configuration objects for transformations and visual properties
 
 ### Display (`src/display/`)
 
@@ -386,12 +383,18 @@ Dynamic 2D light source for realistic lighting.
 - Shadows calculation
 
 #### **StageContainer** (`StageContainer.js`)
-Root container for the scene graph with camera support.
+Root container for the scene.
 - Defines the visible area
 - Coordinate transformation
 - Viewport management
 
-### Renderer (`src/renderer/`)
+#### **Text** (`Text.js`)
+Drawable text object for rendering strings in the 2D/WebGL canvas.
+- Positioning, alignment, and rotation controls
+- Style options (font size, color, weight)
+- Text wrapping and baseline handling
+
+### Renderer (`src/renderers/`)
 
 Rendering pipeline and frame composition.
 
@@ -480,7 +483,7 @@ Abstract base for all filter implementations.
 | **ChromaticAberrationFilter** | RGB channel separation effect |
 | **GlowFilter** | Bloom/glow effect |
 
-### Geometry (`src/geom/`)
+### Math (`src/math/`)
 
 Mathematical types and utilities for geometric calculations.
 

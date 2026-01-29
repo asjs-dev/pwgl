@@ -14,10 +14,10 @@ export class EdgeDetectFilter extends BaseKernelFilter {
     super(intensity, mix);
 
     // prettier-ignore
-    this.kernels = [
+    this.kernels = new Float32Array([
       -1, -1, -1,
       -1,  8, -1,
       -1, -1, -1
-    ];
+    ]);
   }
 }

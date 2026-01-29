@@ -1,7 +1,7 @@
-import { layoutText } from "../../extensions/utils/layoutText";
-import { noop } from "../../extensions/utils/noop";
-import { Texture } from "../data/texture/Texture";
 import { Image } from "./Image";
+import { layoutText } from "../utils/layoutText";
+import { Texture } from "../textures/Texture";
+import { noop } from "../../extensions/utils/noop";
 
 /**
  * Text drawable class

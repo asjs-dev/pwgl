@@ -1,11 +1,11 @@
-import { Context } from "./utils/Context";
-import { Buffer } from "./utils/Buffer";
-import { Utils, Const } from "./utils/Utils";
+import { Context } from "./core/Context";
+import { Buffer } from "./core/Buffer";
+import { Utils, Const } from "./core/Utils";
 
-import { BlendMode } from "./data/BlendMode";
+import { BlendMode } from "./rendering/BlendMode";
 
-import { Texture } from "./data/texture/Texture";
-import { Framebuffer } from "./data/texture/Framebuffer";
+import { Texture } from "./textures/Texture";
+import { Framebuffer } from "./textures/Framebuffer";
 
 import { Item } from "./display/Item";
 import { BaseDrawable } from "./display/BaseDrawable";
@@ -13,14 +13,15 @@ import { Light } from "./display/Light";
 import { AnimatedImage } from "./display/AnimatedImage";
 import { Container } from "./display/Container";
 import { Image } from "./display/Image";
+import { Text } from "./display/Text";
 
-import { BaseRenderer } from "./renderer/BaseRenderer";
-import { BatchRenderer } from "./renderer/BatchRenderer";
-import { FilterRenderer } from "./renderer/FilterRenderer";
-import { NormalMapRenderer } from "./renderer/NormalMapRenderer";
-import { AmbientOcclusionMapRenderer } from "./renderer/AmbientOcclusionMapRenderer";
-import { LightRenderer } from "./renderer/LightRenderer";
-import { Stage2D } from "./renderer/Stage2D";
+import { BaseRenderer } from "./renderers/BaseRenderer";
+import { BatchRenderer } from "./renderers/BatchRenderer";
+import { FilterRenderer } from "./renderers/FilterRenderer";
+import { NormalMapRenderer } from "./renderers/NormalMapRenderer";
+import { AmbientOcclusionMapRenderer } from "./renderers/AmbientOcclusionMapRenderer";
+import { LightRenderer } from "./renderers/LightRenderer";
+import { Stage2D } from "./renderers/Stage2D";
 
 import { BaseFilter } from "./filters/BaseFilter";
 import { BaseKernelFilter } from "./filters/BaseKernelFilter";
@@ -44,7 +45,6 @@ import { GammaFilter } from "./filters/GammaFilter";
 import { BlurFilter } from "./filters/BlurFilter";
 import { GlowFilter } from "./filters/GlowFilter";
 import { ChromaticAberrationFilter } from "./filters/ChromaticAberrationFilter";
-import { Text } from "./display/Text";
 
 window.PWGL = window.AGL = {
   version: "{{appVersion}}",

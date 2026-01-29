@@ -1,25 +1,25 @@
-import { BlendMode } from "../data/BlendMode";
-import { TextureTransformProps } from "../data/props/TextureTransformProps";
-import { TextureCrop } from "../data/props/TextureCrop";
-import { DistortionProps } from "../data/props/DistortionProps";
-import { Matrix3Utilities } from "../geom/Matrix3Utilities";
 import { BaseDrawable } from "./BaseDrawable";
-import { TextureInfo } from "../data/texture/TextureInfo";
-import "../geom/PointType";
+import { BlendMode } from "../rendering/BlendMode";
+import { TextureTransform } from "../attributes/TextureTransform";
+import { TextureCrop } from "../attributes/TextureCrop";
+import { Distortion } from "../attributes/Distortion";
+import { TextureInfo } from "../textures/TextureInfo";
+import { Matrix3Utilities } from "../math/Matrix3Utilities";
+import "../math/PointType";
 
 /**
  * Image class
  * @extends {BaseDrawable}
  * @property {Image.TintType} TintType
  * @property {BlendMode} blendMode
- * @property {TextureTransformProps} textureTransformProps
+ * @property {TextureTransform} textureTransform
  * @property {TextureCrop} textureCrop
- * @property {DistortionProps} distortionProps
+ * @property {Distortion} distortion
  * @property {TextureInfo} texture
  * @property {Array<number>} textureMatrixCache
  * @property {Array<number>} textureCropCache
  * @property {Array<number>} textureRepeatRandomCache
- * @property {Array<number>} distortionPropsCache
+ * @property {Array<number>} distortionCache
  */
 export class Image extends BaseDrawable {
   /**
@@ -37,12 +37,12 @@ export class Image extends BaseDrawable {
     this.blendMode = BlendMode.NORMAL;
     this._inverseMatrixCache = new Float32Array(6);
     this.textureMatrixCache = Matrix3Utilities.identity();
-    this.textureTransform = new TextureTransformProps();
+    this.textureTransform = new TextureTransform();
     this.textureCrop = new TextureCrop();
-    this.distortionProps = new DistortionProps();
+    this.distortion = new Distortion();
     this.textureCropCache = this.textureCrop.cache;
     this.textureRepeatRandomCache = this.textureTransform.repeatRandomCache;
-    this.distortionPropsCache = this.distortionProps.cache;
+    this.distortionCache = this.distortion.cache;
   }
 
   /**

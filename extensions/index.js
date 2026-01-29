@@ -7,7 +7,7 @@ import { createDataObserver } from "./utils/dataObserver";
 import { crossFadeAudioVolumes, fadeAudioVolume } from "./audio/utils";
 import { AudioItem } from "./audio/AudioItem";
 import { AudioMixer } from "./audio/AudioMixer";
-import { SmoothLight } from "./renderer/SmoothLight";
+import { SmoothLight } from "./display/SmoothLight";
 import { AnimatedWater } from "./display/AnimatedWater";
 import { areObjectsEqual } from "./utils/areObjectsEqual";
 import { clamp } from "./utils/clamp";
@@ -55,9 +55,6 @@ window.PWGLExtensions = window.AGLExtensions = {
 
   display: {
     AnimatedWater,
-  },
-
-  renderer: {
     SmoothLight,
   },
 

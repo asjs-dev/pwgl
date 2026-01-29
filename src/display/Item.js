@@ -1,8 +1,8 @@
+import { ItemTransform } from "../attributes/ItemTransform";
+import { Color } from "../attributes/Color";
+import { Matrix3Utilities } from "../math/Matrix3Utilities";
+import "../math/RectangleType";
 import { noop } from "../../extensions/utils/noop";
-import { ItemTransformProps } from "../data/props/ItemTransformProps";
-import { ColorProps } from "../data/props/ColorProps";
-import { Matrix3Utilities } from "../geom/Matrix3Utilities";
-import "../geom/RectangleType";
 
 /**
  * Item
@@ -11,8 +11,8 @@ import "../geom/RectangleType";
  * @property {Array<number>} colorCache
  * @property {boolean} interactive
  * @property {boolean} renderable
- * @property {ItemTransformProps} transform
- * @property {ColorProps} color
+ * @property {ItemTransform} transform
+ * @property {Color} color
  * @property {number} alpha
  * @property {boolean} transformUpdated
  * @property {boolean} colorUpdated
@@ -28,9 +28,9 @@ export class Item {
     this.RENDERING_TYPE = Item.RENDERING_TYPE;
 
     this.matrixCache = Matrix3Utilities.identity();
-    this.colorCache = [1, 1, 1, 1];
+    this.colorCache = new Float32Array([1, 1, 1, 1]);
     this.transform = new this.$transformClass();
-    this.color = new ColorProps();
+    this.color = new Color();
     this.alpha = 1;
     this.callbackBeforeRender = this.callbackAfterRender = noop;
     this.renderable = true;
@@ -111,14 +111,6 @@ export class Item {
   }
 
   /**
-   * Returns with the Item bounds
-   * @returns {Rectangle}
-   */
-  getBounds() {
-    return this.$bounds;
-  }
-
-  /**
    * Destruct class
    */
   destruct() {
@@ -176,7 +168,7 @@ export class Item {
    * @ignore
    */
   get $transformClass() {
-    return ItemTransformProps;
+    return ItemTransform;
   }
 }
 

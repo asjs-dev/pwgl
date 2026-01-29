@@ -21,17 +21,17 @@
       "BASE_VERTEX_SHADER_UNIFORMS": "BVSU",
       "BASE_VERTEX_SHADER_INITIALIZATION": "BVSI",
 
-      "BaseTransformProps": "DBTP",
-      "ColorProps": "DCP",
-      "DistortionProps": "DDP",
-      "FilterTextureTransformProps": "DFTTP",
-      "ItemTransformProps": "DITP",
-      "LightTransformProps": "DLTP",
+      "BaseTransform": "DBT",
+      "Color": "DC",
+      "Distortion": "DD",
+      "FilterTextureTransform": "DFT",
+      "ItemTransform": "DIT",
+      "LightTransform": "DLT",
       "TextureCrop": "DTC",
-      "TextureTransformProps": "DTTP",
+      "TextureTransform": "DTT",
       "TextureInfo": "DTI",
       "StageContainer": "DSC",
-      "Matrix3Utilities": "GM3U"
+      "Matrix3Utilities": "GM3"
     },
     "output": "dist/pwgl.min.js"
   },

@@ -1,11 +1,11 @@
-import { Utils } from "../utils/Utils";
-import { LightTransformProps } from "../data/props/LightTransformProps";
 import { BaseDrawable } from "./BaseDrawable";
+import { Utils } from "../core/Utils";
+import { LightTransform } from "../attributes/LightTransform";
 
 /**
  * Light
  * @extends {BaseDrawable}
- * @property {LightTransformProps} transform
+ * @property {LightTransform} transform
  * @property {boolean} castShadow
  * @property {boolean} shading
  * @property {boolean} centerReflection
@@ -118,7 +118,7 @@ export class Light extends BaseDrawable {
    * @ignore
    */
   get $transformClass() {
-    return LightTransformProps;
+    return LightTransform;
   }
 
   /**

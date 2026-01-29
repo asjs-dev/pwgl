@@ -1,5 +1,5 @@
 import { BaseFilter } from "./BaseFilter";
-import { FilterTextureTransformProps } from "../data/props/FilterTextureTransformProps";
+import { FilterTextureTransform } from "../attributes/FilterTextureTransform";
 
 /**
  * Base Texture filter
@@ -30,7 +30,7 @@ export class BaseTextureFilter extends BaseFilter {
   ) {
     super(extendedValue);
 
-    this.textureTransform = new FilterTextureTransformProps(
+    this.textureTransform = new FilterTextureTransform(
       this,
       texture,
       translateX,

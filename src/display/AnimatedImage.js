@@ -1,7 +1,7 @@
-import { noop } from "../../extensions/utils/noop";
-import { TextureInfo } from "../data/texture/TextureInfo";
 import { Image } from "./Image";
-import "../geom/RectangleType";
+import { TextureInfo } from "../textures/TextureInfo";
+import "../math/RectangleType";
+import { noop } from "../../extensions/utils/noop";
 
 /**
  * Frame

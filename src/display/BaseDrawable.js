@@ -1,7 +1,7 @@
 import { Item } from "./Item";
-import { Matrix3Utilities } from "../geom/Matrix3Utilities";
-import "../geom/PointType";
-import "../geom/RectangleType";
+import { Matrix3Utilities } from "../math/Matrix3Utilities";
+import "../math/PointType";
+import "../math/RectangleType";
 
 /**
  * Base drawable class
@@ -24,20 +24,12 @@ export class BaseDrawable extends Item {
   }
 
   /**
-   * Returns with the calculated corder positions
-   * @returns {Array<Point>}
-   */
-  getCorners() {
-    this.$calcCorners();
-    return this.$corners;
-  }
-
-  /**
    * Returns with bounds
    * @returns {Rectangle}
    */
   getBounds() {
-    const corners = this.getCorners(),
+    this.$calcCorners();
+    const corners = this.$corners,
       bounds = this.$bounds,
       a = corners[0],
       b = corners[1],
@@ -56,12 +48,11 @@ export class BaseDrawable extends Item {
    * @ignore
    */
   $calcCorners() {
-    const stage = this.stage;
-    stage &&
+    this.stage &&
       Matrix3Utilities.calcCorners(
         this.$corners,
         this.matrixCache,
-        stage.renderer
+        this.stage.renderer
       );
   }
 }

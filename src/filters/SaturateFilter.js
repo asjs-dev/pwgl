@@ -30,10 +30,10 @@ export class SaturateFilter extends BaseKernelFilter {
       svb = sv * 0.11;
 
     // prettier-ignore
-    this.kernels = [
+    this.kernels = new Float32Array([
       svr + v, svg, svb, 0,
       svr, svg + v, svb, 0,
       svr, svg, svb + v, 0
-    ];
+    ]);
   }
 }

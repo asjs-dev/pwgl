@@ -15,10 +15,10 @@ export class SharpenFilter extends BaseKernelFilter {
     super(intensity, mix);
 
     // prettier-ignore
-    this.kernels = [
+    this.kernels = new Float32Array([
       0, -1,  0,
      -1,  5, -1,
       0, -1,  0,
-    ];
+    ]);
   }
 }

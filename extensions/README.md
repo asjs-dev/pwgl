@@ -84,11 +84,7 @@ Realistic animated water surface effect using displacement mapping.
 - Uses noise textures for natural water behavior
 - Optimized for real-time rendering
 
-### Renderer
-
-Advanced rendering techniques and visual effects.
-
-#### **SmoothLight** (`renderer/SmoothLight.js`)
+#### **SmoothLight** (`display/SmoothLight.js`)
 Smooth lighting and shadow calculations for dynamic scenes.
 - Soft shadow rendering
 - Light falloff and attenuation

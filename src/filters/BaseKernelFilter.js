@@ -1,5 +1,5 @@
-import { arraySet } from "../../extensions/utils/arraySet";
 import { BaseFilter } from "./BaseFilter";
+import { arraySet } from "../../extensions/utils/arraySet";
 
 /**
  * Base kernel filter
