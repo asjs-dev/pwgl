@@ -462,7 +462,7 @@ export class Stage2D extends BatchRenderer {
      useTint = config.useTint;
 
     const getSimpleTexColor = (modCoordName) =>
-      "gtTexCl(v2.y,v3," + modCoordName + ")";
+      "gTxC(v2.y,v3," + modCoordName + ")";
 
     return Utils.GLSL.DEFINE.Z +
     Utils.GLSL.DEFINE.RADIANS_360 +
@@ -485,7 +485,7 @@ export class Stage2D extends BatchRenderer {
     "out vec4 " +
       "oCl;" +
 
-    "vec4 gtTexCl(float i,vec4 s,vec2 m){" +
+    "vec4 gTxC(float i,vec4 s,vec2 m){" +
       "vec2 " + 
         "sxy=s.xy," +
         "szw=s.zw," +
@@ -501,7 +501,7 @@ export class Stage2D extends BatchRenderer {
       "return Z.yyyy;" +
     "}" +
 
-    "float cosine(float a,float b,float v){" +
+    "float cs(float a,float b,float v){" +
       "v=abs(v);" +
       "float " + 
         "t=-2.*v+2.;" +
@@ -511,7 +511,7 @@ export class Stage2D extends BatchRenderer {
 
     (useRepeatTextures
       ? Utils.GLSL.RANDOM2 +
-        "vec4 gtClBUv(vec2 st){" +
+        "vec4 gCB(vec2 st){" +
           "vec2 " +
             "uv=v0;" +
 
@@ -528,11 +528,11 @@ export class Stage2D extends BatchRenderer {
           "return " + getSimpleTexColor("mod(uv,Z.yy)") + ";" +
         "}" +
 
-        "float gtRClBUv(vec2 st,vec2 uv){" +
+        "float gRCB(vec2 st,vec2 uv){" +
           "float " +
             "rnd=rand2(floor(v0+st)/100.);" +
           "return (1.-(v5.w*rnd-v5.w*.5)*v5.y)*" +
-            "cosine(0.,1.,1.-st.x-uv.x)*cosine(0.,1.,1.-st.y-uv.y);" +
+            "cs(0.,1.,1.-st.x-uv.x)*cs(0.,1.,1.-st.y-uv.y);" +
         "}"
       : "") +
 
@@ -545,18 +545,18 @@ export class Stage2D extends BatchRenderer {
           ? "if(v5.x>0.||v5.y>0.){" +
               "vec4 " +
                 "rc=vec4(" + 
-                  "gtRClBUv(Z.xx,uv)," +
-                  "gtRClBUv(Z.yx,uv)," +
-                  "gtRClBUv(Z.xy,uv)," +
-                  "gtRClBUv(Z.yy,uv)" +
+                  "gRCB(Z.xx,uv)," +
+                  "gRCB(Z.yx,uv)," +
+                  "gRCB(Z.xy,uv)," +
+                  "gRCB(Z.yy,uv)" +
                 ");" +
               "oCl=mix(" +
-                "gtClBUv(Z.xy)," +
+                "gCB(Z.xy)," +
                 "clamp(" +
-                  "gtClBUv(Z.xx)*rc.x+" +
-                  "gtClBUv(Z.yx)*rc.y+" +
-                  "gtClBUv(Z.xy)*rc.z+" +
-                  "gtClBUv(Z.yy)*rc.w" +
+                  "gCB(Z.xx)*rc.x+" +
+                  "gCB(Z.yx)*rc.y+" +
+                  "gCB(Z.xy)*rc.z+" +
+                  "gCB(Z.yy)*rc.w" +
                 ",0.,1.)," +
                 "vec4(v5.z)" + 
               ");" +

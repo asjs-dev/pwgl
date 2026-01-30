@@ -1,7 +1,7 @@
 import { BaseTextureFilter } from "./BaseTextureFilter";
 
 const _GLSL = BaseTextureFilter.$createGLSL(
-  "oCl.a*=v<4.?mskCl[int(v)]:(mskCl.r+mskCl.g+mskCl.b+mskCl.a)/4.;"
+  "oCl.a*=v<4.?txCl[int(v)]:(txCl.r+txCl.g+txCl.b+txCl.a)/4.;"
 );
 
 /**

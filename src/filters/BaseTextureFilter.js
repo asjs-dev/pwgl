@@ -46,7 +46,7 @@ export class BaseTextureFilter extends BaseFilter {
 // prettier-ignore
 BaseTextureFilter.$createGLSL = (core) => "" +
   "vec4 " +
-    "mskCl=texture(" +
+    "txCl=texture(" +
       "uH," +
       "mod(vec2(vl[1],vl[2])+v0.zw,1.)*vec2(vl[5]-vl[3],vl[6]-vl[4])" +
     ");" +

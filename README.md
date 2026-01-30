@@ -74,203 +74,186 @@ Add your script
 
 ```javascript
 class Application {
-  constructor() {}
-}
-
-PWGL.Utils.initApplication(function (isWebGl2Supported) {
-  if (!isWebGl2Supported) {
-    // WebGL 2 is not supported
-    return;
-  }
-
-  new Application();
-});
-```
-
-Create a simple 2d renderer environment
-
-```javascript
-class Application {
   constructor() {
-    const width = 800;
-    const height = 600;
-
-    this._stageContainer = document.body;
-
-    // create context
-    this._context = new PWGL.Context();
-
-    // create stage 2d renderer
-    this._stage2DRenderer = new PWGL.Stage2D({
-      context: this._context,
-    });
-
-    this._stageContainer.appendChild(this._context.canvas);
-
-    const imageUrl = "https://picsum.photos/500/300";
-    const image = new Image();
-    image.crossOrigin = "Anonymous";
-    image.src = imageUrl;
-    
-    // create renderable element
-    this._image = new PWGL.Image(
-      new PWGL.Texture(image)
-    );
-    this._image.transform.x = width * 0.5;
-    this._image.transform.y = height * 0.5;
-    this._image.transform.width = 320;
-    this._image.transform.height = 240;
-    this._image.transform.anchorX = this._image.transform.anchorY = 0.5;
-    this._stage2DRenderer.container.addChild(this._image);
-
-    // resize context and renderers
-    this._context.setCanvasSize(width, height);
-    this._stage2DRenderer.setSize(width, height);
-
-    this._onBeforeUnloadBound = this._onBeforeUnload.bind(this);
-    this._renderBound = this._render.bind(this);
-    this._requestAnimationFrameId;
-
-    window.addEventListener("beforeunload", this._onBeforeUnloadBound);
-
-    // start render cycle
-    PWGLExtensions.utils.enterFrame(this._renderBound);
-  }
-
-  _render(fps, delay) {
-    // console.log("delay:", delay);
-    // console.log("fps:", fps.toFixed(2));
-
-    // rotate the image
-    this._image.transform.rotation += 0.001;
-
-    // render the state
-    this._stage2DRenderer.render();
-  }
-
-  _destruct() {
-    cancelAnimationFrame(this._requestAnimationFrameId);
-    window.removeEventListener("beforeunload", this._onBeforeUnloadBound);
-    this._stageContainer.removeChild(this._context.canvas);
-    this._stage2DRenderer.destruct();
-  }
-
-  _onBeforeUnload() {
-    this._destruct();
+    // ...
   }
 }
 
+// or
+
+const initWebGlApplication = () =>
+{
+  // ...
+}
+
 PWGL.Utils.initApplication(function (isWebGl2Supported) {
-  if (!isWebGl2Supported) {
-    // WebGL 2 is not supported
-    return;
+  if (isWebGl2Supported) {
+    new Application();
+    // or
+    initWebGlApplication();
   }
 
-  new Application();
 });
 ```
 
-Add filter renderer
+Create a simple 2d renderer environment [Demo](https://codepen.io/iroshan/pen/MYemWXe)
 
-[Demo](https://codepen.io/iroshan/pen/MYemWXe)
 ```javascript
-class Application {
-  constructor() {
-    const width = 800;
-    const height = 600;
-
-    this._stageContainer = document.body;
-
-    // create context
-    this._context = new PWGL.Context();
-
-    // create framebuffer for the stage 2d renderer
-    this._stage2DRendererFramebuffer = new PWGL.Framebuffer();
-
-    // create stage 2d renderer
-    this._stage2DRenderer = new PWGL.Stage2D({
-      context: this._context,
-    });
-
-    // create filter renderer and set the framebuffer as texture source
-    this._filterRenderer = new PWGL.FilterRenderer({
-      context: this._context,
-      sourceTexture: this._stage2DRendererFramebuffer,
-      filters: [
-        new PWGL.PixelateFilter(5),
-        new PWGL.VignetteFilter(1, 3, 1, 0, 0, 0),
-      ],
-    });
-
-    this._stageContainer.appendChild(this._context.canvas);
-
-    const imageUrl = "https://picsum.photos/500/300";
-    const image = new Image();
-    image.crossOrigin = "Anonymous";
-    image.src = imageUrl;
-    
-    // create renderable element
-    this._image = new PWGL.Image(
-      new PWGL.Texture(image)
-    );
-    this._image.transform.x = width * 0.5;
-    this._image.transform.y = height * 0.5;
-    this._image.transform.width = 320;
-    this._image.transform.height = 240;
-    this._image.transform.anchorX = this._image.transform.anchorY = 0.5;
-    this._stage2DRenderer.container.addChild(this._image);
-
-    // resize context and renderers
-    this._context.setCanvasSize(width, height);
-    this._stage2DRenderer.setSize(width, height);
-    this._filterRenderer.setSize(width, height);
-
-    this._onBeforeUnloadBound = this._onBeforeUnload.bind(this);
-    this._renderBound = this._render.bind(this);
-    this._requestAnimationFrameId;
-
-    window.addEventListener("beforeunload", this._onBeforeUnloadBound);
-
-    // start render cycle
-    PWGLExtensions.utils.enterFrame(this._renderBound);
-  }
-
-  _render(fps, delay) {
-    // console.log("delay:", delay);
-    // console.log("fps:", fps.toFixed(2));
-
+const initWebGlApplication = () => {
+  // render function
+  const render = (fps, delay) => {
     // rotate the image
-    this._image.transform.rotation += 0.001;
+    image.transform.rotation += 0.001 * delay;
 
     // render the state to framebuffer
-    this._stage2DRenderer.renderToFramebuffer(
-      this._stage2DRendererFramebuffer
-    );
+    stage2DRenderer.renderToFramebuffer(stage2DRendererFramebuffer);
     // render filters
-    this._filterRenderer.render();
-  }
+    filterRenderer.render();
+  };
 
-  _destruct() {
-    cancelAnimationFrame(this._requestAnimationFrameId);
-    window.removeEventListener("beforeunload", this._onBeforeUnloadBound);
-    this._stageContainer.removeChild(this._context.canvas);
-    this._stage2DRenderer.destruct();
-    this._filterRenderer.destruct();
-  }
+  const width = 800;
+  const height = 600;
 
-  _onBeforeUnload() {
-    this._destruct();
-  }
-}
+  // load images and textures
+  const texture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
 
-PWGL.Utils.initApplication(function (isWebGl2Supported) {
-  if (!isWebGl2Supported) {
-    // WebGL 2 is not supported
-    return;
-  }
+  const stageContainer = document.body;
 
-  new Application();
-});
+  // create context
+  const context = new PWGL.Context();
+
+  // create framebuffer for the stage 2d renderer
+  const stage2DRendererFramebuffer = new PWGL.Framebuffer();
+
+  // create stage 2d renderer
+  const stage2DRenderer = new PWGL.Stage2D({
+    context
+  });
+
+  // create filter renderer and set the framebuffer as texture source
+  const filterRenderer = new PWGL.FilterRenderer({
+    context,
+    sourceTexture: stage2DRendererFramebuffer,
+    filters: [
+      new PWGL.PixelateFilter(5),
+      new PWGL.VignetteFilter(1, 3, 1, 0, 0, 0)
+    ]
+  });
+
+  stageContainer.appendChild(context.canvas);
+
+  // create renderable element
+  const image = new PWGL.Image(texture);
+  image.transform.x = width * 0.5;
+  image.transform.y = height * 0.5;
+  image.transform.width = 400;
+  image.transform.height = 240;
+  image.transform.anchorX = image.transform.anchorY = 0.5;
+  stage2DRenderer.container.addChild(image);
+
+  // resize context and renderers
+  context.setCanvasSize(width, height);
+  stage2DRenderer.setSize(width, height);
+  filterRenderer.setSize(width, height);
+
+  // start render cycle
+  PWGLExtensions.utils.enterFrame(render);
+};
+
+PWGL.Utils.initApplication(
+  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication()
+);
+```
+
+Filters [Demo](https://codepen.io/iroshan/pen/PwzQzGo)
+
+```javascript
+const initWebGlApplication = () => {
+  // render function
+  const render = (fps, delay) => {
+    // rotate the image
+    image.transform.rotation += 0.001 * delay;
+
+    // render the state to framebuffer
+    stage2DRenderer.renderToFramebuffer(stage2DRendererFramebuffer);
+    // render filters
+    filterRenderer.render();
+  };
+
+  const width = 600;
+  const height = 375;
+
+  // load images and textures
+  const baseTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
+  const maskTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
+  const displacementTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
+
+  const stageContainer = document.body;
+
+  // create context
+  const context = new PWGL.Context();
+
+  // create framebuffer for the stage 2d renderer
+  const stage2DRendererFramebuffer = new PWGL.Framebuffer();
+
+  // create stage 2d renderer
+  const stage2DRenderer = new PWGL.Stage2D({
+    context
+  });
+  stage2DRenderer.clearBeforeRender = true;
+
+  // create filter renderer and set the framebuffer as texture source
+  const filterRenderer = new PWGL.FilterRenderer({
+    context,
+    sourceTexture: stage2DRendererFramebuffer,
+    filters: [
+      new PWGL.ChromaticAberrationFilter(10, true),
+      // new PWGL.ColorLimitFilter(32),
+      // new PWGL.BrightnessContrastFilter(1.5, 2),
+      // new PWGL.EdgeDetectFilter(3, 10),
+      // new PWGL.GammaFilter(4),
+      // new PWGL.GlowFilter(5, 5),
+      // new PWGL.GrayscaleFilter(1),
+      // new PWGL.InvertFilter(1),
+      new PWGL.DisplacementFilter(displacementTexture, 30),
+      // new PWGL.MaskFilter(maskTexture, PWGL.MaskFilter.Type.BLUE),
+      new PWGL.MaskFilter(maskTexture, PWGL.MaskFilter.Type.RED),
+      // new PWGL.PixelateFilter(4),
+      // new PWGL.VignetteFilter(1, 3, 1, 0.5, 0, 0.5),
+      new PWGL.BlurFilter(5, 5),
+      new PWGL.RainbowFilter(1),
+      new PWGL.SaturateFilter(2)
+      // new PWGL.SepiaFilter(1),
+      // new PWGL.SharpenFilter(1.2),
+      // new PWGL.TintFilter(1, 1, 0.5, 0.25)
+    ]
+  });
+  filterRenderer.clearBeforeRender = true;
+  filterRenderer.clearColor.set(0, 0, 0, 0);
+
+  stageContainer.appendChild(context.canvas);
+
+  // create renderable element
+  const image = new PWGL.Image(baseTexture);
+  image.transform.x = width * 0.5;
+  image.transform.y = height * 0.5;
+  image.transform.width = 500;
+  image.transform.height = 300;
+  image.transform.anchorX = image.transform.anchorY = 0.5;
+  stage2DRenderer.container.addChild(image);
+
+  // resize context and renderers
+  context.setCanvasSize(width, height);
+  stage2DRenderer.setSize(width, height);
+  filterRenderer.setSize(width, height);
+
+  // start render cycle
+  PWGLExtensions.utils.enterFrame(render);
+};
+
+PWGL.Utils.initApplication(
+  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication()
+);
 ```
 
 ---
