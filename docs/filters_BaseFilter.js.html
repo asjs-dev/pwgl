@@ -57,7 +57,9 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code>import { arraySet } from "../../extensions/utils/arraySet";
+
+/**
  * Base Filter
  * @property {boolean} on
  */
@@ -65,12 +67,34 @@ export class BaseFilter {
   /**
    * Creates an instance of BaseFilter.
    * @constructor
-   * @param {number} intensity
+   * @param {object} options
+   * @param {number} options.intensity
+   * @param {number} options.intensityX
+   * @param {number} options.intensityY
+   * @param {number} options.mix
+   * @param {number} options.isRadial
+   * @param {number} options.centerX
+   * @param {number} options.centerY
+   * @param {number} options.size
    */
-  constructor(intensity = 0) {
+  constructor(options = {}) {
     this.on = true;
-    this.v = new Float32Array(9);
-    this.intensity = intensity;
+    this.data = new Float32Array(10);
+    this.customData = new Float32Array(8);
+    this.kernels = new Float32Array(9);
+
+    this.intensityX =
+      options.intensityX ?? options.intensity ?? options.deg ?? 0;
+    this.intensityY = options.intensityY ?? options.intensity ?? 0;
+    this.mix = options.mix ?? 1;
+    this.isRadial = options.isRadial ?? false;
+    this.centerX = options.centerX ?? 0.5;
+    this.centerY = options.centerY ?? 0.5;
+    this.invertRadial = options.invertRadial ?? false;
+    this.size = options.size ?? 1;
+    this.roundness = options.roundness ?? 1;
+    this.transition = options.transition ?? 1;
+    options.kernels &amp;&amp; arraySet(this.kernels, options.kernels);
   }
 
   /**
@@ -78,10 +102,10 @@ export class BaseFilter {
    * @type {number}
    */
   get intensity() {
-    return this.v[0];
+    return this.data[0];
   }
   set intensity(v) {
-    this.v[0] = v;
+    this.data[0] = this.data[1] = v;
   }
 
   /**
@@ -92,10 +116,10 @@ export class BaseFilter {
    * @type {number}
    */
   get intensityX() {
-    return this.v[0];
+    return this.data[0];
   }
   set intensityX(v) {
-    this.v[0] = v;
+    this.data[0] = v;
   }
 
   /**
@@ -103,10 +127,10 @@ export class BaseFilter {
    * @type {number}
    */
   get intensityY() {
-    return this.v[1];
+    return this.data[1];
   }
   set intensityY(v) {
-    this.v[1] = v;
+    this.data[1] = v;
   }
 
   /**
@@ -114,43 +138,87 @@ export class BaseFilter {
    * @type {number}
    */
   get mix() {
-    return this.v[1];
+    return this.data[2];
   }
   set mix(v) {
-    this.v[1] = v;
+    this.data[2] = v;
   }
 
   /**
-   * Set/Get r
-   * @type {number}
+   * Set/Get is blur radial
+   * @type {boolean}
    */
-  get r() {
-    return this.v[2];
+  get isRadial() {
+    return this.data[3];
   }
-  set r(v) {
-    this.v[2] = v;
+  set isRadial(v) {
+    this.data[3] = v;
   }
 
   /**
-   * Set/Get g
+   * Set/Get center x
    * @type {number}
    */
-  get g() {
-    return this.v[3];
+  get centerX() {
+    return this.data[4];
   }
-  set g(v) {
-    this.v[3] = v;
+  set centerX(v) {
+    this.data[4] = v;
   }
 
   /**
-   * Set/Get b
+   * Set/Get center y
    * @type {number}
    */
-  get b() {
-    return this.v[4];
+  get centerY() {
+    return this.data[5];
   }
-  set b(v) {
-    this.v[4] = v;
+  set centerY(v) {
+    this.data[5] = v;
+  }
+
+  /**
+   * Set/Get invertRadial
+   * @type {boolean}
+   */
+  get invertRadial() {
+    return this.data[6];
+  }
+  set invertRadial(v) {
+    this.data[6] = v;
+  }
+
+  /**
+   * Set/Get size
+   * @type {number}
+   */
+  get size() {
+    return this.data[7];
+  }
+  set size(v) {
+    this.data[7] = v;
+  }
+
+  /**
+   * Set/Get roundnes
+   * @type {number}
+   */
+  get roundness() {
+    return this.data[8];
+  }
+  set roundness(v) {
+    this.data[8] = v;
+  }
+
+  /**
+   * Set/Get transition
+   * @type {number}
+   */
+  get transition() {
+    return 1 / this.data[9];
+  }
+  set transition(v) {
+    this.data[9] = 1 / v;
   }
 }
 </code></pre>
@@ -163,13 +231,13 @@ export class BaseFilter {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransform.html">FilterTextureTransform</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 30 Jan 2026 06:47:16 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 04 Feb 2026 10:36:51 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

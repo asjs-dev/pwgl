@@ -1,24 +1,23 @@
 import { BaseKernelFilter } from "./BaseKernelFilter";
-
 /**
  * Sharpen filter
  * @extends {BaseKernelFilter}
  */
 export class SharpenFilter extends BaseKernelFilter {
   /**
-   * Creates an instance of SharpenFilter.
+   * Creates an instance of EdgeDetectFilter.
    * @constructor
-   * @param {number} intensity
-   * @param {number} mix
+   * @param {object} options
    */
-  constructor(intensity, mix = 1) {
-    super(intensity, mix);
-
+  constructor(options) {
     // prettier-ignore
-    this.kernels = new Float32Array([
-      0, -1,  0,
-     -1,  5, -1,
-      0, -1,  0,
-    ]);
+    super({
+      ...options,
+      kernels: [
+        0, -1,  0,
+       -1,  5, -1,
+        0, -1,  0
+      ]
+    });
   }
 }

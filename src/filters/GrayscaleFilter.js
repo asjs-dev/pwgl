@@ -6,6 +6,6 @@ import { BaseFilter } from "./BaseFilter";
  */
 export class GrayscaleFilter extends BaseFilter {
   get GLSL() {
-    return "oCl=oClVl+vec4(vec3(gtGS(oCl.rgb)),oCl.a)*v;";
+    return "oCl=vec4(vec3(gs(oCl.rgb)),oCl.a);";
   }
 }

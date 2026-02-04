@@ -5,7 +5,7 @@ import {
   BASE_VERTEX_SHADER,
   BASE_VERTEX_SHADER_INITIALIZATION,
   BASE_VERTEX_SHADER_POSITION,
-} from "../utils/baseVertexShaderUtils";
+} from "../utils/shaderUtils";
 
 /**
  * @typedef {Object} AmbientOcclusionMapRendererConfig
@@ -118,7 +118,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     "flat out vec2 " +
       "v1;" +
 
-    "void main(void){" +
+    "void main(){" +
       BASE_VERTEX_SHADER +
       
       "float " + 
@@ -159,7 +159,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
     Utils.GLSL.RANDOM +
 
-    "void main(void){" +
+    "void main(){" +
       "float " +
         "tx=texture(uB,v0).g," +
         "v=0.;" +

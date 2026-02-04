@@ -8,16 +8,17 @@ export class EdgeDetectFilter extends BaseKernelFilter {
   /**
    * Creates an instance of EdgeDetectFilter.
    * @constructor
-   * @param {number} intensity
+   * @param {object} options
    */
-  constructor(intensity, mix = 1) {
-    super(intensity, mix);
-
+  constructor(options) {
     // prettier-ignore
-    this.kernels = new Float32Array([
-      -1, -1, -1,
-      -1,  8, -1,
-      -1, -1, -1
-    ]);
+    super({
+      ...options,
+      kernels: [
+        -1, -1, -1,
+        -1,  8, -1,
+        -1, -1, -1
+      ]
+    });
   }
 }

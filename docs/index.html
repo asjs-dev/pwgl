@@ -164,10 +164,9 @@ PWGL (Programmable WebGL) is a JavaScript framework for creating <strong>2D WebG
 
 // or
 
-const initWebGlApplication = () =>
-{
+const initWebGlApplication = () => {
   // ...
-}
+};
 
 PWGL.Utils.initApplication(function (isWebGl2Supported) {
   if (isWebGl2Supported) {
@@ -175,7 +174,6 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
     // or
     initWebGlApplication();
   }
-
 });
 </code></pre>
 <p>Create a simple 2d renderer environment <a href="https://codepen.io/iroshan/pen/MYemWXe">Demo</a></p>
@@ -215,8 +213,8 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
     context,
     sourceTexture: stage2DRendererFramebuffer,
     filters: [
-      new PWGL.PixelateFilter(5),
-      new PWGL.VignetteFilter(1, 3, 1, 0, 0, 0)
+      new PWGL.PixelateFilter({ intensity: 5 }),
+      new PWGL.TintFilter({ 1, 3, 1, 0, 0, 0 })
     ]
   });
 
@@ -263,7 +261,9 @@ PWGL.Utils.initApplication(
   // load images and textures
   const baseTexture = PWGL.Texture.loadImage(&quot;https://picsum.photos/500/300&quot;);
   const maskTexture = PWGL.Texture.loadImage(&quot;https://picsum.photos/500/300&quot;);
-  const displacementTexture = PWGL.Texture.loadImage(&quot;https://picsum.photos/500/300&quot;);
+  const displacementTexture = PWGL.Texture.loadImage(
+    &quot;https://picsum.photos/500/300&quot;,
+  );
 
   const stageContainer = document.body;
 
@@ -275,7 +275,7 @@ PWGL.Utils.initApplication(
 
   // create stage 2d renderer
   const stage2DRenderer = new PWGL.Stage2D({
-    context
+    context,
   });
   stage2DRenderer.clearBeforeRender = true;
 
@@ -284,26 +284,36 @@ PWGL.Utils.initApplication(
     context,
     sourceTexture: stage2DRendererFramebuffer,
     filters: [
-      new PWGL.ChromaticAberrationFilter(10, true),
-      // new PWGL.ColorLimitFilter(32),
-      // new PWGL.BrightnessContrastFilter(1.5, 2),
-      // new PWGL.EdgeDetectFilter(3, 10),
-      // new PWGL.GammaFilter(4),
-      // new PWGL.GlowFilter(5, 5),
-      // new PWGL.GrayscaleFilter(1),
-      // new PWGL.InvertFilter(1),
-      new PWGL.DisplacementFilter(displacementTexture, 30),
-      // new PWGL.MaskFilter(maskTexture, PWGL.MaskFilter.Type.BLUE),
-      new PWGL.MaskFilter(maskTexture, PWGL.MaskFilter.Type.RED),
-      // new PWGL.PixelateFilter(4),
-      // new PWGL.VignetteFilter(1, 3, 1, 0.5, 0, 0.5),
-      new PWGL.BlurFilter(5, 5),
-      new PWGL.RainbowFilter(1),
-      new PWGL.SaturateFilter(2)
-      // new PWGL.SepiaFilter(1),
-      // new PWGL.SharpenFilter(1.2),
-      // new PWGL.TintFilter(1, 1, 0.5, 0.25)
-    ]
+      new PWGL.ChromaticAberrationFilter({ intensity: 10, isRadial: true }),
+      // new PWGL.PosterizeFilter({ intensity: 32 }),
+      // new PWGL.BrightnessFilter({ intensity: 1.5 }),
+      // new PWGL.ContrastFilter({ intensity: 2 }),
+      // new PWGL.HueRotateFilter({ deg: 45 * PWGL.Utils.THETA }),
+      // new PWGL.EdgeDetectFilter({ intensity: 3 }),
+      // new PWGL.GammaFilter({ intensity: 4 }),
+      // new PWGL.GlowFilter({ intensitX: 5, intensityY: 5 }),
+      // new PWGL.GrayscaleFilter({ intensity: 1 }),
+      // new PWGL.InvertFilter({ intensity: 1 }),
+      new PWGL.DisplacementFilter({
+        texture: displacementTexture,
+        intensity: 30,
+      }),
+      // new PWGL.MaskFilter({
+      //   texture: maskTexture,
+      //   type: PWGL.MaskFilter.Type.BLUE,
+      // }),
+      new PWGL.MaskFilter({
+        texture: maskTexture,
+        type: PWGL.MaskFilter.Type.RED,
+      }),
+      // new PWGL.PixelateFilter({ intensity: 4 }),
+      new PWGL.BlurFilter({ intensity: 5 }),
+      new PWGL.RainbowFilter({ intensity: 1 }),
+      new PWGL.SaturateFilter({ intensity: 2 }),
+      // new PWGL.SepiaFilter({ intensity: 1}),
+      // new PWGL.SharpenFilter({ intensity: 1.2 }),
+      // new PWGL.TintFilter({ r: 1, g: 1, b: 0.5 })
+    ],
   });
   filterRenderer.clearBeforeRender = true;
   filterRenderer.clearColor.set(0, 0, 0, 0);
@@ -329,7 +339,7 @@ PWGL.Utils.initApplication(
 };
 
 PWGL.Utils.initApplication(
-  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication()
+  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication(),
 );
 </code></pre>
 <hr>
@@ -567,8 +577,16 @@ PWGL.Utils.initApplication(
 <td>Increase/decrease saturation</td>
 </tr>
 <tr>
-<td><strong>BrightnessContrastFilter</strong></td>
-<td>Brightness and contrast adjustment</td>
+<td><strong>BrightnessFilter</strong></td>
+<td>Brightness adjustment</td>
+</tr>
+<tr>
+<td><strong>ContrastFilter</strong></td>
+<td>Contrast adjustment</td>
+</tr>
+<tr>
+<td><strong>HueRotateFilter</strong></td>
+<td>Hue rotate</td>
 </tr>
 <tr>
 <td><strong>GammaFilter</strong></td>
@@ -579,12 +597,8 @@ PWGL.Utils.initApplication(
 <td>Color overlay tinting</td>
 </tr>
 <tr>
-<td><strong>ColorLimitFilter</strong></td>
+<td><strong>PosterizeFilter</strong></td>
 <td>Posterization/color reduction</td>
-</tr>
-<tr>
-<td><strong>VignetteFilter</strong></td>
-<td>Dark corners vignette effect</td>
 </tr>
 <tr>
 <td><strong>RainbowFilter</strong></td>
@@ -669,13 +683,13 @@ PWGL.Utils.initApplication(
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransform.html">FilterTextureTransform</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 30 Jan 2026 06:47:16 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 04 Feb 2026 10:36:51 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

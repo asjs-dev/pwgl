@@ -111,7 +111,7 @@ export class AudioItem extends BaseAudio {
       this._startTime = context.currentTime;
       try {
         this.$nodesConnected && this._source.start(context.currentTime, from);
-      } catch (e) {}
+      } catch {}
     }
 
     this.$setConfig(this);

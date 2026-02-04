@@ -1,3 +1,5 @@
+import { TintType } from "../rendering/TintType";
+import { TINT_TYPE_SHADER } from "../utils/shaderUtils";
 import { BaseFilter } from "./BaseFilter";
 
 /**
@@ -5,23 +7,83 @@ import { BaseFilter } from "./BaseFilter";
  * @extends {BaseFilter}
  */
 export class TintFilter extends BaseFilter {
-  /**
-   * Creates an instance of TintFilter.
-   * @constructor
-   * @param {number} intensity
-   * @param {number} r
-   * @param {number} g
-   * @param {number} b
-   */
-  constructor(intensity, r, g, b) {
-    super(intensity);
+  constructor(options) {
+    super(options);
 
-    this.r = r;
-    this.g = g;
-    this.b = b;
+    this.set(options.r ?? 1, options.g ?? 1, options.b ?? 1, options.a ?? 1);
+    this.tintType = TintType.MULTIPLY;
   }
 
   get GLSL() {
-    return "oCl.rgb*=rgb*v;";
+    return TINT_TYPE_SHADER("uL[1].x", "oCl", "uL[0]");
+  }
+
+  /**
+   * Set/Get red
+   * @type {number}
+   */
+  get r() {
+    return this.customData[0];
+  }
+  set r(v) {
+    this.customData[0] = v;
+  }
+
+  /**
+   * Set/Get green
+   * @type {number}
+   */
+  get g() {
+    return this.customData[1];
+  }
+  set g(v) {
+    this.customData[1] = v;
+  }
+
+  /**
+   * Set/Get blue
+   * @type {number}
+   */
+  get b() {
+    return this.customData[2];
+  }
+  set b(v) {
+    this.customData[2] = v;
+  }
+
+  /**
+   * Set/Get alpha
+   * @type {number}
+   */
+  get a() {
+    return this.customData[3];
+  }
+  set a(v) {
+    this.customData[3] = v;
+  }
+
+  /**
+   * Set/Get tint type
+   * @type {number}
+   */
+  get tintType() {
+    return this.customData[4];
+  }
+  set tintType(v) {
+    this.customData[4] = v;
+  }
+
+  /**
+   * Set all colors
+   * @param {number} r 
+   * @param {number} g 
+   * @param {number} b 
+   * @param {number} a 
+   */
+  set(r, g, b, a) {
+    this.r = r;
+    this.g = g;
+    this.b = b;
+    this.a = a;
   }
 }

@@ -1,3 +1,5 @@
+import { arraySet } from "../../extensions/utils/arraySet";
+
 /**
  * Base Filter
  * @property {boolean} on
@@ -6,12 +8,34 @@ export class BaseFilter {
   /**
    * Creates an instance of BaseFilter.
    * @constructor
-   * @param {number} intensity
+   * @param {object} options
+   * @param {number} options.intensity
+   * @param {number} options.intensityX
+   * @param {number} options.intensityY
+   * @param {number} options.mix
+   * @param {number} options.isRadial
+   * @param {number} options.centerX
+   * @param {number} options.centerY
+   * @param {number} options.size
    */
-  constructor(intensity = 0) {
+  constructor(options = {}) {
     this.on = true;
-    this.v = new Float32Array(9);
-    this.intensity = intensity;
+    this.data = new Float32Array(10);
+    this.customData = new Float32Array(8);
+    this.kernels = new Float32Array(9);
+
+    this.intensityX =
+      options.intensityX ?? options.intensity ?? options.deg ?? 0;
+    this.intensityY = options.intensityY ?? options.intensity ?? 0;
+    this.mix = options.mix ?? 1;
+    this.isRadial = options.isRadial ?? false;
+    this.centerX = options.centerX ?? 0.5;
+    this.centerY = options.centerY ?? 0.5;
+    this.invertRadial = options.invertRadial ?? false;
+    this.size = options.size ?? 1;
+    this.roundness = options.roundness ?? 1;
+    this.transition = options.transition ?? 1;
+    options.kernels && arraySet(this.kernels, options.kernels);
   }
 
   /**
@@ -19,10 +43,10 @@ export class BaseFilter {
    * @type {number}
    */
   get intensity() {
-    return this.v[0];
+    return this.data[0];
   }
   set intensity(v) {
-    this.v[0] = v;
+    this.data[0] = this.data[1] = v;
   }
 
   /**
@@ -33,10 +57,10 @@ export class BaseFilter {
    * @type {number}
    */
   get intensityX() {
-    return this.v[0];
+    return this.data[0];
   }
   set intensityX(v) {
-    this.v[0] = v;
+    this.data[0] = v;
   }
 
   /**
@@ -44,10 +68,10 @@ export class BaseFilter {
    * @type {number}
    */
   get intensityY() {
-    return this.v[1];
+    return this.data[1];
   }
   set intensityY(v) {
-    this.v[1] = v;
+    this.data[1] = v;
   }
 
   /**
@@ -55,42 +79,86 @@ export class BaseFilter {
    * @type {number}
    */
   get mix() {
-    return this.v[1];
+    return this.data[2];
   }
   set mix(v) {
-    this.v[1] = v;
+    this.data[2] = v;
   }
 
   /**
-   * Set/Get r
-   * @type {number}
+   * Set/Get is blur radial
+   * @type {boolean}
    */
-  get r() {
-    return this.v[2];
+  get isRadial() {
+    return this.data[3];
   }
-  set r(v) {
-    this.v[2] = v;
+  set isRadial(v) {
+    this.data[3] = v;
   }
 
   /**
-   * Set/Get g
+   * Set/Get center x
    * @type {number}
    */
-  get g() {
-    return this.v[3];
+  get centerX() {
+    return this.data[4];
   }
-  set g(v) {
-    this.v[3] = v;
+  set centerX(v) {
+    this.data[4] = v;
   }
 
   /**
-   * Set/Get b
+   * Set/Get center y
    * @type {number}
    */
-  get b() {
-    return this.v[4];
+  get centerY() {
+    return this.data[5];
   }
-  set b(v) {
-    this.v[4] = v;
+  set centerY(v) {
+    this.data[5] = v;
+  }
+
+  /**
+   * Set/Get invertRadial
+   * @type {boolean}
+   */
+  get invertRadial() {
+    return this.data[6];
+  }
+  set invertRadial(v) {
+    this.data[6] = v;
+  }
+
+  /**
+   * Set/Get size
+   * @type {number}
+   */
+  get size() {
+    return this.data[7];
+  }
+  set size(v) {
+    this.data[7] = v;
+  }
+
+  /**
+   * Set/Get roundnes
+   * @type {number}
+   */
+  get roundness() {
+    return this.data[8];
+  }
+  set roundness(v) {
+    this.data[8] = v;
+  }
+
+  /**
+   * Set/Get transition
+   * @type {number}
+   */
+  get transition() {
+    return 1 / this.data[9];
+  }
+  set transition(v) {
+    this.data[9] = 1 / v;
   }
 }

@@ -6,7 +6,7 @@ import {
   BASE_VERTEX_SHADER,
   BASE_VERTEX_SHADER_INITIALIZATION,
   BASE_VERTEX_SHADER_POSITION,
-} from "../utils/baseVertexShaderUtils";
+} from "../utils/shaderUtils";
 import { noop } from "../../extensions/utils/noop";
 
 /**
@@ -93,11 +93,9 @@ export class FilterRenderer extends BaseRenderer {
 
     this.$uploadBuffers();
 
-    gl.uniform1f(locations.uL, renderTime % 864e5);
-
     this.$useTextureAt(this.sourceTexture, locations.uB, 0);
 
-    gl.uniform2f(locations.uF, this.width, this.height);
+    gl.uniform3f(locations.uF, this.width, this.height, renderTime % 864e5);
 
     while (++i < l) {
       const filter = filters[i],
@@ -105,8 +103,7 @@ export class FilterRenderer extends BaseRenderer {
         isLast = i > minL,
         filterTexture =
           useFilter &&
-          filter.textureTransform &&
-          filter.textureTransform.texture;
+          filter.texture;
 
       let filterFramebuffer;
 
@@ -123,9 +120,9 @@ export class FilterRenderer extends BaseRenderer {
 
       if (useFilter) {
         gl.uniform1i(locations.uI, filter.uniqueId);
-        gl.uniform1fv(locations.uJ, filter.v);
-        filter.kernels &&
-          gl.uniformMatrix4fv(locations.uK, false, filter.kernels);
+        gl.uniform1fv(locations.uJ, filter.data);
+        gl.uniformMatrix2x4fv(locations.uL, false, filter.customData);
+        gl.uniformMatrix3fv(locations.uK, false, filter.kernels);
       }
 
       (useFilter || isLast) && this.$drawInstanced(1);
@@ -150,7 +147,7 @@ export class FilterRenderer extends BaseRenderer {
     "out vec4 " +
       "v0;" +
 
-    "void main(void){" +
+    "void main(){" +
       BASE_VERTEX_SHADER +
       
       "v0=vec4(pos.xy," + BASE_VERTEX_SHADER_POSITION + ");" +
@@ -168,16 +165,17 @@ export class FilterRenderer extends BaseRenderer {
     
     "in vec4 " +
       "v0;" +
-
+      
+    "uniform float " + 
+      "uJ[10];" +
     "uniform int " +
       "uI;" +
-    "uniform float " +
-      "uL," +
-      "uJ[9];" +
-    "uniform vec2 " +
+    "uniform vec3 " +
       "uF;" +
-    "uniform mat4 " +
+    "uniform mat3 " +
       "uK;" +
+    "uniform mat2x4 " +
+      "uL;" +
     "uniform sampler2D " +
       "uB," +
       "uH;" +
@@ -187,42 +185,25 @@ export class FilterRenderer extends BaseRenderer {
 
     Utils.GLSL.RANDOM +
     
-    "float tl(float c){" +
-      "return c<=.04045?c/12.92:pow((c+.055)/1.055,2.4);" +
+    "float gs(vec3 c){" + 
+      "return .3*c.r+.59*c.g+.11*c.b;" +
     "}" +
 
-    "float rl(vec3 c){" +
-      "return .2126*tl(c.r)+.7152*tl(c.g)+.0722*tl(c.b);" +
-    "}" +
-
-    "float gtGS(vec3 cl){" + 
-      "return .3*cl.r+.59*cl.g+.11*cl.b;" +
-    "}" +
-
-    "void main(void){" +
+    "void main(){" +
       "oCl=texture(uB,v0.zw);" +
 
+      "vec4 " +
+        "tmpCl=oCl;" +
+
       "float " +
-        "vl[]=uJ," +
-        "v=vl[0];" +
+        "v=uJ[0];" +
 
       "vec2 " + 
-        "ts=floor(uF);" +
+        "ts=floor(uF.xy)," +
+        "vol=v/ts;" +
       
       "ivec2 " +
         "f=ivec2(floor(v0.zw*ts));" +
-
-      "vec2 " +
-        "vol=v/ts;" +
-
-      "vec3 " +
-        "rgb=vec3(vl[2],vl[3],vl[4]);" +
-
-      "vec4 " +
-        "oClVl=oCl*(1.-v);" +
-
-      "mat4 " +
-        "kr=uK;"+
     
       this.filters.reduce((acc, item) => {
         let index = acc.findIndex((record) => record.GLSL === item.GLSL);
@@ -231,6 +212,25 @@ export class FilterRenderer extends BaseRenderer {
         return acc;
       }, []).map((item) => "if(uI==" + item.uniqueId + "){" + item.GLSL + "}").join("else ") + 
 
+      "vec2 d=abs(v0.zw-vec2(uJ[4],uJ[5]));" +
+      
+      "float " + 
+        "ds=mix(length(d),pow(pow(d.x,4.)+pow(d.y,4.),.25),uJ[8])," +
+        "dst=mix(" +
+          "1.," +
+          "clamp(" +
+            "pow(" +
+              "clamp(ds,0.,1.)/uJ[7]," +
+              "uJ[9]" +
+            ")," +
+            "0.," +
+            "1." +
+          ")," +
+          "uJ[3]" +
+        ")," +
+        "mA=mix(dst,1.-dst,uJ[6]);" +
+
+        "oCl=mix(tmpCl,oCl,mA*uJ[2]);" +
     "}";
   }
 }

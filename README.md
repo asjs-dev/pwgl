@@ -81,10 +81,9 @@ class Application {
 
 // or
 
-const initWebGlApplication = () =>
-{
+const initWebGlApplication = () => {
   // ...
-}
+};
 
 PWGL.Utils.initApplication(function (isWebGl2Supported) {
   if (isWebGl2Supported) {
@@ -92,7 +91,6 @@ PWGL.Utils.initApplication(function (isWebGl2Supported) {
     // or
     initWebGlApplication();
   }
-
 });
 ```
 
@@ -135,8 +133,8 @@ const initWebGlApplication = () => {
     context,
     sourceTexture: stage2DRendererFramebuffer,
     filters: [
-      new PWGL.PixelateFilter(5),
-      new PWGL.VignetteFilter(1, 3, 1, 0, 0, 0)
+      new PWGL.PixelateFilter({ intensity: 5 }),
+      new PWGL.TintFilter({ 1, 3, 1, 0, 0, 0 })
     ]
   });
 
@@ -186,7 +184,9 @@ const initWebGlApplication = () => {
   // load images and textures
   const baseTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
   const maskTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
-  const displacementTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
+  const displacementTexture = PWGL.Texture.loadImage(
+    "https://picsum.photos/500/300",
+  );
 
   const stageContainer = document.body;
 
@@ -198,7 +198,7 @@ const initWebGlApplication = () => {
 
   // create stage 2d renderer
   const stage2DRenderer = new PWGL.Stage2D({
-    context
+    context,
   });
   stage2DRenderer.clearBeforeRender = true;
 
@@ -207,26 +207,36 @@ const initWebGlApplication = () => {
     context,
     sourceTexture: stage2DRendererFramebuffer,
     filters: [
-      new PWGL.ChromaticAberrationFilter(10, true),
-      // new PWGL.ColorLimitFilter(32),
-      // new PWGL.BrightnessContrastFilter(1.5, 2),
-      // new PWGL.EdgeDetectFilter(3, 10),
-      // new PWGL.GammaFilter(4),
-      // new PWGL.GlowFilter(5, 5),
-      // new PWGL.GrayscaleFilter(1),
-      // new PWGL.InvertFilter(1),
-      new PWGL.DisplacementFilter(displacementTexture, 30),
-      // new PWGL.MaskFilter(maskTexture, PWGL.MaskFilter.Type.BLUE),
-      new PWGL.MaskFilter(maskTexture, PWGL.MaskFilter.Type.RED),
-      // new PWGL.PixelateFilter(4),
-      // new PWGL.VignetteFilter(1, 3, 1, 0.5, 0, 0.5),
-      new PWGL.BlurFilter(5, 5),
-      new PWGL.RainbowFilter(1),
-      new PWGL.SaturateFilter(2)
-      // new PWGL.SepiaFilter(1),
-      // new PWGL.SharpenFilter(1.2),
-      // new PWGL.TintFilter(1, 1, 0.5, 0.25)
-    ]
+      new PWGL.ChromaticAberrationFilter({ intensity: 10, isRadial: true }),
+      // new PWGL.PosterizeFilter({ intensity: 32 }),
+      // new PWGL.BrightnessFilter({ intensity: 1.5 }),
+      // new PWGL.ContrastFilter({ intensity: 2 }),
+      // new PWGL.HueRotateFilter({ deg: 45 * PWGL.Utils.THETA }),
+      // new PWGL.EdgeDetectFilter({ intensity: 3 }),
+      // new PWGL.GammaFilter({ intensity: 4 }),
+      // new PWGL.GlowFilter({ intensitX: 5, intensityY: 5 }),
+      // new PWGL.GrayscaleFilter({ intensity: 1 }),
+      // new PWGL.InvertFilter({ intensity: 1 }),
+      new PWGL.DisplacementFilter({
+        texture: displacementTexture,
+        intensity: 30,
+      }),
+      // new PWGL.MaskFilter({
+      //   texture: maskTexture,
+      //   type: PWGL.MaskFilter.Type.BLUE,
+      // }),
+      new PWGL.MaskFilter({
+        texture: maskTexture,
+        type: PWGL.MaskFilter.Type.RED,
+      }),
+      // new PWGL.PixelateFilter({ intensity: 4 }),
+      new PWGL.BlurFilter({ intensity: 5 }),
+      new PWGL.RainbowFilter({ intensity: 1 }),
+      new PWGL.SaturateFilter({ intensity: 2 }),
+      // new PWGL.SepiaFilter({ intensity: 1}),
+      // new PWGL.SharpenFilter({ intensity: 1.2 }),
+      // new PWGL.TintFilter({ r: 1, g: 1, b: 0.5 })
+    ],
   });
   filterRenderer.clearBeforeRender = true;
   filterRenderer.clearColor.set(0, 0, 0, 0);
@@ -252,7 +262,7 @@ const initWebGlApplication = () => {
 };
 
 PWGL.Utils.initApplication(
-  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication()
+  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication(),
 );
 ```
 
@@ -267,7 +277,9 @@ PWGL is organized into modular components within the `src/` directory, each resp
 Low-level utilities providing WebGL context management and helper functions.
 
 #### **Context** (`Context.js`)
+
 Manages the WebGL2 rendering context and canvas lifecycle.
+
 - Canvas creation and initialization
 - WebGL2 context management with fallback detection
 - Texture tracking and resource management
@@ -275,14 +287,18 @@ Manages the WebGL2 rendering context and canvas lifecycle.
 - Canvas size configuration
 
 #### **Buffer** (`Buffer.js`)
+
 Wraps WebGL buffer objects for efficient vertex and index data management.
+
 - Vertex buffer object (VBO) handling
 - Index buffer management
 - Dynamic buffer updates
 - Data type conversions
 
 #### **Utils** (`Utils.js`)
+
 General-purpose utilities and initialization functions.
+
 - `initApplication()` - Detect WebGL2 support and bootstrap the application
 - Constants and configuration defaults
 - Helper functions for color, matrix, and data manipulation
@@ -294,21 +310,27 @@ Reusable attributes for display elements.
 ### Rendering (`src/rendering/`)
 
 #### **BlendMode** (`BlendMode.js`)
+
 Enum and constants for blend modes (NORMAL, ADD, MULTIPLY, SCREEN, etc.)
+
 - Determines how pixels are combined when overlapping
 - Supports all standard WebGL blend operations
 
 ### Textures (`src/textures/`)
 
 #### **Texture** (`Texture.js`)
+
 Represents 2D textures loaded from images, canvas, or video elements.
+
 - Automatic texture binding and management
 - Supports filtering modes (LINEAR, NEAREST)
 - Mipmap generation
 - Video texture streaming
 
 #### **Framebuffer** (`Framebuffer.js`)
+
 Off-screen rendering target for advanced effects.
+
 - Used for filter chains and custom rendering passes
 - Supports multiple color attachments
 - Enables render-to-texture workflows
@@ -322,7 +344,9 @@ Configuration objects for transformations and visual properties
 Visual elements and scene graph nodes.
 
 #### **Item** (`Item.js`)
+
 Base class for all renderable objects with transform properties.
+
 - Position (`x`, `y`)
 - Rotation and scale
 - Visibility toggling
@@ -330,21 +354,27 @@ Base class for all renderable objects with transform properties.
 - Hierarchical parent-child relationships
 
 #### **BaseDrawable** (`BaseDrawable.js`)
+
 Abstract base for renderable elements with rendering-specific properties.
+
 - Rendering type identification
 - Blend mode management
 - Color tinting
 - Matrix cache for performance
 
 #### **Container** (`Container.js`)
+
 Hierarchical node for organizing display objects.
+
 - Add/remove child elements
 - Recursive rendering of children
 - Transform inheritance
 - Bounds calculation
 
 #### **Image** (`Image.js`)
+
 Textured sprite with advanced visual properties.
+
 - Texture mapping with UV coordinates
 - Blend modes and tint effects
 - Texture transformations (scale, rotation, offset)
@@ -352,27 +382,35 @@ Textured sprite with advanced visual properties.
 - Distortion effects
 
 #### **AnimatedImage** (`AnimatedImage.js`)
+
 Image with frame-based animation support.
+
 - Sprite sheet animation
 - Frame sequencing
 - Playback control (play, pause, stop)
 - Frame rate configuration
 
 #### **Light** (`Light.js`)
+
 Dynamic 2D light source for realistic lighting.
+
 - Point and directional lighting
 - Attenuation and falloff
 - Color and intensity
 - Shadows calculation
 
 #### **StageContainer** (`StageContainer.js`)
+
 Root container for the scene.
+
 - Defines the visible area
 - Coordinate transformation
 - Viewport management
 
 #### **Text** (`Text.js`)
+
 Drawable text object for rendering strings in the 2D/WebGL canvas.
+
 - Positioning, alignment, and rotation controls
 - Style options (font size, color, weight)
 - Text wrapping and baseline handling
@@ -382,20 +420,26 @@ Drawable text object for rendering strings in the 2D/WebGL canvas.
 Rendering pipeline and frame composition.
 
 #### **BaseRenderer** (`BaseRenderer.js`)
+
 Abstract base for all rendering operations.
+
 - WebGL state management
 - Matrix operations
 - Shader program linking
 
 #### **BatchRenderer** (`BatchRenderer.js`)
+
 High-performance batch rendering system for optimal GPU utilization.
+
 - Dynamic batching of geometry
 - Reduces draw calls significantly (10,000+ elements at 60fps)
 - Automatic batch splitting
 - Texture atlas support
 
 #### **Stage2D** (`Stage2D.js`)
+
 Main 2D rendering engine with scene graph management.
+
 - Renders hierarchical display objects
 - Viewport management
 - Interactive element picking (mouse/touch)
@@ -403,27 +447,35 @@ Main 2D rendering engine with scene graph management.
 - Supports stable fps rendering at high element counts
 
 #### **FilterRenderer** (`FilterRenderer.js`)
+
 Post-processing effects chain.
+
 - Applies sequential filters to rendered output
 - Offscreen rendering to framebuffers
 - Multiple filter composition
 - Screen-space effects
 
 #### **LightRenderer** (`LightRenderer.js`)
+
 Specialized renderer for dynamic lighting and shadows.
+
 - Real-time shadow map generation
 - Soft shadow rendering
 - Multiple light support
 - Optimized light frustum culling
 
 #### **NormalMapRenderer** (`NormalMapRenderer.js`)
+
 Generates normal maps for surface detail and lighting calculations.
+
 - Converts height maps to normal maps
 - Real-time generation
 - Used for advanced lighting techniques
 
 #### **AmbientOcclusionMapRenderer** (`AmbientOcclusionMapRenderer.js`)
+
 Generates ambient occlusion maps for realistic shadowing.
+
 - Screen-space ambient occlusion (SSAO)
 - Real-time computation
 - Enhances visual depth
@@ -433,58 +485,68 @@ Generates ambient occlusion maps for realistic shadowing.
 Post-processing effects and image manipulation filters.
 
 #### **BaseFilter** (`BaseFilter.js`)
+
 Abstract base for all filter implementations.
+
 - Intensity parameter
 - On/off toggling
 - Uniform value storage
 
 #### **Specialized Filter Base Classes:**
+
 - **BaseKernelFilter** - Convolution filters (3x3, 5x5 kernels)
 - **BaseSamplingFilter** - Sampling-based effects (blur, bokeh)
 - **BaseTextureFilter** - Texture-dependent effects
 
 #### **Available Filters:**
 
-| Filter | Purpose |
-| --- | --- |
-| **BlurFilter** | Gaussian blur with adjustable radius |
-| **PixelateFilter** | Pixelation/mosaic effect |
-| **EdgeDetectFilter** | Edge detection (Sobel operator) |
-| **SharpenFilter** | Image sharpening/unsharp mask |
-| **GrayscaleFilter** | Desaturate to grayscale |
-| **SepiaFilter** | Warm vintage tone |
-| **InvertFilter** | Color inversion |
-| **SaturateFilter** | Increase/decrease saturation |
-| **BrightnessContrastFilter** | Brightness and contrast adjustment |
-| **GammaFilter** | Gamma correction |
-| **TintFilter** | Color overlay tinting |
-| **ColorLimitFilter** | Posterization/color reduction |
-| **VignetteFilter** | Dark corners vignette effect |
-| **RainbowFilter** | Chromatic rainbow shift |
-| **DisplacementFilter** | Vertex displacement mapping |
-| **MaskFilter** | Selective region masking |
-| **ChromaticAberrationFilter** | RGB channel separation effect |
-| **GlowFilter** | Bloom/glow effect |
+| Filter                        | Purpose                              |
+| ----------------------------- | ------------------------------------ |
+| **BlurFilter**                | Gaussian blur with adjustable radius |
+| **PixelateFilter**            | Pixelation/mosaic effect             |
+| **EdgeDetectFilter**          | Edge detection (Sobel operator)      |
+| **SharpenFilter**             | Image sharpening/unsharp mask        |
+| **GrayscaleFilter**           | Desaturate to grayscale              |
+| **SepiaFilter**               | Warm vintage tone                    |
+| **InvertFilter**              | Color inversion                      |
+| **SaturateFilter**            | Increase/decrease saturation         |
+| **BrightnessFilter**          | Brightness adjustment                |
+| **ContrastFilter**            | Contrast adjustment                  |
+| **HueRotateFilter**           | Hue rotate                           |
+| **GammaFilter**               | Gamma correction                     |
+| **TintFilter**                | Color overlay tinting                |
+| **PosterizeFilter**           | Posterization/color reduction        |
+| **RainbowFilter**             | Chromatic rainbow shift              |
+| **DisplacementFilter**        | Vertex displacement mapping          |
+| **MaskFilter**                | Selective region masking             |
+| **ChromaticAberrationFilter** | RGB channel separation effect        |
+| **GlowFilter**                | Bloom/glow effect                    |
 
 ### Math (`src/math/`)
 
 Mathematical types and utilities for geometric calculations.
 
 #### **Matrix3Utilities** (`Matrix3Utilities.js`)
+
 3x3 matrix operations for 2D transformations.
+
 - Matrix multiplication
 - Inverse calculation
 - Identity matrix
 - Efficient transformation composition
 
 #### **PointType** (`PointType.js`)
+
 Point/Vector representation with methods.
+
 - 2D coordinates
 - Distance calculations
 - Vector operations
 
 #### **RectangleType** (`RectangleType.js`)
+
 Rectangle/Bounding box representation.
+
 - Intersection testing
 - Containment checking
 - Area calculations

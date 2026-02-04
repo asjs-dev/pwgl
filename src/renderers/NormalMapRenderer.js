@@ -5,7 +5,7 @@ import {
   BASE_VERTEX_SHADER,
   BASE_VERTEX_SHADER_INITIALIZATION,
   BASE_VERTEX_SHADER_POSITION,
-} from "../utils/baseVertexShaderUtils";
+} from "../utils/shaderUtils";
 
 /**
  * @typedef {Object} NormalMapRendererConfig
@@ -68,7 +68,7 @@ export class NormalMapRenderer extends BaseRenderer {
     "out vec2 " +
       "v0;" +
 
-    "void main(void){" +
+    "void main(){" +
       BASE_VERTEX_SHADER +
       
       "v0=" + BASE_VERTEX_SHADER_POSITION + ";" +
@@ -95,7 +95,7 @@ export class NormalMapRenderer extends BaseRenderer {
     "out vec4 " +
       "oCl;" +
 
-    "void main(void){" +
+    "void main(){" +
       "vec2 " +
         "ts=floor(uF)," +
         "p=1./ts," +

@@ -6,7 +6,7 @@ import { Light } from "../display/Light";
 import {
   BASE_VERTEX_SHADER_ATTRIBUTES,
   BASE_VERTEX_SHADER_UNIFORMS,
-} from "../utils/baseVertexShaderUtils";
+} from "../utils/shaderUtils";
 import { arraySet } from "../../extensions/utils/arraySet";
 
 /**
@@ -162,8 +162,7 @@ export class LightRenderer extends BatchRenderer {
 
     this.context.setBlendMode(BlendMode.ADD);
 
-    sourceTextureBoolean &&
-      this.$useTexture(this._sourceTexture, locations.uC);
+    sourceTextureBoolean && this.$useTexture(this._sourceTexture, locations.uC);
 
     normalMapBoolean && this.$useTexture(this._normalMap, locations.uM);
 
@@ -230,7 +229,7 @@ export class LightRenderer extends BatchRenderer {
       "v4," +
       "v5;" +
 
-    "void main(void){" +
+    "void main(){" +
       "vec3 " + 
         "pos=vec3(aA*2.-1.,1);" +
       
@@ -300,7 +299,7 @@ export class LightRenderer extends BatchRenderer {
 
     Utils.GLSL.RANDOM +
 
-    "void main(void){" +
+    "void main(){" +
       "float " +
         "vol=v5.a;" +
 

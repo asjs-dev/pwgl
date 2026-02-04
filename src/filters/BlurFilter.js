@@ -1,19 +1,17 @@
-import { BaseSamplingFilter } from "./BaseSamplingFilter";
+import { CREATE_SAMPLING_FILTER } from "../utils/shaderUtils";
+import { BaseFilter } from "./BaseFilter";
 
 // prettier-ignore
-const _GLSL = BaseSamplingFilter.$createGLSL(
-  "float " +
-      "cnt=1.;",
-  "cl+=clg;" + 
-  "cnt++;",
-  "cl/=cnt;"
+const _GLSL = CREATE_SAMPLING_FILTER(
+  "",
+  "oCl*=.2;"
 );
 
 /**
  * Blur filter
- * @extends {BaseSamplingFilter}
+ * @extends {BaseFilter}
  */
-export class BlurFilter extends BaseSamplingFilter {
+export class BlurFilter extends BaseFilter {
   get GLSL() {
     return _GLSL;
   }

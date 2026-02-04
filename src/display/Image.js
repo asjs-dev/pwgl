@@ -1,5 +1,6 @@
 import { BaseDrawable } from "./BaseDrawable";
 import { BlendMode } from "../rendering/BlendMode";
+import { TintType } from "../rendering/TintType";
 import { TextureTransform } from "../attributes/TextureTransform";
 import { TextureCrop } from "../attributes/TextureCrop";
 import { Distortion } from "../attributes/Distortion";
@@ -10,7 +11,7 @@ import "../math/PointType";
 /**
  * Image class
  * @extends {BaseDrawable}
- * @property {Image.TintType} TintType
+ * @property {TintType} tintType
  * @property {BlendMode} blendMode
  * @property {TextureTransform} textureTransform
  * @property {TextureCrop} textureCrop
@@ -33,7 +34,7 @@ export class Image extends BaseDrawable {
     this.RENDERING_TYPE = Image.RENDERING_TYPE;
 
     this.texture = texture;
-    this.tintType = Image.TintType.NORMAL;
+    this.tintType = TintType.MULTIPLY;
     this.blendMode = BlendMode.NORMAL;
     this._inverseMatrixCache = new Float32Array(6);
     this.textureMatrixCache = Matrix3Utilities.identity();
@@ -80,20 +81,3 @@ export class Image extends BaseDrawable {
  * @string
  */
 Image.RENDERING_TYPE = "drawable";
-
-/**
- * Tint type
- * @member
- * @property {number} NONE output color = source color * 1 + tint color * 0
- * @property {number} NORMAL output color = source color * tint color
- * @property {number} GRAYSCALE output color = if source color red channel == source color green channel and source color red channel == source color blue channel then source color * tint color else source color
- * @property {number} OVERRIDE output color = tint color
- * @property {number} ADD output color = source color + tint color
- */
-Image.TintType = {
-  NONE: 0,
-  NORMAL: 1,
-  GRAYSCALE: 2,
-  OVERRIDE: 3,
-  ADD: 4,
-};

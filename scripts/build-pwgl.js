@@ -17,7 +17,7 @@ if (fs.existsSync(builderPath)) {
       `php ${builderPath} builder_config/pwgl.extensions.build.config.json`,
       { stdio: "inherit" }
     );
-  } catch (err) {
+  } catch {
     console.error("PWGL build failed");
     process.exit(1);
   }

@@ -11,7 +11,8 @@ import "../math/PointType";
 import {
   BASE_VERTEX_SHADER_ATTRIBUTES,
   BASE_VERTEX_SHADER_UNIFORMS,
-} from "../utils/baseVertexShaderUtils";
+  TINT_TYPE_SHADER,
+} from "../utils/shaderUtils";
 import { noop } from "../../extensions/utils/noop";
 import { arraySet } from "../../extensions/utils/arraySet";
 
@@ -418,7 +419,7 @@ export class Stage2D extends BatchRenderer {
       ");" +
     "}" +
 
-    "void main(void){" +
+    "void main(){" +
       "vec2 " +
         "tPs=clcQd(aA);" +
 
@@ -536,7 +537,7 @@ export class Stage2D extends BatchRenderer {
         "}"
       : "") +
 
-    "void main(void){" +
+    "void main(){" +
       "if(v2.y>-1.){" +
         "vec2 " +
           "uv=mod(v0,Z.yy);" +
@@ -580,13 +581,7 @@ export class Stage2D extends BatchRenderer {
       "if(oCl.a<=0.)discard;" +
 
       (useTint
-        ? "if(v2.x>0.)" +
-          "if(v2.x==1.||(v2.x==2.&&oCl.r==oCl.g&&oCl.r==oCl.b))" +
-            "oCl*=v4;" +
-          "else if(v2.x==3.)" +
-            "oCl=v4;" +
-          "else if(v2.x==4.)" +
-            "oCl+=v4;" 
+        ? TINT_TYPE_SHADER("v2.x", "oCl", "v4")
         : "") +
     "}";
   }

@@ -20,6 +20,8 @@
       "BASE_VERTEX_SHADER_ATTRIBUTES": "BVSA",
       "BASE_VERTEX_SHADER_UNIFORMS": "BVSU",
       "BASE_VERTEX_SHADER_INITIALIZATION": "BVSI",
+      "TINT_TYPE_SHADER": "TTS",
+      "CREATE_SAMPLING_FILTER": "CSF",
 
       "BaseTransform": "DBT",
       "Color": "DC",

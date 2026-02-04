@@ -59,7 +59,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>SharpenFilter<span class="signature">(intensity, mix)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>SharpenFilter<span class="signature">(options)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Sharpen filter</div>
         
@@ -76,7 +76,7 @@
     
 
     
-    <h4 class="name" id="SharpenFilter"><span class="type-signature"></span>new SharpenFilter<span class="signature">(intensity, mix)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="SharpenFilter"><span class="type-signature"></span>new SharpenFilter<span class="signature">(options)</span><span class="type-signature"></span></h4>
     
 
     
@@ -84,7 +84,7 @@
 
 
 <div class="description">
-    Creates an instance of SharpenFilter.
+    Creates an instance of EdgeDetectFilter.
 </div>
 
 
@@ -110,8 +110,6 @@
         
 
         
-        <th>Default</th>
-        
 
         <th class="last">Description</th>
     </tr>
@@ -122,13 +120,13 @@
 
         <tr>
             
-                <td class="name"><code>intensity</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type">object</span>
 
 
             
@@ -136,39 +134,6 @@
 
             
 
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>mix</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-
-            
-                <td class="default">
-                
-                    1
-                
-                </td>
             
 
             <td class="description last"></td>
@@ -212,7 +177,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_SharpenFilter.js.html">filters/SharpenFilter.js</a>, <a href="filters_SharpenFilter.js.html#line7">line 7</a>
+        <a href="filters_SharpenFilter.js.html">filters/SharpenFilter.js</a>, <a href="filters_SharpenFilter.js.html#line6">line 6</a>
     </li></ul></dd>
     
 
@@ -280,13 +245,13 @@
 
         
             
-<h4 class="name" id="b"><span class="type-signature"></span>b<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="centerX"><span class="type-signature"></span>centerX<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get b
+    Set/Get center x
 </div>
 
 
@@ -316,7 +281,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="BaseKernelFilter.html#b">BaseKernelFilter#b</a>
+        <a href="BaseKernelFilter.html#centerX">BaseKernelFilter#centerX</a>
     </li></ul></dd>
     
 
@@ -339,7 +304,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line90">line 90</a>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -357,13 +322,13 @@
 
         
             
-<h4 class="name" id="g"><span class="type-signature"></span>g<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="centerY"><span class="type-signature"></span>centerY<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get g
+    Set/Get center y
 </div>
 
 
@@ -393,7 +358,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="BaseKernelFilter.html#g">BaseKernelFilter#g</a>
+        <a href="BaseKernelFilter.html#centerY">BaseKernelFilter#centerY</a>
     </li></ul></dd>
     
 
@@ -416,7 +381,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line79">line 79</a>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line114">line 114</a>
     </li></ul></dd>
     
 
@@ -493,7 +458,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line21">line 21</a>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line45">line 45</a>
     </li></ul></dd>
     
 
@@ -573,7 +538,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line35">line 35</a>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line59">line 59</a>
     </li></ul></dd>
     
 
@@ -650,7 +615,161 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line46">line 46</a>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line70">line 70</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="invertRadial"><span class="type-signature"></span>invertRadial<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    Set/Get invertRadial
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseKernelFilter.html#invertRadial">BaseKernelFilter#invertRadial</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line125">line 125</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="isRadial"><span class="type-signature"></span>isRadial<span class="type-signature"> :boolean</span></h4>
+
+
+
+
+<div class="description">
+    Set/Get is blur radial
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">boolean</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseKernelFilter.html#isRadial">BaseKernelFilter#isRadial</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line92">line 92</a>
     </li></ul></dd>
     
 
@@ -727,7 +846,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line57">line 57</a>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line81">line 81</a>
     </li></ul></dd>
     
 
@@ -745,13 +864,13 @@
 
         
             
-<h4 class="name" id="r"><span class="type-signature"></span>r<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="roundness"><span class="type-signature"></span>roundness<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Set/Get r
+    Set/Get roundnes
 </div>
 
 
@@ -781,7 +900,7 @@
     
     <dt class="tag-overrides">Overrides:</dt>
     <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="BaseKernelFilter.html#r">BaseKernelFilter#r</a>
+        <a href="BaseKernelFilter.html#roundness">BaseKernelFilter#roundness</a>
     </li></ul></dd>
     
 
@@ -804,7 +923,161 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line68">line 68</a>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line147">line 147</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="size"><span class="type-signature"></span>size<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    Set/Get size
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseKernelFilter.html#size">BaseKernelFilter#size</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line136">line 136</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="transition"><span class="type-signature"></span>transition<span class="type-signature"> :number</span></h4>
+
+
+
+
+<div class="description">
+    Set/Get transition
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">number</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-overrides">Overrides:</dt>
+    <dd class="tag-overrides"><ul class="dummy"><li>
+        <a href="BaseKernelFilter.html#transition">BaseKernelFilter#transition</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="filters_BaseFilter.js.html">filters/BaseFilter.js</a>, <a href="filters_BaseFilter.js.html#line158">line 158</a>
     </li></ul></dd>
     
 
@@ -838,13 +1111,13 @@
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransform.html">FilterTextureTransform</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 30 Jan 2026 06:47:17 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 04 Feb 2026 10:36:51 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

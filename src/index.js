@@ -3,6 +3,7 @@ import { Buffer } from "./core/Buffer";
 import { Utils, Const } from "./core/Utils";
 
 import { BlendMode } from "./rendering/BlendMode";
+import { TintType } from "./rendering/TintType";
 
 import { Texture } from "./textures/Texture";
 import { Framebuffer } from "./textures/Framebuffer";
@@ -25,7 +26,6 @@ import { Stage2D } from "./renderers/Stage2D";
 
 import { BaseFilter } from "./filters/BaseFilter";
 import { BaseKernelFilter } from "./filters/BaseKernelFilter";
-import { BaseSamplingFilter } from "./filters/BaseSamplingFilter";
 import { BaseTextureFilter } from "./filters/BaseTextureFilter";
 import { DisplacementFilter } from "./filters/DisplacementFilter";
 import { MaskFilter } from "./filters/MaskFilter";
@@ -37,19 +37,21 @@ import { GrayscaleFilter } from "./filters/GrayscaleFilter";
 import { SepiaFilter } from "./filters/SepiaFilter";
 import { InvertFilter } from "./filters/InvertFilter";
 import { TintFilter } from "./filters/TintFilter";
-import { ColorLimitFilter } from "./filters/ColorLimitFilter";
-import { VignetteFilter } from "./filters/VignetteFilter";
+import { PosterizeFilter } from "./filters/PosterizeFilter";
 import { RainbowFilter } from "./filters/RainbowFilter";
-import { BrightnessContrastFilter } from "./filters/BrightnessContrastFilter";
+import { BrightnessFilter } from "./filters/BrightnessFilter";
+import { ContrastFilter } from "./filters/ContrastFilter";
 import { GammaFilter } from "./filters/GammaFilter";
 import { BlurFilter } from "./filters/BlurFilter";
 import { GlowFilter } from "./filters/GlowFilter";
 import { ChromaticAberrationFilter } from "./filters/ChromaticAberrationFilter";
+import { HueRotateFilter } from "./filters/HueRotateFilter";
 
 window.PWGL = window.AGL = {
   version: "{{appVersion}}",
 
   BlendMode,
+  TintType,
 
   Texture,
   Framebuffer,
@@ -77,7 +79,6 @@ window.PWGL = window.AGL = {
 
   BaseFilter,
   BaseKernelFilter,
-  BaseSamplingFilter,
   BaseTextureFilter,
   DisplacementFilter,
   MaskFilter,
@@ -89,10 +90,11 @@ window.PWGL = window.AGL = {
   SepiaFilter,
   InvertFilter,
   TintFilter,
-  ColorLimitFilter,
-  VignetteFilter,
+  PosterizeFilter,
   RainbowFilter,
-  BrightnessContrastFilter,
+  BrightnessFilter,
+  ContrastFilter,
+  HueRotateFilter,
   GammaFilter,
   BlurFilter,
   GlowFilter,
@@ -101,5 +103,5 @@ window.PWGL = window.AGL = {
 
 console.log(
   `%cPWGL v${AGL.version}\nhttps:\/\/github.com/asjs-dev/pwgl`,
-  "background:#222;color:#0F0"
+  "background:#222;color:#0F0",
 );

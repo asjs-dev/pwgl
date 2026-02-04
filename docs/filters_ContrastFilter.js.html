@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>PWGL: Source: filters/BaseSamplingFilter.js</title>
+        <title>PWGL: Source: filters/ContrastFilter.js</title>
 
         <script src="scripts/prettify/prettify.js"> </script>
         <script src="scripts/prettify/lang-css.js"> </script>
@@ -48,7 +48,7 @@
         <div class="container">
             <div id="main">
 
-                <h1 class="page-title">Source: filters/BaseSamplingFilter.js</h1>
+                <h1 class="page-title">Source: filters/ContrastFilter.js</h1>
 
                 
 
@@ -60,138 +60,14 @@
             <pre class="prettyprint source linenums"><code>import { BaseFilter } from "./BaseFilter";
 
 /**
- * Base Sampling filter
+ * Contrast filter
  * @extends {BaseFilter}
  */
-export class BaseSamplingFilter extends BaseFilter {
-  /**
-   * Creates an instance of BaseSamplingFilter.
-   * @constructor
-   * @param {number} intensityX
-   * @param {number} intensityY
-   * @param {number} isRadial
-   * @param {number} centerX
-   * @param {number} centerY
-   * @param {number} size
-   */
-  constructor(
-    intensityX,
-    intensityY,
-    isRadial = false,
-    centerX = 0.5,
-    centerY = 0.5,
-    size = 1,
-  ) {
-    super(intensityX);
-
-    this.intensityY = intensityY;
-    this.isRadial = isRadial;
-    this.centerX = centerX;
-    this.centerY = centerY;
-    this.size = size;
-  }
-
-  /**
-   * Set/Get is blur radial
-   * @type {boolean}
-   */
-  get isRadial() {
-    return this.v[2];
-  }
-  set isRadial(v) {
-    this.v[2] = v ? 1 : 0;
-  }
-
-  /**
-   * Set/Get center x
-   * @type {number}
-   */
-  get centerX() {
-    return this.v[3];
-  }
-  set centerX(v) {
-    this.v[3] = v;
-  }
-
-  /**
-   * Set/Get center y
-   * @type {number}
-   */
-  get centerY() {
-    return this.v[4];
-  }
-  set centerY(v) {
-    this.v[4] = v;
-  }
-
-  /**
-   * Set/Get size
-   * @type {number}
-   */
-  get size() {
-    return this.v[5];
-  }
-  set size(v) {
-    this.v[5] = v;
+export class ContrastFilter extends BaseFilter {
+  get GLSL() {
+    return "oCl.rgb=(oCl.rgb-.5)*v+.5;";
   }
 }
-
-// prettier-ignore
-BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop = "") => "" +
-  "vec2 " +
-    "wh=vec2(v,vl[1]);" +
-
-  "float " + 
-    "lngWH=length(wh/ts);" +
-
-  "if(lngWH>0.){" +
-    "float " +
-      "rnd=rand(v0.zw)," +
-      "ta=RADIANS_360*rnd;" +
-
-    "int " +
-      "l=int(clamp(max(wh.x,wh.y)/8.,3.,8.)+4.*rnd);" +
-
-    "float " +
-      "ln=length(wh)," +
-      "t=RADIANS_360/float(l);" +
-
-    "vec2 " +
-      "dr=vec2(cos(ta),sin(ta))," +
-      "r=vec2(cos(t),sin(t));" +
-
-    "vec4 " +
-      "clg," +
-      "cl=oCl;" +
-      
-    "ivec2 " +
-      "mn=ivec2(Z.xx)," + 
-      "mx=ivec2(ts)-1;" +
-      
-    beforeLoop +
-    "for(int i=0;i&lt;l;i++){" +
-      "clg=texelFetch(uB,clamp(" + 
-        "f+ivec2(wh*dr)," + 
-        "mn,mx" +
-      "),0);" +
-      
-      "dr=vec2(" + 
-        "r.x*dr.x-r.y*dr.y," +
-        "r.y*dr.x+r.x*dr.y" +
-      ");" +
-
-      inLoop +
-    "}" +
-    afterLoop +
-    "float " +
-      "dst=mix(" +
-        "1.," +
-        "clamp(distance(vec2(vl[3],vl[4]),v0.zw)*vl[5],0.,1.)," +
-        "vl[2]" + 
-      ");" +
-
-    "oCl=dst*cl+(1.-dst)*oCl;" +
-  "}";
 </code></pre>
         </article>
     </section>
@@ -202,13 +78,13 @@ BaseSamplingFilter.$createGLSL = (beforeLoop, inLoop, afterLoop = "") => "" +
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseSamplingFilter.html">BaseSamplingFilter</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessContrastFilter.html">BrightnessContrastFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="ColorLimitFilter.html">ColorLimitFilter</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="FilterTextureTransform.html">FilterTextureTransform</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="VignetteFilter.html">VignetteFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 30 Jan 2026 06:47:16 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Wed, 04 Feb 2026 10:36:51 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

@@ -6,6 +6,6 @@ import { BaseFilter } from "./BaseFilter";
  */
 export class InvertFilter extends BaseFilter {
   get GLSL() {
-    return "oCl=oClVl+vec4(1.-oCl.rgb,oCl.a)*v;";
+    return "oCl=vec4(1.-oCl.rgb,oCl.a);";
   }
 }

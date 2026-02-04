@@ -20,7 +20,7 @@ export const AnimatedWater = window.PWGL
         this._waterDisplacementImageLarge.blendMode = PWGL.BlendMode.ADD;
         this._waterDisplacementImageLarge.textureTransform.repeatX = 0.7;
         this._waterDisplacementImageLarge.tintType =
-          PWGL.Image.TintType.GRAYSCALE;
+          PWGL.TintType.GRAYSCALE;
         this.addChild(this._waterDisplacementImageLarge);
 
         this._waterDisplacementImageSmall = new PWGL.Image(heightMapTexture);
@@ -28,7 +28,7 @@ export const AnimatedWater = window.PWGL
         this._waterDisplacementImageSmall.textureTransform.repeatX = 4;
         this._waterDisplacementImageSmall.textureTransform.repeatRandomRotation = 1;
         this._waterDisplacementImageSmall.tintType =
-          PWGL.Image.TintType.GRAYSCALE;
+          PWGL.TintType.GRAYSCALE;
         this.addChild(this._waterDisplacementImageSmall);
 
         this.speed = speed;
