@@ -7,11 +7,11 @@ import { BaseFilter } from "./BaseFilter";
  * @extends {BaseFilter}
  */
 export class TintFilter extends BaseFilter {
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
 
     this.set(options.r ?? 1, options.g ?? 1, options.b ?? 1, options.a ?? 1);
-    this.tintType = TintType.MULTIPLY;
+    this.type = options.type ?? TintType.MULTIPLY;
   }
 
   get GLSL() {
@@ -66,19 +66,19 @@ export class TintFilter extends BaseFilter {
    * Set/Get tint type
    * @type {number}
    */
-  get tintType() {
+  get type() {
     return this.customData[4];
   }
-  set tintType(v) {
+  set type(v) {
     this.customData[4] = v;
   }
 
   /**
    * Set all colors
-   * @param {number} r 
-   * @param {number} g 
-   * @param {number} b 
-   * @param {number} a 
+   * @param {number} r
+   * @param {number} g
+   * @param {number} b
+   * @param {number} a
    */
   set(r, g, b, a) {
     this.r = r;

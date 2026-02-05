@@ -10,7 +10,7 @@ const _GLSL = BaseTextureFilter.$createGLSL(
  * @extends {BaseTextureFilter}
  */
 export class MaskFilter extends BaseTextureFilter {
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
 
     this.type = options.type ?? MaskFilter.Type.RED;

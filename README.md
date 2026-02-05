@@ -214,9 +214,9 @@ const initWebGlApplication = () => {
       // new PWGL.HueRotateFilter({ deg: 45 * PWGL.Utils.THETA }),
       // new PWGL.EdgeDetectFilter({ intensity: 3 }),
       // new PWGL.GammaFilter({ intensity: 4 }),
-      // new PWGL.GlowFilter({ intensitX: 5, intensityY: 5 }),
-      // new PWGL.GrayscaleFilter({ intensity: 1 }),
-      // new PWGL.InvertFilter({ intensity: 1 }),
+      // new PWGL.GlowFilter({ intensit: 5 }),
+      // new PWGL.GrayscaleFilter(),
+      // new PWGL.InvertFilter(),
       new PWGL.DisplacementFilter({
         texture: displacementTexture,
         intensity: 30,
@@ -231,9 +231,9 @@ const initWebGlApplication = () => {
       }),
       // new PWGL.PixelateFilter({ intensity: 4 }),
       new PWGL.BlurFilter({ intensity: 5 }),
-      new PWGL.RainbowFilter({ intensity: 1 }),
+      new PWGL.RainbowFilter(),
       new PWGL.SaturateFilter({ intensity: 2 }),
-      // new PWGL.SepiaFilter({ intensity: 1}),
+      // new PWGL.SepiaFilter(),
       // new PWGL.SharpenFilter({ intensity: 1.2 }),
       // new PWGL.TintFilter({ r: 1, g: 1, b: 0.5 })
     ],
@@ -494,33 +494,33 @@ Abstract base for all filter implementations.
 
 #### **Specialized Filter Base Classes:**
 
-- **BaseKernelFilter** - Convolution filters (3x3, 5x5 kernels)
+- **BaseKernelFilter** - Convolution filters (3x3 kernels)
 - **BaseSamplingFilter** - Sampling-based effects (blur, bokeh)
 - **BaseTextureFilter** - Texture-dependent effects
 
 #### **Available Filters:**
 
-| Filter                        | Purpose                              |
-| ----------------------------- | ------------------------------------ |
-| **BlurFilter**                | Gaussian blur with adjustable radius |
-| **PixelateFilter**            | Pixelation/mosaic effect             |
-| **EdgeDetectFilter**          | Edge detection (Sobel operator)      |
-| **SharpenFilter**             | Image sharpening/unsharp mask        |
-| **GrayscaleFilter**           | Desaturate to grayscale              |
-| **SepiaFilter**               | Warm vintage tone                    |
-| **InvertFilter**              | Color inversion                      |
-| **SaturateFilter**            | Increase/decrease saturation         |
-| **BrightnessFilter**          | Brightness adjustment                |
-| **ContrastFilter**            | Contrast adjustment                  |
-| **HueRotateFilter**           | Hue rotate                           |
-| **GammaFilter**               | Gamma correction                     |
-| **TintFilter**                | Color overlay tinting                |
-| **PosterizeFilter**           | Posterization/color reduction        |
-| **RainbowFilter**             | Chromatic rainbow shift              |
-| **DisplacementFilter**        | Vertex displacement mapping          |
-| **MaskFilter**                | Selective region masking             |
-| **ChromaticAberrationFilter** | RGB channel separation effect        |
-| **GlowFilter**                | Bloom/glow effect                    |
+| Filter                        | Purpose                         |
+| ----------------------------- | ------------------------------- |
+| **BlurFilter**                | Blur with adjustable radius     |
+| **PixelateFilter**            | Pixelation/mosaic effect        |
+| **EdgeDetectFilter**          | Edge detection (Sobel operator) |
+| **SharpenFilter**             | Image sharpening/unsharp mask   |
+| **GrayscaleFilter**           | Desaturate to grayscale         |
+| **SepiaFilter**               | Warm vintage tone               |
+| **InvertFilter**              | Color inversion                 |
+| **SaturateFilter**            | Increase/decrease saturation    |
+| **BrightnessFilter**          | Brightness adjustment           |
+| **ContrastFilter**            | Contrast adjustment             |
+| **HueRotateFilter**           | Hue rotate                      |
+| **GammaFilter**               | Gamma correction                |
+| **TintFilter**                | Color overlay tinting           |
+| **PosterizeFilter**           | Posterization/color reduction   |
+| **RainbowFilter**             | Chromatic rainbow shift         |
+| **DisplacementFilter**        | Vertex displacement mapping     |
+| **MaskFilter**                | Selective region masking        |
+| **ChromaticAberrationFilter** | RGB channel separation effect   |
+| **GlowFilter**                | Bloom/glow effect               |
 
 ### Math (`src/math/`)
 

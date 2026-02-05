@@ -9,24 +9,29 @@ export class BaseFilter {
    * Creates an instance of BaseFilter.
    * @constructor
    * @param {object} options
-   * @param {number} options.intensity
-   * @param {number} options.intensityX
-   * @param {number} options.intensityY
-   * @param {number} options.mix
-   * @param {number} options.isRadial
-   * @param {number} options.centerX
-   * @param {number} options.centerY
-   * @param {number} options.size
+   * @param {number} options.on - Default value true
+   * @param {number} options.intensity - Default value 1
+   * @param {number} options.intensityX - Default value 1
+   * @param {number} options.intensityY - Default value 1
+   * @param {number} options.mix - Default value 1
+   * @param {number} options.isRadial - Default value false|0
+   * @param {number} options.centerX - Default value 0.5
+   * @param {number} options.centerY - Default value 0.5
+   * @param {number} options.size - Default value 1
+   * @param {number} options.roundnes - Default value 1
+   * @param {number} options.transition - Default value 1
+   * @param {number} options.kernels - Default value Float32Array(9)
    */
   constructor(options = {}) {
-    this.on = true;
     this.data = new Float32Array(10);
     this.customData = new Float32Array(8);
     this.kernels = new Float32Array(9);
-
+    
+    this.on = options.on ?? true;
+    this.intensity = options.intensity ?? 1;
     this.intensityX =
-      options.intensityX ?? options.intensity ?? options.deg ?? 0;
-    this.intensityY = options.intensityY ?? options.intensity ?? 0;
+      options.intensityX ?? options.deg ?? this.intensity;
+    this.intensityY = options.intensityY ?? this.intensity;
     this.mix = options.mix ?? 1;
     this.isRadial = options.isRadial ?? false;
     this.centerX = options.centerX ?? 0.5;
@@ -141,7 +146,7 @@ export class BaseFilter {
   }
 
   /**
-   * Set/Get roundnes
+   * Set/Get roundness
    * @type {number}
    */
   get roundness() {

@@ -18,7 +18,7 @@ export class BaseTextureFilter extends BaseFilter {
    * @param {number} cropWidth
    * @param {number} cropHeight
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
 
     this.texture = options.texture;

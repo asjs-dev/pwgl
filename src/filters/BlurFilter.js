@@ -3,7 +3,6 @@ import { BaseFilter } from "./BaseFilter";
 
 // prettier-ignore
 const _GLSL = CREATE_SAMPLING_FILTER(
-  "",
   "oCl*=.2;"
 );
 

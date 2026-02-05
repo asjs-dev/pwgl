@@ -56,7 +56,7 @@ export const SmoothLight = window.PWGL
         return this._blur;
       }
       set blur(v) {
-        this._blur = this._filter.intensityX = this._filter.intensityY = v;
+        this._blur = this._filter.intensity = v;
       }
 
       /**

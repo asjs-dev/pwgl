@@ -32,7 +32,7 @@ export const TINT_TYPE_SHADER = (id, outColor, tintColor) => "if(" + id + ">0.)"
     outColor + "+=" + tintColor + ";";
 
 // prettier-ignore
-export const CREATE_SAMPLING_FILTER = (beforeLoop = "", afterLoop = "") => "" +
+export const CREATE_SAMPLING_FILTER = (after) => "" +
   "if(v>0.){" +
     "vec2 " +
       "wh=vec2(v,uJ[1]);" +
@@ -40,13 +40,11 @@ export const CREATE_SAMPLING_FILTER = (beforeLoop = "", afterLoop = "") => "" +
     "ivec2 " +
       "mn=ivec2(Z.xx)," + 
       "mx=ivec2(ts)-1;" +
-      
-    beforeLoop +
 
     ["z", "yz", "zy", "y"].reduce((acc, v) => 
       acc += "oCl+=texelFetch(uB,clamp(f+ivec2(Z." + v + "*wh),mn,mx),0);", 
       ""
     ) +
 
-    afterLoop +
+    after +
   "}";

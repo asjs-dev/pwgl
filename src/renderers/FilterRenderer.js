@@ -215,7 +215,8 @@ export class FilterRenderer extends BaseRenderer {
       "vec2 d=abs(v0.zw-vec2(uJ[4],uJ[5]));" +
       
       "float " + 
-        "ds=mix(length(d),pow(pow(d.x,4.)+pow(d.y,4.),.25),uJ[8])," +
+        "p=mix(2.,16.,uJ[8])," +
+        "ds=mix(pow(pow(d.x,p)+pow(d.y,p),1./p),max(d.x,d.y),smoothstep(.7,1.,uJ[5]))," +
         "dst=mix(" +
           "1.," +
           "clamp(" +
