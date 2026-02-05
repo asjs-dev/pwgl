@@ -9,18 +9,31 @@ export class BaseFilter {
    * Creates an instance of BaseFilter.
    * @constructor
    * @param {object} options
-   * @param {number} options.on - Default value true
-   * @param {number} options.intensity - Default value 1
-   * @param {number} options.intensityX - Default value 1
-   * @param {number} options.intensityY - Default value 1
-   * @param {number} options.mix - Default value 1
-   * @param {number} options.isRadial - Default value false|0
-   * @param {number} options.centerX - Default value 0.5
-   * @param {number} options.centerY - Default value 0.5
-   * @param {number} options.size - Default value 1
-   * @param {number} options.roundnes - Default value 1
-   * @param {number} options.transition - Default value 1
-   * @param {number} options.kernels - Default value Float32Array(9)
+   * @param {number} options.on - Default value true <br>
+   *                            - Turn on or off the filter
+   * @param {number} options.intensity - Default value 1 <br>
+   *                                   - Intensity of the filter <br>
+   *                                   - If the intensity changes, then intensityX and intensityY also change simultaneously to the same value.
+   * @param {number} options.intensityX - Default value 1 <br>
+   *                                    - Intensity on the X coordinate
+   * @param {number} options.intensityY - Default value 1 <br>
+   *                                    - Intensity on the Y coordinate
+   * @param {number} options.mix - Default value 1 <br>
+   *                             - Mix between the original and the filtered image (0 - original, 1 - filtered image)
+   * @param {number} options.isRadial - Default value false|0 <br>
+   *                                  - Radial fade between the original and filtered image
+   * @param {number} options.centerX - Default value 0.5 <br>
+   *                                 - X center of the radial fade
+   * @param {number} options.centerY - Default value 0.5 <br>
+   *                                 - Y center of the radial fade
+   * @param {number} options.size - Default value 1 <br>
+   *                              - Size of the radial fade
+   * @param {number} options.roundnes - Default value 1 <br>
+   *                                  - Roundness of the radial fade
+   * @param {number} options.transition - Default value 1 <br>
+   *                                    - Transition of the radial fade
+   * @param {number} options.kernels - Default value Float32Array(9) <br>
+   *                                 - Kernel for convolution filters
    */
   constructor(options = {}) {
     this.data = new Float32Array(10);
