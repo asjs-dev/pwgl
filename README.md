@@ -125,7 +125,7 @@ const initWebGlApplication = () => {
 
   // create stage 2d renderer
   const stage2DRenderer = new PWGL.Stage2D({
-    context
+    context,
   });
 
   // create filter renderer and set the framebuffer as texture source
@@ -134,8 +134,8 @@ const initWebGlApplication = () => {
     sourceTexture: stage2DRendererFramebuffer,
     filters: [
       new PWGL.PixelateFilter({ intensity: 5 }),
-      new PWGL.TintFilter({ 1, 3, 1, 0, 0, 0 })
-    ]
+      new PWGL.TintFilter({ r: 3, g: 1, b: 0 }),
+    ],
   });
 
   stageContainer.appendChild(context.canvas);
@@ -159,7 +159,7 @@ const initWebGlApplication = () => {
 };
 
 PWGL.Utils.initApplication(
-  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication()
+  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication(),
 );
 ```
 
@@ -231,8 +231,8 @@ const initWebGlApplication = () => {
       }),
       // new PWGL.PixelateFilter({ intensity: 4 }),
       new PWGL.BlurFilter({ intensity: 5 }),
-      new PWGL.RainbowFilter(),
-      new PWGL.SaturateFilter({ intensity: 2 }),
+      // new PWGL.RainbowFilter(),
+      // new PWGL.SaturateFilter({ intensity: 2 }),
       // new PWGL.SepiaFilter(),
       // new PWGL.SharpenFilter({ intensity: 1.2 }),
       // new PWGL.TintFilter({ r: 1, g: 1, b: 0.5 })
