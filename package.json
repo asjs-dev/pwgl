@@ -1,5 +1,5 @@
 {
-  "name": "PWGL",
+  "name": "pwgl",
   "version": "7.0.0",
   "main": "./dist/pwgl.umd.min.js",
   "module": "dist/pwgl.es.min.js",
@@ -22,11 +22,12 @@
     "dist"
   ],
   "scripts": {
-    "docs": "./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json && ./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.extensions.conf.json && node scripts/clean-folder.js && node scripts/build-examples.js",
     "build:pwgl": "vite build --config vite.config.js",
     "build:ext": "vite build --config extensions/vite.config.js",
+    "build:debugger": "vite build --config debugger/vite.config.js",
     "build:asjs": "node scripts/build-pwgl.js",
-    "build:all": "npm run build:pwgl && npm run build:ext && npm run build:asjs && npm run docs"
+    "docs": "node scripts/build-docs.js",
+    "build:all": "npm run build:pwgl && npm run build:ext && npm run build:debugger && npm run build:asjs && npm run docs"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.3",

@@ -1,0 +1,20 @@
+{
+  "js": {
+    "packageJson": "debugger/package.json",
+    "files": ["./debugger/index.js"],
+    "lzw": false,
+    "wrapped": true,
+    "minify": true,
+    "compress": true,
+    "variables": {
+      "{{appVersion}}": "json.version"
+    },
+    "replaceTexts": {},
+    "output": "dist/pwgl.debugger.min.js"
+  },
+  "copyAssets": {
+    "./dist/pwgl.debugger.min.js": "./docs/assets/pwgl.debugger.min.js",
+    "./dist/pwgl.debugger.umd.min.js": "./docs/assets/pwgl.debugger.umd.min.js",
+    "./dist/pwgl.debugger.es.min.js": "./docs/assets/pwgl.debugger.es.min.js"
+  }
+}

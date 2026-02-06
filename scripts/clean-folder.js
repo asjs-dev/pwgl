@@ -5,6 +5,9 @@ const foldersToDelete = [
   path.resolve("docs/extensions/fonts"),
   path.resolve("docs/extensions/scripts"),
   path.resolve("docs/extensions/styles"),
+  path.resolve("docs/debugger/fonts"),
+  path.resolve("docs/debugger/scripts"),
+  path.resolve("docs/debugger/styles"),
 ];
 
 foldersToDelete.forEach((folderToDelete) => {
