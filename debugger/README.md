@@ -4,6 +4,8 @@ This small debugger wraps canvas contexts and collects simple snapshots around `
 
 Important: the exposed API is only available in the browser developer console (the code logs an object to the console). The debugger does not change rendering behavior — it only observes and records.
 
+![Console Demo](https://asjs-dev.github.io/pwgl/assets/debugger.png)
+
 ## Activation
 Import and call `init()` during your app startup:
 
@@ -36,7 +38,7 @@ temp1.toString();
 // show call stacks
 temp1.toString(1);
 
-// human-readable constant names (if `PWGL.Const` is available)
+// show original argument values
 temp1.toString(2);
 
 // show full array arguments (by default arrays are compacted)
@@ -49,7 +51,7 @@ temp1.toString(1 | 2 | 4);
 Constant values (use as numbers if desired):
 
 - `SHOW_CALL_STACK = 1`
-- `SHOW_READABLE_NAMES = 2`
+- `SHOW_ORIGINAL_VALUES = 2`
 - `SHOW_ARRAYS = 4`
 
 ## Snapshot entry structure

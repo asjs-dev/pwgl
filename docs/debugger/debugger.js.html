@@ -53,35 +53,17 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { enumCheck } from "../extensions/utils/enumCheck";
+            <pre class="prettyprint source linenums"><code>import {
+  SHOW_CALL_STACK,
+  SHOW_ORIGINAL_VALUES,
+  SHOW_ARRAYS,
+} from "./constants";
+import { enumCheck } from "../extensions/utils/enumCheck";
 import { enterFrame } from "../extensions/utils/enterFrame";
-
-/**
- * Show call stacks when formatting snapshots.
- * @constant {number}
- */
-export const SHOW_CALL_STACK = 1;
-
-/**
- * Replace numeric constants with readable names (requires `PWGL.Const`).
- * @constant {number}
- */
-export const SHOW_READABLE_NAMES = 2;
-
-/**
- * Show full array arguments when formatting snapshots.
- * By default arrays are displayed in compact form (shortened to `[Type(length)]`).
- * Pass this flag to show the original array contents instead.
- * @constant {number}
- */
-export const SHOW_ARRAYS = 4;
+import { clamp } from "../extensions/utils/clamp";
+import { getFormat } from "./logFormatter";
 
 const _noopConvert = (values) => values;
-
-const _noopDebug = (value, target) =>
-  function (...args) {
-    return value.apply(target, args);
-  };
 
 // prettier-ignore
 const _captureStack = () =>
@@ -104,7 +86,7 @@ const _captureStack = () =>
  * @description Map of program objects to arrays of recorded entries.
  */
 
-const _debug = (context) => {
+const _debug = (context, maxFrameCount = 2) => {
   const programs = [];
   const debug = new Map();
   const constMap = PWGL
@@ -114,11 +96,11 @@ const _debug = (context) => {
       }, {})
     : {};
 
+  const convertToReadableNames = (values) =>
+    values.map((v) => constMap[v] ?? v);
+
   const render = () => {
-    if (frames === 2) {
-      ef.stop();
-      callbackFV = _noopDebug;
-    }
+    if (frames === maxFrameCount) ef.stop();
     frames++;
   };
 
@@ -139,59 +121,81 @@ const _debug = (context) => {
               : v,
           );
 
-    const convert = enumCheck(options, SHOW_READABLE_NAMES)
-      ? (values) => values.map((v) => constMap[v] ?? v)
-      : _noopConvert;
+    const convert = enumCheck(options, SHOW_ORIGINAL_VALUES)
+      ? _noopConvert
+      : convertToReadableNames;
 
-    const result = [];
+    let contextIndex = 0;
 
-    debug.forEach((value, key) =>
-      result.push(
-        value
-          .map((list) =>
-            convert(convertArrays(list.slice(showCallStack ? 0 : 1))).join(" "),
-          )
-          .join("\n"),
-      ),
-    );
+    debug.forEach((program) => {
+      console.log(
+        `%c &lt; CONTEXT #${++contextIndex} > `,
+        "background: #000; color: #00ff00; font-weight: bold;",
+      );
 
-    return result;
+      program.map((list) => {
+        const format = getFormat(
+          list.lastCallMS,
+          list.prop,
+          convertToReadableNames(list.args),
+        );
+
+        console.log(
+          "%c" +
+            format.icon + " " +
+            `${format.label}: ` +
+            [
+              ...(showCallStack ? [list.stackTrace] : []),
+              `frame #${list.frame}`,
+              `${list.sumMS}ms`,
+              `${list.lastCallMS}ms`,
+              `[${list.prop}]`,
+              `( ${convert(convertArrays(list.args)).join(", ")} )`,
+            ].join(" | "),
+          format.style,
+        );
+      });
+    });
   };
 
-  const debugCallback = (value, target, prop, args) =>
+  const debugCallback = (value, target, prop) =>
     function (...args) {
-      if (prop === "useProgram") {
-        const program = args[0];
-        if (!programs.includes(program)) {
-          programs.push(program);
-          debug.set(program, []);
-          latestProgram = program;
-          lastTimestamp = Date.now();
-          sumMS = 0;
-        } else latestProgram = null;
-      }
+      if (frames &lt;= maxFrameCount) {
+        if (prop === "useProgram") {
+          const program = args[0];
+          if (!programs.includes(program)) {
+            programs.push(program);
+            debug.set(program, []);
+            latestProgram = program;
+            lastTimestamp = Date.now();
+            sumMS = 0;
+          } else latestProgram = null;
+        }
 
-      if (latestProgram) {
-        const now = Date.now();
-        const lastCallMS = now - lastTimestamp;
-        sumMS += lastCallMS;
-        lastTimestamp = now;
-        debug
-          .get(latestProgram)
-          .push([
-            _captureStack(),
-            `frame ${frames}`,
-            `[${lastCallMS}ms]`,
-            `[${sumMS}ms]:`,
-            prop,
-            ...args,
-          ]);
+        if (latestProgram) {
+          const logsForProgram = debug.get(latestProgram);
+          const length = logsForProgram.length;
+          const now = Date.now();
+          const lastCallMS = now - lastTimestamp;
+          sumMS += lastCallMS;
+          lastTimestamp = now;
+
+          if (length > 0) logsForProgram[length - 1].lastCallMS = lastCallMS;
+
+          logsForProgram.push({
+            stackTrace: _captureStack(),
+            frame: frames,
+            lastCallMS: 0,
+            sumMS: sumMS,
+            prop: prop,
+            args: args,
+          });
+        }
       }
 
       return value.apply(target, args);
     };
 
-  let callbackFV = debugCallback;
   let latestProgram;
   let lastTimestamp;
   let sumMS;
@@ -214,7 +218,7 @@ const _debug = (context) => {
     get(target, prop) {
       const value = target[prop];
       return typeof value === "function"
-        ? callbackFV(value, target, prop)
+        ? debugCallback(value, target, prop)
         : value;
     },
   });
@@ -227,11 +231,13 @@ const _debug = (context) => {
  * Call `init()` once (for example during app startup) to enable the debugger.
  * @returns {void}
  */
-export const init = () => {
+export const init = (maxFrameCount = 2) => {
   const getContextFV = HTMLCanvasElement.prototype.getContext;
   HTMLCanvasElement.prototype.getContext = function (...args) {
     const context = getContextFV.call(this, ...args);
-    return args[0].startsWith("webgl") ? _debug(context) : context;
+    return args[0].startsWith("webgl")
+      ? _debug(context, clamp(maxFrameCount, 2, 20))
+      : context;
   };
 };
 </code></pre>
@@ -244,13 +250,13 @@ export const init = () => {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACK">SHOW_CALL_STACK</a></li><li><a href="global.html#SHOW_READABLE_NAMES">SHOW_READABLE_NAMES</a></li><li><a href="global.html#init">init</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACK">SHOW_CALL_STACK</a></li><li><a href="global.html#SHOW_ORIGINAL_VALUES">SHOW_ORIGINAL_VALUES</a></li><li><a href="global.html#init">init</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Fri, 06 Feb 2026 13:35:33 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat, 07 Feb 2026 15:32:46 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>
