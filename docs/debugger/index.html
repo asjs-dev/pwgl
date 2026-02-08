@@ -71,64 +71,67 @@
 
     <section>
         <article><h1>PWGL Debugger</h1>
-<p>This small debugger wraps canvas contexts and collects simple snapshots around <code>useProgram</code> calls.</p>
-<p>Important: the exposed API is only available in the browser developer console (the code logs an object to the console). The debugger does not change rendering behavior — it only observes and records.</p>
+<p>PWGL Debugger is a lightweight WebGL call logger that wraps canvas contexts
+and records WebGL API usage frame-by-frame for inspection in the browser console.</p>
+<p>The debugger is <strong>read-only</strong>: it does not modify rendering behavior.
+All collected data is exposed via a console-only object.</p>
 <p><img src="https://asjs-dev.github.io/pwgl/assets/debugger.png" alt="Console Demo"></p>
 <h2>Activation</h2>
-<p>Import and call <code>init()</code> during your app startup:</p>
-<pre class="prettyprint source lang-js"><code>import { init } from './debugger/debugger.js';
+<p>Import and call <code>init()</code> once during application startup:</p>
+<pre class="prettyprint source lang-js"><code>import { init } from &quot;./debugger/debugger.js&quot;;
 
-init();
+init({
+  maxFrameCount: 5,
+  flags: 0,
+});
 </code></pre>
-<p>This replaces <code>HTMLCanvasElement.prototype.getContext</code> so every returned context is wrapped with a debug proxy.</p>
-<h2>What appears in the console</h2>
-<p>When the debugger is active it logs an object to the console containing:</p>
-<ul>
-<li><code>snapshots</code>: a <code>Map</code> of program objects to recorded entries.</li>
-<li><code>toString(options)</code>: a helper that returns a formatted array of strings from the recorded entries.</li>
-</ul>
-<p>Because the logged object is not exposed globally by default, the easiest way to interact with it is to right-click the logged object in the console and choose &quot;Store as global variable&quot; (Chrome/Edge). This creates a <code>temp1</code>-style variable you can use interactively.</p>
-<h2>Examples (in the browser console)</h2>
+<p>This overrides <code>HTMLCanvasElement.prototype.getContext</code> so every WebGL context
+returned on the page is automatically wrapped.</p>
+<h2>Console usage</h2>
+<p>When initialized, the debugger logs a <code>PWGL Debugger</code> object to the console.</p>
+<p>To interact with it:</p>
 <ol>
-<li>
-<p>Open the console, find the <code>PWGL Debugger</code> log, right-click → &quot;Store as global variable&quot; (for example <code>temp1</code>).</p>
-</li>
-<li>
-<p>Query formatted output:</p>
-</li>
+<li>Open the browser console.</li>
+<li>Right-click the logged object.</li>
+<li>Select <strong>&quot;Store as global variable&quot;</strong> (e.g. <code>temp1</code>).</li>
 </ol>
-<pre class="prettyprint source lang-js"><code>// default (no extra options)
-temp1.toString();
-
-// show call stacks
-temp1.toString(1);
-
-// show original argument values
-temp1.toString(2);
-
-// show full array arguments (by default arrays are compacted)
-temp1.toString(4);
-
-// combine flags using bitwise OR
-temp1.toString(1 | 2 | 4);
+<p>Or type <strong><code>PWGLDebugger.instances[0].toString()</code></strong> into the console</p>
+<p>The stored object exposes:</p>
+<ul>
+<li><code>snapshots</code> - an array of per-frame WebGL call records</li>
+<li><code>toString()</code> - prints formatted, colorized output to the console</li>
+</ul>
+<h2>Formatting flags</h2>
+<p>Flags are combined using bitwise OR:</p>
+<ul>
+<li>
+<p><code>SHOW_CALL_STACKS = 1</code><br>
+Include captured JavaScript call stacks.</p>
+</li>
+<li>
+<p><code>SHOW_ORIGINAL_VALUES = 2</code><br>
+Skip WebGL constant name conversion.</p>
+</li>
+<li>
+<p><code>SHOW_ARRAYS = 4</code><br>
+Print full array contents instead of compact placeholders.</p>
+</li>
+</ul>
+<p>Example:</p>
+<pre class="prettyprint source lang-js"><code>temp1.toString(1 | 2 | 4);
 </code></pre>
-<p>Constant values (use as numbers if desired):</p>
+<h2>Snapshot structure</h2>
+<p>Each frame snapshot is an array of recorded calls.
+A single call entry contains:</p>
 <ul>
-<li><code>SHOW_CALL_STACK = 1</code></li>
-<li><code>SHOW_ORIGINAL_VALUES = 2</code></li>
-<li><code>SHOW_ARRAYS = 4</code></li>
+<li><code>stackTrace</code> - optional captured call stack</li>
+<li><code>currentCallDurationMS</code> - time since the previous call</li>
+<li><code>sumFrameDurationMS</code> - cumulative time within the frame</li>
+<li><code>prop</code> - invoked WebGL method name</li>
+<li><code>args</code> - method arguments (formatted based on flags)</li>
 </ul>
-<h2>Snapshot entry structure</h2>
-<p>A single recorded entry (an array) typically contains:</p>
-<ul>
-<li>0: (optional) short captured call stack string</li>
-<li>1: <code>frame N</code></li>
-<li>2: <code>[delta ms]</code> — milliseconds since the previous call</li>
-<li>3: <code>[sum ms]:</code> — cumulative milliseconds</li>
-<li>4: the invoked method name (e.g. <code>useProgram</code>)</li>
-<li>remaining elements: the method arguments</li>
-</ul>
-<p>This is usually enough to inspect from the console which program was used and how much time elapsed between calls.</p></article>
+<p>This is intended for low-level inspection of WebGL state changes,
+draw calls, and performance characteristics directly from the console.</p></article>
     </section>
 
 
@@ -139,13 +142,13 @@ temp1.toString(1 | 2 | 4);
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACK">SHOW_CALL_STACK</a></li><li><a href="global.html#SHOW_ORIGINAL_VALUES">SHOW_ORIGINAL_VALUES</a></li><li><a href="global.html#init">init</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACKS">SHOW_CALL_STACKS</a></li><li><a href="global.html#SHOW_ORIGINAL_VALUES">SHOW_ORIGINAL_VALUES</a></li><li><a href="global.html#init">init</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat, 07 Feb 2026 15:55:15 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun, 08 Feb 2026 08:42:41 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

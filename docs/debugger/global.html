@@ -131,9 +131,8 @@
 
 
 <div class="description">
-    Show full array arguments when formatting snapshots.
-By default arrays are displayed in compact form (shortened to `[Type(length)]`).
-Pass this flag to show the original array contents instead.
+    Display full array contents (e.g. TypedArrays) when formatting snapshots.
+By default arrays are compacted to a short form: `[Type(length)]`.
 </div>
 
 
@@ -181,7 +180,7 @@ Pass this flag to show the original array contents instead.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="constants.js.html">constants.js</a>, <a href="constants.js.html#line20">line 20</a>
+        <a href="constants.js.html">constants.js</a>, <a href="constants.js.html#line25">line 25</a>
     </li></ul></dd>
     
 
@@ -199,13 +198,14 @@ Pass this flag to show the original array contents instead.
 
         
             
-<h4 class="name" id="SHOW_CALL_STACK"><span class="type-signature">(constant) </span>SHOW_CALL_STACK<span class="type-signature"> :number</span></h4>
+<h4 class="name" id="SHOW_CALL_STACKS"><span class="type-signature">(constant) </span>SHOW_CALL_STACKS<span class="type-signature"> :number</span></h4>
 
 
 
 
 <div class="description">
-    Show call stacks when formatting snapshots.
+    Include captured JavaScript call stacks for each logged WebGL call.
+Useful to trace where a call originated from.
 </div>
 
 
@@ -253,7 +253,7 @@ Pass this flag to show the original array contents instead.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="constants.js.html">constants.js</a>, <a href="constants.js.html#line5">line 5</a>
+        <a href="constants.js.html">constants.js</a>, <a href="constants.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
@@ -277,8 +277,8 @@ Pass this flag to show the original array contents instead.
 
 
 <div class="description">
-    Display the original argument values.
-By default the values are converted to a human-readable format (requires `PWGL.Const`).
+    Display original argument values instead of converting them
+to human-readable WebGL constant names.
 </div>
 
 
@@ -326,7 +326,7 @@ By default the values are converted to a human-readable format (requires `PWGL.C
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="constants.js.html">constants.js</a>, <a href="constants.js.html#line12">line 12</a>
+        <a href="constants.js.html">constants.js</a>, <a href="constants.js.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -350,10 +350,11 @@ By default the values are converted to a human-readable format (requires `PWGL.C
 
 
 <div class="description">
-    Replace `HTMLCanvasElement.prototype.getContext` so that every canvas context
-returned in the page is wrapped by the PWGL debugger proxy.
+    Initialize the PWGL debugger.
+Overrides `HTMLCanvasElement.prototype.getContext` so that every
+WebGL context returned on the page is wrapped by a debug proxy.
 
-Call `init()` once (for example during app startup) to enable the debugger.
+Call this once during application startup.
 </div>
 
 
@@ -391,7 +392,7 @@ Call `init()` once (for example during app startup) to enable the debugger.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="debugger.js.html">debugger.js</a>, <a href="debugger.js.html#line179">line 179</a>
+        <a href="debugger.js.html">debugger.js</a>, <a href="debugger.js.html#line213">line 213</a>
     </li></ul></dd>
     
 
@@ -417,15 +418,10 @@ Call `init()` once (for example during app startup) to enable the debugger.
 
         
                 
-<h4 class="name" id="DebugEntry">DebugEntry</h4>
+<h4 class="name" id="DebugCall">DebugCall</h4>
 
 
 
-
-<div class="description">
-    A single recorded call entry. Typical shape:
-[ capturedStack?, `frame N`, `[delta ms]`, `[sum ms]:`, propName, ...args ]
-</div>
 
 
 
@@ -433,12 +429,156 @@ Call `init()` once (for example during app startup) to enable the debugger.
     <ul>
         <li>
             
-<span class="param-type">Array.&lt;any></span>
+<span class="param-type">Object</span>
 
 
         </li>
     </ul>
 
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>stackTrace</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Captured call stack (optional).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>currentCallDurationMS</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Time since the previous call.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sumFrameDurationMS</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Accumulated time within the frame.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>prop</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Invoked WebGL method name.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>args</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;any></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Method arguments.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
 
 
 
@@ -472,7 +612,7 @@ Call `init()` once (for example during app startup) to enable the debugger.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="debugger.js.html">debugger.js</a>, <a href="debugger.js.html#line23">line 23</a>
+        <a href="debugger.js.html">debugger.js</a>, <a href="debugger.js.html#line12">line 12</a>
     </li></ul></dd>
     
 
@@ -490,13 +630,13 @@ Call `init()` once (for example during app startup) to enable the debugger.
 
             
                 
-<h4 class="name" id="SnapshotsMap">SnapshotsMap</h4>
+<h4 class="name" id="FrameSnapshot">FrameSnapshot</h4>
 
 
 
 
 <div class="description">
-    Map of program objects to arrays of recorded entries.
+    A list of recorded WebGL calls within a single frame.
 </div>
 
 
@@ -505,7 +645,7 @@ Call `init()` once (for example during app startup) to enable the debugger.
     <ul>
         <li>
             
-<span class="param-type">Map.&lt;any, Array.&lt;<a href="global.html#DebugEntry">DebugEntry</a>>></span>
+<span class="param-type">Array.&lt;<a href="global.html#DebugCall">DebugCall</a>></span>
 
 
         </li>
@@ -544,7 +684,7 @@ Call `init()` once (for example during app startup) to enable the debugger.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="debugger.js.html">debugger.js</a>, <a href="debugger.js.html#line29">line 29</a>
+        <a href="debugger.js.html">debugger.js</a>, <a href="debugger.js.html#line21">line 21</a>
     </li></ul></dd>
     
 
@@ -574,13 +714,13 @@ Call `init()` once (for example during app startup) to enable the debugger.
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACK">SHOW_CALL_STACK</a></li><li><a href="global.html#SHOW_ORIGINAL_VALUES">SHOW_ORIGINAL_VALUES</a></li><li><a href="global.html#init">init</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACKS">SHOW_CALL_STACKS</a></li><li><a href="global.html#SHOW_ORIGINAL_VALUES">SHOW_ORIGINAL_VALUES</a></li><li><a href="global.html#init">init</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat, 07 Feb 2026 15:55:15 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sun, 08 Feb 2026 08:42:41 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

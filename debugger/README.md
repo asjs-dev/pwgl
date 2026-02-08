@@ -1,67 +1,74 @@
 # PWGL Debugger
 
-This small debugger wraps canvas contexts and collects simple snapshots around `useProgram` calls.
+PWGL Debugger is a lightweight WebGL call logger that wraps canvas contexts
+and records WebGL API usage frame-by-frame for inspection in the browser console.
 
-Important: the exposed API is only available in the browser developer console (the code logs an object to the console). The debugger does not change rendering behavior — it only observes and records.
+The debugger is **read-only**: it does not modify rendering behavior.
+All collected data is exposed via a console-only object.
 
 ![Console Demo](https://asjs-dev.github.io/pwgl/assets/debugger.png)
 
 ## Activation
-Import and call `init()` during your app startup:
+
+Import and call `init()` once during application startup:
 
 ```js
-import { init } from './debugger/debugger.js';
+import { init } from "./debugger/debugger.js";
 
-init();
+init({
+  maxFrameCount: 5,
+  flags: 0,
+});
 ```
 
-This replaces `HTMLCanvasElement.prototype.getContext` so every returned context is wrapped with a debug proxy.
+This overrides `HTMLCanvasElement.prototype.getContext` so every WebGL context
+returned on the page is automatically wrapped.
 
-## What appears in the console
-When the debugger is active it logs an object to the console containing:
+## Console usage
 
-- `snapshots`: a `Map` of program objects to recorded entries.
-- `toString(options)`: a helper that returns a formatted array of strings from the recorded entries.
+When initialized, the debugger logs a `PWGL Debugger` object to the console.
 
-Because the logged object is not exposed globally by default, the easiest way to interact with it is to right-click the logged object in the console and choose "Store as global variable" (Chrome/Edge). This creates a `temp1`-style variable you can use interactively.
+To interact with it:
+1. Open the browser console.
+2. Right-click the logged object.
+3. Select **"Store as global variable"** (e.g. `temp1`).
 
-## Examples (in the browser console)
+Or type **`PWGLDebugger.instances[0].toString()`** into the console
 
-1) Open the console, find the `PWGL Debugger` log, right-click → "Store as global variable" (for example `temp1`).
+The stored object exposes:
 
-2) Query formatted output:
+- `snapshots` - an array of per-frame WebGL call records
+- `toString()` - prints formatted, colorized output to the console
+
+## Formatting flags
+
+Flags are combined using bitwise OR:
+
+- `SHOW_CALL_STACKS = 1`  
+  Include captured JavaScript call stacks.
+
+- `SHOW_ORIGINAL_VALUES = 2`  
+  Skip WebGL constant name conversion.
+
+- `SHOW_ARRAYS = 4`  
+  Print full array contents instead of compact placeholders.
+
+Example:
 
 ```js
-// default (no extra options)
-temp1.toString();
-
-// show call stacks
-temp1.toString(1);
-
-// show original argument values
-temp1.toString(2);
-
-// show full array arguments (by default arrays are compacted)
-temp1.toString(4);
-
-// combine flags using bitwise OR
 temp1.toString(1 | 2 | 4);
 ```
 
-Constant values (use as numbers if desired):
+## Snapshot structure
 
-- `SHOW_CALL_STACK = 1`
-- `SHOW_ORIGINAL_VALUES = 2`
-- `SHOW_ARRAYS = 4`
+Each frame snapshot is an array of recorded calls.
+A single call entry contains:
 
-## Snapshot entry structure
-A single recorded entry (an array) typically contains:
+- `stackTrace` - optional captured call stack
+- `currentCallDurationMS` - time since the previous call
+- `sumFrameDurationMS` - cumulative time within the frame
+- `prop` - invoked WebGL method name
+- `args` - method arguments (formatted based on flags)
 
-- 0: (optional) short captured call stack string
-- 1: `frame N`
-- 2: `[delta ms]` — milliseconds since the previous call
-- 3: `[sum ms]:` — cumulative milliseconds
-- 4: the invoked method name (e.g. `useProgram`)
-- remaining elements: the method arguments
-
-This is usually enough to inspect from the console which program was used and how much time elapsed between calls.
+This is intended for low-level inspection of WebGL state changes,
+draw calls, and performance characteristics directly from the console.

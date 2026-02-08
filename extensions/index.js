@@ -1,4 +1,5 @@
-import { FPS, getFPS } from "./utils/FPS";
+import { FPS } from "./utils/FPS";
+import { getFPS } from "./utils/getFPS";
 import { PressState } from "./controls/PressState";
 import { Mouse } from "./controls/Mouse";
 import { Keyboard } from "./controls/Keyboard";

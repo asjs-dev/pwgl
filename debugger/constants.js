@@ -1,20 +1,25 @@
 /**
- * Show call stacks when formatting snapshots.
- * @constant {number}
+ * Formatting flags (bitmask).
+ * These control how recorded snapshots are rendered in the console output.
  */
-export const SHOW_CALL_STACK = 1;
 
 /**
- * Display the original argument values.
- * By default the values are converted to a human-readable format (requires `PWGL.Const`).
+ * Include captured JavaScript call stacks for each logged WebGL call.
+ * Useful to trace where a call originated from.
+ * @constant {number}
+ */
+export const SHOW_CALL_STACKS = 1;
+
+/**
+ * Display original argument values instead of converting them
+ * to human-readable WebGL constant names.
  * @constant {number}
  */
 export const SHOW_ORIGINAL_VALUES = 2;
 
 /**
- * Show full array arguments when formatting snapshots.
- * By default arrays are displayed in compact form (shortened to `[Type(length)]`).
- * Pass this flag to show the original array contents instead.
+ * Display full array contents (e.g. TypedArrays) when formatting snapshots.
+ * By default arrays are compacted to a short form: `[Type(length)]`.
  * @constant {number}
  */
 export const SHOW_ARRAYS = 4;

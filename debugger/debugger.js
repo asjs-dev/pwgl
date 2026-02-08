@@ -1,5 +1,5 @@
 import {
-  SHOW_CALL_STACK,
+  SHOW_CALL_STACKS,
   SHOW_ORIGINAL_VALUES,
   SHOW_ARRAYS,
 } from "./constants";
@@ -7,147 +7,176 @@ import { enumCheck } from "../extensions/utils/enumCheck";
 import { enterFrame } from "../extensions/utils/enterFrame";
 import { clamp } from "../extensions/utils/clamp";
 import { getFormat } from "./logFormatter";
+import { noopReturnsWith } from "../extensions/utils/noopReturnsWith";
 
+/**
+ * @typedef {Object} DebugCall
+ * @property {string} stackTrace Captured call stack (optional).
+ * @property {number} currentCallDurationMS Time since the previous call.
+ * @property {number} sumFrameDurationMS Accumulated time within the frame.
+ * @property {string} prop Invoked WebGL method name.
+ * @property {Array<any>} args Method arguments.
+ */
+
+/**
+ * @typedef {Array<DebugCall>} FrameSnapshot
+ * A list of recorded WebGL calls within a single frame.
+ */
+
+/**
+ * @ignore
+ */
 const _noopConvert = (values) => values;
 
+/**
+ * @ignore
+ */
 // prettier-ignore
 const _captureStack = () =>
-    "\n" +
-    (new Error()).stack
-      .split("\n")
-      .slice(3)
-      .map((v) => v.trim().slice(3))
-      .join("\n") +
-    "\n->";
+  "\n |" + (new Error()).stack
+    .split("\n")
+    .slice(3)
+    .map((v) => v.trim().slice(3))
+    .join("\n |");
 
 /**
- * @typedef {Array<any>} DebugEntry
- * @description A single recorded call entry. Typical shape:
- * [ capturedStack?, `frame N`, `[delta ms]`, `[sum ms]:`, propName, ...args ]
+ * @ignore
  */
+const _debug = (context, options = {}) => {
+  const MAX_FRAME_COUNT = clamp(options.maxFrameCount ?? 5, 0, 20);
+  const FLAGS = options.flags ?? 0;
 
-/**
- * @typedef {Map<any, DebugEntry[]>} SnapshotsMap
- * @description Map of program objects to arrays of recorded entries.
- */
+  const debug = [];
+  const maxLengths = [];
 
-const _debug = (context, maxFrameCount = 2) => {
-  const programs = [];
-  const debug = new Map();
   const constMap = PWGL
-    ? Object.entries(PWGL.Const).reduce((acc, val) => {
-        acc[val[1]] = val[0];
+    ? Object.entries(PWGL.Const).reduce((acc, [name, value]) => {
+        acc[value] = name;
         return acc;
       }, {})
     : {};
 
+  let currentFrame;
+  let currentTimestamp;
+  let logsForFrame;
+  let maxLengthsForFrame;
+  let sumFrameDurationMS;
+  let frames = -1;
+
   const convertToReadableNames = (values) =>
     values.map((v) => constMap[v] ?? v);
 
-  const render = () => {
-    if (frames === maxFrameCount) ef.stop();
-    frames++;
-  };
+  const convertArrays = enumCheck(FLAGS, SHOW_ARRAYS)
+    ? _noopConvert
+    : (values) =>
+        values.map((v) =>
+          v && (Array.isArray(v) || v.constructor?.name?.endsWith("Array"))
+            ? `[${v.constructor.name}(${v.length})]`
+            : v,
+        );
+
+  const convert = enumCheck(FLAGS, SHOW_ORIGINAL_VALUES)
+    ? _noopConvert
+    : convertToReadableNames;
+
+  const convertCallStack = enumCheck(FLAGS, SHOW_CALL_STACKS)
+    ? _captureStack
+    : noopReturnsWith("");
 
   /**
-   * Produce a formatted array of log lines.
-   * @param {number} [options=0] Bitmask of SHOW_* flags to control formatting.
-   * @returns {string[]} Formatted lines describing recorded snapshots.
+   * Advance frame counter.
+   * Called once per rendered frame.
    */
-  const toString = (options = 0) => {
-    const showCallStack = enumCheck(options, SHOW_CALL_STACK);
+  const render = () => frames++;
 
-    const convertArrays = enumCheck(options, SHOW_ARRAYS)
-      ? _noopConvert
-      : (values) =>
-          values.map((v) =>
-            v && (Array.isArray(v) || v.constructor.name.endsWith("Array"))
-              ? `[${v.constructor.name}(${v.length})]`
-              : v,
-          );
-
-    const convert = enumCheck(options, SHOW_ORIGINAL_VALUES)
-      ? _noopConvert
-      : convertToReadableNames;
-
-    let contextIndex = 0;
-
-    debug.forEach((program) => {
+  /**
+   * Print all collected snapshots to the console using formatted output.
+   */
+  const toString = () => {
+    debug.forEach((frame, frameId) => {
       console.log(
-        `%c < CONTEXT #${++contextIndex} > `,
-        "background: #000; color: #00ff00; font-weight: bold;",
+        "%c > FRAME #" + frameId + " => ",
+        "background:#000;color:#00ff00;font-weight:bold;",
       );
 
-      program.map((list) => {
+      const maxLengthsForFrame = maxLengths[frameId];
+
+      frame.forEach((entry) => {
         const format = getFormat(
-          list.lastCallMS,
-          list.prop,
-          convertToReadableNames(list.args),
+          entry.currentCallDurationMS,
+          entry.prop,
+          convertToReadableNames(entry.args),
         );
 
         console.log(
-          "%c" +
-            format.icon + " " +
-            `${format.label}: ` +
-            [
-              ...(showCallStack ? [list.stackTrace] : []),
-              `frame #${list.frame}`,
-              `${list.sumMS}ms`,
-              `${list.lastCallMS}ms`,
-              `[${list.prop}]`,
-              `( ${convert(convertArrays(list.args)).join(", ")} )`,
-            ].join(" | "),
+          "%c " +
+            format.icon +
+            " " +
+            format.label +
+            "|" +
+            `${String(entry.sumFrameDurationMS).padStart(maxLengthsForFrame.sumFrameDurationMS)}ms|` +
+            `${String(entry.currentCallDurationMS).padStart(maxLengthsForFrame.currentCallDurationMS)}ms|` +
+            ` ${String(entry.prop).padStart(maxLengthsForFrame.prop)}` +
+            (entry.args.length ? `( ${convert(entry.args).join(" ")} )` : "") +
+            entry.stackTrace,
           format.style,
         );
       });
     });
   };
 
+  /**
+   * Proxy wrapper for intercepted WebGL function calls.
+   */
   const debugCallback = (value, target, prop) =>
     function (...args) {
-      if (frames <= maxFrameCount) {
-        if (prop === "useProgram") {
-          const program = args[0];
-          if (!programs.includes(program)) {
-            programs.push(program);
-            debug.set(program, []);
-            latestProgram = program;
-            lastTimestamp = Date.now();
-            sumMS = 0;
-          } else latestProgram = null;
+      if (frames <= MAX_FRAME_COUNT) {
+        if (currentFrame !== frames) {
+          logsForFrame = [];
+          maxLengthsForFrame = {};
+          debug[frames] = logsForFrame;
+          maxLengths[frames] = maxLengthsForFrame;
+          currentFrame = frames;
+          currentTimestamp = Date.now();
+          sumFrameDurationMS = 0;
         }
 
-        if (latestProgram) {
-          const logsForProgram = debug.get(latestProgram);
-          const length = logsForProgram.length;
+        if (currentFrame >= 0) {
+          const length = logsForFrame.length;
           const now = Date.now();
-          const lastCallMS = now - lastTimestamp;
-          sumMS += lastCallMS;
-          lastTimestamp = now;
+          const delta = now - currentTimestamp;
+          sumFrameDurationMS += delta;
+          currentTimestamp = now;
 
-          if (length > 0) logsForProgram[length - 1].lastCallMS = lastCallMS;
+          if (length > 0) {
+            logsForFrame[length - 1].currentCallDurationMS = delta;
+            maxLengthsForFrame.currentCallDurationMS = Math.max(
+              String(delta).length,
+              maxLengthsForFrame.currentCallDurationMS ?? 0,
+            );
+          }
 
-          logsForProgram.push({
-            stackTrace: _captureStack(),
-            frame: frames,
-            lastCallMS: 0,
-            sumMS: sumMS,
+          logsForFrame.push({
+            stackTrace: convertCallStack(),
+            currentCallDurationMS: 0,
+            sumFrameDurationMS: sumFrameDurationMS,
             prop: prop,
-            args: args,
+            args: convertArrays(args),
           });
+
+          maxLengthsForFrame.sumFrameDurationMS = Math.max(
+            String(sumFrameDurationMS).length,
+            maxLengthsForFrame.sumFrameDurationMS ?? 0,
+          );
+          maxLengthsForFrame.prop = Math.max(
+            prop.length,
+            maxLengthsForFrame.prop ?? 0,
+          );
         }
       }
 
       return value.apply(target, args);
     };
-
-  let latestProgram;
-  let lastTimestamp;
-  let sumMS;
-  let ef;
-  let frames = 0;
-
-  ef = enterFrame(render);
 
   const debugInstance = {
     canvas: context.canvas,
@@ -155,6 +184,7 @@ const _debug = (context, maxFrameCount = 2) => {
     toString: toString,
   };
 
+  enterFrame(render);
   PWGLDebugger.instances.push(debugInstance);
 
   console.log("PWGL Debugger", debugInstance);
@@ -170,18 +200,23 @@ const _debug = (context, maxFrameCount = 2) => {
 };
 
 /**
- * Replace `HTMLCanvasElement.prototype.getContext` so that every canvas context
- * returned in the page is wrapped by the PWGL debugger proxy.
+ * Initialize the PWGL debugger.
+ * Overrides `HTMLCanvasElement.prototype.getContext` so that every
+ * WebGL context returned on the page is wrapped by a debug proxy.
  *
- * Call `init()` once (for example during app startup) to enable the debugger.
- * @returns {void}
+ * Call this once during application startup.
+ *
+ * @param {object} options
+ * @param {number} [options.maxFrameCount=5] Maximum number of frames recorded.
+ * @param {number} [options.flags=0] Bitmask of SHOW_* flags controlling output.
  */
-export const init = (maxFrameCount = 2) => {
+export const init = (options = {}) => {
   const getContextFV = HTMLCanvasElement.prototype.getContext;
+
   HTMLCanvasElement.prototype.getContext = function (...args) {
     const context = getContextFV.call(this, ...args);
-    return args[0].startsWith("webgl")
-      ? _debug(context, clamp(maxFrameCount, 2, 20))
+    return args[0] && args[0].startsWith("webgl")
+      ? _debug(context, options)
       : context;
   };
 };

@@ -1,9 +1,9 @@
-import { SHOW_CALL_STACK, SHOW_ORIGINAL_VALUES, SHOW_ARRAYS } from "./constants";
+import { SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES, SHOW_ARRAYS } from "./constants";
 import { init } from "./debugger";
 
 window.PWGLDebugger = {
   version: "{{appVersion}}",
-  SHOW_CALL_STACK,
+  SHOW_CALL_STACKS,
   SHOW_ORIGINAL_VALUES,
   SHOW_ARRAYS,
   init,
