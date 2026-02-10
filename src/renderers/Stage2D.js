@@ -178,13 +178,13 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _handleMouseEvent() {
-    const latestEvent = this._latestEvent,
+    const currentEvent = this._currentEvent,
       eventTarget = this._eventTarget,
       previousEventTarget = this._previousEventTarget;
 
-    if (latestEvent) {
+    if (currentEvent) {
       if (eventTarget !== previousEventTarget) {
-        const newEvent = { ...latestEvent };
+        const newEvent = { ...currentEvent };
 
         previousEventTarget &&
           previousEventTarget.callEventHandler(previousEventTarget, {
@@ -201,14 +201,14 @@ export class Stage2D extends BatchRenderer {
 
       eventTarget &&
         eventTarget.callEventHandler(eventTarget, {
-          ...latestEvent,
-          type: _INTERACTION_EVENT_MAPPED_TYPES[latestEvent.type],
+          ...currentEvent,
+          type: _INTERACTION_EVENT_MAPPED_TYPES[currentEvent.type],
         });
 
       this._previousEventTarget = eventTarget;
     }
 
-    this._latestEvent = null;
+    this._currentEvent = null;
   }
 
   /**
@@ -327,7 +327,7 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   _onMouseEventHandler(event) {
-    this._latestEvent = event;
+    this._currentEvent = event;
     const canvas = this.context.canvas;
     this._setMousePosition(
       (canvas.width / canvas.offsetWidth) * event.offsetX,
