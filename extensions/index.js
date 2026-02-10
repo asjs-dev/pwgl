@@ -1,4 +1,4 @@
-import { FPS } from "./utils/FPS";
+import { FPSCounter } from "./utils/FPSCounter";
 import { getFPS } from "./utils/getFPS";
 import { PressState } from "./controls/PressState";
 import { Mouse } from "./controls/Mouse";
@@ -60,7 +60,7 @@ window.PWGLExtensions = window.AGLExtensions = {
   },
 
   utils: {
-    FPS,
+    FPSCounter,
     createDataObserver,
     areObjectsEqual,
     clamp,

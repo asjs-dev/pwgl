@@ -132,7 +132,7 @@ Advanced spatial collision algorithms for game development:
 
 - **`nthCall(fn, n)`** - Execute function every nth call
 - **`enterFrame(callback, fps)`** - Frame-based animation loop
-- **`FPS` class / `getFPS()`** - Frame rate monitoring and statistics
+- **`FPSCounter` class / `getFPS()`** - Frame rate monitoring and statistics
 
 ### Grid and Spatial Mapping
 

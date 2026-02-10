@@ -1,24 +1,20 @@
-import { noop } from "./noop";
-
 /**
  * FPS counter utility
- * @typedef {Object} FPS
- * @property {function} init noop function for backward compatibility
- * @property {function} start noop function for backward compatibility
+ * @typedef {Function} FPSCounter
  * @property {function} update Update counter
+ * @property {number} fps FPS
+ * @property {number} delay Delay
  */
-export const FPS = (() => {
-  const scope = {
-    fps: 0,
-    delay: 0,
-  };
-
-  const targetMS = 16.6667; // 60 FPS
-
+export const FPSCounter = () => {
   let frames = 0,
     prevTime = 0,
     nextTime = 0,
     then = Date.now();
+
+  const scope = {
+    fps: 0,
+    delay: 0,
+  };
 
   /**
    * Update counter
@@ -27,7 +23,7 @@ export const FPS = (() => {
   scope.update = () => {
     const now = Date.now();
     frames++;
-    scope.delay = (now - then) / targetMS;
+    scope.delay = (now - then) / 16.6667; // 60 FPS
     then = now;
 
     if (now >= nextTime) {
@@ -38,8 +34,5 @@ export const FPS = (() => {
     }
   };
 
-  // For backwards compatibility
-  scope.init = scope.start = noop;
-
   return scope;
-})();
+};
