@@ -5,23 +5,24 @@ const _createFormat = (icon, label, textColor, backgroundColor) => ({
 });
 
 const _COLORS = {
-  BASE: _createFormat("·", "----", "#999", "#000"),
-  PROGRAM: _createFormat("◉", "PROG", "#7CFF9B", "#0b3d1f"),
-  BINDING: _createFormat("↔", "BIND", "#4FC3F7", "#002233"),
-  RESOURCES: _createFormat("□", "RESOURCE", "#FFD54F", "#3a2a00"),
-  BUFFER_UPLOAD: _createFormat("↑", "UPLD", "#FF7043", "#3b1200"),
-  TEXTURE_PARAMS: _createFormat("▦", "TEXT", "#c792ea", "#2a1433"),
-  UNIFORMS: _createFormat("≡", "UNIF", "#FF7AA2", "#2a0f1a"),
-  VERTEX_ATTRIBUTES: _createFormat("▣", "ATTR", "#26E6A6", "#00382f"),
-  VIEWPORT: _createFormat("▢", "FRAM", "#90a4ae", "#1c262b"),
-  BLENDING: _createFormat("≈", "BLND", "#69f0ae", "#032"),
-  SAMPLERS: _createFormat("⇅", "SAMP", "#000", "#33F"),
-  FRAMEBUFFERS: _createFormat("▭", "FBO ", "#fff", "#4a148c"),
-  RENDERBUFFERS: _createFormat("▩", "RBO ", "#fff", "#004d40"),
-  DEPTH_STENCIL: _createFormat("∠", "DPTH", "#999", "#333"),
-  DRAW: _createFormat("●", "DRAW", "#fff", "#d50000"),
-  ALERT: _createFormat("■", "ALRT", "#fff", "#b00020"),
-  WARN: _createFormat("▲", "WARN", "#000", "#fc0"),
+  BASE: _createFormat("- ·", "----", "#999", "#000"),
+  PROGRAM: _createFormat("- ◉", "PROG", "#7CFF9B", "#0b3d1f"),
+  BINDING: _createFormat("| ↔", "BIND", "#4FC3F7", "#002233"),
+  RESOURCES: _createFormat("| □", "RSRC", "#FFD54F", "#3a2a00"),
+  BUFFER_UPLOAD: _createFormat("| ↑", "UPLD", "#FF7043", "#3b1200"),
+  TEXTURE_PARAMS: _createFormat("| ▦", "TEXT", "#c792ea", "#2a1433"),
+  UNIFORMS: _createFormat("| ≡", "UNIF", "#FF7AA2", "#2a0f1a"),
+  VERTEX_ATTRIBUTES: _createFormat("| ▣", "ATTR", "#26E6A6", "#00382f"),
+  VIEWPORT: _createFormat("| ▢", "FRAM", "#90a4ae", "#1c262b"),
+  BLENDING: _createFormat("| ≈", "BLND", "#69f0ae", "#032"),
+  SAMPLERS: _createFormat("| ⇅", "SAMP", "#000", "#33F"),
+  FRAMEBUFFERS: _createFormat("| ▭", "FBO ", "#fff", "#4a148c"),
+  RENDERBUFFERS: _createFormat("| ▩", "RBO ", "#fff", "#004d40"),
+  DEPTH_STENCIL: _createFormat("| ∠", "DPTH", "#999", "#333"),
+  SHADER:  _createFormat("| ∞", "SHDR", "#8cedd4", "#390b5a"),
+  DRAW: _createFormat("- ●", "DRAW", "#fff", "#086818"),
+  ALERT: _createFormat("- ■", "ALRT", "#fff", "#b00020"),
+  WARN: _createFormat("- ▲", "WARN", "#000", "#fc0"),
 };
 
 const _ENABLE_LIST = ["DEPTH_TEST", "CULL_FACE", "STENCIL_TEST"];
@@ -42,6 +43,7 @@ export const getFormat = (duration, command, args) => {
     case "shaderSource":
     case "compileShader":
     case "deleteShader":
+      return _COLORS.SHADER;
     case "getBufferSubData":
     case "finish":
     case "flush":

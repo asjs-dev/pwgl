@@ -33,35 +33,39 @@ const _noopConvert = (values) => values;
  */
 // prettier-ignore
 const _captureStack = () =>
-  "\n |" + (new Error()).stack
+  (new Error()).stack
     .split("\n")
     .slice(3)
-    .map((v) => v.trim().slice(3))
-    .join("\n |");
+    .map((v) => v.trim().slice(3));
+
+/**
+ * @ignore
+ */
+// prettier-ignore
+const _captureStackFormatted = () =>
+  "\n   | " + _captureStack().join("\n   | ");
 
 /**
  * @ignore
  */
 const _debug = (context, options = {}) => {
-  const MAX_FRAME_COUNT = clamp(options.maxFrameCount ?? 5, 0, 20);
-  const FLAGS = options.flags ?? 0;
+  const MAX_FRAME_COUNT = clamp(options.maxFrameCount ?? 5, 0, 20),
+    FLAGS = options.flags ?? 0,
+    debug = [],
+    maxLengths = [],
+    constMap = PWGL
+      ? Object.entries(PWGL.Const).reduce((acc, [name, value]) => {
+          acc[value] = name;
+          return acc;
+        }, {})
+      : {};
 
-  const debug = [];
-  const maxLengths = [];
-
-  const constMap = PWGL
-    ? Object.entries(PWGL.Const).reduce((acc, [name, value]) => {
-        acc[value] = name;
-        return acc;
-      }, {})
-    : {};
-
-  let currentFrame;
-  let currentTimestamp;
-  let logsForFrame;
-  let maxLengthsForFrame;
-  let sumFrameDurationMS;
-  let frames = -1;
+  let currentFrame,
+    currentTimestamp,
+    logsForFrame,
+    maxLengthsForFrame,
+    sumFrameDurationMS,
+    frames = -1;
 
   const convertToReadableNames = (values) =>
     values.map((v) => constMap[v] ?? v);
@@ -80,7 +84,7 @@ const _debug = (context, options = {}) => {
     : convertToReadableNames;
 
   const convertCallStack = enumCheck(FLAGS, SHOW_CALL_STACKS)
-    ? _captureStack
+    ? _captureStackFormatted
     : noopReturnsWith("");
 
   /**
@@ -101,7 +105,7 @@ const _debug = (context, options = {}) => {
 
       const maxLengthsForFrame = maxLengths[frameId];
 
-      frame.forEach((entry) => {
+      frame.forEach((entry, index) => {
         const format = getFormat(
           entry.currentCallDurationMS,
           entry.prop,
@@ -119,7 +123,7 @@ const _debug = (context, options = {}) => {
             ` ${String(entry.prop).padStart(maxLengthsForFrame.prop)}` +
             (entry.args.length ? `( ${convert(entry.args).join(" ")} )` : "") +
             entry.stackTrace,
-          format.style,
+          `${format.style}t:${index};`,
         );
       });
     });
@@ -161,7 +165,11 @@ const _debug = (context, options = {}) => {
             currentCallDurationMS: 0,
             sumFrameDurationMS: sumFrameDurationMS,
             prop: prop,
-            args: convertArrays(args),
+            args: convertArrays(
+              args.map((v) =>
+                [null, undefined].includes(v) ? `${v}` : v === "" ? '""' : v,
+              ),
+            ),
           });
 
           maxLengthsForFrame.sumFrameDurationMS = Math.max(
