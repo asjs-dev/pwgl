@@ -1,5 +1,5 @@
 import { SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES, SHOW_ARRAYS } from "./constants";
-import { init } from "./debugger";
+import { init } from "./init";
 
 window.PWGLDebugger = {
   version: "{{appVersion}}",

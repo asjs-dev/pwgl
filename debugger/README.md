@@ -1,74 +1,102 @@
 # PWGL Debugger
 
-PWGL Debugger is a lightweight WebGL call logger that wraps canvas contexts
-and records WebGL API usage frame-by-frame for inspection in the browser console.
+PWGL Debugger is a lightweight WebGL call logger and in-page panel.
+It wraps WebGL contexts returned by `canvas.getContext(...)` and records calls frame-by-frame.
 
-The debugger is **read-only**: it does not modify rendering behavior.
-All collected data is exposed via a console-only object.
+The debugger is read-only: intercepted calls are forwarded to the original context.
 
 ![Console Demo](https://asjs-dev.github.io/pwgl/assets/debugger.png)
 
-## Activation
+## Entry point and build output
 
-Import and call `init()` once during application startup:
+The debugger entry point is:
+
+- `debugger/index.js`
+
+This file creates a global `window.PWGLDebugger` object and attaches:
+
+- `version`
+- `init(options)`
+- `instances`
+- formatting flags: `SHOW_CALL_STACKS`, `SHOW_ORIGINAL_VALUES`, `SHOW_ARRAYS`
+
+Build config (`debugger/vite.config.js`) generates:
+
+- `dist/pwgl.debugger.es.min.js`
+- `dist/pwgl.debugger.umd.min.js`
+
+Run build from project root:
+
+```bash
+npm run build:debugger
+```
+
+## Initialization
+
+Initialize once during app startup:
 
 ```js
-import { init } from "./debugger/debugger.js";
-
-init({
+PWGLDebugger.init({
   maxFrameCount: 5,
   flags: 0,
 });
 ```
 
-This overrides `HTMLCanvasElement.prototype.getContext` so every WebGL context
-returned on the page is automatically wrapped.
+`init()` overrides `HTMLCanvasElement.prototype.getContext`, so every `webgl` / `webgl2`
+context is automatically wrapped.
 
-## Console usage
+It also injects a small debug UI panel (top-left info button) for browsing captured calls.
 
-When initialized, the debugger logs a `PWGL Debugger` object to the console.
+## Usage examples
 
-To interact with it:
-1. Open the browser console.
-2. Right-click the logged object.
-3. Select **"Store as global variable"** (e.g. `temp1`).
+UMD bundle in browser:
 
-Or type **`PWGLDebugger.instances[0].toString()`** into the console
+```html
+<script src="./dist/pwgl.debugger.umd.min.js"></script>
+<script>
+  PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
+</script>
+```
 
-The stored object exposes:
+ES module:
 
-- `snapshots` - an array of per-frame WebGL call records
-- `toString()` - prints formatted, colorized output to the console
+```js
+import "../dist/pwgl.debugger.es.min.js";
+
+PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
+```
 
 ## Formatting flags
 
-Flags are combined using bitwise OR:
+Flags are bitmasks and can be combined with OR (`|`):
 
-- `SHOW_CALL_STACKS = 1`  
-  Include captured JavaScript call stacks.
-
-- `SHOW_ORIGINAL_VALUES = 2`  
-  Skip WebGL constant name conversion.
-
-- `SHOW_ARRAYS = 4`  
-  Print full array contents instead of compact placeholders.
+- `SHOW_CALL_STACKS = 1` - include captured JavaScript call stacks
+- `SHOW_ORIGINAL_VALUES = 2` - keep original argument values (skip enum name mapping)
+- `SHOW_ARRAYS = 4` - print full arrays instead of compact `[Type(length)]` form
 
 Example:
 
 ```js
-temp1.toString(1 | 2 | 4);
+PWGLDebugger.init({
+  maxFrameCount: 5,
+  flags:
+    PWGLDebugger.SHOW_CALL_STACKS |
+    PWGLDebugger.SHOW_ORIGINAL_VALUES |
+    PWGLDebugger.SHOW_ARRAYS,
+});
 ```
 
-## Snapshot structure
+## Recorded data structure
 
-Each frame snapshot is an array of recorded calls.
-A single call entry contains:
+`PWGLDebugger.instances` stores one debugger entry per wrapped context:
 
-- `stackTrace` - optional captured call stack
-- `currentCallDurationMS` - time since the previous call
-- `sumFrameDurationMS` - cumulative time within the frame
-- `prop` - invoked WebGL method name
-- `args` - method arguments (formatted based on flags)
+- `canvas` - source canvas element
+- `snapshots` - array of frames
 
-This is intended for low-level inspection of WebGL state changes,
-draw calls, and performance characteristics directly from the console.
+Each frame is an array of call entries:
+
+- `stackTrace` - optional captured stack trace
+- `currentCallDurationMS` - elapsed time since previous call
+- `sumFrameDurationMS` - cumulative time within the current frame
+- `prop` - called WebGL method name
+- `args` - formatted call arguments
