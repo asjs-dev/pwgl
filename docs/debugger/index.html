@@ -71,67 +71,82 @@
 
     <section>
         <article><h1>PWGL Debugger</h1>
-<p>PWGL Debugger is a lightweight WebGL call logger that wraps canvas contexts
-and records WebGL API usage frame-by-frame for inspection in the browser console.</p>
-<p>The debugger is <strong>read-only</strong>: it does not modify rendering behavior.
-All collected data is exposed via a console-only object.</p>
+<p>PWGL Debugger is a lightweight WebGL call logger and in-page panel.
+It wraps WebGL contexts returned by <code>canvas.getContext(...)</code> and records calls frame-by-frame.</p>
+<p>The debugger is read-only: intercepted calls are forwarded to the original context.</p>
 <p><img src="https://asjs-dev.github.io/pwgl/assets/debugger.png" alt="Console Demo"></p>
-<h2>Activation</h2>
-<p>Import and call <code>init()</code> once during application startup:</p>
-<pre class="prettyprint source lang-js"><code>import { init } from &quot;./debugger/debugger.js&quot;;
-
-init({
+<h2>Entry point and build output</h2>
+<p>The debugger entry point is:</p>
+<ul>
+<li><code>debugger/index.js</code></li>
+</ul>
+<p>This file creates a global <code>window.PWGLDebugger</code> object and attaches:</p>
+<ul>
+<li><code>version</code></li>
+<li><code>init(options)</code></li>
+<li><code>instances</code></li>
+<li>formatting flags: <code>SHOW_CALL_STACKS</code>, <code>SHOW_ORIGINAL_VALUES</code>, <code>SHOW_ARRAYS</code></li>
+</ul>
+<p>Build config (<code>debugger/vite.config.js</code>) generates:</p>
+<ul>
+<li><code>dist/pwgl.debugger.es.min.js</code></li>
+<li><code>dist/pwgl.debugger.umd.min.js</code></li>
+</ul>
+<p>Run build from project root:</p>
+<pre class="prettyprint source lang-bash"><code>npm run build:debugger
+</code></pre>
+<h2>Initialization</h2>
+<p>Initialize once during app startup:</p>
+<pre class="prettyprint source lang-js"><code>PWGLDebugger.init({
   maxFrameCount: 5,
   flags: 0,
 });
 </code></pre>
-<p>This overrides <code>HTMLCanvasElement.prototype.getContext</code> so every WebGL context
-returned on the page is automatically wrapped.</p>
-<h2>Console usage</h2>
-<p>When initialized, the debugger logs a <code>PWGL Debugger</code> object to the console.</p>
-<p>To interact with it:</p>
-<ol>
-<li>Open the browser console.</li>
-<li>Right-click the logged object.</li>
-<li>Select <strong>&quot;Store as global variable&quot;</strong> (e.g. <code>temp1</code>).</li>
-</ol>
-<p>Or type <strong><code>PWGLDebugger.instances[0].toString()</code></strong> into the console</p>
-<p>The stored object exposes:</p>
-<ul>
-<li><code>snapshots</code> - an array of per-frame WebGL call records</li>
-<li><code>toString()</code> - prints formatted, colorized output to the console</li>
-</ul>
+<p><code>init()</code> overrides <code>HTMLCanvasElement.prototype.getContext</code>, so every <code>webgl</code> / <code>webgl2</code>
+context is automatically wrapped.</p>
+<p>It also injects a small debug UI panel (top-left info button) for browsing captured calls.</p>
+<h2>Usage examples</h2>
+<p>UMD bundle in browser:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;./dist/pwgl.debugger.umd.min.js&quot;>&lt;/script>
+&lt;script>
+  PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
+&lt;/script>
+</code></pre>
+<p>ES module:</p>
+<pre class="prettyprint source lang-js"><code>import &quot;../dist/pwgl.debugger.es.min.js&quot;;
+
+PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
+</code></pre>
 <h2>Formatting flags</h2>
-<p>Flags are combined using bitwise OR:</p>
+<p>Flags are bitmasks and can be combined with OR (<code>|</code>):</p>
 <ul>
-<li>
-<p><code>SHOW_CALL_STACKS = 1</code><br>
-Include captured JavaScript call stacks.</p>
-</li>
-<li>
-<p><code>SHOW_ORIGINAL_VALUES = 2</code><br>
-Skip WebGL constant name conversion.</p>
-</li>
-<li>
-<p><code>SHOW_ARRAYS = 4</code><br>
-Print full array contents instead of compact placeholders.</p>
-</li>
+<li><code>SHOW_CALL_STACKS = 1</code> - include captured JavaScript call stacks</li>
+<li><code>SHOW_ORIGINAL_VALUES = 2</code> - keep original argument values (skip enum name mapping)</li>
+<li><code>SHOW_ARRAYS = 4</code> - print full arrays instead of compact <code>[Type(length)]</code> form</li>
 </ul>
 <p>Example:</p>
-<pre class="prettyprint source lang-js"><code>temp1.toString(1 | 2 | 4);
+<pre class="prettyprint source lang-js"><code>PWGLDebugger.init({
+  maxFrameCount: 5,
+  flags:
+    PWGLDebugger.SHOW_CALL_STACKS |
+    PWGLDebugger.SHOW_ORIGINAL_VALUES |
+    PWGLDebugger.SHOW_ARRAYS,
+});
 </code></pre>
-<h2>Snapshot structure</h2>
-<p>Each frame snapshot is an array of recorded calls.
-A single call entry contains:</p>
+<h2>Recorded data structure</h2>
+<p><code>PWGLDebugger.instances</code> stores one debugger entry per wrapped context:</p>
 <ul>
-<li><code>stackTrace</code> - optional captured call stack</li>
-<li><code>currentCallDurationMS</code> - time since the previous call</li>
-<li><code>sumFrameDurationMS</code> - cumulative time within the frame</li>
-<li><code>prop</code> - invoked WebGL method name</li>
-<li><code>args</code> - method arguments (formatted based on flags)</li>
+<li><code>canvas</code> - source canvas element</li>
+<li><code>snapshots</code> - array of frames</li>
 </ul>
-<p>This is intended for low-level inspection of WebGL state changes,
-draw calls, and performance characteristics directly from the console.</p></article>
+<p>Each frame is an array of call entries:</p>
+<ul>
+<li><code>stackTrace</code> - optional captured stack trace</li>
+<li><code>currentCallDurationMS</code> - elapsed time since previous call</li>
+<li><code>sumFrameDurationMS</code> - cumulative time within the current frame</li>
+<li><code>prop</code> - called WebGL method name</li>
+<li><code>args</code> - formatted call arguments</li>
+</ul></article>
     </section>
 
 
@@ -142,13 +157,13 @@ draw calls, and performance characteristics directly from the console.</p></arti
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACKS">SHOW_CALL_STACKS</a></li><li><a href="global.html#SHOW_ORIGINAL_VALUES">SHOW_ORIGINAL_VALUES</a></li><li><a href="global.html#init">init</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACKS">SHOW_CALL_STACKS</a></li><li><a href="global.html#SHOW_ORIGINAL_VALUES">SHOW_ORIGINAL_VALUES</a></li><li><a href="global.html#debugContext">debugContext</a></li><li><a href="global.html#getFormat">getFormat</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#panel">panel</a></li></ul>
             </nav>
 
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 10 Feb 2026 07:56:51 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Sat, 14 Feb 2026 10:18:08 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>
