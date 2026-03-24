@@ -27,7 +27,9 @@ export class AudioItem extends BaseAudio {
   }
   set loop(loop) {
     this._loop = loop;
-    if (this.$nodesConnected) this._source.loop = loop;
+    if (this.$nodesConnected) {
+      this._source.loop = loop;
+    }
   }
 
   /**
@@ -39,7 +41,9 @@ export class AudioItem extends BaseAudio {
   }
   set pitch(pitch) {
     this._pitch = pitch;
-    if (this.$nodesConnected) this._source.playbackRate.value = pitch;
+    if (this.$nodesConnected) {
+      this._source.playbackRate.value = pitch;
+    }
   }
 
   /**
@@ -126,8 +130,9 @@ export class AudioItem extends BaseAudio {
 
     const { _audioMixer, _buffer } = this;
 
-    if (_audioMixer && _buffer)
+    if (_audioMixer && _buffer) {
       this._startTime = (_audioMixer.context.currentTime - this._startTime) % _buffer.duration;
+    }
 
     this.$disconnectNodes();
   }

@@ -25,7 +25,7 @@ export const enterFrame = (callback, fpsLimit = 0) => {
   const updateWithLimit = () => {
     const now = Date.now();
     const diff = now - then;
-    
+
     if (diff >= correctedMS) {
       correctedMS = 2 * maxMS - diff;
       then = now;
@@ -68,7 +68,9 @@ export const enterFrame = (callback, fpsLimit = 0) => {
      * @param {number} fpsLimit - The maximum FPS limit (0 for unlimited)
      */
     setMaxFPS: (fpsLimit) => {
-      if (!fpsLimit || fpsLimit <= 0) return scope.clearMaxFPS();
+      if (!fpsLimit || fpsLimit <= 0) {
+        return scope.clearMaxFPS();
+      }
 
       maxFPS = fpsLimit;
       correctedMS = maxMS = Math.floor(1000 / maxFPS) - 1;

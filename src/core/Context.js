@@ -100,7 +100,9 @@ export class Context {
    * @returns {number}
    */
   useTexture(textureInfo, renderTime, forceBind = true, callback = noop) {
-    if (!textureInfo) return -1;
+    if (!textureInfo) {
+      return -1;
+    }
 
     let textureId = this._textureMap.indexOf(textureInfo);
     if (textureId < 0) {

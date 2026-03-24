@@ -80,7 +80,9 @@ export class LightRenderer extends BatchRenderer {
 
   set sourceTexture(v) {
     this._sourceTexture = v;
-    if (v) this._sizable = v;
+    if (v) {
+      this._sizable = v;
+    }
   }
 
   get normalMap() {
@@ -89,7 +91,9 @@ export class LightRenderer extends BatchRenderer {
 
   set normalMap(v) {
     this._normalMap = v;
-    if (v) this._sizable = v;
+    if (v) {
+      this._sizable = v;
+    }
   }
 
   get heightMap() {
@@ -98,7 +102,9 @@ export class LightRenderer extends BatchRenderer {
 
   set heightMap(v) {
     this._heightMap = v;
-    if (v) this._sizable = v;
+    if (v) {
+      this._sizable = v;
+    }
   }
 
   get roughnessMap() {
@@ -107,7 +113,9 @@ export class LightRenderer extends BatchRenderer {
 
   set roughnessMap(v) {
     this._roughnessMap = v;
-    if (v) this._sizable = v;
+    if (v) {
+      this._sizable = v;
+    }
   }
 
   /**
@@ -197,56 +205,56 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return Utils.GLSL.DEFINE.Z +
-    Utils.GLSL.DEFINE.PI +
-    "#define P vec4(1,-1,2,-2)\n" +
+    return `${Utils.GLSL.DEFINE.Z}` +
+    `${Utils.GLSL.DEFINE.PI}` +
+    `#define P vec4(1,-1,2,-2)\n` +
 
-    BASE_VERTEX_SHADER_ATTRIBUTES +
-    "in mat4 " +
-      "aB;" +
-    "in mat2x3 " +
-      "aC;" +
+    `${BASE_VERTEX_SHADER_ATTRIBUTES}` +
+    `in mat4 ` +
+      `aB;` +
+    `in mat2x3 ` +
+      `aC;` +
 
-    BASE_VERTEX_SHADER_UNIFORMS +
+    `${BASE_VERTEX_SHADER_UNIFORMS}` +
 
-    "out vec2 " +
-      "v0;" +
-    "out vec4 " +
-      "v1;" +
-    "flat out vec4 " +
-      "v2," +
-      "v3," +
-      "v4," +
-      "v5;" +
+    `out vec2 ` +
+      `v0;` +
+    `out vec4 ` +
+      `v1;` +
+    `flat out vec4 ` +
+      `v2,` +
+      `v3,` +
+      `v4,` +
+      `v5;` +
 
-    "void main(){" +
-      "vec3 " + 
-        "pos=vec3(aA*2.-1.,1);" +
+    `void main(){` +
+      `vec3 ` + 
+        `pos=vec3(aA*2.-1.,1);` +
       
-      "v1.xy=pos.xy;" +
+      `v1.xy=pos.xy;` +
 
-      "mat3 mt=mat3(aB[0].xy,0,aB[0].zw,0,aB[1].xy,1);" +
-      "v2.x=aB[1].z;" + 
-      "v2.y=v2.x*aB[3].x;" +
+      `mat3 mt=mat3(aB[0].xy,0,aB[0].zw,0,aB[1].xy,1);` +
+      `v2.x=aB[1].z;` + 
+      `v2.y=v2.x*aB[3].x;` +
 
-      "v3=vec4(aC[1],PI-aB[1].w);" +
-      "v4=vec4(aB[3].z,aC[0]);" +
-      "v5=aB[2];" +
+      `v3=vec4(aC[1],PI-aB[1].w);` +
+      `v4=vec4(aB[3].z,aC[0]);` +
+      `v5=aB[2];` +
 
-      "if(v4.x<1.){" +
-        "gl_Position=vec4(mt*pos,1);" +
-        "v0=(gl_Position.xy+P.xy)/P.zw;" +
-        "v1.zw=(aB[1].xy+P.xy)/P.zw;" +
-        "v2.zw=vec2(sin(aB[3].y),cos(aB[3].y));" +
-      "}else{" +
-        "mt[2].xy=Z.zy;" +
-        "gl_Position=vec4(pos,1);" +
-        "v0=(gl_Position.xy+P.xy)/P.zw;" +
-        "v1.zw=v0+((mt*vec3(1)).xy+P.xy)/P.zw;" +
-      "}" +
+      `if(v4.x<1.){` +
+        `gl_Position=vec4(mt*pos,1);` +
+        `v0=(gl_Position.xy+P.xy)/P.zw;` +
+        `v1.zw=(aB[1].xy+P.xy)/P.zw;` +
+        `v2.zw=vec2(sin(aB[3].y),cos(aB[3].y));` +
+      `}else{` +
+        `mt[2].xy=Z.zy;` +
+        `gl_Position=vec4(pos,1);` +
+        `v0=(gl_Position.xy+P.xy)/P.zw;` +
+        `v1.zw=v0+((mt*vec3(1)).xy+P.xy)/P.zw;` +
+      `}` +
 
-      "gl_Position.y*=uA;" +
-    "}";
+      `gl_Position.y*=uA;` +
+    `}`;
   }
 
   // prettier-ignore
@@ -255,153 +263,152 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    const loop = (core) => "for(i=m;i<l;i+=st){" +
-            "p=ivec2((v1.zw+i*opdm)*uF);" +
-            "tc=texelFetch(uB,p,0)*HEIGHT;" +
-            core +
-          "}";
+    const loop = (core) => `for(i=m;i<l;i+=st){` +
+            `p=ivec2((v1.zw+i*opdm)*uF);` +
+            `tc=texelFetch(uB,p,0)*HEIGHT;` +
+            `${core}` +
+          `}`;
 
-    return Utils.GLSL.DEFINE.HEIGHT +
-    Utils.GLSL.DEFINE.Z +
+    return `${Utils.GLSL.DEFINE.HEIGHT}` +
+    `${Utils.GLSL.DEFINE.Z}` +
 
-    "in vec2 " +
-      "v0;" +
-    "in vec4 " +
-      "v1;" +
-    "flat in vec4 " +
-      "v2," +
-      "v3," +
-      "v4," +
-      "v5;" +
+    `in vec2 ` +
+      `v0;` +
+    `in vec4 ` +
+      `v1;` +
+    `flat in vec4 ` +
+      `v2,` +
+      `v3,` +
+      `v4,` +
+      `v5;` +
 
-    "uniform vec2 " +
-      "uF;" +
-    "uniform vec3 " +
-      "uO;" +
-    "uniform sampler2D " +
-      "uB," +
-      "uC," +
-      "uM," +
-      "uN;" +
+    `uniform vec2 ` +
+      `uF;` +
+    `uniform vec3 ` +
+      `uO;` +
+    `uniform sampler2D ` +
+      `uB,` +
+      `uC,` +
+      `uM,` +
+      `uN;` +
 
-    "out vec4 " +
-      "oCl;" +
+    `out vec4 ` +
+      `oCl;` +
 
-    Utils.GLSL.RANDOM +
+    `${Utils.GLSL.RANDOM}` +
 
-    "void main(){" +
-      "float " +
-        "vol=v5.a;" +
+    `void main(){` +
+      `float ` +
+        `vol=v5.a;` +
 
-      "if(vol<=0.)discard;" +
+      `if(vol<=0.)discard;` +
 
-      "vec2 " +
-        "tUv=v0*uF," +
-        "tCnt=v1.zw*uF;" +
+      `vec2 ` +
+        `tUv=v0*uF,` +
+        `tCnt=v1.zw*uF;` +
 
-      "vec4 " +
-        "tc=texelFetch(uB,ivec2(tUv),0);" +
+      `vec4 ` +
+        `tc=texelFetch(uB,ivec2(tUv),0);` +
 
-      "int " + 
-        "flg=int(v4.y);" +
+      `int ` + 
+        `flg=int(v4.y);` +
 
-      "float " +
-        "ph=tc.g*HEIGHT," +
-        "spc=0.;" +
+      `float ` +
+        `ph=tc.g*HEIGHT,` +
+        `spc=0.;` +
 
-      "vec3 " +
-        "sf=vec3(tUv,ph)," +
-        "lp=vec3(tCnt,v4.z)," +
-        "sftla=lp-sf;" +
+      `vec3 ` +
+        `sf=vec3(tUv,ph),` +
+        `lp=vec3(tCnt,v4.z),` +
+        `sftla=lp-sf;` +
 
-      "if(v4.x<1.){" +
-        "float " + 
-          "d=length(sftla)/v2.x," +
-          "od=1.-d," +
-          "dv=(flg&16)>0?pow(od,v3.z):1.;" +
+      `if(v4.x<1.){` +
+        `float ` + 
+          `d=length(sftla)/v2.x,` +
+          `od=1.-d,` +
+          `dv=(flg&16)>0?pow(od,v3.z):1.;` +
 
-        "vol*=dv;" +
+        `vol*=dv;` +
 
-        "float " +
-          "slh=(v4.z-ph)/HEIGHT;" +
+        `float ` +
+          `slh=(v4.z-ph)/HEIGHT;` +
 
-        "vec2 " +
-          "sl=vec2(" +
-            "slh*v2.w-v1.x*v2.z," +
-            "slh*v2.z+v1.x*v2.w" +
-          ");" +
+        `vec2 ` +
+          `sl=vec2(` +
+            `slh*v2.w-v1.x*v2.z,` +
+            `slh*v2.z+v1.x*v2.w` +
+          `);` +
 
-        "if(" +
-          "vol<=0.||" + 
-          "od<=0.||" +
-          "atan(" +
-            "sl.x," +
-            "length(vec2(sl.y,v1.y))" +
-          ")+" + Utils.ALPHA + "-v3.w<0.)discard;" +
-      "}" +
+        `if(` +
+          `vol<=0.||` + 
+          `od<=0.||` +
+          `atan(` +
+            `sl.x,` +
+            `length(vec2(sl.y,v1.y))` +
+          `)+${Utils.ALPHA}-v3.w<0.)discard;` +
+      `}` +
 
-      "float " +
-        "fltDst=distance(tCnt,tUv)," +
-        "shdw=1.;" +
+      `float ` +
+        `fltDst=distance(tCnt,tUv),` +
+        `shdw=1.;` +
 
-      "if((flg&2)>0){" +
-        "vec3 " +
-          "nm=uO.z>0." + 
-            "?normalize((texture(uM,v0).rgb*2.-1.)*Z.yzy)" +
-            ":Z.xxy," +
-          "sftl=normalize(sftla)," +
-          "sftv=normalize(vec3(" +
-            "(flg&8)>0?uF*.5:tUv," +
-            "HEIGHT" +
-          ")-sf)," +
-          "hlf=normalize(sftl+sftv);" +
+      `if((flg&2)>0){` +
+        `vec3 ` +
+          `nm=uO.z>0.` + 
+            `?normalize((texture(uM,v0).rgb*2.-1.)*Z.yzy)` +
+            `:Z.xxy,` +
+          `sftl=normalize(sftla),` +
+          `sftv=normalize(vec3(` +
+            `(flg&8)>0?uF*.5:tUv,` +
+            `HEIGHT` +
+          `)-sf),` +
+          `hlf=normalize(sftl+sftv);` +
 
-        "vol*=dot(nm,sftl);" +
+        `vol*=dot(nm,sftl);` +
         
-        "if(vol<=0.)discard;" +
+        `if(vol<=0.)discard;` +
         
-        "float " + 
-          "rgh=1.," +
-          "shn=uO.y>0.?texture(uN,v0).r:tc.b;" +
+        `float ` + 
+          `rgh=1.,` +
+          `shn=uO.y>0.?texture(uN,v0).r:tc.b;` +
 
-        "spc=pow(max(dot(nm,hlf),0.),32.)*shn*v3.y;" +
-      "}" +
+        `spc=pow(max(dot(nm,hlf),0.),32.)*shn*v3.y;` +
+      `}` +
 
-      "if((flg&1)>0){" +
-        "ivec2 " +
-          "p;" +
+      `if((flg&1)>0){` +
+        `ivec2 ` +
+          `p;` +
 
-        "vec2 " +
-          "opd=(tUv-tCnt)/fltDst," +
-          "opdm=opd/uF;" +
+        `vec2 ` +
+          `opd=(tUv-tCnt)/fltDst,` +
+          `opdm=opd/uF;` +
 
-        "float " +
-          "i," +
-          "pc," +
-          "st=max(1.,ceil(fltDst/v3.x))," + // loop step length
-          "l=min(fltDst-st,4096.)," +
-          "m=max(st,l-v2.y);" +
+        `float ` +
+          `i,` +
+          `pc,` +
+          `st=max(1.,ceil(fltDst/v3.x)),` + // loop step length
+          `l=min(fltDst-st,4096.),` +
+          `m=max(st,l-v2.y);` +
         
-        "if((flg&4)>0)" + 
-          loop("if(tc.g>=v4.z)discard;") +
-        "else{" +
-          "float " +
-            "opdL=length(opd)," + // horizontal step
-            "hst=(ph-v4.z)/fltDst," + // vertical step
-            "rnd=v4.w*rand(v0);" +
+        `if((flg&4)>0)` + 
+          `${loop(`if(tc.g>=v4.z)discard;`)}` +
+        `else{` +
+          `float ` +
+            `opdL=length(opd),` + // horizontal step
+            `hst=(ph-v4.z)/fltDst,` + // vertical step
+            `rnd=v4.w*rand(v0);` +
+          `${loop(
+            `st+=rnd;` +
+            `pc=v4.z+i*hst;` +
+            `shdw*=mix(1.,(fltDst-i*opdL)/v2.y,step(tc.r,pc)*step(pc,tc.g));`
+          )}` +
+        `}` +
+      `}` +
 
-          loop(
-            "st+=rnd;" +
-            "pc=v4.z+i*hst;" +
-            "shdw*=mix(1.,(fltDst-i*opdL)/v2.y,step(tc.r,pc)*step(pc,tc.g));"
-          ) +
-        "}" +
-      "}" +
-
-      "vec3 " +
-        "stCl=uO.x>0.?texture(uC,v0).rgb:Z.yyy;" +
+      `vec3 ` +
+        `stCl=uO.x>0.?texture(uC,v0).rgb:Z.yyy;` +
         
-      "oCl=vec4((stCl+spc)*v5.rgb*vol*shdw,1);" +
-    "}";
+      `oCl=vec4((stCl+spc)*v5.rgb*vol*shdw,1);` +
+    `}`;
   }
 }

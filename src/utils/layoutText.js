@@ -2,8 +2,9 @@ const _layoutPart = (lines, ctx, chars, maxWidth) => {
   let charLine = "";
   for (let c = 0; c < chars.length; c++) {
     const testChar = charLine + chars[c];
-    if (ctx.measureText(testChar).width <= maxWidth) charLine = testChar;
-    else {
+    if (ctx.measureText(testChar).width <= maxWidth) {
+      charLine = testChar;
+    } else {
       charLine && lines.push(charLine);
       charLine = chars[c];
     }
@@ -36,13 +37,16 @@ export const layoutText = (ctx, text, maxWidth) => {
 
     while (cursor < paragraph.length) {
       let nextSpace = paragraph.indexOf(" ", cursor);
-      if (nextSpace === -1) nextSpace = paragraph.length;
+      if (nextSpace === -1) {
+        nextSpace = paragraph.length;
+      }
 
       const word = paragraph.slice(cursor, nextSpace);
       const testLine = currentLine + (currentLine === "" ? "" : " ") + word;
 
-      if (ctx.measureText(testLine).width <= maxWidth) currentLine = testLine;
-      else {
+      if (ctx.measureText(testLine).width <= maxWidth) {
+        currentLine = testLine;
+      } else {
         if (ctx.measureText(word).width > maxWidth) {
           if (currentLine) {
             lines.push(currentLine);
@@ -55,8 +59,9 @@ export const layoutText = (ctx, text, maxWidth) => {
 
             for (let p = 0; p < parts.length; p++) {
               const testPart = partLine + parts[p];
-              if (ctx.measureText(testPart).width <= maxWidth) partLine = testPart;
-              else {
+              if (ctx.measureText(testPart).width <= maxWidth) {
+                partLine = testPart;
+              } else {
                 partLine && lines.push(partLine);
 
                 if (ctx.measureText(parts[p]).width > maxWidth) {

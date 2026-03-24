@@ -55,8 +55,13 @@ export const COLORS = [
  * @returns {string} One of the labels defined in `TYPES`.
  */
 export const getFormat = (duration, command) => {
-  if (duration > 5) return TYPES.ALERT;
-  if (duration > 2) return TYPES.WARN;
+  if (duration > 5) {
+    return TYPES.ALERT;
+  }
+
+  if (duration > 2) {
+    return TYPES.WARN;
+  }
 
   switch (command) {
     case "createProgram":
@@ -150,8 +155,13 @@ export const getFormat = (duration, command) => {
       return TYPES.DEPTH_STENCIL;
   }
 
-  if (command.startsWith("createTexture")) return TYPES.RESOURCES;
-  if (command.startsWith("uniform")) return TYPES.UNIFORMS;
+  if (command.startsWith("createTexture")) {
+    return TYPES.RESOURCES;
+  }
+
+  if (command.startsWith("uniform")) {
+    return TYPES.UNIFORMS;
+  }
 
   return TYPES.BASE;
 };

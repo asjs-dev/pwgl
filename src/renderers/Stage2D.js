@@ -230,7 +230,9 @@ export class Stage2D extends BatchRenderer {
 
     let i = -1;
 
-    while (++i < length) this._drawItem(children[i]);
+    while (++i < length) {
+      this._drawItem(children[i]);
+    }
   }
 
   /**
@@ -248,8 +250,9 @@ export class Stage2D extends BatchRenderer {
     const matrixBufferData = this.$matrixBuffer.data;
 
     if (itemParent) {
-      if (this._isMousePositionSet && image.interactive && image.isContainsPoint(this._mousePosition))
+      if (this._isMousePositionSet && image.interactive && image.isContainsPoint(this._mousePosition)) {
         this._eventTarget = image;
+      }
 
       arraySet(dataBufferData, image.colorCache, dataBufferId);
       arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
@@ -342,79 +345,75 @@ export class Stage2D extends BatchRenderer {
     const { useRepeatTextures } = this._config;
     const { maxTextureImageUnits } = Utils.INFO;
 
-    return Utils.GLSL.DEFINE.Z +
+    return `${Utils.GLSL.DEFINE.Z}` +
 
-    BASE_VERTEX_SHADER_ATTRIBUTES +
-    "in mat4x2 " +
-      "aE;" +
-    "in mat3x4 " +
-      "aD;" +
-    "in mat4 " +
-      "aB;" +
+    `${BASE_VERTEX_SHADER_ATTRIBUTES}` +
+    `in mat4x2 ` +
+      `aE;` +
+    `in mat3x4 ` +
+      `aD;` +
+    `in mat4 ` +
+      `aB;` +
 
-    BASE_VERTEX_SHADER_UNIFORMS +
+    `${BASE_VERTEX_SHADER_UNIFORMS}` +
 
-    "uniform vec2 " +
-      "uF[" + maxTextureImageUnits + "];" +
+    `uniform vec2 ` +
+      `uF[${maxTextureImageUnits}];` +
 
-    "out vec2 " +
-      "v0;" +
-    "flat out float " +
-      "v1;" +
-    "flat out vec4 " +
-      "v2," +
-      "v3," +
-      "v4" +
-    (useRepeatTextures
-      ? ",v5;"
-      : ";") +
+    `out vec2 ` +
+      `v0;` +
+    `flat out float ` +
+      `v1;` +
+    `flat out vec4 ` +
+      `v2,` +
+      `v3,` +
+      `v4` +
+    `${useRepeatTextures ? `,v5`: ``};` +
 
-    "vec2 clcQd(vec2 p){" +
-      "return mix(" + 
-        "mix(" + 
-          "aE[0]," + 
-          "aE[1]," + 
-          "p.x" + 
-        ")," + 
-        "mix(" + 
-          "aE[3]," + 
-          "aE[2]," + 
-          "p.x" + 
-        ")," + 
-        "p.y" + 
-      ");" +
-    "}" +
+    `vec2 clcQd(vec2 p){` +
+      `return mix(` + 
+        `mix(` + 
+          `aE[0],` + 
+          `aE[1],` + 
+          `p.x` + 
+        `),` + 
+        `mix(` + 
+          `aE[3],` + 
+          `aE[2],` + 
+          `p.x` + 
+        `),` + 
+        `p.y` + 
+      `);` +
+    `}` +
 
-    "void main(){" +
-      "vec2 " +
-        "tPs=clcQd(aA);" +
+    `void main(){` +
+      `vec2 ` +
+        `tPs=clcQd(aA);` +
 
-      "gl_Position=vec4(" + 
-        "mat3(aB[0].xy,0,aB[0].zw,0,aB[1].xy,1)*" + 
-        "vec3(tPs,1.)," + 
-        "1" + 
-      ")*vec4(1.,uA,1.,1.);" +
+      `gl_Position=vec4(` + 
+        `mat3(aB[0].xy,0,aB[0].zw,0,aB[1].xy,1)*` + 
+        `vec3(tPs,1.),` + 
+        `1` + 
+      `)*vec4(1.,uA,1.,1.);` +
 
-      "v0=(" + 
-          "mat3(aB[1].zw,0,aB[2].xy,0,aB[2].zw,1)*" + 
-          "vec3(" +
-            "mix(" + 
-              "tPs," + 
-              "aA," + 
-              "aD[1].w" + 
-            ")," +
-            "1." +
-          ")" + 
-        ").xy;" +
-      "v1=aD[1].x;" +
-      "v2.xy=aD[1].yz;" +
-      "v2.zw=v2.y>-1.?.5/uF[int(v2.y)]:Z.yy;" +
-      "v3=aB[3];" +
-      "v4=aD[0];" +
-      (useRepeatTextures
-        ? "v5=aD[2];"
-        : "") +
-    "}";
+      `v0=(` + 
+          `mat3(aB[1].zw,0,aB[2].xy,0,aB[2].zw,1)*` + 
+          `vec3(` +
+            `mix(` + 
+              `tPs,` + 
+              `aA,` + 
+              `aD[1].w` + 
+            `),` +
+            `1.` +
+          `)` + 
+        `).xy;` +
+      `v1=aD[1].x;` +
+      `v2.xy=aD[1].yz;` +
+      `v2.zw=v2.y>-1.?.5/uF[int(v2.y)]:Z.yy;` +
+      `v3=aB[3];` +
+      `v4=aD[0];` +
+      `${useRepeatTextures ? `v5=aD[2];` : ``}` +
+    `}`;
   }
 
   // prettier-ignore
@@ -427,127 +426,124 @@ export class Stage2D extends BatchRenderer {
     const { maxTextureImageUnits } = Utils.INFO;
     const { useRepeatTextures, useTint } = _config;
 
-    const getSimpleTexColor = (modCoordName) =>
-      "gTxC(v2.y,v3," + modCoordName + ")";
+    const getSimpleTexColor = (modCoordName) => `gTxC(v2.y,v3,${modCoordName})`;
 
-    return Utils.GLSL.DEFINE.Z +
-    Utils.GLSL.DEFINE.RADIANS_360 +
+    return `${Utils.GLSL.DEFINE.Z}` +
+    `${Utils.GLSL.DEFINE.RADIANS_360}` +
 
-    "in vec2 " +
-      "v0;" +
-    "flat in float " +
-      "v1;" +
-    "flat in vec4 " +
-      "v2," +
-      "v3," +
-      "v4" +
-      (useRepeatTextures
-        ? ",v5;"
-        : ";") +
+    `in vec2 ` +
+      `v0;` +
+    `flat in float ` +
+      `v1;` +
+    `flat in vec4 ` +
+      `v2,` +
+      `v3,` +
+      `v4` +
+      `${useRepeatTextures ? `,v5` : ``};` +
 
-    "uniform sampler2D " +
-      "uB[" + maxTextureImageUnits + "];" +
+    `uniform sampler2D ` +
+      `uB[${maxTextureImageUnits}];` +
 
-    "out vec4 " +
-      "oCl;" +
+    `out vec4 ` +
+      `oCl;` +
 
-    "vec4 gTxC(float i,vec4 s,vec2 m){" +
-      "vec2 " + 
-        "sxy=s.xy," +
-        "szw=s.zw," +
-        "ofs=szw*m," +
-        "cp=clamp(" +
-          "sxy+ofs," +
-          "sxy+v2.zw," +
-          "sxy+szw-v2.zw" +
-        ");" +
-      Array(maxTextureImageUnits).fill().map((v, i) => 
-      "if(i<" + (i + 1) + ".)" + 
-        "return texture(uB[" + i + "],cp);").join("") +
-      "return Z.yyyy;" +
-    "}" +
+    `vec4 gTxC(float i,vec4 s,vec2 m){` +
+      `vec2 ` + 
+        `sxy=s.xy,` +
+        `szw=s.zw,` +
+        `ofs=szw*m,` +
+        `cp=clamp(` +
+          `sxy+ofs,` +
+          `sxy+v2.zw,` +
+          `sxy+szw-v2.zw` +
+        `);` +
+      `${Array(maxTextureImageUnits).fill().map((v, i) => 
+      `if(i<${i + 1}.)` + 
+        `return texture(uB[${i}],cp);`).join(``)}` +
+      `return Z.yyyy;` +
+    `}` +
 
-    "float cs(float a,float b,float v){" +
-      "v=abs(v);" +
-      "float " + 
-        "t=-2.*v+2.;" +
-      "v=mix(2.*v*v,1.-t*t*.5,step(.5,v));" +
-      "return a*(1.-v)+b*v;" +
-    "}" +
+    `float cs(float a,float b,float v){` +
+      `v=abs(v);` +
+      `float ` + 
+        `t=-2.*v+2.;` +
+      `v=mix(2.*v*v,1.-t*t*.5,step(.5,v));` +
+      `return a*(1.-v)+b*v;` +
+    `}` +
 
-    (useRepeatTextures
-      ? Utils.GLSL.RANDOM2 +
-        "vec4 gCB(vec2 st){" +
-          "vec2 " +
-            "uv=v0;" +
+    `${useRepeatTextures
+      ? `${Utils.GLSL.RANDOM2}` +
+        `vec4 gCB(vec2 st){` +
+          `vec2 ` +
+            `uv=v0;` +
 
-          "float " +
-            "rnd=rand2(floor(uv+st)/100.)," +
-            "rndDg=rnd*RADIANS_360*v5.x;" +
+          `float ` +
+            `rnd=rand2(floor(uv+st)/100.),` +
+            `rndDg=rnd*RADIANS_360*v5.x;` +
 
-          "if(rndDg>0.){" +
-            "vec2 " +
-              "rt=vec2(sin(rndDg),cos(rndDg));" +
-            "uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);" +
-          "}" +
+          `if(rndDg>0.){` +
+            `vec2 ` +
+              `rt=vec2(sin(rndDg),cos(rndDg));` +
+            `uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);` +
+          `}` +
 
-          "return " + getSimpleTexColor("mod(uv,Z.yy)") + ";" +
-        "}" +
+          `return ${getSimpleTexColor(`mod(uv,Z.yy)`)};` +
+        `}` +
 
-        "float gRCB(vec2 st,vec2 uv){" +
-          "float " +
-            "rnd=rand2(floor(v0+st)/100.);" +
-          "return (1.-(v5.w*rnd-v5.w*.5)*v5.y)*" +
-            "cs(0.,1.,1.-st.x-uv.x)*cs(0.,1.,1.-st.y-uv.y);" +
-        "}"
-      : "") +
+        `float gRCB(vec2 st,vec2 uv){` +
+          `float ` +
+            `rnd=rand2(floor(v0+st)/100.);` +
+          `return (1.-(v5.w*rnd-v5.w*.5)*v5.y)*` +
+            `cs(0.,1.,1.-st.x-uv.x)*cs(0.,1.,1.-st.y-uv.y);` +
+        `}`
+      : ``}` +
 
-    "void main(){" +
-      "if(v2.y>-1.){" +
-        "vec2 " +
-          "uv=mod(v0,Z.yy);" +
+    `void main(){` +
+      `if(v2.y>-1.){` +
+        `vec2 ` +
+          `uv=mod(v0,Z.yy);` +
 
-        (useRepeatTextures
-          ? "if(v5.x>0.||v5.y>0.){" +
-              "vec4 " +
-                "rc=vec4(" + 
-                  "gRCB(Z.xx,uv)," +
-                  "gRCB(Z.yx,uv)," +
-                  "gRCB(Z.xy,uv)," +
-                  "gRCB(Z.yy,uv)" +
-                ");" +
-              "oCl=mix(" +
-                "gCB(Z.xy)," +
-                "clamp(" +
-                  "gCB(Z.xx)*rc.x+" +
-                  "gCB(Z.yx)*rc.y+" +
-                  "gCB(Z.xy)*rc.z+" +
-                  "gCB(Z.yy)*rc.w" +
-                ",0.,1.)," +
-                "vec4(v5.z)" + 
-              ");" +
-              "oCl.a=mix(" + 
-                "oCl.a," + 
-                "clamp(" +
-                  "oCl.a*(" +
-                    "rc.x+" +
-                    "rc.y+" +
-                    "rc.z+" +
-                    "rc.w" +
-                  "),0.,1.)," + 
-                  "v5.y" +
-                ");" +
-            "}else oCl=" + getSimpleTexColor("uv") + ";"
-          : "oCl=" + getSimpleTexColor("uv") + ";") +
-      "}else oCl+=1.;" +
+        `${useRepeatTextures
+          ? `if(v5.x>0.||v5.y>0.){` +
+              `vec4 ` +
+                `rc=vec4(` + 
+                  `gRCB(Z.xx,uv),` +
+                  `gRCB(Z.yx,uv),` +
+                  `gRCB(Z.xy,uv),` +
+                  `gRCB(Z.yy,uv)` +
+                `);` +
+              `oCl=mix(` +
+                `gCB(Z.xy),` +
+                `clamp(` +
+                  `gCB(Z.xx)*rc.x+` +
+                  `gCB(Z.yx)*rc.y+` +
+                  `gCB(Z.xy)*rc.z+` +
+                  `gCB(Z.yy)*rc.w` +
+                `,0.,1.),` +
+                `vec4(v5.z)` + 
+              `);` +
+              `oCl.a=mix(` + 
+                `oCl.a,` + 
+                `clamp(` +
+                  `oCl.a*(` +
+                    `rc.x+` +
+                    `rc.y+` +
+                    `rc.z+` +
+                    `rc.w` +
+                  `),0.,1.),` + 
+                  `v5.y` +
+                `);` +
+            `}else `
+          : ``}oCl=${getSimpleTexColor(`uv`)};` +
+      `}else oCl+=1.;` +
 
-      "oCl.a*=v1;" +
+      `oCl.a*=v1;` +
 
-      "if(oCl.a<=0.)discard;" +
+      `if(oCl.a<=0.)discard;` +
 
-      (useTint
-        ? TINT_TYPE_SHADER("v2.x", "oCl", "v4")
-        : "") +
-    "}";
+      `${useTint
+        ? TINT_TYPE_SHADER(`v2.x`, `oCl`, `v4`)
+        : ``}` +
+    `}`;
   }
 }

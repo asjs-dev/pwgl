@@ -39,7 +39,9 @@ export class Buffer {
     this._offset = cols * 4;
     this._divisor = divisor;
     this._dataType = dataType;
-    if (this._type === Const.STATIC_DRAW) this._stride = this._offset = 0;
+    if (this._type === Const.STATIC_DRAW) {
+      this._stride = this._offset = 0;
+    }
   }
 
   /**

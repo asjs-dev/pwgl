@@ -104,8 +104,9 @@ export class FilterRenderer extends BaseRenderer {
 
       filterTexture && this.$useTextureAt(filterTexture, $locations.uH, 1);
 
-      if (isLast) framebuffer ? this._attachFramebufferAndClearFv(framebuffer) : $gl.uniform1f($locations.uA, 1);
-      else if (useFilter) {
+      if (isLast) {
+        framebuffer ? this._attachFramebufferAndClearFv(framebuffer) : $gl.uniform1f($locations.uA, 1);
+      } else if (useFilter) {
         filterFramebuffer = this._framebuffers[i & 1];
         this._attachFramebufferAndClearFv(filterFramebuffer);
       }
@@ -134,16 +135,16 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return BASE_VERTEX_SHADER_INITIALIZATION +
+    return `${BASE_VERTEX_SHADER_INITIALIZATION}` +
 
-    "out vec4 " +
-      "v0;" +
+    `out vec4 ` +
+      `v0;` +
 
-    "void main(){" +
-      BASE_VERTEX_SHADER +
+    `void main(){` +
+      `${BASE_VERTEX_SHADER}` +
       
-      "v0=vec4(pos.xy," + BASE_VERTEX_SHADER_POSITION + ");" +
-    "}";
+      `v0=vec4(pos.xy,${BASE_VERTEX_SHADER_POSITION});` +
+    `}`;
   }
 
   // prettier-ignore
@@ -152,78 +153,80 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    return Utils.GLSL.DEFINE.Z +
-    Utils.GLSL.DEFINE.RADIANS_360 +
+    return `${Utils.GLSL.DEFINE.Z}` +
+    `${Utils.GLSL.DEFINE.RADIANS_360}` +
     
-    "in vec4 " +
-      "v0;" +
+    `in vec4 ` +
+      `v0;` +
       
-    "uniform float " + 
-      "uJ[10];" +
-    "uniform int " +
-      "uI;" +
-    "uniform vec3 " +
-      "uF;" +
-    "uniform mat3 " +
-      "uK;" +
-    "uniform mat2x4 " +
-      "uL;" +
-    "uniform sampler2D " +
-      "uB," +
-      "uH;" +
+    `uniform float ` + 
+      `uJ[10];` +
+    `uniform int ` +
+      `uI;` +
+    `uniform vec3 ` +
+      `uF;` +
+    `uniform mat3 ` +
+      `uK;` +
+    `uniform mat2x4 ` +
+      `uL;` +
+    `uniform sampler2D ` +
+      `uB,` +
+      `uH;` +
 
-    "out vec4 " +
-      "oCl;" +
+    `out vec4 ` +
+      `oCl;` +
 
-    Utils.GLSL.RANDOM +
+    `${Utils.GLSL.RANDOM}` +
     
-    "float gs(vec3 c){" + 
-      "return .3*c.r+.59*c.g+.11*c.b;" +
-    "}" +
+    `float gs(vec3 c){` + 
+      `return .3*c.r+.59*c.g+.11*c.b;` +
+    `}` +
 
-    "void main(){" +
-      "oCl=texture(uB,v0.zw);" +
+    `void main(){` +
+      `oCl=texture(uB,v0.zw);` +
 
-      "vec4 " +
-        "tmpCl=oCl;" +
+      `vec4 ` +
+        `tmpCl=oCl;` +
 
-      "float " +
-        "v=uJ[0];" +
+      `float ` +
+        `v=uJ[0];` +
 
-      "vec2 " + 
-        "ts=floor(uF.xy)," +
-        "vol=v/ts;" +
+      `vec2 ` + 
+        `ts=floor(uF.xy),` +
+        `vol=v/ts;` +
       
-      "ivec2 " +
-        "f=ivec2(floor(v0.zw*ts));" +
+      `ivec2 ` +
+        `f=ivec2(floor(v0.zw*ts));` +
     
-      this.filters.reduce((acc, item) => {
+      `${this.filters.reduce((acc, item) => {
         let index = acc.findIndex((record) => record.GLSL === item.GLSL);
-        if (index < 0) index = acc.push(item) - 1;
+        if (index < 0) {
+          index = acc.push(item) - 1;
+        }
         item.uniqueId = index;
         return acc;
-      }, []).map((item) => "if(uI==" + item.uniqueId + "){" + item.GLSL + "}").join("else ") + 
+      }, []).map((item) => `if(uI==${item.uniqueId}){${item.GLSL}}`).join("else ")}` + 
 
-      "vec2 d=abs(v0.zw-vec2(uJ[4],uJ[5]));" +
+      `vec2 d=abs(v0.zw-vec2(uJ[4],uJ[5]));` +
       
-      "float " + 
-        "p=mix(2.,16.,uJ[8])," +
-        "ds=mix(pow(pow(d.x,p)+pow(d.y,p),1./p),max(d.x,d.y),smoothstep(.7,1.,uJ[5]))," +
-        "dst=mix(" +
-          "1.," +
-          "clamp(" +
-            "pow(" +
-              "clamp(ds,0.,1.)/uJ[7]," +
-              "uJ[9]" +
-            ")," +
-            "0.," +
-            "1." +
-          ")," +
-          "uJ[3]" +
-        ")," +
-        "mA=mix(dst,1.-dst,uJ[6]);" +
+      `float ` + 
+        `p=mix(2.,16.,uJ[8]),` +
+        `ds=mix(pow(pow(d.x,p)+pow(d.y,p),1./p),max(d.x,d.y),smoothstep(.7,1.,uJ[5])),` +
+        `dst=mix(` +
+          `1.,` +
+          `clamp(` +
+            `pow(` +
+              `clamp(ds,0.,1.)/uJ[7],` +
+              `uJ[9]` +
+            `),` +
+            `0.,` +
+            `1.` +
+          `),` +
+          `uJ[3]` +
+        `),` +
+        `mA=mix(dst,1.-dst,uJ[6]);` +
 
-        "oCl=mix(tmpCl,oCl,mA*uJ[2]);" +
-    "}";
+        `oCl=mix(tmpCl,oCl,mA*uJ[2]);` +
+    `}`;
   }
 }

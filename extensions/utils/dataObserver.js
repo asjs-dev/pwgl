@@ -23,7 +23,9 @@ export const createDataObserver = (defaultState = {}) => {
    * @returns {Object|null} The updated state and previous state, or null if no changes
    */
   const flush = () => {
-    if (!dirty) return null;
+    if (!dirty) {
+      return null;
+    }
 
     const stateClone = clone(state),
       prevStateClone = prevState;

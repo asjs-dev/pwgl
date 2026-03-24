@@ -5,9 +5,7 @@ const _getAllProperties = (obj) => {
     const props = Object.getOwnPropertyNames(curr);
     props.forEach((prop) => {
       const desc = Object.getOwnPropertyDescriptor(curr, prop);
-      allProps.indexOf(prop) === -1 &&
-        ((desc.set && desc.get) || desc.value) &&
-        allProps.push(prop);
+      allProps.indexOf(prop) === -1 && ((desc.set && desc.get) || desc.value) && allProps.push(prop);
     });
   } while ((curr = Object.getPrototypeOf(curr)));
 
@@ -34,8 +32,9 @@ export const Parser = {
           lowerKey.indexOf("updateid") < 0 &&
           lowerKey.indexOf("cache") < 0 &&
           (key.toUpperCase() !== key || parseInt(key) == key)
-        )
+        ) {
           result[key] = valType === "object" ? Parser.get(val, stack) : val;
+        }
       }
     });
     return result;
@@ -55,15 +54,16 @@ export const Parser = {
 
     if (result) {
       for (let key in obj) {
-        if (key === "_type_") continue;
+        if (key === "_type_") {
+          continue;
+        }
 
         const val = obj[key],
-          subResult =
-            typeof val === "object"
-              ? Parser.create(val, lightRenderer, metaData)
-              : val;
+          subResult = typeof val === "object" ? Parser.create(val, lightRenderer, metaData) : val;
 
-        if (subResult !== null) result[key] = subResult;
+        if (subResult !== null) {
+          result[key] = subResult;
+        }
       }
     }
     return result;

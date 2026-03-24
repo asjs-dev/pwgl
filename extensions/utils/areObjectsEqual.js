@@ -5,16 +5,24 @@
  * @returns {boolean} True if the objects are equal, otherwise false
  */
 export const areObjectsEqual = (a, b) => {
-  if (a === b) return true;
+  if (a === b) {
+    return true;
+  }
 
-  if (typeof a !== typeof b) return false;
+  if (typeof a !== typeof b) {
+    return false;
+  }
 
-  if (typeof a !== "object" || a === null || b === null) return false;
+  if (typeof a !== "object" || a === null || b === null) {
+    return false;
+  }
 
   const aProps = Object.getOwnPropertyNames(a);
   const bProps = Object.getOwnPropertyNames(b);
 
-  if (aProps.length !== bProps.length) return false;
+  if (aProps.length !== bProps.length) {
+    return false;
+  }
 
   let propName,
     aPropValue,
@@ -28,9 +36,13 @@ export const areObjectsEqual = (a, b) => {
     if (aPropValue !== bPropValue) {
       subeq = false;
 
-      if (typeof aPropValue === "object" && typeof bPropValue === "object")
+      if (typeof aPropValue === "object" && typeof bPropValue === "object") {
         subeq = areObjectsEqual(aPropValue, bPropValue);
-      if (!subeq) return false;
+      }
+
+      if (!subeq) {
+        return false;
+      }
     }
   }
   return true;

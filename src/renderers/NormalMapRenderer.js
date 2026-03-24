@@ -63,16 +63,16 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return BASE_VERTEX_SHADER_INITIALIZATION +
+    return `${BASE_VERTEX_SHADER_INITIALIZATION}` +
 
-    "out vec2 " +
-      "v0;" +
+    `out vec2 ` +
+      `v0;` +
 
-    "void main(){" +
-      BASE_VERTEX_SHADER +
+    `void main(){` +
+      `${BASE_VERTEX_SHADER}` +
       
-      "v0=" + BASE_VERTEX_SHADER_POSITION + ";" +
-    "}";
+      `v0=${BASE_VERTEX_SHADER_POSITION};` +
+    `}`;
   }
 
   // prettier-ignore
@@ -81,39 +81,39 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    return Utils.GLSL.DEFINE.Z +
-    Utils.GLSL.DEFINE.HEIGHT +
+    return `${Utils.GLSL.DEFINE.Z}` +
+    `${Utils.GLSL.DEFINE.HEIGHT}` +
     
-    "in vec2 " +
-      "v0;" +
+    `in vec2 ` +
+      `v0;` +
 
-    "uniform vec2 " +
-      "uF;" +
-    "uniform sampler2D " +
-      "uB;" +
+    `uniform vec2 ` +
+      `uF;` +
+    `uniform sampler2D ` +
+      `uB;` +
 
-    "out vec4 " +
-      "oCl;" +
+    `out vec4 ` +
+      `oCl;` +
 
-    "void main(){" +
-      "vec2 " +
-        "ts=floor(uF)," +
-        "p=1./ts," +
-        "p0=floor(v0.xy*ts);" +
+    `void main(){` +
+      `vec2 ` +
+        `ts=floor(uF),` +
+        `p=1./ts,` +
+        `p0=floor(v0.xy*ts);` +
 
-      "float " + 
-        "h0=texture(uB,p0*p).g," +
-        "h1=texture(uB,(p0+Z.yx)*p).g," +
-        "h2=texture(uB,(p0+Z.xy)*p).g;" +
+      `float ` + 
+        `h0=texture(uB,p0*p).g,` +
+        `h1=texture(uB,(p0+Z.yx)*p).g,` +
+        `h2=texture(uB,(p0+Z.xy)*p).g;` +
 
-      "vec3 " + 
-        "nm=normalize(" + 
-          "cross(" + 
-            "vec3(1,0,h1-h0)," + 
-            "vec3(0,1,h2-h0)" + 
-          "))*HEIGHT*Z.yzy;" +
+      `vec3 ` + 
+        `nm=normalize(` + 
+          `cross(` + 
+            `vec3(1,0,h1-h0),` + 
+            `vec3(0,1,h2-h0)` + 
+          `))*HEIGHT*Z.yzy;` +
 
-      "oCl=vec4(nm*.5+.5,1);" +
-    "}";
+      `oCl=vec4(nm*.5+.5,1);` +
+    `}`;
   }
 }

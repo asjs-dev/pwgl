@@ -65,7 +65,9 @@ export class Container extends Item {
    * Emptying the container
    */
   empty() {
-    while (this.children.length) this.removeChildAt(0);
+    while (this.children.length) {
+      this.removeChildAt(0);
+    }
   }
 
   /**

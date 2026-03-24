@@ -13,7 +13,9 @@ export class BaseAudio {
   }
   set volume(volume) {
     this._volume = volume;
-    if (this.$nodesConnected) this.$gainNode.gain.value = volume;
+    if (this.$nodesConnected) {
+      this.$gainNode.gain.value = volume;
+    }
   }
 
   /**
@@ -25,7 +27,9 @@ export class BaseAudio {
   }
   set pan(pan) {
     this._pan = pan;
-    if (this.$nodesConnected) this.$panNode.pan.value = pan;
+    if (this.$nodesConnected) {
+      this.$panNode.pan.value = pan;
+    }
   }
 
   /**
@@ -37,7 +41,9 @@ export class BaseAudio {
   }
   set reverbDelayTime(delayTime) {
     this._reverbDelayTime = delayTime;
-    if (this.$nodesConnected) this.$delayNode.delayTime.value = delayTime;
+    if (this.$nodesConnected) {
+      this.$delayNode.delayTime.value = delayTime;
+    }
   }
 
   /**
@@ -49,7 +55,9 @@ export class BaseAudio {
   }
   set reverbFeedbackGain(feedbackGain) {
     this._reverbFeedbackGain = feedbackGain;
-    if (this.$nodesConnected) this.$feedbackGainNode.gain.value = feedbackGain;
+    if (this.$nodesConnected) {
+      this.$feedbackGainNode.gain.value = feedbackGain;
+    }
   }
 
   /**
@@ -61,7 +69,9 @@ export class BaseAudio {
   }
   set lowPassFilterFrequency(frequency) {
     this._lowPassFilterFrequency = frequency;
-    if (this.$nodesConnected) this.$lowPassNode.frequency.value = frequency;
+    if (this.$nodesConnected) {
+      this.$lowPassNode.frequency.value = frequency;
+    }
   }
 
   /**
@@ -73,7 +83,9 @@ export class BaseAudio {
   }
   set highPassFilterFrequency(frequency) {
     this._highPassFilterFrequency = frequency;
-    if (this.$nodesConnected) this.$highPassNode.frequency.value = frequency;
+    if (this.$nodesConnected) {
+      this.$highPassNode.frequency.value = frequency;
+    }
   }
 
   /**

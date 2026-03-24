@@ -116,8 +116,9 @@ export class AnimatedImage extends Image {
     if (ellapsedTime > this._currentFrameLength) {
       this._currentRenderTime = renderTime;
       this._frame += ~~(ellapsedTime / this._currentFrameLength);
-      if (this._frame >= this._frames.length) this._frame = 0;
-
+      if (this._frame >= this._frames.length) {
+        this._frame = 0;
+      }
       this._useTextureFrame();
     }
   }

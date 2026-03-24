@@ -58,12 +58,13 @@ export class PressState {
    * Updates the press state, clearing any completed states
    */
   update() {
-    for (let key in this._state)
+    for (let key in this._state) {
       if (this._state[key]) {
         delete this._state[key];
         delete this._duration[key];
         delete this._timestamp[key];
       }
+    }
   }
 
   $setDownState(id) {

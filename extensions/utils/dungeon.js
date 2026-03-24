@@ -1,3 +1,4 @@
+import { clone } from "./clone";
 import { areTwoRectsCollided } from "./collisionDetection";
 import { getRandomFrom } from "./getRandomFrom";
 import { coordToVector, vectorToCoord } from "./gridMapping";
@@ -29,7 +30,9 @@ export const generateDungeon = (iterations, sampleRooms) => {
     const direction = getRandomFrom(directions);
     const randomRoom = clone(getRandomFrom(sampleRooms));
 
-    if (Math.random() < 0.5) randomRoom.data.reverse();
+    if (Math.random() < 0.5) {
+      randomRoom.data.reverse();
+    }
 
     const room = { ...randomRoom, x: 0, y: 0 };
     let attempts = 100;
@@ -65,7 +68,9 @@ export const generateDungeon = (iterations, sampleRooms) => {
         }
       }
 
-      if (!collision) break;
+      if (!collision) {
+        break;
+      }
     }
 
     minX = Math.min(room.x, minX);

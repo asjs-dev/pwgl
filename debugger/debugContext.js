@@ -34,7 +34,7 @@ const _captureStackFormatted = () => "\n\n<i>Stack trace:\n| " +
     .map((v) => {
       const splitted = v.trim().slice(3).split(" (");
       return splitted[1] 
-        ? "<a href=\"" + splitted[1].slice(0, -1) + "\" target=\"_blank\">" + splitted[0] + "</a>" 
+        ? `<a href="${splitted[1].slice(0, -1)}" target="_blank">${splitted[0]}</a>` 
         : v;
     })
     .join("\n| ") + "</i>";
@@ -111,7 +111,9 @@ export const debugContext = (context, options = {}) => {
           sumFrameDurationMS += delta;
           currentTimestamp = now;
 
-          if (length > 0) logsForFrame[length - 1].currentCallDurationMS = delta;
+          if (length > 0) {
+            logsForFrame[length - 1].currentCallDurationMS = delta;
+          }
 
           logsForFrame.push({
             stackTrace: convertCallStack(),

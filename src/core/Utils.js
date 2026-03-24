@@ -189,10 +189,10 @@ export const Utils = {
           "Program info: " + gl.getProgramInfoLog(program),
           "Validate status: " + gl.getProgramParameter(program, Const.VALIDATE_STATUS),
           ...(vertexShaderInfo
-            ? ["", "Vertex shader info: " + vertexShaderInfo, "Vertex shader: " + vertexShaderSource]
+            ? ["", `Vertex shader info: ${vertexShaderInfo}`, `Vertex shader: ${vertexShaderSource}`]
             : ""),
           ...(fragmentShaderInfo
-            ? ["", "Fragment shader info: " + fragmentShaderInfo, "Fragment shader: " + fragmentShaderSource]
+            ? ["", `Fragment shader info: ${fragmentShaderInfo}`, `Fragment shader: ${fragmentShaderSource}`]
             : ""),
         ].join("\n"),
       );
@@ -234,7 +234,9 @@ const _gl = document.createElement("canvas").getContext("webgl2");
 if (_gl) {
   for (let key in _gl) {
     const value = _gl[key];
-    if (typeof value === "number" && key === key.toUpperCase()) Const[key] = value;
+    if (typeof value === "number" && key === key.toUpperCase()) {
+      Const[key] = value;
+    }
   }
 
   Utils.INFO.isWebGl2Supported = true;

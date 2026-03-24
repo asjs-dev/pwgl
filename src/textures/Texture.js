@@ -89,7 +89,9 @@ export class Texture extends TextureInfo {
       this.$updated = this._loaded = false;
       this._currentRenderTime = renderTime;
       this.useActiveTexture(gl, id);
-    } else if (this._currentActiveId !== id || forceBind) this.bindActiveTexture(gl, id);
+    } else if (this._currentActiveId !== id || forceBind) {
+      this.bindActiveTexture(gl, id);
+    }
   }
 
   /**

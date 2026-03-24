@@ -14,7 +14,9 @@ export const distanceBetweenPointAndLine = (p, l) => {
   const useAP = dot(AB, AP) < 0;
   const useBP = dot(AB, BP) > 0;
 
-  if (!useAP && !useBP) return Math.abs(cross(AB, AP)) / Math.hypot(AB.x, AB.y);
+  if (!useAP && !useBP) {
+    return Math.abs(cross(AB, AP)) / Math.hypot(AB.x, AB.y);
+  }
 
   const P = useAP ? AP : BP;
   return Math.hypot(P.x, P.y);
@@ -41,11 +43,12 @@ export const areTwoLinesCollided = (lineA, lineB) => {
     const lambda = (c * e + f * g) / denom;
     const gamma = (h * e + b * g) / denom;
 
-    if (lambda > 0 && lambda < 1 && gamma > 0 && gamma < 1)
+    if (lambda > 0 && lambda < 1 && gamma > 0 && gamma < 1) {
       return {
         lambda: lambda,
         gamma: gamma,
       };
+    }
   }
 };
 
