@@ -35,7 +35,7 @@ export default defineConfig({
       values: replaceMap,
     }),
     copyFiles({
-      "dist/pwgl.debugger.umd.js": ["docs/assets/pwgl.debugger.umd.js", "docs/assets/pwgl.debugger.min.js"],
+      "dist/pwgl.debugger.umd.js": "docs/assets/pwgl.debugger.umd.js",
       "dist/pwgl.debugger.es.js": "docs/assets/pwgl.debugger.es.js",
     }),
   ],
