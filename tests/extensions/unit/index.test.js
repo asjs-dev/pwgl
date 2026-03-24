@@ -1,0 +1,39 @@
+import { describe, expect, it, vi } from "vitest";
+import { installPWGLMock } from "./helpers/pwglExtensionMocks";
+
+describe("extensions index", () => {
+  it("registers PWGLExtensions on window", async () => {
+    vi.resetModules();
+    globalThis.window = globalThis;
+    const PWGL = installPWGLMock();
+    globalThis.PWGL = PWGL;
+    globalThis.AGLExtensions = undefined;
+    Object.defineProperty(globalThis, "navigator", {
+      value: { getGamepads: () => [] },
+      configurable: true,
+      writable: true,
+    });
+    globalThis.requestAnimationFrame = (cb) => cb(0);
+    globalThis.cancelAnimationFrame = () => {};
+    globalThis.fetch = vi.fn();
+    globalThis.window.AudioContext = vi.fn(() => ({
+      createGain: () => ({ connect: () => {}, disconnect: () => {}, gain: { value: 0 } }),
+      createStereoPanner: () => ({ connect: () => {}, disconnect: () => {}, pan: { value: 0 } }),
+      createDelay: () => ({ connect: () => {}, disconnect: () => {}, delayTime: { value: 0 } }),
+      createBiquadFilter: () => ({ connect: () => {}, disconnect: () => {}, frequency: { value: 0 }, type: "" }),
+      destination: {},
+    }));
+    globalThis.window.webkitAudioContext = globalThis.window.AudioContext;
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    await import("../../../extensions/index.js");
+
+    expect(window.PWGLExtensions).toBeDefined();
+    expect(window.PWGLExtensions.controls.PressState).toBeDefined();
+    expect(window.PWGLExtensions.audio.fadeAudioVolume).toBeDefined();
+    expect(window.PWGLExtensions.utils.gridMapping.coordToVector(1, 2, 3)).toBe(7);
+    expect(consoleSpy).toHaveBeenCalled();
+
+    consoleSpy.mockRestore();
+  });
+});

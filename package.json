@@ -27,12 +27,15 @@
     "build:debugger": "vite build --config debugger/vite.config.js",
     "build:legacy": "node scripts/build-pwgl.js",
     "docs": "node scripts/build-docs.js",
-    "build:all": "npm run build:pwgl && npm run build:ext && npm run build:debugger && npm run docs"
+    "build:all": "npm run build:pwgl && npm run build:ext && npm run build:debugger && npm run docs",
+    "test": "vitest",
+    "test:run": "vitest run"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.3",
     "jsdoc": "^4.0.2",
     "terser": "^5.46.1",
-    "vite": "^7.3.1"
+    "vite": "^7.3.1",
+    "vitest": "^3.2.4"
   }
 }
