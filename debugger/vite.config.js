@@ -20,6 +20,13 @@ export default defineConfig({
       formats: ["es", "umd"],
     },
     minify: "terser",
+    terserOptions: {
+      mangle: {
+        properties: {
+          regex: /^_/,
+        },
+      },
+    },
     emptyOutDir: false,
   },
   plugins: [
