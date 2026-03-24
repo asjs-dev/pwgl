@@ -23,8 +23,8 @@ export const enterFrame = (callback, fpsLimit = 0) => {
   };
 
   const updateWithLimit = () => {
-    const now = Date.now();
-    const diff = now - then;
+    const now = Date.now(),
+      diff = now - then;
     if (diff >= correctedMS) {
       correctedMS = 2 * maxMS - diff;
       then = now;

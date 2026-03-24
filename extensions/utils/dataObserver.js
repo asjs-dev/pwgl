@@ -7,8 +7,8 @@ import { clone } from "./clone";
  * @property {function} flush Flush changes and get the updated state
  */
 export const createDataObserver = (defaultState = {}) => {
-  let dirty = false;
-  let prevState = clone(defaultState);
+  let dirty = false,
+    prevState = clone(defaultState);
 
   const state = new Proxy(defaultState, {
     set(target, prop, value) {
@@ -25,8 +25,8 @@ export const createDataObserver = (defaultState = {}) => {
   const flush = () => {
     if (!dirty) return null;
 
-    const stateClone = clone(state);
-    const prevStateClone = prevState;
+    const stateClone = clone(state),
+      prevStateClone = prevState;
 
     prevState = stateClone;
     dirty = false;

@@ -259,8 +259,8 @@ export class BaseRenderer {
   _clear() {
     const gl = this.$gl,
       color = this.clearColor;
-    this.$gl.clearColor(color.r, color.g, color.b, color.a);
-    this.$gl.clear(Const.COLOR_BUFFER_BIT);
+    gl.clearColor(color.r, color.g, color.b, color.a);
+    gl.clear(Const.COLOR_BUFFER_BIT);
   }
 
   /**

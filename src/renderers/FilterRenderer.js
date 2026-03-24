@@ -1,13 +1,13 @@
-import { BaseRenderer } from "./BaseRenderer";
+import { noop } from "../../extensions/utils/noop";
 import { Utils } from "../core/Utils";
-import { Framebuffer } from "../textures/Framebuffer";
 import { BlendMode } from "../rendering/BlendMode";
+import { Framebuffer } from "../textures/Framebuffer";
 import {
   BASE_VERTEX_SHADER,
   BASE_VERTEX_SHADER_INITIALIZATION,
   BASE_VERTEX_SHADER_POSITION,
 } from "../utils/shaderUtils";
-import { noop } from "../../extensions/utils/noop";
+import { BaseRenderer } from "./BaseRenderer";
 
 /**
  * @typedef {Object} FilterRendererConfig

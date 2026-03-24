@@ -1,8 +1,8 @@
-import { BaseKernelFilter } from "./BaseKernelFilter";
+import { BaseFilter } from "./BaseFilter";
 
 /**
  * Saturate filter
- * @extends {BaseKernelFilter}
+ * @extends {BaseFilter}
  */
 export class SaturateFilter extends BaseFilter {
   get GLSL() {

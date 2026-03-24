@@ -106,7 +106,7 @@ export class Texture extends TextureInfo {
     if (sourceWidth * sourceHeight) {
       this.$width = sourceWidth;
       this.$height = sourceHeight;
-      this.$renderSource = this._source;
+      this.$renderSource = source;
       return this._loaded = this.$updated = true;
     }
   }
