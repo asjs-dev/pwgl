@@ -1,8 +1,8 @@
-import { Buffer } from "../core/Buffer";
-import { Utils, Const } from "../core/Utils";
-import { Color } from "../attributes/Color";
-import { Framebuffer } from "../textures/Framebuffer";
 import { noop } from "../../extensions/utils/noop";
+import { Color } from "../attributes/Color";
+import { Buffer } from "../core/Buffer";
+import { Const, Utils } from "../core/Utils";
+import { Framebuffer } from "../textures/Framebuffer";
 
 /**
  * @typedef {Object} BaseRendererConfig
@@ -158,13 +158,7 @@ export class BaseRenderer {
    * @ignore
    */
   $drawInstanced(count) {
-    this.$gl.drawElementsInstanced(
-      Const.TRIANGLE_STRIP,
-      4,
-      Const.UNSIGNED_SHORT,
-      0,
-      count,
-    );
+    this.$gl.drawElementsInstanced(Const.TRIANGLE_STRIP, 4, Const.UNSIGNED_SHORT, 0, count);
   }
 
   /**
@@ -174,10 +168,7 @@ export class BaseRenderer {
    * @ignore
    */
   $useTextureAt(texture, location, index, forceBind) {
-    this.$gl.uniform1i(
-      location,
-      this.context.useTextureAt(texture, index, this.$renderTime, forceBind),
-    );
+    this.$gl.uniform1i(location, this.context.useTextureAt(texture, index, this.$renderTime, forceBind));
   }
 
   /**
@@ -186,29 +177,25 @@ export class BaseRenderer {
    * @ignore
    */
   $useTexture(texture, location, forceBind) {
-    this.$gl.uniform1i(
-      location,
-      this.context.useTexture(texture, this.$renderTime, forceBind),
-    );
+    this.$gl.uniform1i(location, this.context.useTexture(texture, this.$renderTime, forceBind));
   }
 
   /**
    * @ignore
    */
   $uploadBuffers() {
-    const gl = this.$gl;
-    this._positionBuffer.upload(gl);
-    this._elementArrayBuffer.upload(gl);
+    const { $gl } = this;
+    this._positionBuffer.upload($gl);
+    this._elementArrayBuffer.upload($gl);
   }
 
   /**
    * @ignore
    */
   $createBuffers() {
-    const gl = this.$gl,
-      locations = this.$locations;
-    this._elementArrayBuffer.create(gl, locations);
-    this._positionBuffer.create(gl, locations);
+    const { $gl, $locations } = this;
+    this._elementArrayBuffer.create($gl, $locations);
+    this._positionBuffer.create($gl, $locations);
   }
 
   /**
@@ -236,13 +223,10 @@ export class BaseRenderer {
   _switchToProgram() {
     this.$gl = this.context.gl;
 
-    const context = this.context,
-      contextId = context.contextId;
+    const { context } = this;
+    const { contextId } = context;
 
-    if (
-      this._currentContextId !== contextId ||
-      this._currentRendererId !== this._rendererId
-    ) {
+    if (this._currentContextId !== contextId || this._currentRendererId !== this._rendererId) {
       this._currentContextId = contextId;
       this._currentRendererId = this._rendererId;
       this._buildProgram();
@@ -257,32 +241,27 @@ export class BaseRenderer {
    * @ignore
    */
   _clear() {
-    const gl = this.$gl,
-      color = this.clearColor;
-    gl.clearColor(color.r, color.g, color.b, color.a);
-    gl.clear(Const.COLOR_BUFFER_BIT);
+    const { $gl, clearColor } = this;
+    $gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
+    $gl.clear(Const.COLOR_BUFFER_BIT);
   }
 
   /**
    * @ignore
    */
   _buildProgram() {
-    const gl = this.$gl,
-      shaderHeader = Utils.GLSL.VERSION + "precision highp float;\n";
+    const { $gl } = this;
+    const shaderHeader = Utils.GLSL.VERSION + "precision highp float;\n";
 
     this._program = Utils.createProgram(
-      gl,
+      $gl,
       shaderHeader + this.$createVertexShader(),
       shaderHeader + this.$createFragmentShader(),
     );
 
-    this.$locations = Utils.getLocationsFor(
-      gl,
-      this._program,
-      this._config.locations,
-    );
+    this.$locations = Utils.getLocationsFor($gl, this._program, this._config.locations);
 
-    this._vao = gl.createVertexArray();
+    this._vao = $gl.createVertexArray();
 
     this._useProgram();
 

@@ -22,8 +22,8 @@ This file creates a global `window.PWGLDebugger` object and attaches:
 
 Build config (`debugger/vite.config.js`) generates:
 
-- `dist/pwgl.debugger.es.min.js`
-- `dist/pwgl.debugger.umd.min.js`
+- `dist/pwgl.debugger.es.js`
+- `dist/pwgl.debugger.umd.js`
 
 Run build from project root:
 
@@ -52,7 +52,7 @@ It also injects a small debug UI panel (top-left info button) for browsing captu
 UMD bundle in browser:
 
 ```html
-<script src="./dist/pwgl.debugger.umd.min.js"></script>
+<script src="./dist/pwgl.debugger.umd.js"></script>
 <script>
   PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
 </script>
@@ -61,7 +61,7 @@ UMD bundle in browser:
 ES module:
 
 ```js
-import "../dist/pwgl.debugger.es.min.js";
+import "../dist/pwgl.debugger.es.js";
 
 PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
 ```

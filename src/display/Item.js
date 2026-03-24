@@ -1,8 +1,8 @@
-import { ItemTransform } from "../attributes/ItemTransform";
+import { noop } from "../../extensions/utils/noop";
 import { Color } from "../attributes/Color";
+import { ItemTransform } from "../attributes/ItemTransform";
 import { Matrix3Utilities } from "../math/Matrix3Utilities";
 import "../math/RectangleType";
-import { noop } from "../../extensions/utils/noop";
 
 /**
  * Item
@@ -106,8 +106,8 @@ export class Item {
       callback && callback(this, target, event);
     }
 
-    const parent = this.$parent;
-    parent && parent.callEventHandler(target, event);
+    const { $parent } = this;
+    $parent && $parent.callEventHandler(target, event);
   }
 
   /**
@@ -121,29 +121,26 @@ export class Item {
    * Remove Item from parent
    */
   remove() {
-    const parent = this.$parent;
-    parent && parent.removeChild(this);
+    const { $parent } = this;
+    $parent && $parent.removeChild(this);
   }
 
   /**
    * Update color and transform values
    */
   update() {
-    const transform = this.transform,
-      color = this.color,
-      parent = this.$parent,
-      parentChanged = this._parentChanged;
+    const { transform, color, $parent, _parentChanged } = this;
 
     this._parentChanged = false;
 
     color.update();
 
-    this.colorUpdated = parentChanged || color.updated || parent.colorUpdated;
+    this.colorUpdated = _parentChanged || color.updated || $parent.colorUpdated;
 
     if (this.colorUpdated) {
-      const colorCache = this.colorCache,
-        originalColorCache = color.cache,
-        parentColorCache = parent.colorCache;
+      const { colorCache } = this;
+      const originalColorCache = color.cache;
+      const parentColorCache = $parent.colorCache;
 
       colorCache[0] = parentColorCache[0] * originalColorCache[0];
       colorCache[1] = parentColorCache[1] * originalColorCache[1];
@@ -153,15 +150,9 @@ export class Item {
 
     transform.update();
 
-    this.transformUpdated =
-      parentChanged || transform.updated || parent.transformUpdated;
+    this.transformUpdated = _parentChanged || transform.updated || $parent.transformUpdated;
 
-    this.transformUpdated &&
-      Matrix3Utilities.transform(
-        this.matrixCache,
-        parent.matrixCache,
-        transform
-      );
+    this.transformUpdated && Matrix3Utilities.transform(this.matrixCache, $parent.matrixCache, transform);
   }
 
   /**

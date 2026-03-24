@@ -1,6 +1,7 @@
 // scripts/build-examples.js
 const fs = require("fs");
 const path = require("path");
+const { COLORS } = require("./colors");
 
 console.log("Building example HTML files...");
 
@@ -24,11 +25,11 @@ try {
 
     const filePath = path.join(examplesDir, example.file);
     fs.writeFileSync(filePath, html, "utf-8");
-    console.log(`Generated: ${example.file}`);
+    console.log(`${COLORS.blueOnBlack}- Generated: ${example.file}${COLORS.reset}`);
   });
 
-  console.log("✓ Example HTML files built successfully!");
+  console.log(`${COLORS.greenOnBlack}✓ Example HTML files built successfully!${COLORS.reset}`);
 } catch (err) {
-  console.error("✗ Build examples failed:", err.message);
+  console.error(`✗ Build examples failed:`, err.message);
   process.exit(1);
 }

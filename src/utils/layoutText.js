@@ -20,8 +20,8 @@ const _layoutPart = (lines, ctx, chars, maxWidth) => {
  * @returns {string[]} An array of strings, each representing a line of laid-out text.
  */
 export const layoutText = (ctx, text, maxWidth) => {
-  const lines = [],
-    textLines = text.split("\n");
+  const lines = [];
+  const textLines = text.split("\n");
 
   for (let i = 0; i < textLines.length; i++) {
     const paragraph = textLines[i];
@@ -38,8 +38,8 @@ export const layoutText = (ctx, text, maxWidth) => {
       let nextSpace = paragraph.indexOf(" ", cursor);
       if (nextSpace === -1) nextSpace = paragraph.length;
 
-      const word = paragraph.slice(cursor, nextSpace),
-        testLine = currentLine + (currentLine === "" ? "" : " ") + word;
+      const word = paragraph.slice(cursor, nextSpace);
+      const testLine = currentLine + (currentLine === "" ? "" : " ") + word;
 
       if (ctx.measureText(testLine).width <= maxWidth) currentLine = testLine;
       else {
@@ -55,8 +55,7 @@ export const layoutText = (ctx, text, maxWidth) => {
 
             for (let p = 0; p < parts.length; p++) {
               const testPart = partLine + parts[p];
-              if (ctx.measureText(testPart).width <= maxWidth)
-                partLine = testPart;
+              if (ctx.measureText(testPart).width <= maxWidth) partLine = testPart;
               else {
                 partLine && lines.push(partLine);
 

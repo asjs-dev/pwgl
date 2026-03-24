@@ -9,13 +9,13 @@ import { FPSCounter } from "./FPSCounter";
 export const enterFrame = (callback, fpsLimit = 0) => {
   const FPS = FPSCounter();
 
-  let updateFunction,
-    maxFPS,
-    maxMS,
-    correctedMS,
-    then = Date.now(),
-    requestAnimationFrameId,
-    isPlaying = false;
+  let updateFunction;
+  let maxFPS;
+  let maxMS;
+  let correctedMS;
+  let then = Date.now();
+  let requestAnimationFrameId;
+  let isPlaying = false;
 
   const updateCallback = () => {
     FPS.update();
@@ -23,8 +23,9 @@ export const enterFrame = (callback, fpsLimit = 0) => {
   };
 
   const updateWithLimit = () => {
-    const now = Date.now(),
-      diff = now - then;
+    const now = Date.now();
+    const diff = now - then;
+    
     if (diff >= correctedMS) {
       correctedMS = 2 * maxMS - diff;
       then = now;

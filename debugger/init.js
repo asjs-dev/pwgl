@@ -19,8 +19,6 @@ export const init = (options = {}) => {
 
   HTMLCanvasElement.prototype.getContext = function (...args) {
     const context = getContextFV.call(this, ...args);
-    return args[0] && args[0].startsWith("webgl")
-      ? debugContext(context, options)
-      : context;
+    return args[0] && args[0].startsWith("webgl") ? debugContext(context, options) : context;
   };
 };

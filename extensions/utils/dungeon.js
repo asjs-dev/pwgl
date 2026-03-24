@@ -1,6 +1,6 @@
 import { areTwoRectsCollided } from "./collisionDetection";
 import { getRandomFrom } from "./getRandomFrom";
-import { vectorToCoord, coordToVector } from "./gridMapping";
+import { coordToVector, vectorToCoord } from "./gridMapping";
 
 /**
  * Generates a dungeon layout by randomly placing rooms and resolving collisions
@@ -10,24 +10,24 @@ import { vectorToCoord, coordToVector } from "./gridMapping";
  */
 export const generateDungeon = (iterations, sampleRooms) => {
   const directions = [
-      { x: 1, y: 0 },
-      { x: 1, y: 1 },
-      { x: 0, y: 1 },
-      { x: -1, y: 1 },
-      { x: -1, y: 0 },
-      { x: -1, y: -1 },
-      { x: 0, y: -1 },
-    ],
-    rooms = [];
+    { x: 1, y: 0 },
+    { x: 1, y: 1 },
+    { x: 0, y: 1 },
+    { x: -1, y: 1 },
+    { x: -1, y: 0 },
+    { x: -1, y: -1 },
+    { x: 0, y: -1 },
+  ];
+  const rooms = [];
 
-  let minX = Infinity,
-    minY = Infinity,
-    maxX = -Infinity,
-    maxY = -Infinity;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
 
   for (let i = 0; i < iterations; i++) {
-    const direction = getRandomFrom(directions),
-      randomRoom = clone(getRandomFrom(sampleRooms));
+    const direction = getRandomFrom(directions);
+    const randomRoom = clone(getRandomFrom(sampleRooms));
 
     if (Math.random() < 0.5) randomRoom.data.reverse();
 
@@ -54,18 +54,12 @@ export const generateDungeon = (iterations, sampleRooms) => {
             },
           )
         ) {
-          const rnd = Math.random() - 0.5,
-            randomPosition = Math.round((Math.random() - 0.5) * 2);
-          room.x += direction.x
-            ? rnd >= 0 || !direction.y
-              ? direction.x
-              : randomPosition
-            : randomPosition;
-          room.y += direction.y
-            ? rnd < 0 || !direction.x
-              ? direction.y
-              : randomPosition
-            : randomPosition;
+          const rnd = Math.random() - 0.5;
+          const randomPosition = Math.round((Math.random() - 0.5) * 2);
+
+          room.x += direction.x ? (rnd >= 0 || !direction.y ? direction.x : randomPosition) : randomPosition;
+          room.y += direction.y ? (rnd < 0 || !direction.x ? direction.y : randomPosition) : randomPosition;
+
           collision = true;
           break;
         }
@@ -82,13 +76,14 @@ export const generateDungeon = (iterations, sampleRooms) => {
     rooms.push(room);
   }
 
-  const width = maxX - minX,
-    height = maxY - minY,
-    data = Array(width * height).fill(0);
+  const width = maxX - minX;
+  const height = maxY - minY;
+  const data = Array(width * height).fill(0);
 
   rooms.forEach(({ x, y, width: w, height: h, data: roomData }) => {
-    const absX = x - minX,
-      absY = y - minY;
+    const absX = x - minX;
+    const absY = y - minY;
+
     roomData.forEach((value, index) => {
       const { x: px, y: py } = vectorToCoord(index, w);
       data[coordToVector(absX + px, absY + py, width)] = value;
@@ -99,25 +94,17 @@ export const generateDungeon = (iterations, sampleRooms) => {
     const { x: px, y: py } = vectorToCoord(i, width);
 
     if (px < width - 1 && data[i] > 0) {
-      const bottomIdx = coordToVector(px, py + 1, width),
-        rightIdx = coordToVector(px + 1, py, width),
-        bottomRightIdx = coordToVector(px + 1, py + 1, width),
-        leftIdx = coordToVector(px - 1, py, width),
-        bottomLeftIdx = coordToVector(px - 1, py + 1, width);
-      if (
-        data[bottomIdx] === data[rightIdx] &&
-        data[i] === data[bottomRightIdx] &&
-        data[i] !== data[rightIdx]
-      ) {
+      const bottomIdx = coordToVector(px, py + 1, width);
+      const rightIdx = coordToVector(px + 1, py, width);
+      const bottomRightIdx = coordToVector(px + 1, py + 1, width);
+      const leftIdx = coordToVector(px - 1, py, width);
+      const bottomLeftIdx = coordToVector(px - 1, py + 1, width);
+
+      if (data[bottomIdx] === data[rightIdx] && data[i] === data[bottomRightIdx] && data[i] !== data[rightIdx]) {
         data[bottomIdx] = data[rightIdx] = 1;
       }
 
-      if (
-        px > 0 &&
-        data[bottomIdx] === data[leftIdx] &&
-        data[i] === data[bottomLeftIdx] &&
-        data[i] !== data[leftIdx]
-      ) {
+      if (px > 0 && data[bottomIdx] === data[leftIdx] && data[i] === data[bottomLeftIdx] && data[i] !== data[leftIdx]) {
         data[bottomIdx] = data[leftIdx] = 1;
       }
     }

@@ -1,6 +1,6 @@
-import { BaseDrawable } from "./BaseDrawable";
-import { Utils } from "../core/Utils";
 import { LightTransform } from "../attributes/LightTransform";
+import { Utils } from "../core/Utils";
+import { BaseDrawable } from "./BaseDrawable";
 
 /**
  * Light
@@ -127,11 +127,11 @@ export class Light extends BaseDrawable {
   $calcCorners() {
     super.$calcCorners();
 
-    const corners = this.$corners,
-      a = corners[0],
-      b = corners[1],
-      c = corners[2],
-      d = corners[3];
+    const { $corners } = this;
+    const a = $corners[0];
+    const b = $corners[1];
+    const c = $corners[2];
+    const d = $corners[3];
 
     a.x += a.x - d.x + (a.x - c.x);
     a.y += a.y - d.y + (a.y - c.y);

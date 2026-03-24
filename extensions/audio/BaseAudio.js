@@ -122,12 +122,7 @@ export class BaseAudio {
       this.$feedbackGainNode.disconnect();
       this.$lowPassNode.disconnect();
 
-      this.$gainNode =
-        this.$panNode =
-        this.$delayNode =
-        this.$feedbackGainNode =
-        this.$lowPassNode =
-          null;
+      this.$gainNode = this.$panNode = this.$delayNode = this.$feedbackGainNode = this.$lowPassNode = null;
 
       this.$nodesConnected = this.$nodesCreated = false;
     }

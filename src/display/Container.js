@@ -1,6 +1,6 @@
-import { Item } from "./Item";
 import { noopReturnsWith } from "../../extensions/utils/noopReturnsWith";
 import { removeFromArray } from "../../extensions/utils/removeFromArray";
+import { Item } from "./Item";
 
 /**
  * Container
@@ -34,9 +34,7 @@ export class Container extends Item {
     if (v) {
       this._getParentPremultipliedUseTint = v.getPremultipliedUseTint.bind(v);
       this._getParentPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
-    } else
-      this._getParentPremultipliedUseTint = this._getParentPremultipliedAlpha =
-        noopReturnsWith(1);
+    } else this._getParentPremultipliedUseTint = this._getParentPremultipliedAlpha = noopReturnsWith(1);
   }
 
   /**
@@ -154,8 +152,9 @@ export class Container extends Item {
    * @param {Item} childB
    */
   swapChildren(childA, childB) {
-    const childAIndex = this.getChildIndex(childA),
-      childBIndex = this.getChildIndex(childB);
+    const childAIndex = this.getChildIndex(childA);
+    const childBIndex = this.getChildIndex(childB);
+
     if (childAIndex > -1 && childBIndex > -1) {
       this.setChildIndex(childA, childBIndex);
       this.setChildIndex(childB, childAIndex);
@@ -167,24 +166,24 @@ export class Container extends Item {
    * @returns {Rectangle}
    */
   getBounds() {
-    const bounds = this.$bounds,
-      children = this.children,
-      l = children.length;
+    const { $bounds, children } = this;
+    const { length } = children;
+
     let i = -1;
 
-    bounds.x = bounds.y = 1 / 0;
-    bounds.width = bounds.height = -1 / 0;
+    $bounds.x = $bounds.y = 1 / 0;
+    $bounds.width = $bounds.height = -1 / 0;
 
-    while (++i < l) {
+    while (++i < length) {
       const childBounds = children[i].getBounds();
 
-      bounds.x = Math.min(bounds.x, childBounds.x);
-      bounds.y = Math.min(bounds.y, childBounds.y);
-      bounds.width = Math.max(bounds.width, childBounds.width);
-      bounds.height = Math.max(bounds.height, childBounds.height);
+      $bounds.x = Math.min($bounds.x, childBounds.x);
+      $bounds.y = Math.min($bounds.y, childBounds.y);
+      $bounds.width = Math.max($bounds.width, childBounds.width);
+      $bounds.height = Math.max($bounds.height, childBounds.height);
     }
 
-    return bounds;
+    return $bounds;
   }
 }
 

@@ -1,11 +1,11 @@
-import { BaseRenderer } from "./BaseRenderer";
-import { BlendMode } from "../rendering/BlendMode";
 import { Utils } from "../core/Utils";
+import { BlendMode } from "../rendering/BlendMode";
 import {
   BASE_VERTEX_SHADER,
   BASE_VERTEX_SHADER_INITIALIZATION,
   BASE_VERTEX_SHADER_POSITION,
 } from "../utils/shaderUtils";
+import { BaseRenderer } from "./BaseRenderer";
 
 /**
  * @typedef {Object} AmbientOcclusionMapRendererConfig
@@ -71,29 +71,21 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
    * @ignore
    */
   $render() {
-    const gl = this.$gl,
-      locations = this.$locations,
-      sourceTextureBoolean = !!this.sourceTexture;
+    const { $gl, $locations } = this;
+    const sourceTextureBoolean = !!this.sourceTexture;
 
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$useTextureAt(this.heightMap, locations.uB, 0);
+    this.$useTextureAt(this.heightMap, $locations.uB, 0);
 
-    gl.uniform2f(locations.uF, this.width, this.height);
+    $gl.uniform2f($locations.uF, this.width, this.height);
 
-    sourceTextureBoolean &&
-      this.$useTextureAt(this.sourceTexture, locations.uC, 1);
+    sourceTextureBoolean && this.$useTextureAt(this.sourceTexture, $locations.uC, 1);
 
-    gl.uniform1f(locations.uE, sourceTextureBoolean);
+    $gl.uniform1f($locations.uE, sourceTextureBoolean);
 
-    gl.uniform4f(
-      locations.uD,
-      this.radius,
-      this.samples,
-      this.multiplier,
-      this.depthMultiplier,
-    );
-    gl.uniform2f(locations.uG, this.offsetX, this.offsetY);
+    $gl.uniform4f($locations.uD, this.radius, this.samples, this.multiplier, this.depthMultiplier);
+    $gl.uniform2f($locations.uG, this.offsetX, this.offsetY);
 
     this.$uploadBuffers();
 

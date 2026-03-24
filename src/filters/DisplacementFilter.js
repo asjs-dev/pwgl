@@ -1,8 +1,10 @@
 import { BaseTextureFilter } from "./BaseTextureFilter";
 
+// prettier-ignore
 const _GLSL = BaseTextureFilter.$createGLSL(
   "oCl=texture(uB,v0.zw+(Z.yz*(txCl.rg-.5)*2.*vol));"
 );
+
 /**
  * Displacement filter
  * @extends {BaseTextureFilter}

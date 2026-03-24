@@ -1,6 +1,6 @@
-import { Container } from "./Container";
-import { BatchRenderer } from "../renderers/BatchRenderer";
 import { Matrix3Utilities } from "../math/Matrix3Utilities";
+import { BatchRenderer } from "../renderers/BatchRenderer";
+import { Container } from "./Container";
 
 /**
  * Stage container
@@ -48,8 +48,7 @@ export class StageContainer extends Container {
   }
 
   update() {
-    const color = this.color,
-      renderer = this.renderer;
+    const { color, renderer } = this;
 
     color.update();
 
@@ -57,7 +56,6 @@ export class StageContainer extends Container {
 
     this.transformUpdated = renderer.resized;
 
-    this.transformUpdated &&
-      Matrix3Utilities.projection(this.matrixCache, renderer);
+    this.transformUpdated && Matrix3Utilities.projection(this.matrixCache, renderer);
   }
 }

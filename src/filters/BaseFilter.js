@@ -39,11 +39,10 @@ export class BaseFilter {
     this.data = new Float32Array(10);
     this.customData = new Float32Array(8);
     this.kernels = new Float32Array(9);
-    
+
     this.on = options.on ?? true;
     this.intensity = options.intensity ?? 1;
-    this.intensityX =
-      options.intensityX ?? options.deg ?? this.intensity;
+    this.intensityX = options.intensityX ?? options.deg ?? this.intensity;
     this.intensityY = options.intensityY ?? this.intensity;
     this.mix = options.mix ?? 1;
     this.isRadial = options.isRadial ?? false;

@@ -1,5 +1,5 @@
-import { BaseTransform } from "./BaseTransform";
 import { noop } from "../../extensions/utils/noop";
+import { BaseTransform } from "./BaseTransform";
 
 /**
  * Class for item transform properties
@@ -17,13 +17,7 @@ export class ItemTransform extends BaseTransform {
     super();
 
     this.$updateScaleFv = noop;
-    this.scaledWidth =
-      this.scaledHeight =
-      this._scaleX =
-      this._scaleY =
-      this.$width =
-      this.$height =
-        1;
+    this.scaledWidth = this.scaledHeight = this._scaleX = this._scaleY = this.$width = this.$height = 1;
   }
 
   /**

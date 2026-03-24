@@ -1,7 +1,7 @@
-import { Image } from "./Image";
-import { layoutText } from "../utils/layoutText";
-import { Texture } from "../textures/Texture";
 import { noop } from "../../extensions/utils/noop";
+import { Texture } from "../textures/Texture";
+import { layoutText } from "../utils/layoutText";
+import { Image } from "./Image";
 
 /**
  * Text drawable class
@@ -117,29 +117,26 @@ export class Text extends Image {
   _updateTexture() {
     this._updateFv = noop;
 
-    const ctx = this._ctx,
-      canvas = this._canvas,
-      align = this._align,
-      fontSize = this._fontSize,
-      lineHeight = this._lineHeight * fontSize,
-      maxWidth = this.transform.width;
+    const { _ctx, _canvas, _align, _fontSize, _lineHeight, transform } = this;
+    const lineHeight = _lineHeight * _fontSize;
+    const maxWidth = transform.width;
 
-    canvas.width = this.transform.width;
-    canvas.height = this.transform.height;
+    _canvas.width = transform.width;
+    _canvas.height = transform.height;
 
-    ctx.font = fontSize + "px " + this._fontFamily;
-    ctx.textBaseline = "top";
-    ctx.textAlign = align;
-    ctx.fillStyle = this._fontColor;
+    _ctx.font = _fontSize + "px " + this._fontFamily;
+    _ctx.textBaseline = "top";
+    _ctx.textAlign = _align;
+    _ctx.fillStyle = this._fontColor;
 
-    const lines = layoutText(ctx, this._text, maxWidth),
-      x = align === "center" ? maxWidth / 2 : align === "right" ? maxWidth : 0;
+    const lines = layoutText(_ctx, this._text, maxWidth);
+    const x = _align === "center" ? maxWidth / 2 : _align === "right" ? maxWidth : 0;
 
     for (let i = 0, l = lines.length; i < l; i++) {
-      const line = lines[i],
-        y = lineHeight * i;
+      const line = lines[i];
+      const y = lineHeight * i;
 
-      ctx.fillText(line, x, y);
+      _ctx.fillText(line, x, y);
     }
 
     this.texture.updateSize();

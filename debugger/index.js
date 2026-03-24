@@ -1,4 +1,4 @@
-import { SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES, SHOW_ARRAYS } from "./constants";
+import { SHOW_ARRAYS, SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES } from "./constants";
 import { init } from "./init";
 
 window.PWGLDebugger = {

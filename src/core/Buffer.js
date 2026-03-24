@@ -17,20 +17,28 @@ export class Buffer {
    * @param {number} divisor - Attribute divisor - default 1
    * @param {number} dataType - Data type - default FLOAT
    */
-  constructor(locationName, data, rows, cols, target, type, divisor, dataType) {
+  constructor(
+    locationName,
+    data,
+    rows = 1,
+    cols = 1,
+    target = Const.ARRAY_BUFFER,
+    type = Const.DYNAMIC_DRAW,
+    divisor = 1,
+    dataType = Const.FLOAT,
+  ) {
     const elemCount = rows * cols;
 
-    this.data =
-      typeof data === "number" ? new Float32Array(data * elemCount) : data;
+    this.data = typeof data === "number" ? new Float32Array(data * elemCount) : data;
     this._locationName = locationName;
-    this._rows = rows ?? 1;
-    this._cols = cols ?? 1;
-    this._target = target ?? Const.ARRAY_BUFFER;
-    this._type = type ?? Const.DYNAMIC_DRAW;
+    this._rows = rows;
+    this._cols = cols;
+    this._target = target;
+    this._type = type;
     this._stride = elemCount * 4;
     this._offset = cols * 4;
-    this._divisor = divisor ?? 1;
-    this._dataType = dataType ?? Const.FLOAT;
+    this._divisor = divisor;
+    this._dataType = dataType;
     if (this._type === Const.STATIC_DRAW) this._stride = this._offset = 0;
   }
 
@@ -77,19 +85,13 @@ export class Buffer {
    * @ignore
    */
   _enable(gl) {
-    const rows = this._rows,
-      location = this._location,
-      cols = this._cols,
-      stride = this._stride,
-      offset = this._offset,
-      divisor = this._divisor,
-      dataType = this._dataType;
+    const { _rows, _location, _cols, _stride, _offset, _divisor, _dataType } = this;
     let i = -1;
-    while (++i < rows) {
-      const loc = location + i;
+    while (++i < _rows) {
+      const loc = _location + i;
       gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, cols, dataType, false, stride, i * offset);
-      gl.vertexAttribDivisor(loc, divisor);
+      gl.vertexAttribPointer(loc, _cols, _dataType, false, _stride, i * _offset);
+      gl.vertexAttribDivisor(loc, _divisor);
     }
   }
 }

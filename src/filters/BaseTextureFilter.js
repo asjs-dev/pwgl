@@ -1,5 +1,5 @@
-import { BaseFilter } from "./BaseFilter";
 import { TextureInfo } from "../textures/TextureInfo";
+import { BaseFilter } from "./BaseFilter";
 
 /**
  * Base Texture filter

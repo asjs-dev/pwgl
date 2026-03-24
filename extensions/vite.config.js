@@ -1,7 +1,8 @@
-import { defineConfig } from "vite";
 import replace from "@rollup/plugin-replace";
-import path from "path";
 import fs from "fs";
+import path from "path";
+import { defineConfig } from "vite";
+import { copyFiles } from "../scripts/copy-files";
 
 const packageJsonPath = path.resolve(__dirname, "./package.json");
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
@@ -15,7 +16,7 @@ export default defineConfig({
     lib: {
       entry: "extensions/index.js",
       name: "PWGL Extensions",
-      fileName: (format) => `pwgl.extensions.${format}.min.js`,
+      fileName: (format) => `pwgl.extensions.${format}.js`,
       formats: ["es", "umd"],
     },
     minify: "terser",
@@ -25,6 +26,10 @@ export default defineConfig({
     replace({
       preventAssignment: true,
       values: replaceMap,
+    }),
+    copyFiles({
+      "dist/pwgl.extensions.umd.js": ["docs/assets/pwgl.extensions.umd.js", "docs/assets/pwgl.extensions.min.js"],
+      "dist/pwgl.extensions.es.js": "docs/assets/pwgl.extensions.es.js",
     }),
   ],
 });

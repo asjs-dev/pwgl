@@ -1,16 +1,14 @@
-import { FPSCounter } from "./utils/FPSCounter";
-import { getFPS } from "./utils/getFPS";
-import { PressState } from "./controls/PressState";
-import { Mouse } from "./controls/Mouse";
-import { Keyboard } from "./controls/Keyboard";
-import { Gamepad } from "./controls/Gamepad";
-import { createDataObserver } from "./utils/dataObserver";
-import { crossFadeAudioVolumes, fadeAudioVolume } from "./audio/utils";
 import { AudioItem } from "./audio/AudioItem";
 import { AudioMixer } from "./audio/AudioMixer";
-import { SmoothLight } from "./display/SmoothLight";
+import { crossFadeAudioVolumes, fadeAudioVolume } from "./audio/utils";
+import { Gamepad } from "./controls/Gamepad";
+import { Keyboard } from "./controls/Keyboard";
+import { Mouse } from "./controls/Mouse";
+import { PressState } from "./controls/PressState";
 import { AnimatedWater } from "./display/AnimatedWater";
+import { SmoothLight } from "./display/SmoothLight";
 import { areObjectsEqual } from "./utils/areObjectsEqual";
+import { arraySet } from "./utils/arraySet";
 import { clamp } from "./utils/clamp";
 import { clone } from "./utils/clone";
 import {
@@ -21,20 +19,22 @@ import {
   rectToRectIntersection,
 } from "./utils/collisionDetection";
 import { cross } from "./utils/cross";
+import { createDataObserver } from "./utils/dataObserver";
 import { dot } from "./utils/dot";
+import { generateDungeon } from "./utils/dungeon";
 import { enterFrame } from "./utils/enterFrame";
 import { enumCheck } from "./utils/enumCheck";
+import { FPSCounter } from "./utils/FPSCounter";
 import { fract } from "./utils/fract";
-import { nthCall } from "./utils/nthCall";
+import { getFPS } from "./utils/getFPS";
+import { getRandomFrom } from "./utils/getRandomFrom";
+import { coordToVector, vectorToCoord } from "./utils/gridMapping";
+import { hashNoise2D } from "./utils/hashNoise2D";
 import { mix } from "./utils/mix";
-import { generateDungeon } from "./utils/dungeon";
 import { noop } from "./utils/noop";
 import { noopReturnsWith } from "./utils/noopReturnsWith";
-import { arraySet } from "./utils/arraySet";
+import { nthCall } from "./utils/nthCall";
 import { removeFromArray } from "./utils/removeFromArray";
-import { coordToVector, vectorToCoord } from "./utils/gridMapping";
-import { getRandomFrom } from "./utils/getRandomFrom";
-import { hashNoise2D } from "./utils/hashNoise2D";
 import { stepNoise } from "./utils/stepNoise";
 
 window.PWGLExtensions = window.AGLExtensions = {

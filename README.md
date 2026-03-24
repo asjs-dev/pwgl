@@ -39,12 +39,12 @@ PWGL provides multiple builds for different use cases.
 
 **Vite 4 production builds:**
 
-| File                             | Format                              |
-| -------------------------------- | ----------------------------------- |
-| `dist/pwgl.es.min.js`            | ES Module, minified                 |
-| `dist/pwgl.umd.min.js`           | UMD, minified                       |
-| `dist/pwgl.extensions.es.min.js` | ES Module with extensions, minified |
-| `dist/pwgl.extensions.umd.js`    | UMD with extensions, minified       |
+| File                          | Format                              |
+| ----------------------------- | ----------------------------------- |
+| `dist/pwgl.es.js`             | ES Module, minified                 |
+| `dist/pwgl.umd.js`            | UMD, minified                       |
+| `dist/pwgl.extensions.es.js`  | ES Module with extensions, minified |
+| `dist/pwgl.extensions.umd.js` | UMD with extensions, minified       |
 
 **Extra highly compressed builds (auto-generated during development/optimization build):**
 
@@ -57,14 +57,14 @@ PWGL provides multiple builds for different use cases.
 
 ## How to use
 
-Create your index html ( include pwgl.min.js )
+Create your index html ( include pwgl.umd.js and pwgl.extensions.umd.js )
 
 ```html
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="pwgl.min.js" type="text/javascript"></script>
-    <script src="pwgl.extensions.min.js" type="text/javascript"></script>
+    <script src="pwgl.umd.js" type="text/javascript"></script>
+    <script src="pwgl.extensions.umd.js" type="text/javascript"></script>
   </head>
   <body></body>
 </html>

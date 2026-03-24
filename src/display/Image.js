@@ -1,12 +1,12 @@
-import { BaseDrawable } from "./BaseDrawable";
-import { BlendMode } from "../rendering/BlendMode";
-import { TintType } from "../rendering/TintType";
-import { TextureTransform } from "../attributes/TextureTransform";
-import { TextureCrop } from "../attributes/TextureCrop";
 import { Distortion } from "../attributes/Distortion";
-import { TextureInfo } from "../textures/TextureInfo";
+import { TextureCrop } from "../attributes/TextureCrop";
+import { TextureTransform } from "../attributes/TextureTransform";
 import { Matrix3Utilities } from "../math/Matrix3Utilities";
 import "../math/PointType";
+import { BlendMode } from "../rendering/BlendMode";
+import { TintType } from "../rendering/TintType";
+import { TextureInfo } from "../textures/TextureInfo";
+import { BaseDrawable } from "./BaseDrawable";
 
 /**
  * Image class
@@ -53,17 +53,12 @@ export class Image extends BaseDrawable {
     super.update();
     this.textureCrop.update();
 
-    const textureTransform = this.textureTransform;
+    const { textureTransform } = this;
+
     textureTransform.update();
+    textureTransform.updated && Matrix3Utilities.transformLocal(this.textureMatrixCache, textureTransform);
 
-    textureTransform.updated &&
-      Matrix3Utilities.transformLocal(
-        this.textureMatrixCache,
-        textureTransform
-      );
-
-    this.interactive && this.transformUpdated &&
-      Matrix3Utilities.inverse(this._inverseMatrixCache, this.matrixCache);
+    this.interactive && this.transformUpdated && Matrix3Utilities.inverse(this._inverseMatrixCache, this.matrixCache);
   }
 
   /**

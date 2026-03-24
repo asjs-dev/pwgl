@@ -1,4 +1,3 @@
-import { BaseRenderer } from "./BaseRenderer";
 import { Utils } from "../core/Utils";
 import { BlendMode } from "../rendering/BlendMode";
 import {
@@ -6,6 +5,7 @@ import {
   BASE_VERTEX_SHADER_INITIALIZATION,
   BASE_VERTEX_SHADER_POSITION,
 } from "../utils/shaderUtils";
+import { BaseRenderer } from "./BaseRenderer";
 
 /**
  * @typedef {Object} NormalMapRendererConfig
@@ -44,13 +44,13 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $render() {
-    const locations = this.$locations;
+    const { $locations } = this;
 
     this.context.setBlendMode(BlendMode.NORMAL);
 
-    this.$useTextureAt(this.heightMap, locations.uB, 0);
+    this.$useTextureAt(this.heightMap, $locations.uB, 0);
 
-    this.$gl.uniform2f(locations.uF, this.width, this.height);
+    this.$gl.uniform2f($locations.uF, this.width, this.height);
 
     this.$uploadBuffers();
 

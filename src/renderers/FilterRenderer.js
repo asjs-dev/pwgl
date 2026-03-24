@@ -80,49 +80,41 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $render(framebuffer) {
-    const context = this.context,
-      gl = this.$gl,
-      renderTime = this.$renderTime,
-      locations = this.$locations,
-      filters = this._filters,
-      l = filters.length || 1,
-      minL = l - 2;
+    const { context, $gl, $renderTime, $locations, _filters } = this;
+    const l = _filters.length || 1;
+    const minL = l - 2;
+
     let i = -1;
 
     context.setBlendMode(BlendMode.NORMAL);
 
     this.$uploadBuffers();
 
-    this.$useTextureAt(this.sourceTexture, locations.uB, 0);
+    this.$useTextureAt(this.sourceTexture, $locations.uB, 0);
 
-    gl.uniform3f(locations.uF, this.width, this.height, renderTime % 864e5);
+    $gl.uniform3f($locations.uF, this.width, this.height, $renderTime % 864e5);
 
     while (++i < l) {
-      const filter = filters[i],
-        useFilter = filter && filter.on,
-        isLast = i > minL,
-        filterTexture =
-          useFilter &&
-          filter.texture;
+      const filter = _filters[i];
+      const useFilter = filter && filter.on;
+      const isLast = i > minL;
+      const filterTexture = useFilter && filter.texture;
 
       let filterFramebuffer;
 
-      filterTexture && this.$useTextureAt(filterTexture, locations.uH, 1);
+      filterTexture && this.$useTextureAt(filterTexture, $locations.uH, 1);
 
-      if (isLast)
-        framebuffer
-          ? this._attachFramebufferAndClearFv(framebuffer)
-          : gl.uniform1f(locations.uA, 1);
+      if (isLast) framebuffer ? this._attachFramebufferAndClearFv(framebuffer) : $gl.uniform1f($locations.uA, 1);
       else if (useFilter) {
         filterFramebuffer = this._framebuffers[i & 1];
         this._attachFramebufferAndClearFv(filterFramebuffer);
       }
 
       if (useFilter) {
-        gl.uniform1i(locations.uI, filter.uniqueId);
-        gl.uniform1fv(locations.uJ, filter.data);
-        gl.uniformMatrix2x4fv(locations.uL, false, filter.customData);
-        gl.uniformMatrix3fv(locations.uK, false, filter.kernels);
+        $gl.uniform1i($locations.uI, filter.uniqueId);
+        $gl.uniform1fv($locations.uJ, filter.data);
+        $gl.uniformMatrix2x4fv($locations.uL, false, filter.customData);
+        $gl.uniformMatrix3fv($locations.uK, false, filter.kernels);
       }
 
       (useFilter || isLast) && this.$drawInstanced(1);
@@ -130,8 +122,8 @@ export class FilterRenderer extends BaseRenderer {
       filterTexture && context.deactivateTexture(filterTexture);
 
       if (filterFramebuffer) {
-        filterFramebuffer.unbind(gl);
-        context.useTextureAt(filterFramebuffer, 0, renderTime);
+        filterFramebuffer.unbind($gl);
+        context.useTextureAt(filterFramebuffer, 0, $renderTime);
       }
     }
   }

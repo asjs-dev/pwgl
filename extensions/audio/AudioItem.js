@@ -101,11 +101,11 @@ export class AudioItem extends BaseAudio {
 
     this.isPlaying = true;
 
-    const audioMixer = this._audioMixer,
-      context = audioMixer.context;
+    const { _audioMixer } = this;
+    const { context } = _audioMixer;
 
     this.$createNodes(context);
-    this.$connectNodes(audioMixer.node);
+    this.$connectNodes(_audioMixer.node);
 
     if (context) {
       this._startTime = context.currentTime;
@@ -124,12 +124,10 @@ export class AudioItem extends BaseAudio {
   stop() {
     this.isPlaying = false;
 
-    const audioMixer = this._audioMixer,
-      buffer = this._buffer;
+    const { _audioMixer, _buffer } = this;
 
-    if (audioMixer && buffer)
-      this._startTime =
-        (audioMixer.context.currentTime - this._startTime) % buffer.duration;
+    if (_audioMixer && _buffer)
+      this._startTime = (_audioMixer.context.currentTime - this._startTime) % _buffer.duration;
 
     this.$disconnectNodes();
   }
@@ -145,11 +143,11 @@ export class AudioItem extends BaseAudio {
    * @ignore
    */
   $createNodes(context) {
-    const buffer = this._buffer;
+    const { _buffer } = this;
 
-    if (context && buffer) {
+    if (context && _buffer) {
       this._source = context.createBufferSource();
-      this._source.buffer = buffer;
+      this._source.buffer = _buffer;
       super.$createNodes(context);
     }
   }
@@ -189,12 +187,11 @@ export class AudioItem extends BaseAudio {
    * @ignore
    */
   async _update() {
-    const audioResponse = this._audioResponse,
-      audioMixer = this._audioMixer;
+    const { _audioResponse, _audioMixer } = this;
 
-    if (audioResponse && audioMixer) {
-      const arrayBuffer = await audioResponse.arrayBuffer();
-      this._buffer = await audioMixer.context.decodeAudioData(arrayBuffer);
+    if (_audioResponse && _audioMixer) {
+      const arrayBuffer = await _audioResponse.arrayBuffer();
+      this._buffer = await _audioMixer.context.decodeAudioData(arrayBuffer);
       this.isPlaying && this.play();
     }
   }

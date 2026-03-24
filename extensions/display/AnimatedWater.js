@@ -19,16 +19,14 @@ export const AnimatedWater = window.PWGL
         this._waterDisplacementImageLarge = new PWGL.Image(heightMapTexture);
         this._waterDisplacementImageLarge.blendMode = PWGL.BlendMode.ADD;
         this._waterDisplacementImageLarge.textureTransform.repeatX = 0.7;
-        this._waterDisplacementImageLarge.tintType =
-          PWGL.TintType.GRAYSCALE;
+        this._waterDisplacementImageLarge.tintType = PWGL.TintType.GRAYSCALE;
         this.addChild(this._waterDisplacementImageLarge);
 
         this._waterDisplacementImageSmall = new PWGL.Image(heightMapTexture);
         this._waterDisplacementImageSmall.blendMode = PWGL.BlendMode.ADD;
         this._waterDisplacementImageSmall.textureTransform.repeatX = 4;
         this._waterDisplacementImageSmall.textureTransform.repeatRandomRotation = 1;
-        this._waterDisplacementImageSmall.tintType =
-          PWGL.TintType.GRAYSCALE;
+        this._waterDisplacementImageSmall.tintType = PWGL.TintType.GRAYSCALE;
         this.addChild(this._waterDisplacementImageSmall);
 
         this.speed = speed;
@@ -112,29 +110,21 @@ export const AnimatedWater = window.PWGL
        * @param {number} delay - The time delay since the last render
        */
       render(delay) {
-        const waveSpeedX = this._speed * delay,
-          waveSpeedY = waveSpeedX * 2;
+        const waveSpeedX = this._speed * delay;
+        const waveSpeedY = waveSpeedX * 2;
 
         this._wave += waveSpeedX * 2.5;
-        const sinWave = Math.sin(this._wave) * 0.3,
-          cosWave = Math.cos(this._wave) * 0.3;
+        
+        const sinWave = Math.sin(this._wave) * 0.3;
+        const cosWave = Math.cos(this._wave) * 0.3;
 
-        let textureTransform =
-          this._waterDisplacementImageLarge.textureTransform;
-        textureTransform.x =
-          this._moveTarget.x * textureTransform.repeatX +
-          ((waveSpeedX * 0.75 + sinWave) % 1);
-        textureTransform.y =
-          this._moveTarget.y * textureTransform.repeatY +
-          ((waveSpeedY * 0.75 + cosWave) % 1);
+        let textureTransform = this._waterDisplacementImageLarge.textureTransform;
+        textureTransform.x = this._moveTarget.x * textureTransform.repeatX + ((waveSpeedX * 0.75 + sinWave) % 1);
+        textureTransform.y = this._moveTarget.y * textureTransform.repeatY + ((waveSpeedY * 0.75 + cosWave) % 1);
 
         textureTransform = this._waterDisplacementImageSmall.textureTransform;
-        textureTransform.x =
-          this._moveTarget.x * textureTransform.repeatX +
-          ((waveSpeedX * 2 - sinWave) % 1);
-        textureTransform.y =
-          this._moveTarget.y * textureTransform.repeatY +
-          ((waveSpeedY * 2 - cosWave) % 1);
+        textureTransform.x = this._moveTarget.x * textureTransform.repeatX + ((waveSpeedX * 2 - sinWave) % 1);
+        textureTransform.y = this._moveTarget.y * textureTransform.repeatY + ((waveSpeedY * 2 - cosWave) % 1);
       }
 
       move(x, y) {

@@ -1,13 +1,10 @@
-import { BatchRenderer } from "./BatchRenderer";
-import { Utils } from "../core/Utils";
-import { Buffer } from "../core/Buffer";
-import { BlendMode } from "../rendering/BlendMode";
-import { Light } from "../display/Light";
-import {
-  BASE_VERTEX_SHADER_ATTRIBUTES,
-  BASE_VERTEX_SHADER_UNIFORMS,
-} from "../utils/shaderUtils";
 import { arraySet } from "../../extensions/utils/arraySet";
+import { Buffer } from "../core/Buffer";
+import { Utils } from "../core/Utils";
+import { Light } from "../display/Light";
+import { BlendMode } from "../rendering/BlendMode";
+import { BASE_VERTEX_SHADER_ATTRIBUTES, BASE_VERTEX_SHADER_UNIFORMS } from "../utils/shaderUtils";
+import { BatchRenderer } from "./BatchRenderer";
 
 /**
  * @typedef {Object} LightRendererConfig
@@ -118,21 +115,20 @@ export class LightRenderer extends BatchRenderer {
    * @param {Light} light
    */
   addLightForRender(light) {
-    const batchItems = this._batchItems,
-      parent = light.parent;
+    const { _batchItems } = this;
+    const { parent } = light;
 
-    if (batchItems < this.$MAX_RENDER_COUNT && parent) {
-      const matrixBufferId = batchItems * 16,
-        extensionBufferId = batchItems * 6,
-        matrixBufferData = this.$matrixBuffer.data,
-        extensionBufferData = this._extensionBuffer.data;
+    if (_batchItems < this.$MAX_RENDER_COUNT && parent) {
+      const matrixBufferId = _batchItems * 16;
+      const extensionBufferId = _batchItems * 6;
+      const matrixBufferData = this.$matrixBuffer.data;
+      const extensionBufferData = this._extensionBuffer.data;
 
       arraySet(matrixBufferData, light.matrixCache, matrixBufferId);
       matrixBufferData[matrixBufferId + 6] = light.transform.width;
       matrixBufferData[matrixBufferId + 7] = light.spotAngle;
       arraySet(matrixBufferData, light.colorCache, matrixBufferId + 8);
-      matrixBufferData[matrixBufferId + 11] *=
-        light.alpha * parent.getPremultipliedAlpha();
+      matrixBufferData[matrixBufferId + 11] *= light.alpha * parent.getPremultipliedAlpha();
       matrixBufferData[matrixBufferId + 12] = light.shadowLength;
       matrixBufferData[matrixBufferId + 13] = light.angle;
       matrixBufferData[matrixBufferId + 14] = light.type;
@@ -153,30 +149,24 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $render() {
-    const gl = this.$gl,
-      locations = this.$locations,
-      sourceTextureBoolean = !!this.sourceTexture,
-      normalMapBoolean = !!this.normalMap,
-      roughnessMapBoolean = !!this.roughnessMap,
-      heightMapBoolean = !!this.heightMap;
+    const { $gl, $locations, _sourceTexture, _normalMap, _roughnessMap, _heightMap } = this;
+    const sourceTextureBoolean = !!_sourceTexture;
+    const normalMapBoolean = !!_normalMap;
+    const roughnessMapBoolean = !!_roughnessMap;
+    const heightMapBoolean = !!_heightMap;
 
     this.context.setBlendMode(BlendMode.ADD);
 
-    sourceTextureBoolean && this.$useTexture(this._sourceTexture, locations.uC);
+    sourceTextureBoolean && this.$useTexture(_sourceTexture, $locations.uC);
 
-    normalMapBoolean && this.$useTexture(this._normalMap, locations.uM);
+    normalMapBoolean && this.$useTexture(_normalMap, $locations.uM);
 
-    roughnessMapBoolean && this.$useTexture(this._roughnessMap, locations.uN);
+    roughnessMapBoolean && this.$useTexture(_roughnessMap, $locations.uN);
 
-    heightMapBoolean && this.$useTexture(this._heightMap, locations.uB);
+    heightMapBoolean && this.$useTexture(_heightMap, $locations.uB);
 
-    gl.uniform3f(
-      locations.uO,
-      sourceTextureBoolean,
-      roughnessMapBoolean,
-      normalMapBoolean,
-    );
-    gl.uniform2f(locations.uF, this._sizable.width, this._sizable.height);
+    $gl.uniform3f($locations.uO, sourceTextureBoolean, roughnessMapBoolean, normalMapBoolean);
+    $gl.uniform2f($locations.uF, this._sizable.width, this._sizable.height);
 
     this.$uploadBuffers();
 

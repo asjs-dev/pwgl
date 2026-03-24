@@ -8,5 +8,4 @@ let hash = 1;
  * @param {number} seed - Seed value
  * @returns {number}
  */
-export const stepNoise = (x, y, seed) =>
-  (hash = Math.abs(fract(hash * (0.12 + 34.56 * x + seed * y * 78.9))));
+export const stepNoise = (x, y, seed) => (hash = Math.abs(fract(hash * (0.12 + 34.56 * x + seed * y * 78.9))));

@@ -10,7 +10,7 @@
         <link type="text/css" rel="stylesheet" href="../styles/prettify-tomorrow.css">
         <link type="text/css" rel="stylesheet" href="../styles/jsdoc-default.css">
         <link type="text/css" rel="stylesheet" href="../styles/custom.css">
-        <script src="../assets/pwgl.debugger.min.js"></script>
+        <script src="../assets/pwgl.debugger.umd.js"></script>
         <!-- Google tag (gtag.js) -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-HZMQ56T4JS"></script>
         <script>
@@ -53,15 +53,11 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import {
-  SHOW_CALL_STACKS,
-  SHOW_ORIGINAL_VALUES,
-  SHOW_ARRAYS,
-} from "./constants";
-import { enumCheck } from "../extensions/utils/enumCheck";
+            <pre class="prettyprint source linenums"><code>import { clamp } from "../extensions/utils/clamp";
 import { enterFrame } from "../extensions/utils/enterFrame";
-import { clamp } from "../extensions/utils/clamp";
+import { enumCheck } from "../extensions/utils/enumCheck";
 import { noopReturnsWith } from "../extensions/utils/noopReturnsWith";
+import { SHOW_ARRAYS, SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES } from "./constants";
 
 /**
  * @typedef {Object} DebugCall
@@ -103,9 +99,7 @@ const _captureStackFormatted = () => "\n\n&lt;i>Stack trace:\n| " +
  */
 const _convertArrays = (values) =>
   values.map((v) =>
-    v &amp;&amp; (Array.isArray(v) || v.constructor?.name?.endsWith("Array"))
-      ? `[${v.constructor.name}(${v.length})]`
-      : v,
+    v &amp;&amp; (Array.isArray(v) || v.constructor?.name?.endsWith("Array")) ? `[${v.constructor.name}(${v.length})]` : v,
   );
 /**
  * Wrap a WebGL rendering context with a debug proxy.
@@ -120,36 +114,29 @@ const _convertArrays = (values) =>
  * @returns {WebGLRenderingContext|WebGL2RenderingContext} Proxy-wrapped context.
  */
 export const debugContext = (context, options = {}) => {
-  const MAX_FRAME_COUNT = clamp(options.maxFrameCount ?? 5, 0, 20),
-    FLAGS = options.flags ?? 0,
-    debug = [],
-    constMap = PWGL
-      ? Object.entries(PWGL.Const).reduce((acc, [name, value]) => {
-          acc[value] = name;
-          return acc;
-        }, {})
-      : {};
+  const MAX_FRAME_COUNT = clamp(options.maxFrameCount ?? 5, 0, 20);
+  const FLAGS = options.flags ?? 0;
+  const debug = [];
+  const constMap = PWGL
+    ? Object.entries(PWGL.Const).reduce((acc, [name, value]) => {
+        acc[value] = name;
+        return acc;
+      }, {})
+    : {};
 
-  let currentFrame,
-    currentTimestamp,
-    logsForFrame,
-    sumFrameDurationMS,
-    frames = -1;
+  let currentFrame;
+  let currentTimestamp;
+  let logsForFrame;
+  let sumFrameDurationMS;
+  let frames = -1;
 
-  const convertToReadableNames = (values) =>
-    values.map((v) => constMap[v] ?? v);
+  const convertToReadableNames = (values) => values.map((v) => constMap[v] ?? v);
 
-  const convertArrays = enumCheck(FLAGS, SHOW_ARRAYS)
-    ? _noopConvert
-    : _convertArrays;
+  const convertArrays = enumCheck(FLAGS, SHOW_ARRAYS) ? _noopConvert : _convertArrays;
 
-  const convert = enumCheck(FLAGS, SHOW_ORIGINAL_VALUES)
-    ? _noopConvert
-    : convertToReadableNames;
+  const convert = enumCheck(FLAGS, SHOW_ORIGINAL_VALUES) ? _noopConvert : convertToReadableNames;
 
-  const convertCallStack = enumCheck(FLAGS, SHOW_CALL_STACKS)
-    ? _captureStackFormatted
-    : noopReturnsWith("");
+  const convertCallStack = enumCheck(FLAGS, SHOW_CALL_STACKS) ? _captureStackFormatted : noopReturnsWith("");
 
   /**
    * Advance frame counter.
@@ -172,14 +159,14 @@ export const debugContext = (context, options = {}) => {
         }
 
         if (currentFrame >= 0) {
-          const length = logsForFrame.length,
-            now = Date.now(),
-            delta = now - currentTimestamp;
+          const length = logsForFrame.length;
+          const now = Date.now();
+          const delta = now - currentTimestamp;
+
           sumFrameDurationMS += delta;
           currentTimestamp = now;
 
-          if (length > 0)
-            logsForFrame[length - 1].currentCallDurationMS = delta;
+          if (length > 0) logsForFrame[length - 1].currentCallDurationMS = delta;
 
           logsForFrame.push({
             stackTrace: convertCallStack(),
@@ -187,11 +174,7 @@ export const debugContext = (context, options = {}) => {
             sumFrameDurationMS: sumFrameDurationMS,
             prop: prop,
             args: convert(
-              convertArrays(
-                args.map((v) =>
-                  [null, undefined].includes(v) ? `${v}` : v === "" ? '""' : v,
-                ),
-              ),
+              convertArrays(args.map((v) => ([null, undefined].includes(v) ? `${v}` : v === "" ? '""' : v))),
             ),
           });
         }
@@ -210,9 +193,7 @@ export const debugContext = (context, options = {}) => {
   return new Proxy(context, {
     get(target, prop) {
       const value = target[prop];
-      return typeof value === "function"
-        ? debugCallback(value, target, prop)
-        : value;
+      return typeof value === "function" ? debugCallback(value, target, prop) : value;
     },
   });
 };
@@ -232,7 +213,7 @@ export const debugContext = (context, options = {}) => {
             <br class="clear">
 
             <footer>
-                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Tue, 24 Mar 2026 06:34:16 GMT
+                Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Tue, 24 Mar 2026 08:50:08 GMT
             </footer>
         </div>
         <script> prettyPrint(); </script>

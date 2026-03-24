@@ -1,8 +1,8 @@
 import { COLORS, getFormat, TYPES } from "./logFormatter";
 
-const _HASH = String(Math.random()).split(".")[1],
-  // prettier-ignore
-  _STYLE = "" +
+const _HASH = String(Math.random()).split(".")[1];
+// prettier-ignore
+const _STYLE = "" +
     "*[hidden] {" +
       "display:" + "none !important;" +
     "}" +
@@ -185,8 +185,7 @@ const _createElement = (elementType = "div", classList = []) => {
   return element;
 };
 
-const _createEntry = (textContent, typeName) =>
-  `<span type=\"${typeName}\">${textContent}</span>\n`;
+const _createEntry = (textContent, typeName) => `<span type=\"${typeName}\">${textContent}</span>\n`;
 
 /**
  * Create and attach the PWGL debugger UI overlay.
@@ -198,85 +197,77 @@ export const panel = () => {
   const styleElement = _createElement("style");
   styleElement.textContent = _STYLE;
 
-  const infoButton = _createElement("div", ["info-button-" + _HASH]),
-    debuggerContainer = _createElement("div", ["debugger-container-" + _HASH]),
-    debuggerPanel = _createElement("div", ["debugger-panel-" + _HASH]),
-    topPanelContainer = _createElement("div", ["panel-container-" + _HASH]),
-    bottomPanelContainer = _createElement("div", [
-      "panel-container-" + _HASH,
-      "panel-container-bottom-" + _HASH,
-    ]),
-    panelTitle = _createElement("div", ["panel-title-" + _HASH]),
-    closeButton = _createElement("div", ["close-button-" + _HASH]),
-    instanceList = _createElement("ul", ["instance-list-" + _HASH]),
-    output = _createElement("pre", ["output-" + _HASH]);
+  const infoButton = _createElement("div", ["info-button-" + _HASH]);
+  const debuggerContainer = _createElement("div", ["debugger-container-" + _HASH]);
+  const debuggerPanel = _createElement("div", ["debugger-panel-" + _HASH]);
+  const topPanelContainer = _createElement("div", ["panel-container-" + _HASH]);
+  const bottomPanelContainer = _createElement("div", ["panel-container-" + _HASH, "panel-container-bottom-" + _HASH]);
+  const panelTitle = _createElement("div", ["panel-title-" + _HASH]);
+  const closeButton = _createElement("div", ["close-button-" + _HASH]);
+  const instanceList = _createElement("ul", ["instance-list-" + _HASH]);
+  const output = _createElement("pre", ["output-" + _HASH]);
 
   panelTitle.textContent = "WebGL2 debug panel";
 
-  const showDebugger = () => debuggerContainer.removeAttribute("hidden"),
-    hideDebugger = () => debuggerContainer.setAttribute("hidden", null),
-    showDetails = (id) => {
-      const instance = PWGLDebugger.instances[id];
-      if (instance) {
-        let result = "",
-          maxSumFrameDurationMSLength = 0,
-          maxCurrentCallDurationMSLength = 0,
-          maxPropLength = 0;
+  const showDebugger = () => debuggerContainer.removeAttribute("hidden");
 
-        instance.snapshots.forEach((frame) =>
-          frame.forEach((entry) => {
-            maxSumFrameDurationMSLength = Math.max(
-              maxSumFrameDurationMSLength,
-              String(entry.sumFrameDurationMS).length,
-            );
-            maxCurrentCallDurationMSLength = Math.max(
-              maxCurrentCallDurationMSLength,
-              String(entry.currentCallDurationMS).length,
-            );
-            maxPropLength = Math.max(maxPropLength, entry.prop.length);
-          }),
-        );
+  const hideDebugger = () => debuggerContainer.setAttribute("hidden", null);
 
-        const paramIndent = String("").padStart(
-          14 +
-            maxSumFrameDurationMSLength +
-            maxCurrentCallDurationMSLength +
-            maxPropLength,
-        );
+  const showDetails = (id) => {
+    const instance = PWGLDebugger.instances[id];
+    if (instance) {
+      let result = "",
+        maxSumFrameDurationMSLength = 0,
+        maxCurrentCallDurationMSLength = 0,
+        maxPropLength = 0;
 
-        instance.snapshots.forEach((frame, frameId) => {
-          result += _createEntry("#" + frameId, TYPES.FRAME);
+      instance.snapshots.forEach((frame) =>
+        frame.forEach((entry) => {
+          maxSumFrameDurationMSLength = Math.max(maxSumFrameDurationMSLength, String(entry.sumFrameDurationMS).length);
+          maxCurrentCallDurationMSLength = Math.max(
+            maxCurrentCallDurationMSLength,
+            String(entry.currentCallDurationMS).length,
+          );
+          maxPropLength = Math.max(maxPropLength, entry.prop.length);
+        }),
+      );
 
-          frame.forEach((entry) => {
-            const format = getFormat(entry.currentCallDurationMS, entry.prop);
+      const paramIndent = String("").padStart(
+        14 + maxSumFrameDurationMSLength + maxCurrentCallDurationMSLength + maxPropLength,
+      );
 
-            result += _createEntry(
-              `${String(entry.sumFrameDurationMS).padStart(maxSumFrameDurationMSLength)}ms ` +
-                `${String(entry.currentCallDurationMS).padStart(maxCurrentCallDurationMSLength)}ms ` +
-                `${String(entry.prop).padStart(maxPropLength)} ` +
-                (entry.args.length ? entry.args.join("\n" + paramIndent) : "") +
-                entry.stackTrace,
-              format,
-            );
-          });
+      instance.snapshots.forEach((frame, frameId) => {
+        result += _createEntry("#" + frameId, TYPES.FRAME);
+
+        frame.forEach((entry) => {
+          const format = getFormat(entry.currentCallDurationMS, entry.prop);
+
+          result += _createEntry(
+            `${String(entry.sumFrameDurationMS).padStart(maxSumFrameDurationMSLength)}ms ` +
+              `${String(entry.currentCallDurationMS).padStart(maxCurrentCallDurationMSLength)}ms ` +
+              `${String(entry.prop).padStart(maxPropLength)} ` +
+              (entry.args.length ? entry.args.join("\n" + paramIndent) : "") +
+              entry.stackTrace,
+            format,
+          );
         });
-
-        output.innerHTML = result;
-      }
-    },
-    updateDebuggerPanel = () => {
-      [...instanceList.children].forEach((child) => child.remove());
-
-      PWGLDebugger.instances.forEach((instance, id) => {
-        const instanceButton = _createElement("div", [
-          "instance-button-" + _HASH,
-        ]);
-        instanceButton.setAttribute("instance-id", id);
-        instanceButton.textContent = `#${id + 1} Canvas`;
-        instanceList.appendChild(instanceButton);
-        id === 0 && showDetails(0);
       });
-    };
+
+      output.innerHTML = result;
+    }
+  };
+
+  const updateDebuggerPanel = () => {
+    [...instanceList.children].forEach((child) => child.remove());
+
+    PWGLDebugger.instances.forEach((instance, id) => {
+      const instanceButton = _createElement("div", ["instance-button-" + _HASH]);
+      instanceButton.setAttribute("instance-id", id);
+      instanceButton.textContent = `#${id + 1} Canvas`;
+      instanceList.appendChild(instanceButton);
+      id === 0 && showDetails(0);
+    });
+  };
 
   hideDebugger();
 
@@ -286,12 +277,8 @@ export const panel = () => {
     showDebugger();
   });
   closeButton.addEventListener("click", hideDebugger);
-  instanceList.addEventListener("click", (event) =>
-    showDetails(parseInt(event.target.getAttribute("instance-id"))),
-  );
-  debuggerContainer.addEventListener("mousedown", (event) =>
-    event.stopPropagation(),
-  );
+  instanceList.addEventListener("click", (event) => showDetails(parseInt(event.target.getAttribute("instance-id"))));
+  debuggerContainer.addEventListener("mousedown", (event) => event.stopPropagation());
 
   topPanelContainer.appendChild(panelTitle);
   topPanelContainer.appendChild(closeButton);

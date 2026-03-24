@@ -36,9 +36,7 @@ export const SmoothLight = window.PWGL
         this.filterRenderer.clearColor.set(0, 0, 0, 0);
         this.filterRenderer.clearBeforeRender = true;
 
-        this.addLightForRender = this.lightRenderer.addLightForRender.bind(
-          this.lightRenderer
-        );
+        this.addLightForRender = this.lightRenderer.addLightForRender.bind(this.lightRenderer);
 
         this.blendMode = PWGL.BlendMode.SHADOW;
 

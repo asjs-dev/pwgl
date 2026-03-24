@@ -19,8 +19,7 @@ export const BASE_VERTEX_SHADER_UNIFORMS = "" +
   "uniform float " +
     "uA;";
 
-export const BASE_VERTEX_SHADER_INITIALIZATION =
-  BASE_VERTEX_SHADER_ATTRIBUTES + BASE_VERTEX_SHADER_UNIFORMS;
+export const BASE_VERTEX_SHADER_INITIALIZATION = BASE_VERTEX_SHADER_ATTRIBUTES + BASE_VERTEX_SHADER_UNIFORMS;
 
 // prettier-ignore
 export const TINT_TYPE_SHADER = (id, outColor, tintColor) => "if(" + id + ">0.)" +

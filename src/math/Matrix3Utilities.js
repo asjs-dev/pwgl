@@ -1,5 +1,5 @@
-import "./PointType";
 import { ItemTransform } from "../attributes/ItemTransform";
+import "./PointType";
 
 /**
  * @typedef {Float32Array} Matrix3
@@ -44,23 +44,14 @@ export const Matrix3Utilities = {
    * @param {ItemTransform} itemTransform
    */
   transformLocal: (destinationMatrix, itemTransform) => {
-    const anchorX = itemTransform.anchorX,
-      anchorY = itemTransform.anchorY,
-      scaledWidth = itemTransform.scaledWidth,
-      scaledHeight = itemTransform.scaledHeight;
+    const { anchorX, anchorY, scaledWidth, scaledHeight } = itemTransform;
 
     destinationMatrix[0] = itemTransform.cosRotationA * scaledWidth;
     destinationMatrix[1] = itemTransform.sinRotationA * scaledWidth;
     destinationMatrix[2] = -itemTransform.sinRotationB * scaledHeight;
     destinationMatrix[3] = itemTransform.cosRotationB * scaledHeight;
-    destinationMatrix[4] =
-      itemTransform.x -
-      anchorX * destinationMatrix[0] -
-      anchorY * destinationMatrix[2];
-    destinationMatrix[5] =
-      itemTransform.y -
-      anchorX * destinationMatrix[1] -
-      anchorY * destinationMatrix[3];
+    destinationMatrix[4] = itemTransform.x - anchorX * destinationMatrix[0] - anchorY * destinationMatrix[2];
+    destinationMatrix[5] = itemTransform.y - anchorX * destinationMatrix[1] - anchorY * destinationMatrix[3];
   },
 
   /**
@@ -70,32 +61,33 @@ export const Matrix3Utilities = {
    * @param {ItemTransform} itemTransform
    */
   transform: (destinationMatrix, matrix, itemTransform) => {
-    const x = itemTransform.x,
-      y = itemTransform.y,
-      anchorX = itemTransform.anchorX,
-      anchorY = itemTransform.anchorY,
-      sinRotationA = itemTransform.sinRotationA,
-      sinRotationB = itemTransform.sinRotationB,
-      cosRotationA = itemTransform.cosRotationA,
-      cosRotationB = itemTransform.cosRotationB,
-      scaledWidth = itemTransform.scaledWidth,
-      scaledHeight = itemTransform.scaledHeight;
+    const {
+      x,
+      y,
+      anchorX,
+      anchorY,
+      sinRotationA,
+      sinRotationB,
+      cosRotationA,
+      cosRotationB,
+      scaledWidth,
+      scaledHeight,
+    } = itemTransform;
 
-    destinationMatrix[0] =
-      (cosRotationA * matrix[0] + sinRotationA * matrix[2]) * scaledWidth;
-    destinationMatrix[1] =
-      (cosRotationA * matrix[1] + sinRotationA * matrix[3]) * scaledWidth;
-    destinationMatrix[2] =
-      (cosRotationB * matrix[2] - sinRotationB * matrix[0]) * scaledHeight;
-    destinationMatrix[3] =
-      (cosRotationB * matrix[3] - sinRotationB * matrix[1]) * scaledHeight;
+    destinationMatrix[0] = (cosRotationA * matrix[0] + sinRotationA * matrix[2]) * scaledWidth;
+    destinationMatrix[1] = (cosRotationA * matrix[1] + sinRotationA * matrix[3]) * scaledWidth;
+    destinationMatrix[2] = (cosRotationB * matrix[2] - sinRotationB * matrix[0]) * scaledHeight;
+    destinationMatrix[3] = (cosRotationB * matrix[3] - sinRotationB * matrix[1]) * scaledHeight;
 
+    // prettier-ignore
     destinationMatrix[4] =
       -anchorX * destinationMatrix[0] -
       anchorY * destinationMatrix[2] +
       x * matrix[0] +
       y * matrix[2] +
       matrix[4];
+
+    // prettier-ignore
     destinationMatrix[5] =
       -anchorX * destinationMatrix[1] -
       anchorY * destinationMatrix[3] +
@@ -116,10 +108,8 @@ export const Matrix3Utilities = {
     destinationMatrix[1] = -det * matrix[1];
     destinationMatrix[2] = -det * matrix[2];
     destinationMatrix[3] = det * matrix[0];
-    destinationMatrix[4] =
-      det * (matrix[2] * matrix[5] - matrix[3] * matrix[4]);
-    destinationMatrix[5] =
-      -det * (matrix[0] * matrix[5] - matrix[1] * matrix[4]);
+    destinationMatrix[4] = det * (matrix[2] * matrix[5] - matrix[3] * matrix[4]);
+    destinationMatrix[5] = -det * (matrix[0] * matrix[5] - matrix[1] * matrix[4]);
   },
 
   /**
@@ -129,8 +119,8 @@ export const Matrix3Utilities = {
    * @returns {boolean}
    */
   isPointInMatrix: (matrix, point) => {
-    const x = point.x * matrix[0] + point.y * matrix[2] + matrix[4],
-      y = point.x * matrix[1] + point.y * matrix[3] + matrix[5];
+    const x = point.x * matrix[0] + point.y * matrix[2] + matrix[4];
+    const y = point.x * matrix[1] + point.y * matrix[3] + matrix[5];
 
     return x >= 0 && x <= 1 && y >= 0 && y <= 1;
   },
@@ -144,8 +134,8 @@ export const Matrix3Utilities = {
    * @param {number} resolution.heightHalf
    */
   calcCorners: (corners, matrix, resolution) => {
-    const widthHalf = resolution.widthHalf,
-      heightHalf = resolution.heightHalf;
+    const widthHalf = resolution.widthHalf;
+    const heightHalf = resolution.heightHalf;
 
     corners[0].x = widthHalf + matrix[4] * widthHalf;
     corners[0].y = resolution.height - (heightHalf + matrix[5] * heightHalf);

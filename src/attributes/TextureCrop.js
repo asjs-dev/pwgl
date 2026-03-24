@@ -1,5 +1,5 @@
-import "../math/RectangleType";
 import { noop } from "../../extensions/utils/noop";
+import "../math/RectangleType";
 
 /**
  * Class for texture crop properties
@@ -91,7 +91,7 @@ export class TextureCrop {
     this._updateCacheFv = noop;
     this._cacheUpdated = true;
 
-    const cache = this.cache;
+    const { cache } = this;
     cache[2] = this._width - cache[0];
     cache[3] = this._height - cache[1];
   }

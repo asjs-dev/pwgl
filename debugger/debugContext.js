@@ -1,12 +1,8 @@
-import {
-  SHOW_CALL_STACKS,
-  SHOW_ORIGINAL_VALUES,
-  SHOW_ARRAYS,
-} from "./constants";
-import { enumCheck } from "../extensions/utils/enumCheck";
-import { enterFrame } from "../extensions/utils/enterFrame";
 import { clamp } from "../extensions/utils/clamp";
+import { enterFrame } from "../extensions/utils/enterFrame";
+import { enumCheck } from "../extensions/utils/enumCheck";
 import { noopReturnsWith } from "../extensions/utils/noopReturnsWith";
+import { SHOW_ARRAYS, SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES } from "./constants";
 
 /**
  * @typedef {Object} DebugCall
@@ -48,9 +44,7 @@ const _captureStackFormatted = () => "\n\n<i>Stack trace:\n| " +
  */
 const _convertArrays = (values) =>
   values.map((v) =>
-    v && (Array.isArray(v) || v.constructor?.name?.endsWith("Array"))
-      ? `[${v.constructor.name}(${v.length})]`
-      : v,
+    v && (Array.isArray(v) || v.constructor?.name?.endsWith("Array")) ? `[${v.constructor.name}(${v.length})]` : v,
   );
 /**
  * Wrap a WebGL rendering context with a debug proxy.
@@ -65,36 +59,29 @@ const _convertArrays = (values) =>
  * @returns {WebGLRenderingContext|WebGL2RenderingContext} Proxy-wrapped context.
  */
 export const debugContext = (context, options = {}) => {
-  const MAX_FRAME_COUNT = clamp(options.maxFrameCount ?? 5, 0, 20),
-    FLAGS = options.flags ?? 0,
-    debug = [],
-    constMap = PWGL
-      ? Object.entries(PWGL.Const).reduce((acc, [name, value]) => {
-          acc[value] = name;
-          return acc;
-        }, {})
-      : {};
+  const MAX_FRAME_COUNT = clamp(options.maxFrameCount ?? 5, 0, 20);
+  const FLAGS = options.flags ?? 0;
+  const debug = [];
+  const constMap = PWGL
+    ? Object.entries(PWGL.Const).reduce((acc, [name, value]) => {
+        acc[value] = name;
+        return acc;
+      }, {})
+    : {};
 
-  let currentFrame,
-    currentTimestamp,
-    logsForFrame,
-    sumFrameDurationMS,
-    frames = -1;
+  let currentFrame;
+  let currentTimestamp;
+  let logsForFrame;
+  let sumFrameDurationMS;
+  let frames = -1;
 
-  const convertToReadableNames = (values) =>
-    values.map((v) => constMap[v] ?? v);
+  const convertToReadableNames = (values) => values.map((v) => constMap[v] ?? v);
 
-  const convertArrays = enumCheck(FLAGS, SHOW_ARRAYS)
-    ? _noopConvert
-    : _convertArrays;
+  const convertArrays = enumCheck(FLAGS, SHOW_ARRAYS) ? _noopConvert : _convertArrays;
 
-  const convert = enumCheck(FLAGS, SHOW_ORIGINAL_VALUES)
-    ? _noopConvert
-    : convertToReadableNames;
+  const convert = enumCheck(FLAGS, SHOW_ORIGINAL_VALUES) ? _noopConvert : convertToReadableNames;
 
-  const convertCallStack = enumCheck(FLAGS, SHOW_CALL_STACKS)
-    ? _captureStackFormatted
-    : noopReturnsWith("");
+  const convertCallStack = enumCheck(FLAGS, SHOW_CALL_STACKS) ? _captureStackFormatted : noopReturnsWith("");
 
   /**
    * Advance frame counter.
@@ -117,14 +104,14 @@ export const debugContext = (context, options = {}) => {
         }
 
         if (currentFrame >= 0) {
-          const length = logsForFrame.length,
-            now = Date.now(),
-            delta = now - currentTimestamp;
+          const length = logsForFrame.length;
+          const now = Date.now();
+          const delta = now - currentTimestamp;
+
           sumFrameDurationMS += delta;
           currentTimestamp = now;
 
-          if (length > 0)
-            logsForFrame[length - 1].currentCallDurationMS = delta;
+          if (length > 0) logsForFrame[length - 1].currentCallDurationMS = delta;
 
           logsForFrame.push({
             stackTrace: convertCallStack(),
@@ -132,11 +119,7 @@ export const debugContext = (context, options = {}) => {
             sumFrameDurationMS: sumFrameDurationMS,
             prop: prop,
             args: convert(
-              convertArrays(
-                args.map((v) =>
-                  [null, undefined].includes(v) ? `${v}` : v === "" ? '""' : v,
-                ),
-              ),
+              convertArrays(args.map((v) => ([null, undefined].includes(v) ? `${v}` : v === "" ? '""' : v))),
             ),
           });
         }
@@ -155,9 +138,7 @@ export const debugContext = (context, options = {}) => {
   return new Proxy(context, {
     get(target, prop) {
       const value = target[prop];
-      return typeof value === "function"
-        ? debugCallback(value, target, prop)
-        : value;
+      return typeof value === "function" ? debugCallback(value, target, prop) : value;
     },
   });
 };

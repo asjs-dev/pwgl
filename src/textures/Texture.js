@@ -63,8 +63,8 @@ export class Texture extends TextureInfo {
    * Destruct the class
    */
   destruct() {
-    this._source &&
-      this._source.removeEventListener(this._eventType, this.updateSize);
+    const { _source } = this;
+    _source && _source.removeEventListener(this._eventType, this.updateSize);
     this.$renderSource = null;
   }
 
@@ -89,8 +89,7 @@ export class Texture extends TextureInfo {
       this.$updated = this._loaded = false;
       this._currentRenderTime = renderTime;
       this.useActiveTexture(gl, id);
-    } else if (this._currentActiveId !== id || forceBind)
-      this.bindActiveTexture(gl, id);
+    } else if (this._currentActiveId !== id || forceBind) this.bindActiveTexture(gl, id);
   }
 
   /**
@@ -98,16 +97,15 @@ export class Texture extends TextureInfo {
    * @returns {boolean}
    */
   updateSize() {
-    const source = this._source,
-      sourceWidth = source.videoWidth || source.naturalWidth || source.width,
-      sourceHeight =
-        source.videoHeight || source.naturalHeight || source.height;
+    const { _source } = this;
+    const sourceWidth = _source.videoWidth || _source.naturalWidth || _source.width;
+    const sourceHeight = _source.videoHeight || _source.naturalHeight || _source.height;
 
     if (sourceWidth * sourceHeight) {
       this.$width = sourceWidth;
       this.$height = sourceHeight;
-      this.$renderSource = source;
-      return this._loaded = this.$updated = true;
+      this.$renderSource = _source;
+      return (this._loaded = this.$updated = true);
     }
   }
 }
@@ -119,8 +117,7 @@ export class Texture extends TextureInfo {
  * @param {boolean} shouldUpdate - Whether the texture should update every frame
  * @returns {Texture}
  */
-Texture.loadImage = (src, shouldUpdate) =>
-  new Texture(_createElement("img", src), shouldUpdate);
+Texture.loadImage = (src, shouldUpdate) => new Texture(_createElement("img", src), shouldUpdate);
 
 /**
  * Create a new Texture from a video source

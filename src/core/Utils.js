@@ -145,14 +145,10 @@ export const Utils = {
   initRendererConfig: (config = {}) => ({
     ...config,
     locations: config.locations ?? [],
-    context:
-      (config.config && config.config.context) ??
-      config.context ??
-      new Context(),
+    context: (config.config && config.config.context) ?? config.context ?? new Context(),
   }),
 
-  setLocations: (config, locations) =>
-    (config.locations = [...config.locations, ...locations]),
+  setLocations: (config, locations) => (config.locations = [...config.locations, ...locations]),
 
   /**
    * Call the callback function if the document.readyState interactive or complete
@@ -176,45 +172,29 @@ export const Utils = {
    * @returns {WebGLProgram} WebGL program
    */
   createProgram: (gl, vertexShaderSource, fragmentShaderSource) => {
-    const vertexShader = _createShader(
-        gl,
-        vertexShaderSource,
-        Const.VERTEX_SHADER
-      ),
-      fragmentShader = _createShader(
-        gl,
-        fragmentShaderSource,
-        Const.FRAGMENT_SHADER
-      ),
-      program = gl.createProgram();
+    const vertexShader = _createShader(gl, vertexShaderSource, Const.VERTEX_SHADER);
+    const fragmentShader = _createShader(gl, fragmentShaderSource, Const.FRAGMENT_SHADER);
+    const program = gl.createProgram();
 
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
 
     if (!gl.getProgramParameter(program, Const.LINK_STATUS)) {
-      const vertexShaderInfo = gl.getShaderInfoLog(vertexShader),
-        fragmentShaderInfo = gl.getShaderInfoLog(fragmentShader);
+      const vertexShaderInfo = gl.getShaderInfoLog(vertexShader);
+      const fragmentShaderInfo = gl.getShaderInfoLog(fragmentShader);
+
       console.error(
         [
           "Program info: " + gl.getProgramInfoLog(program),
-          "Validate status: " +
-            gl.getProgramParameter(program, Const.VALIDATE_STATUS),
+          "Validate status: " + gl.getProgramParameter(program, Const.VALIDATE_STATUS),
           ...(vertexShaderInfo
-            ? [
-                "",
-                "Vertex shader info: " + vertexShaderInfo,
-                "Vertex shader: " + vertexShaderSource,
-              ]
+            ? ["", "Vertex shader info: " + vertexShaderInfo, "Vertex shader: " + vertexShaderSource]
             : ""),
           ...(fragmentShaderInfo
-            ? [
-                "",
-                "Fragment shader info: " + fragmentShaderInfo,
-                "Fragment shader: " + fragmentShaderSource,
-              ]
+            ? ["", "Fragment shader info: " + fragmentShaderInfo, "Fragment shader: " + fragmentShaderSource]
             : ""),
-        ].join("\n")
+        ].join("\n"),
       );
 
       gl.deleteShader(vertexShader);
@@ -237,11 +217,7 @@ export const Utils = {
     const locations = {};
 
     locationsDescriptor.forEach(
-      (name) =>
-        (locations[name] = gl[`get${_locationTypes[name[0]]}Location`](
-          program,
-          name
-        ))
+      (name) => (locations[name] = gl[`get${_locationTypes[name[0]]}Location`](program, name)),
     );
 
     return locations;
@@ -258,12 +234,9 @@ const _gl = document.createElement("canvas").getContext("webgl2");
 if (_gl) {
   for (let key in _gl) {
     const value = _gl[key];
-    if (typeof value === "number" && key === key.toUpperCase())
-      Const[key] = value;
+    if (typeof value === "number" && key === key.toUpperCase()) Const[key] = value;
   }
 
   Utils.INFO.isWebGl2Supported = true;
-  Utils.INFO.maxTextureImageUnits = _gl.getParameter(
-    Const.MAX_TEXTURE_IMAGE_UNITS
-  );
+  Utils.INFO.maxTextureImageUnits = _gl.getParameter(Const.MAX_TEXTURE_IMAGE_UNITS);
 }

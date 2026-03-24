@@ -11,8 +11,8 @@ export const areObjectsEqual = (a, b) => {
 
   if (typeof a !== "object" || a === null || b === null) return false;
 
-  const aProps = Object.getOwnPropertyNames(a),
-    bProps = Object.getOwnPropertyNames(b);
+  const aProps = Object.getOwnPropertyNames(a);
+  const bProps = Object.getOwnPropertyNames(b);
 
   if (aProps.length !== bProps.length) return false;
 

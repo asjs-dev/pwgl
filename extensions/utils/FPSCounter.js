@@ -6,10 +6,10 @@
  * @property {number} delay Delay
  */
 export const FPSCounter = () => {
-  let frames = 0,
-    prevTime = 0,
-    nextTime = 0,
-    then = Date.now();
+  let frames = 0;
+  let prevTime = 0;
+  let nextTime = 0;
+  let then = Date.now();
 
   const scope = {
     fps: 0,

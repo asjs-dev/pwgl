@@ -1,6 +1,6 @@
-import { BaseRenderer } from "./BaseRenderer";
 import { Buffer } from "../core/Buffer";
 import { Utils } from "../core/Utils";
+import { BaseRenderer } from "./BaseRenderer";
 
 /**
  * @typedef {Object} BatchRendererConfig

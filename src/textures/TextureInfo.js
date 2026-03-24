@@ -242,21 +242,13 @@ export class TextureInfo {
    * @param {WebGLContext} gl - The WebGL context
    */
   uploadTextureInfo(gl) {
-    const target = this.target;
+    const { target } = this;
     gl.texParameteri(target, Const.TEXTURE_WRAP_S, this._wrapS);
     gl.texParameteri(target, Const.TEXTURE_WRAP_T, this._wrapT);
     gl.texParameteri(target, Const.TEXTURE_MIN_FILTER, this._minFilter);
     gl.texParameteri(target, Const.TEXTURE_MAG_FILTER, this._magFilter);
-    gl.texParameteri(
-      target,
-      Const.TEXTURE_MAX_LEVEL,
-      this._maxMipMapLevel,
-    );
-    gl.texParameteri(
-      target,
-      Const.TEXTURE_BASE_LEVEL,
-      this._baseMipMapLevel,
-    );
+    gl.texParameteri(target, Const.TEXTURE_MAX_LEVEL, this._maxMipMapLevel);
+    gl.texParameteri(target, Const.TEXTURE_BASE_LEVEL, this._baseMipMapLevel);
     gl.generateMipmap(target);
   }
 }

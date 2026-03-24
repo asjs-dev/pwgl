@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const { COLORS } = require("./colors");
 
 const foldersToDelete = [
   path.resolve("docs/extensions/fonts"),
@@ -13,8 +14,8 @@ const foldersToDelete = [
 foldersToDelete.forEach((folderToDelete) => {
   if (fs.existsSync(folderToDelete)) {
     fs.rmSync(folderToDelete, { recursive: true, force: true });
-    console.log(`Deleted folder: ${folderToDelete}`);
+    console.log(`${COLORS.yellowOnBlack}- Deleted folder: ${folderToDelete}${COLORS.reset}`);
   } else {
-    console.log(`Folder not found, nothing to delete: ${folderToDelete}`);
+    console.log(`${COLORS.redOnBlack}- Folder not found, nothing to delete: ${folderToDelete}${COLORS.reset}`);
   }
 });

@@ -1,9 +1,9 @@
-import { Utils, Const } from "./Utils";
-import "../rendering/BlendMode";
-import { TextureInfo } from "../textures/TextureInfo";
 import { noop } from "../../extensions/utils/noop";
 import { noopReturnsWith } from "../../extensions/utils/noopReturnsWith";
 import { removeFromArray } from "../../extensions/utils/removeFromArray";
+import "../rendering/BlendMode";
+import { TextureInfo } from "../textures/TextureInfo";
+import { Const, Utils } from "./Utils";
 
 /**
  * Context
@@ -30,7 +30,7 @@ export class Context {
     this._onContextLost = this._onContextLost.bind(this);
     this._initContext = this._initContext.bind(this);
 
-    const canvas = this._config.canvas;
+    const { canvas } = this._config;
     this.canvas = canvas;
     canvas.addEventListener("webglcontextlost", this._onContextLost);
     canvas.addEventListener("webglcontextrestored", this._initContext);
@@ -45,7 +45,7 @@ export class Context {
   useBlendMode(blendMode) {
     this._currentBlendMode = blendMode;
 
-    const gl = this.gl;
+    const { gl } = this;
     gl[blendMode.equationName].apply(gl, blendMode.equations);
     gl[blendMode.functionName].apply(gl, blendMode.functions);
   }
@@ -68,7 +68,7 @@ export class Context {
   destruct() {
     this.gl.useProgram(null);
 
-    const canvas = this.canvas;
+    const { canvas } = this;
     canvas.removeEventListener("webglcontextlost", this._onContextLost);
     canvas.removeEventListener("webglcontextrestored", this._initContext);
 
@@ -79,10 +79,10 @@ export class Context {
    * Clear textures
    */
   clearTextures() {
-    const l = Utils.INFO.maxTextureImageUnits;
+    const { maxTextureImageUnits } = Utils.INFO;
     let i = -1;
 
-    while (++i < l) {
+    while (++i < maxTextureImageUnits) {
       this._textureMap[i] = null;
       this._emptyTextureSlots[i] = i;
       this._setTextureSizeAt(i, 0, 0);
@@ -99,13 +99,13 @@ export class Context {
    * @param {function} callback
    * @returns {number}
    */
-  useTexture(textureInfo, renderTime, forceBind = true, callback) {
+  useTexture(textureInfo, renderTime, forceBind = true, callback = noop) {
     if (!textureInfo) return -1;
 
     let textureId = this._textureMap.indexOf(textureInfo);
     if (textureId < 0) {
       if (!this._emptyTextureSlots.length) {
-        callback && callback();
+        callback();
         this.clearTextures();
         textureId = 0;
       } else textureId = this._emptyTextureSlots[0];
@@ -157,7 +157,7 @@ export class Context {
       this._currentProgram = program;
       this.clearTextures();
 
-      const gl = this.gl;
+      const { gl } = this;
       gl.bindVertexArray(null);
       gl.useProgram(program);
       gl.bindVertexArray(vao);
@@ -170,7 +170,7 @@ export class Context {
    * @param {number} height canvas height
    */
   setCanvasSize(width, height) {
-    const canvas = this.canvas;
+    const { canvas } = this;
     canvas.width = width;
     canvas.height = height;
   }
@@ -185,7 +185,7 @@ export class Context {
       this._width = width;
       this._height = height;
 
-      const gl = this.gl;
+      const { gl } = this;
       gl.viewport(0, 0, width, height);
       gl.scissor(0, 0, width, height);
     }
@@ -212,10 +212,7 @@ export class Context {
    * @ignore
    */
   _initContext() {
-    const gl = (this.gl = this.canvas.getContext(
-      "webgl2",
-      this._config.contextAttributes,
-    ));
+    const gl = (this.gl = this.canvas.getContext("webgl2", this._config.contextAttributes));
 
     gl.gl_id = ++this.contextId;
 
@@ -225,20 +222,14 @@ export class Context {
       this._loseContext = loseContextExt.loseContext.bind(loseContextExt);
     } else this._restoreContext = this._loseContext = noop;
 
-    this.isLost = gl.isContextLost
-      ? gl.isContextLost.bind(gl)
-      : noopReturnsWith(1);
+    this.isLost = gl.isContextLost ? gl.isContextLost.bind(gl) : noopReturnsWith(1);
 
     gl.pixelStorei(Const.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
     gl.enable(Const.BLEND);
     gl.blendColor(1, 1, 1, 1);
     gl.enable(Const.SCISSOR_TEST);
 
-    this._width =
-      this._height =
-      this._currentProgram =
-      this._currentBlendMode =
-        null;
+    this._width = this._height = this._currentProgram = this._currentBlendMode = null;
 
     this._textureMap = [];
     this._emptyTextureSlots = [];
@@ -248,6 +239,7 @@ export class Context {
     this.clearTextures();
     this.setCanvasSize(1, 1);
 
-    this._config.initCallback && setTimeout(this._config.initCallback, 1);
+    const { initCallback } = this._config;
+    initCallback && setTimeout(initCallback, 1);
   }
 }

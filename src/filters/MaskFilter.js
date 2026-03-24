@@ -1,8 +1,9 @@
 import { BaseTextureFilter } from "./BaseTextureFilter";
 
+// prettier-ignore
 const _GLSL = BaseTextureFilter.$createGLSL(
-  "int v2=int(uL[1].z);" +
-  "oCl.a*=v2<4?txCl[v2]:(txCl.r+txCl.g+txCl.b+txCl.a)/4.;"
+  "int v2=int(uL[1].z);" + 
+  "oCl.a*=v2<4?txCl[v2]:(txCl.r+txCl.g+txCl.b+txCl.a)/4.;",
 );
 
 /**

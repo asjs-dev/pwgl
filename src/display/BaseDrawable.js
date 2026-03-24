@@ -1,7 +1,7 @@
-import { Item } from "./Item";
 import { Matrix3Utilities } from "../math/Matrix3Utilities";
 import "../math/PointType";
 import "../math/RectangleType";
+import { Item } from "./Item";
 
 /**
  * Base drawable class
@@ -29,30 +29,25 @@ export class BaseDrawable extends Item {
    */
   getBounds() {
     this.$calcCorners();
-    const corners = this.$corners,
-      bounds = this.$bounds,
-      a = corners[0],
-      b = corners[1],
-      c = corners[2],
-      d = corners[3];
 
-    bounds.x = Math.min(a.x, b.x, c.x, d.x);
-    bounds.y = Math.min(a.y, b.y, c.y, d.y);
-    bounds.width = Math.max(a.x, b.x, c.x, d.x);
-    bounds.height = Math.max(a.y, b.y, c.y, d.y);
+    const { $corners, $bounds } = this;
+    const a = $corners[0];
+    const b = $corners[1];
+    const c = $corners[2];
+    const d = $corners[3];
 
-    return bounds;
+    $bounds.x = Math.min(a.x, b.x, c.x, d.x);
+    $bounds.y = Math.min(a.y, b.y, c.y, d.y);
+    $bounds.width = Math.max(a.x, b.x, c.x, d.x);
+    $bounds.height = Math.max(a.y, b.y, c.y, d.y);
+
+    return $bounds;
   }
 
   /**
    * @ignore
    */
   $calcCorners() {
-    this.stage &&
-      Matrix3Utilities.calcCorners(
-        this.$corners,
-        this.matrixCache,
-        this.stage.renderer
-      );
+    this.stage && Matrix3Utilities.calcCorners(this.$corners, this.matrixCache, this.stage.renderer);
   }
 }
