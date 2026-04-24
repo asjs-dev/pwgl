@@ -5,14 +5,23 @@ import { BaseDrawable } from "./BaseDrawable";
 /**
  * Light
  * @extends {BaseDrawable}
- * @property {LightTransform} transform
- * @property {boolean} castShadow
- * @property {boolean} shading
- * @property {boolean} centerReflection
- * @property {boolean} flattenShadow
- * @property {boolean} fading
- * @property {number} flags
- * @property {number} type - Type of the Light
+ * @property {LightTransform} transform - Light transform
+ * @property {boolean} castShadow - Cast shadow or not
+ * @property {boolean} shading - Shading the light
+ * @property {boolean} centerReflection - The reflection moves towards the center of the screen
+ * @property {boolean} flattenShadow - Flatten the shadow <br>
+ *                                   - Cast shadow if true and a pixel is higher or equal than the light z position <br>
+ *                                   - Cast shadow if false and a pixel is higher than the light z position
+ * @property {boolean} fading - Fading the light
+ * @property {number} flags - Light flags <br>
+ *                          -- 1: castShadow <br>
+ *                          -- 2: shading <br>
+ *                          -- 4: flattenShadow <br>
+ *                          -- 8: centerReflection <br>
+ *                          -- 16: fading
+ * @property {number} type - Type of the Light <br>
+ *                         -- Light.Type.POINT [default] <br> 
+ *                         -- Light.Type.DIRECTIONAL
  * @property {number} shadowLength - Length of shadow
  * @property {number} maxShadowStep - The maximum step of shadow caster per pixel <br>
  *                                  - Default value is 128
