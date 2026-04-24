@@ -17,7 +17,7 @@ export class TextureInfo {
     this.maxMipMapLevel = this.baseMipMapLevel = 0;
     this.type = Const.UNSIGNED_BYTE;
 
-    this.$currentAglId = this._currentActiveId = -1;
+    this.$currentAglId = this.$currentActiveId = -1;
     this.$updated = true;
     this.$width = this.$height = 1;
   }
@@ -175,7 +175,7 @@ export class TextureInfo {
    */
   unbindTexture(gl, id) {
     this.activeTexture(gl, id);
-    this._currentActiveId = -1;
+    this.$currentActiveId = -1;
     gl.bindTexture(this.target, null);
   }
 
@@ -185,7 +185,7 @@ export class TextureInfo {
    * @param {number} id - The texture id
    */
   activeTexture(gl, id) {
-    this._currentActiveId = id;
+    this.$currentActiveId = id;
     gl.activeTexture(Const.TEXTURE0 + id);
   }
 
@@ -196,7 +196,7 @@ export class TextureInfo {
    */
   bindActiveTexture(gl, id) {
     this.activeTexture(gl, id);
-    gl.bindTexture(this.target, this._baseTexture);
+    gl.bindTexture(this.target, this.$baseTexture);
   }
 
   /**
@@ -204,7 +204,7 @@ export class TextureInfo {
    * @param {WebGLContext} gl - The WebGL context
    */
   useTexture(gl) {
-    gl.bindTexture(this.target, this._baseTexture);
+    gl.bindTexture(this.target, this.$baseTexture);
     this.createTexImage2D(gl);
   }
 
@@ -213,7 +213,7 @@ export class TextureInfo {
    * @param {WebGLContext} gl - The WebGL context
    */
   useTextureAfterUpdate(gl) {
-    gl.bindTexture(this.target, this._baseTexture);
+    gl.bindTexture(this.target, this.$baseTexture);
     this.uploadTextureInfo(gl);
   }
 

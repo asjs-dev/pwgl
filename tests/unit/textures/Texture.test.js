@@ -49,7 +49,7 @@ describe("Texture", () => {
 
     texture.useActiveTexture = vi.fn();
     texture.bindActiveTexture = vi.fn();
-    texture._baseTexture = { id: "existing" };
+    texture.$baseTexture = { id: "existing" };
 
     gl.gl_id = 1;
     gl.createTexture = vi.fn(() => ({ id: "created" }));
@@ -68,7 +68,7 @@ describe("Texture", () => {
     texture.$updated = false;
     texture._loaded = false;
     texture.shouldUpdate = false;
-    texture._currentActiveId = 0;
+    texture.$currentActiveId = 0;
     texture.use(gl, 2, true, 20);
     expect(texture.bindActiveTexture).toHaveBeenCalledWith(gl, 2);
   });

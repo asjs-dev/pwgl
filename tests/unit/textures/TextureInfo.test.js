@@ -28,12 +28,12 @@ describe("TextureInfo", () => {
     gl.texParameteri = vi.fn();
     gl.generateMipmap = vi.fn();
 
-    texture._baseTexture = { id: "texture" };
+    texture.$baseTexture = { id: "texture" };
     texture.$renderSource = { id: "source" };
     texture.useActiveTexture(gl, 2);
 
     expect(gl.activeTexture).toHaveBeenCalled();
-    expect(gl.bindTexture).toHaveBeenCalledWith(texture.target, texture._baseTexture);
+    expect(gl.bindTexture).toHaveBeenCalledWith(texture.target, texture.$baseTexture);
     expect(gl.texImage2D).toHaveBeenCalled();
     expect(gl.texParameteri).toHaveBeenCalledTimes(6);
     expect(gl.generateMipmap).toHaveBeenCalledWith(texture.target);

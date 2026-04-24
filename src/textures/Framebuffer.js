@@ -79,14 +79,20 @@ export class Framebuffer extends TextureInfo {
   use(gl, id, forceBind) {
     if (this.$currentAglId < gl.gl_id) {
       this.$currentAglId = gl.gl_id;
-      this._baseTexture = gl.createTexture();
+      this.$baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
 
       this._framebuffer = gl.createFramebuffer();
 
       this.bind(gl);
 
-      gl.framebufferTexture2D(Const.FRAMEBUFFER, Const.COLOR_ATTACHMENT0, Const.TEXTURE_2D, this._baseTexture, 0);
+      gl.framebufferTexture2D(
+        Const.FRAMEBUFFER,
+        Const.COLOR_ATTACHMENT0,
+        Const.TEXTURE_2D,
+        this.$baseTexture,
+        0,
+      );
 
       this.unbind(gl);
     } else if (this.$updated) {
@@ -95,7 +101,7 @@ export class Framebuffer extends TextureInfo {
     } else if (this._resized) {
       this._resized = false;
       this.useActiveTexture(gl, id);
-    } else if (this._currentActiveId !== id || forceBind) {
+    } else if (this.$currentActiveId !== id || forceBind) {
       this.bindActiveTexture(gl, id);
     }
   }
