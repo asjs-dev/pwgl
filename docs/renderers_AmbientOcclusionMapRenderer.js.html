@@ -161,22 +161,29 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
     `${BASE_VERTEX_SHADER_INITIALIZATION}` +
 
+    `uniform vec2 ` +
+      `uF;` +
     `uniform vec4 ` +
       `uD;` +
 
     `out vec2 ` +
       `v0;` +
-    `flat out vec2 ` +
-      `v1;` +
+    `flat out vec3 ` +
+      `v1,` +
+      `v2;` +
 
     `void main(){` +
       `${BASE_VERTEX_SHADER}` +
       
       `float ` + 
         `r=RADIANS_360/uD.y;` + 
+      
+      `vec2 ` +
+        `ts=1./floor(uF);` +
 
       `v0=${BASE_VERTEX_SHADER_POSITION};` +
-      `v1=vec2(cos(r),sin(r));` +
+      `v1=vec3(ts,length(ts)*uD.x);` +
+      `v2=vec3(cos(r),sin(r),clamp(uD.y,1.,32.));` +
     `}`;
   }
 
@@ -191,8 +198,9 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
 
     `in vec2 ` +
       `v0;` +
-    `flat in vec2 ` +
-      `v1;` +
+    `flat in vec3 ` +
+      `v1,` +
+      `v2;` +
 
     `uniform sampler2D ` +
       `uB,` +
@@ -200,7 +208,6 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
     `uniform float ` +
       `uE;` +
     `uniform vec2 ` +
-      `uF,` +
       `uG;` +
     `uniform vec4 ` +
       `uD;` +
@@ -215,30 +222,31 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
         `tx=texture(uB,v0).g,` +
         `v=0.;` +
         
-      `if(uD.y>0.&amp;&amp;uD.x>0.){` +
+      `if(uD.x*uD.y>0.){` +
         `int ` +
-          `l=clamp(int(uD.y),1,32);` +
-        
+          `l=int(v2.z);` +
+
         `vec2 ` +
-          `ts=1./floor(uF);` +
+          `ts=v1.xy;` +
 
         `float ` +
           `rnd=rand(v0+floor(uG)*ts),` + 
           `ta=RADIANS_360*rnd,` +
-          `ln=1.-rnd;` +
+          `nrnd=max(v1.z,rnd),` +
+          `ln=1.-nrnd;` +
         
         `vec2  ` +
           `rg,` +
-          `n=uD.x*ts*rnd,` +
+          `n=uD.x*ts*nrnd,` +
           `dr=vec2(cos(ta),sin(ta));` +
 
         `for(int i=0;i&lt;l;i++){` +
           `rg=max(texture(uB,v0+n*dr).rg-tx,Z.xx);` +
-          `v+=max(0.,(rg.y-rg.x)*(1.-rg.x)*ln);` +
+          `v+=max(0.,(min(rg.y-rg.x,v1.z)*ln-rg.x));` +
           
           `dr=vec2(` + 
-            `v1.x*dr.x-v1.y*dr.y,` +
-            `v1.y*dr.x+v1.x*dr.y` +
+            `v2.x*dr.x-v2.y*dr.y,` +
+            `v2.y*dr.x+v2.x*dr.y` +
           `);` +
         `}` +
         `v/=float(l);` +

@@ -1,6 +1,6 @@
 {
   "name": "pwgl",
-  "version": "7.0.3",
+  "version": "7.0.4",
   "main": "./dist/pwgl.umd.js",
   "module": "dist/pwgl.es.js",
   "description": "WebGL2 2D framework",
