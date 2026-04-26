@@ -17,7 +17,8 @@
   },
   "templates": {
     "default": {
-      "layoutFile": "./docs/assets/custom.extensions.tmpl"
+      "layoutFile": "./docs/assets/custom.extensions.tmpl",
+      "includeDate": false
     },
     "cleverLinks": false,
     "monospaceLinks": false

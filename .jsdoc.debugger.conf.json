@@ -17,7 +17,8 @@
   },
   "templates": {
     "default": {
-      "layoutFile": "./docs/assets/custom.debugger.tmpl"
+      "layoutFile": "./docs/assets/custom.debugger.tmpl",
+      "includeDate": false
     },
     "cleverLinks": false,
     "monospaceLinks": false
