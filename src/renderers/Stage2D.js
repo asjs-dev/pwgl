@@ -472,12 +472,12 @@ export class Stage2D extends BatchRenderer {
 
     `${useRepeatTextures
       ? `${Utils.GLSL.RANDOM2}` +
-        `vec4 gCB(vec2 st){` +
+        `vec4 gCB(vec2 c0){` +
           `vec2 ` +
             `uv=v0;` +
 
           `float ` +
-            `rnd=rand2(floor(uv+st)/100.),` +
+            `rnd=rand2(c0/100.),` +
             `rndDg=rnd*RADIANS_360*v5.x;` +
 
           `if(rndDg>0.){` +
@@ -486,12 +486,12 @@ export class Stage2D extends BatchRenderer {
             `uv=vec2(uv.x*rt.y-uv.y*rt.x,uv.x*rt.x+uv.y*rt.y);` +
           `}` +
 
-          `return ${getSimpleTexColor(`mod(uv,Z.yy)`)};` +
+          `return ${getSimpleTexColor(`fract(uv)`)};` +
         `}` +
 
-        `float gRCB(vec2 st,vec2 uv){` +
+        `float gRCB(vec2 st,vec2 c0,vec2 uv){` +
           `float ` +
-            `rnd=rand2(floor(v0+st)/100.);` +
+            `rnd=rand2((c0+st)/100.);` +
           `return (1.-(v5.w*rnd-v5.w*.5)*v5.y)*` +
             `cs(0.,1.,1.-st.x-uv.x)*cs(0.,1.,1.-st.y-uv.y);` +
         `}`
@@ -500,24 +500,26 @@ export class Stage2D extends BatchRenderer {
     `void main(){` +
       `if(v2.y>-1.){` +
         `vec2 ` +
-          `uv=mod(v0,Z.yy);` +
+          `uv=fract(v0);` +
 
         `${useRepeatTextures
           ? `if(v5.x>0.||v5.y>0.){` +
+              `vec2 ` +
+                `c0=floor(v0);` +
               `vec4 ` +
                 `rc=vec4(` + 
-                  `gRCB(Z.xx,uv),` +
-                  `gRCB(Z.yx,uv),` +
-                  `gRCB(Z.xy,uv),` +
-                  `gRCB(Z.yy,uv)` +
+                  `gRCB(Z.xx,c0,uv),` +
+                  `gRCB(Z.yx,c0,uv),` +
+                  `gRCB(Z.xy,c0,uv),` +
+                  `gRCB(Z.yy,c0,uv)` +
                 `);` +
               `oCl=mix(` +
-                `gCB(Z.xy),` +
+                `gCB(Z.xy+c0),` +
                 `clamp(` +
-                  `gCB(Z.xx)*rc.x+` +
-                  `gCB(Z.yx)*rc.y+` +
-                  `gCB(Z.xy)*rc.z+` +
-                  `gCB(Z.yy)*rc.w` +
+                  `gCB(Z.xx+c0)*rc.x+` +
+                  `gCB(Z.yx+c0)*rc.y+` +
+                  `gCB(Z.xy+c0)*rc.z+` +
+                  `gCB(Z.yy+c0)*rc.w` +
                 `,0.,1.),` +
                 `vec4(v5.z)` + 
               `);` +
@@ -534,7 +536,7 @@ export class Stage2D extends BatchRenderer {
                 `);` +
             `}else `
           : ``}oCl=${getSimpleTexColor(`uv`)};` +
-      `}else oCl+=1.;` +
+      `}else oCl=vec4(1.);` +
 
       `oCl.a*=v1;` +
 
