@@ -74,7 +74,6 @@ const _INTERACTION_EVENT_MAPPED_TYPES = {
  *    - Renders multiple textures
  * </pre>
  * @extends {BatchRenderer}
- * @property {StageContainer} container
  */
 export class Stage2D extends BatchRenderer {
   /**

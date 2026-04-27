@@ -14,6 +14,8 @@ import { BatchRenderer } from "./BatchRenderer";
  * @property {TextureInfo} normalMap
  * @property {TextureInfo} heightMap
  * @property {TextureInfo} roughnessMap
+ * @property {number} offsetX // Offset x
+ * @property {number} offsetY // Offset y
  */
 
 /**
@@ -29,10 +31,6 @@ import { BatchRenderer } from "./BatchRenderer";
  *  - Every input texture are optional
  * </pre>
  * @extends {BatchRenderer}
- * @property {TextureInfo} sourceTexture
- * @property {TextureInfo} normalMap
- * @property {TextureInfo} heightMap
- * @property {TextureInfo} roughnessMap
  */
 export class LightRenderer extends BatchRenderer {
   /**
@@ -48,6 +46,7 @@ export class LightRenderer extends BatchRenderer {
       "aC",
       "uC",
       "uF",
+      "uG",
       "uM",
       "uN",
       "uO"
@@ -64,6 +63,8 @@ export class LightRenderer extends BatchRenderer {
     this.normalMap = config.normalMap;
     this.heightMap = config.heightMap;
     this.roughnessMap = config.roughnessMap;
+    this.offsetX = config.offsetX ?? 0;
+    this.offsetY = config.offsetY ?? 0;
 
     // prettier-ignore
     this._extensionBuffer = new Buffer(
@@ -116,6 +117,16 @@ export class LightRenderer extends BatchRenderer {
     if (v) {
       this._sizable = v;
     }
+  }
+
+  /**
+   * Sets the offset for the light renderer.
+   * @param {number} x - The x offset.
+   * @param {number} y - The y offset.
+   */
+  setOffset(x, y) {
+    this.offsetX = x;
+    this.offsetY = y;
   }
 
   /**
@@ -175,6 +186,7 @@ export class LightRenderer extends BatchRenderer {
 
     $gl.uniform3f($locations.uO, sourceTextureBoolean, roughnessMapBoolean, normalMapBoolean);
     $gl.uniform2f($locations.uF, this._sizable.width, this._sizable.height);
+    $gl.uniform2f($locations.uG, this.offsetX, this.offsetY);
 
     this.$uploadBuffers();
 
@@ -284,6 +296,8 @@ export class LightRenderer extends BatchRenderer {
 
     `uniform vec2 ` +
       `uF;` +
+    `uniform vec2 ` +
+      `uG;` +
     `uniform vec3 ` +
       `uO;` +
     `uniform sampler2D ` +
@@ -361,17 +375,17 @@ export class LightRenderer extends BatchRenderer {
           `sftv=normalize(vec3(` +
             `(flg&8)>0?uF*.5:tUv,` +
             `HEIGHT` +
-          `)-sf),` +
-          `hlf=normalize(sftl+sftv);` +
+          `)-sf);` +
 
         `vol*=dot(nm,sftl);` +
-        
+
         `if(vol<=0.)discard;` +
         
         `float ` + 
-          `shn=uO.y>0.?texture(uN,v0).r:tc.b;` +
+          `shn=uO.y>0.?texture(uN,v0).r:tc.b,` +
+          `ndh=max(dot(nm,normalize(sftl+sftv)),0.);` +
 
-        `spc=pow(max(dot(nm,hlf),0.),32.)*shn*v3.y;` +
+        `spc=pow(ndh,32.)*shn*v3.y;` +
       `}` +
 
       `if((flg&1)>0){` +
@@ -395,7 +409,7 @@ export class LightRenderer extends BatchRenderer {
           `float ` +
             `opdL=length(opd),` + // horizontal step
             `hst=(ph-v4.z)/fltDst,` + // vertical step
-            `rnd=v4.w*rand(v0);` +
+            `rnd=v4.w*rand(v0+floor(uG)/floor(uF));` +
           `${loop(
             `st+=rnd;` +
             `pc=v4.z+i*hst;` +
@@ -406,8 +420,8 @@ export class LightRenderer extends BatchRenderer {
 
       `vec3 ` +
         `stCl=uO.x>0.?texture(uC,v0).rgb:Z.yyy;` +
-        
-      `oCl=vec4((stCl+spc)*v5.rgb*vol*shdw,1);` +
+
+      `oCl=vec4((stCl+spc)*v5.rgb*vol*min(shdw,1.),1);` +
     `}`;
   }
 }

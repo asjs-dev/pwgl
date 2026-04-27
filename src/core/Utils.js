@@ -85,7 +85,7 @@ export const Utils = {
     DEFINE: {
       RADIANS_360: "#define RADIANS_360 radians(360.)\n",
       HEIGHT: "#define HEIGHT 255.\n",
-      Z: "#define Z vec3(0,1,-1)\n",
+      Z: "#define Z vec3(0,1,-1)\n", // Z swizzle patterns: Z.xx=(0,0), Z.yx=(1,0), Z.xy=(0,1), Z.yy=(1,1)
       PI: `#define PI ${Math.PI}\n`,
     },
     RANDOM: 

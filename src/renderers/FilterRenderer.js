@@ -22,8 +22,6 @@ import { BaseRenderer } from "./BaseRenderer";
  *    - Renders filters to a source image
  * </pre>
  * @extends {BaseRenderer}
- * @property {Array<BaseFilter>} filters
- * @property {TextureInfo} sourceTexture
  */
 export class FilterRenderer extends BaseRenderer {
   /**
