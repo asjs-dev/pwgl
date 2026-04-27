@@ -369,7 +369,6 @@ export class LightRenderer extends BatchRenderer {
         `if(vol<=0.)discard;` +
         
         `float ` + 
-          `rgh=1.,` +
           `shn=uO.y>0.?texture(uN,v0).r:tc.b;` +
 
         `spc=pow(max(dot(nm,hlf),0.),32.)*shn*v3.y;` +

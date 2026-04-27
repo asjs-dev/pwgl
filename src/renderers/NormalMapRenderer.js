@@ -105,13 +105,14 @@ export class NormalMapRenderer extends BaseRenderer {
         `h0=texture(uB,p0*p).g,` +
         `h1=texture(uB,(p0+Z.yx)*p).g,` +
         `h2=texture(uB,(p0+Z.xy)*p).g;` +
-
+      
       `vec3 ` + 
         `nm=normalize(` + 
           `cross(` + 
             `vec3(1,0,h1-h0),` + 
             `vec3(0,1,h2-h0)` + 
-          `))*HEIGHT*Z.yzy;` +
+          `)` + 
+        `)*HEIGHT*Z.yzy;` +
 
       `oCl=vec4(nm*.5+.5,1);` +
     `}`;
