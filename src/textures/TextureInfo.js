@@ -1,5 +1,3 @@
-import { Const } from "../core/Utils";
-
 /**
  * TextureInfo
  * @property {number} target
@@ -10,12 +8,12 @@ export class TextureInfo {
    * @constructor
    */
   constructor() {
-    this.target = Const.TEXTURE_2D;
-    this.wrapS = this.wrapT = Const.CLAMP_TO_EDGE;
-    this.internalFormat = this.format = Const.RGBA;
-    this.minFilter = this.magFilter = Const.LINEAR;
+    this.target = WebGL2RenderingContext.TEXTURE_2D;
+    this.wrapS = this.wrapT = WebGL2RenderingContext.CLAMP_TO_EDGE;
+    this.internalFormat = this.format = WebGL2RenderingContext.RGBA;
+    this.minFilter = this.magFilter = WebGL2RenderingContext.LINEAR;
     this.maxMipMapLevel = this.baseMipMapLevel = 0;
-    this.type = Const.UNSIGNED_BYTE;
+    this.type = WebGL2RenderingContext.UNSIGNED_BYTE;
 
     this.$currentAglId = this.$currentActiveId = -1;
     this.$updated = true;
@@ -186,7 +184,7 @@ export class TextureInfo {
    */
   activeTexture(gl, id) {
     this.$currentActiveId = id;
-    gl.activeTexture(Const.TEXTURE0 + id);
+    gl.activeTexture(WebGL2RenderingContext.TEXTURE0 + id);
   }
 
   /**
@@ -243,12 +241,12 @@ export class TextureInfo {
    */
   uploadTextureInfo(gl) {
     const { target } = this;
-    gl.texParameteri(target, Const.TEXTURE_WRAP_S, this._wrapS);
-    gl.texParameteri(target, Const.TEXTURE_WRAP_T, this._wrapT);
-    gl.texParameteri(target, Const.TEXTURE_MIN_FILTER, this._minFilter);
-    gl.texParameteri(target, Const.TEXTURE_MAG_FILTER, this._magFilter);
-    gl.texParameteri(target, Const.TEXTURE_MAX_LEVEL, this._maxMipMapLevel);
-    gl.texParameteri(target, Const.TEXTURE_BASE_LEVEL, this._baseMipMapLevel);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_WRAP_S, this._wrapS);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_WRAP_T, this._wrapT);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MAX_LEVEL, this._maxMipMapLevel);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_BASE_LEVEL, this._baseMipMapLevel);
     gl.generateMipmap(target);
   }
 }

@@ -107,22 +107,23 @@ const _convertArrays = (values) =>
  * The proxy intercepts method calls, records timing and arguments,
  * and stores per-frame snapshots in `PWGLDebugger.instances`.
  *
- * @param {WebGLRenderingContext|WebGL2RenderingContext} context Original WebGL context.
+ * @param {WebGL2RenderingContext} context Original WebGL context.
  * @param {object} [options={}] Debugger options.
  * @param {number} [options.maxFrameCount=5] Maximum number of recorded frames (clamped to 0..20).
  * @param {number} [options.flags=0] Bitmask of `PWGLDebugger.SHOW_*` flags.
- * @returns {WebGLRenderingContext|WebGL2RenderingContext} Proxy-wrapped context.
+ * @returns {WebGL2RenderingContext} Proxy-wrapped context.
  */
 export const debugContext = (context, options = {}) => {
   const MAX_FRAME_COUNT = clamp(options.maxFrameCount ?? 5, 0, 20);
   const FLAGS = options.flags ?? 0;
   const debug = [];
-  const constMap = PWGL
-    ? Object.entries(PWGL.Const).reduce((acc, [name, value]) => {
-        acc[value] = name;
-        return acc;
-      }, {})
-    : {};
+  const constMap =
+    typeof WebGL2RenderingContext !== "undefined"
+      ? Object.entries(WebGL2RenderingContext).reduce((acc, [name, value]) => {
+          acc[value] = name;
+          return acc;
+        }, {})
+      : {};
 
   let currentFrame;
   let currentTimestamp;

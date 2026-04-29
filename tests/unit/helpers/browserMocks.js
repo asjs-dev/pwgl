@@ -1,5 +1,6 @@
-export const createMockGl = () => ({
+export const WEBGL2_RENDERING_CONTEXT = {
   ARRAY_BUFFER: 34962,
+  ELEMENT_ARRAY_BUFFER: 34963,
   DYNAMIC_DRAW: 35048,
   STATIC_DRAW: 35044,
   FLOAT: 5126,
@@ -15,6 +16,7 @@ export const createMockGl = () => ({
   DST_COLOR: 774,
   SRC_COLOR: 768,
   ONE_MINUS_SRC_COLOR: 769,
+  ONE_MINUS_DST_COLOR: 775,
   TEXTURE_2D: 3553,
   CLAMP_TO_EDGE: 33071,
   RGBA: 6408,
@@ -30,9 +32,25 @@ export const createMockGl = () => ({
   MAX_TEXTURE_IMAGE_UNITS: 34930,
   VERTEX_SHADER: 35633,
   FRAGMENT_SHADER: 35632,
+  LINK_STATUS: 35714,
+  VALIDATE_STATUS: 35715,
   TRIANGLE_STRIP: 5,
   UNSIGNED_SHORT: 5123,
   COLOR_BUFFER_BIT: 16384,
+  UNPACK_PREMULTIPLY_ALPHA_WEBGL: 37441,
+  BLEND: 3042,
+  SCISSOR_TEST: 3089,
+  FRAMEBUFFER: 36160,
+  COLOR_ATTACHMENT0: 36064,
+};
+
+export const installWebGL2RenderingContextMock = () => {
+  globalThis.WebGL2RenderingContext = WEBGL2_RENDERING_CONTEXT;
+  return WEBGL2_RENDERING_CONTEXT;
+};
+
+export const createMockGl = () => ({
+  ...WEBGL2_RENDERING_CONTEXT,
   createTexture: () => ({ id: "texture" }),
   activeTexture: () => {},
   bindTexture: () => {},

@@ -1,6 +1,6 @@
 import { Buffer } from "./core/Buffer";
 import { Context } from "./core/Context";
-import { Const, Utils } from "./core/Utils";
+import { Utils } from "./core/Utils";
 
 import { BlendMode } from "./rendering/BlendMode";
 import { TintType } from "./rendering/TintType";
@@ -59,7 +59,6 @@ window.PWGL = window.AGL = {
   Context,
   Buffer,
   Utils,
-  Const,
 
   Item,
   BaseDrawable,

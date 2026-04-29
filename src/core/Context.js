@@ -3,7 +3,7 @@ import { noopReturnsWith } from "../../extensions/utils/noopReturnsWith";
 import { removeFromArray } from "../../extensions/utils/removeFromArray";
 import "../rendering/BlendMode";
 import { TextureInfo } from "../textures/TextureInfo";
-import { Const, Utils } from "./Utils";
+import { Utils } from "./Utils";
 
 /**
  * Context
@@ -226,10 +226,10 @@ export class Context {
 
     this.isLost = gl.isContextLost ? gl.isContextLost.bind(gl) : noopReturnsWith(1);
 
-    gl.pixelStorei(Const.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
-    gl.enable(Const.BLEND);
+    gl.pixelStorei(WebGL2RenderingContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+    gl.enable(WebGL2RenderingContext.BLEND);
     gl.blendColor(1, 1, 1, 1);
-    gl.enable(Const.SCISSOR_TEST);
+    gl.enable(WebGL2RenderingContext.SCISSOR_TEST);
 
     this._width = this._height = this._currentProgram = this._currentBlendMode = null;
 

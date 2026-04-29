@@ -172,22 +172,22 @@ export const Utils = {
    * @returns {WebGLProgram} WebGL program
    */
   createProgram: (gl, vertexShaderSource, fragmentShaderSource) => {
-    const vertexShader = _createShader(gl, vertexShaderSource, Const.VERTEX_SHADER);
-    const fragmentShader = _createShader(gl, fragmentShaderSource, Const.FRAGMENT_SHADER);
+    const vertexShader = _createShader(gl, vertexShaderSource, WebGL2RenderingContext.VERTEX_SHADER);
+    const fragmentShader = _createShader(gl, fragmentShaderSource, WebGL2RenderingContext.FRAGMENT_SHADER);
     const program = gl.createProgram();
 
     gl.attachShader(program, vertexShader);
     gl.attachShader(program, fragmentShader);
     gl.linkProgram(program);
 
-    if (!gl.getProgramParameter(program, Const.LINK_STATUS)) {
+    if (!gl.getProgramParameter(program, WebGL2RenderingContext.LINK_STATUS)) {
       const vertexShaderInfo = gl.getShaderInfoLog(vertexShader);
       const fragmentShaderInfo = gl.getShaderInfoLog(fragmentShader);
 
       console.error(
         [
           "Program info: " + gl.getProgramInfoLog(program),
-          "Validate status: " + gl.getProgramParameter(program, Const.VALIDATE_STATUS),
+          "Validate status: " + gl.getProgramParameter(program, WebGL2RenderingContext.VALIDATE_STATUS),
           ...(vertexShaderInfo
             ? ["", `Vertex shader info: ${vertexShaderInfo}`, `Vertex shader: ${vertexShaderSource}`]
             : ""),
@@ -224,21 +224,13 @@ export const Utils = {
   },
 };
 
-/**
- * Contains all constant values for WebGL
- * @type {Object}
- */
-export const Const = {};
-
 const _gl = document.createElement("canvas").getContext("webgl2");
 if (_gl) {
-  for (let key in _gl) {
-    const value = _gl[key];
-    if (typeof value === "number" && key === key.toUpperCase()) {
-      Const[key] = value;
-    }
-  }
-
   Utils.INFO.isWebGl2Supported = true;
-  Utils.INFO.maxTextureImageUnits = _gl.getParameter(Const.MAX_TEXTURE_IMAGE_UNITS);
+  Utils.INFO.maxTextureImageUnits = _gl.getParameter(WebGL2RenderingContext.MAX_TEXTURE_IMAGE_UNITS);
+
+  const ext = _gl.getExtension("WEBGL_lose_context");
+  if (ext) {
+    ext.loseContext();
+  }
 }

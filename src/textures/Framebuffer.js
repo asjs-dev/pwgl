@@ -1,4 +1,3 @@
-import { Const } from "../core/Utils";
 import { TextureInfo } from "./TextureInfo";
 
 /**
@@ -59,7 +58,7 @@ export class Framebuffer extends TextureInfo {
    * @param {WebGLContext} gl - The WebGL context
    */
   bind(gl) {
-    gl.bindFramebuffer(Const.FRAMEBUFFER, this._framebuffer);
+    gl.bindFramebuffer(WebGL2RenderingContext.FRAMEBUFFER, this._framebuffer);
   }
 
   /**
@@ -67,7 +66,7 @@ export class Framebuffer extends TextureInfo {
    * @param {WebGLContext} gl - The WebGL context
    */
   unbind(gl) {
-    gl.bindFramebuffer(Const.FRAMEBUFFER, null);
+    gl.bindFramebuffer(WebGL2RenderingContext.FRAMEBUFFER, null);
   }
 
   /**
@@ -87,9 +86,9 @@ export class Framebuffer extends TextureInfo {
       this.bind(gl);
 
       gl.framebufferTexture2D(
-        Const.FRAMEBUFFER,
-        Const.COLOR_ATTACHMENT0,
-        Const.TEXTURE_2D,
+        WebGL2RenderingContext.FRAMEBUFFER,
+        WebGL2RenderingContext.COLOR_ATTACHMENT0,
+        WebGL2RenderingContext.TEXTURE_2D,
         this.$baseTexture,
         0,
       );

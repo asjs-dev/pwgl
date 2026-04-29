@@ -11,7 +11,7 @@ export const AnimatedWater = window.PWGL
         this._height = 1;
 
         const heightMapTexture = PWGL.Texture.loadImage(noiseTexture);
-        heightMapTexture.magFilter = PWGL.Const.LINEAR;
+        heightMapTexture.magFilter = WebGL2RenderingContext.LINEAR;
 
         this._backdropImage = new PWGL.Image();
         this.addChild(this._backdropImage);
@@ -114,7 +114,7 @@ export const AnimatedWater = window.PWGL
         const waveSpeedY = waveSpeedX * 2;
 
         this._wave += waveSpeedX * 2.5;
-        
+
         const sinWave = Math.sin(this._wave) * 0.3;
         const cosWave = Math.cos(this._wave) * 0.3;
 

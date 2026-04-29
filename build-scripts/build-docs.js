@@ -1,4 +1,4 @@
-// scripts/build-docs.js
+// build-scripts/build-docs.js
 const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
@@ -31,7 +31,7 @@ function run(cmd) {
 removeHtmlFilesRecursively("./docs");
 
 run("./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.conf.json");
-run("./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.extensions.conf.json");
-run("./node_modules/jsdoc/jsdoc.js -c ./.jsdoc.debugger.conf.json");
-run("node scripts/clean-folder.js");
-run("node scripts/build-examples.js");
+run("./node_modules/jsdoc/jsdoc.js -c extensions/.jsdoc.conf.json");
+run("./node_modules/jsdoc/jsdoc.js -c debugger/.jsdoc.conf.json");
+run("node build-scripts/clean-folder.js");
+run("node build-scripts/build-examples.js");

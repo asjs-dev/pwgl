@@ -2,7 +2,7 @@ import replace from "@rollup/plugin-replace";
 import fs from "fs";
 import path from "path";
 import { defineConfig } from "vite";
-import { copyFiles } from "../scripts/copy-files";
+import { copyFiles } from "../build-scripts/copy-files";
 
 const packageJsonPath = path.resolve(__dirname, "./package.json");
 const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));

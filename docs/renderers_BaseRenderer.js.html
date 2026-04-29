@@ -60,7 +60,7 @@
             <pre class="prettyprint source linenums"><code>import { noop } from "../../extensions/utils/noop";
 import { Color } from "../attributes/Color";
 import { Buffer } from "../core/Buffer";
-import { Const, Utils } from "../core/Utils";
+import { Utils } from "../core/Utils";
 import { Framebuffer } from "../textures/Framebuffer";
 
 /**
@@ -120,8 +120,8 @@ export class BaseRenderer {
       new Uint16Array([0, 1, 3, 2]),
       0,
       0,
-      Const.ELEMENT_ARRAY_BUFFER,
-      Const.STATIC_DRAW
+      WebGL2RenderingContext.ELEMENT_ARRAY_BUFFER,
+      WebGL2RenderingContext.STATIC_DRAW
     );
 
     // prettier-ignore
@@ -135,10 +135,10 @@ export class BaseRenderer {
       ]),
       1,
       2,
-      Const.ARRAY_BUFFER,
-      Const.STATIC_DRAW,
+      WebGL2RenderingContext.ARRAY_BUFFER,
+      WebGL2RenderingContext.STATIC_DRAW,
       0,
-      Const.UNSIGNED_SHORT
+      WebGL2RenderingContext.UNSIGNED_SHORT
     );
   }
 
@@ -217,7 +217,13 @@ export class BaseRenderer {
    * @ignore
    */
   $drawInstanced(count) {
-    this.$gl.drawElementsInstanced(Const.TRIANGLE_STRIP, 4, Const.UNSIGNED_SHORT, 0, count);
+    this.$gl.drawElementsInstanced(
+      WebGL2RenderingContext.TRIANGLE_STRIP,
+      4,
+      WebGL2RenderingContext.UNSIGNED_SHORT,
+      0,
+      count,
+    );
   }
 
   /**
@@ -302,7 +308,7 @@ export class BaseRenderer {
   _clear() {
     const { $gl, clearColor } = this;
     $gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-    $gl.clear(Const.COLOR_BUFFER_BIT);
+    $gl.clear(WebGL2RenderingContext.COLOR_BUFFER_BIT);
   }
 
   /**
@@ -344,7 +350,7 @@ export class BaseRenderer {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
             </nav>
 
             <br class="clear">

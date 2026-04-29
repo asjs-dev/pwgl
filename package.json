@@ -1,6 +1,6 @@
 {
   "name": "pwgl",
-  "version": "7.1.0",
+  "version": "8.0.0",
   "main": "./dist/pwgl.umd.js",
   "module": "dist/pwgl.es.js",
   "description": "WebGL2 2D framework",
@@ -25,8 +25,7 @@
     "build:pwgl": "vite build --config vite.config.js",
     "build:ext": "vite build --config extensions/vite.config.js",
     "build:debugger": "vite build --config debugger/vite.config.js",
-    "build:legacy": "node scripts/build-pwgl.js",
-    "docs": "node scripts/build-docs.js",
+    "docs": "node build-scripts/build-docs.js",
     "build:all": "npm run build:pwgl && npm run build:ext && npm run build:debugger && npm run docs",
     "test": "vitest",
     "test:run": "vitest run"

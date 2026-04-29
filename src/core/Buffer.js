@@ -1,5 +1,3 @@
-import { Const } from "./Utils";
-
 /**
  * Buffer
  * @property {any} data
@@ -22,10 +20,10 @@ export class Buffer {
     data,
     rows = 1,
     cols = 1,
-    target = Const.ARRAY_BUFFER,
-    type = Const.DYNAMIC_DRAW,
+    target = WebGL2RenderingContext.ARRAY_BUFFER,
+    type = WebGL2RenderingContext.DYNAMIC_DRAW,
     divisor = 1,
-    dataType = Const.FLOAT,
+    dataType = WebGL2RenderingContext.FLOAT,
   ) {
     const elemCount = rows * cols;
 
@@ -39,7 +37,7 @@ export class Buffer {
     this._offset = cols * 4;
     this._divisor = divisor;
     this._dataType = dataType;
-    if (this._type === Const.STATIC_DRAW) {
+    if (this._type === WebGL2RenderingContext.STATIC_DRAW) {
       this._stride = this._offset = 0;
     }
   }

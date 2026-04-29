@@ -78,9 +78,6 @@ export const installPWGLMock = () => {
     Container: MockContainer,
     Image: MockImage,
     Texture,
-    Const: {
-      LINEAR: 9729,
-    },
     BlendMode: {
       ADD: { id: "add" },
       SHADOW: { id: "shadow" },

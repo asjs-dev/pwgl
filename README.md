@@ -1,7 +1,7 @@
 # PWGL – 2D WebGL2 JavaScript Framework
 
 ![PWGL](https://asjs-dev.github.io/pwgl/assets/logo.v2x0.5.png?raw=true)
-PWGL (Programmable WebGL) is a JavaScript framework for creating **2D WebGL2 applications**.
+PWGL is a JavaScript framework for creating **2D WebGL2 games and applications**.
 
 ![Game Demo](https://asjs-dev.github.io/pwgl/assets/game.png)
 
@@ -45,13 +45,6 @@ PWGL provides multiple builds for different use cases.
 | `dist/pwgl.umd.js`            | UMD, minified                       |
 | `dist/pwgl.extensions.es.js`  | ES Module with extensions, minified |
 | `dist/pwgl.extensions.umd.js` | UMD with extensions, minified       |
-
-**Extra highly compressed builds (auto-generated during development/optimization build):**
-
-- `dist/pwgl.min.js` – minimal core build
-- `dist/pwgl.extensions.min.js` – minimal build with extensions
-
-> ⚠️ These extra compressed builds are **not standalone build targets** and are produced automatically during the development/optimization build process.
 
 ---
 
@@ -132,10 +125,7 @@ const initWebGlApplication = () => {
   const filterRenderer = new PWGL.FilterRenderer({
     context,
     sourceTexture: stage2DRendererFramebuffer,
-    filters: [
-      new PWGL.PixelateFilter({ intensity: 5 }),
-      new PWGL.TintFilter({ r: 3, g: 1, b: 0 }),
-    ],
+    filters: [new PWGL.PixelateFilter({ intensity: 5 }), new PWGL.TintFilter({ r: 3, g: 1, b: 0 })],
   });
 
   stageContainer.appendChild(context.canvas);
@@ -158,9 +148,7 @@ const initWebGlApplication = () => {
   PWGLExtensions.utils.enterFrame(render);
 };
 
-PWGL.Utils.initApplication(
-  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication(),
-);
+PWGL.Utils.initApplication((isWebGl2Supported) => isWebGl2Supported && initWebGlApplication());
 ```
 
 Filters [Demo](https://codepen.io/iroshan/pen/PwzQzGo)
@@ -184,9 +172,7 @@ const initWebGlApplication = () => {
   // load images and textures
   const baseTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
   const maskTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
-  const displacementTexture = PWGL.Texture.loadImage(
-    "https://picsum.photos/500/300",
-  );
+  const displacementTexture = PWGL.Texture.loadImage("https://picsum.photos/500/300");
 
   const stageContainer = document.body;
 
@@ -261,9 +247,7 @@ const initWebGlApplication = () => {
   PWGLExtensions.utils.enterFrame(render);
 };
 
-PWGL.Utils.initApplication(
-  (isWebGl2Supported) => isWebGl2Supported && initWebGlApplication(),
-);
+PWGL.Utils.initApplication((isWebGl2Supported) => isWebGl2Supported && initWebGlApplication());
 ```
 
 ---

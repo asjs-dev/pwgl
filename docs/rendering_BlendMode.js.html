@@ -57,13 +57,11 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { Const } from "../core/Utils";
-
-const _createBlendMode = (functions, equations) => ({
+            <pre class="prettyprint source linenums"><code>const _createBlendMode = (functions, equations) => ({
   functionName: "blendFunc" + (functions.length &lt; 3 ? "" : "Separate"),
   functions: functions,
   equationName: "blendEquation" + (!equations || equations.length &lt; 2 ? "" : "Separate"),
-  equations: equations || [Const.FUNC_ADD],
+  equations: equations || [WebGL2RenderingContext.FUNC_ADD],
 });
 
 /**
@@ -113,31 +111,61 @@ export const BlendMode = {
 
   NONE: _createBlendMode([0, 0]),
 
-  NORMAL_PM: _createBlendMode([Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
-  ADD_PM: _createBlendMode([Const.ONE, Const.ONE]),
-  MULTIPLY_PM: _createBlendMode([Const.DST_COLOR, Const.ONE_MINUS_SRC_ALPHA, Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
-  SCREEN_PM: _createBlendMode([Const.ONE, Const.ONE_MINUS_SRC_COLOR, Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
+  NORMAL_PM: _createBlendMode([WebGL2RenderingContext.ONE, WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA]),
+  ADD_PM: _createBlendMode([WebGL2RenderingContext.ONE, WebGL2RenderingContext.ONE]),
+  MULTIPLY_PM: _createBlendMode([
+    WebGL2RenderingContext.DST_COLOR,
+    WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA,
+    WebGL2RenderingContext.ONE,
+    WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA,
+  ]),
+  SCREEN_PM: _createBlendMode([
+    WebGL2RenderingContext.ONE,
+    WebGL2RenderingContext.ONE_MINUS_SRC_COLOR,
+    WebGL2RenderingContext.ONE,
+    WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA,
+  ]),
 
-  ADD_NPM: _createBlendMode([Const.SRC_ALPHA, Const.ONE, Const.ONE, Const.ONE]),
+  ADD_NPM: _createBlendMode([
+    WebGL2RenderingContext.SRC_ALPHA,
+    WebGL2RenderingContext.ONE,
+    WebGL2RenderingContext.ONE,
+    WebGL2RenderingContext.ONE,
+  ]),
 
-  SRC_IN: _createBlendMode([Const.DST_ALPHA, Const.ZERO]),
-  SRC_OUT: _createBlendMode([Const.ONE_MINUS_DST_ALPHA, Const.ZERO]),
-  SRC_ATOP: _createBlendMode([Const.DST_ALPHA, Const.ONE_MINUS_SRC_ALPHA]),
-  DST_OVER: _createBlendMode([Const.ONE_MINUS_DST_ALPHA, Const.ONE]),
-  DST_IN: _createBlendMode([Const.ZERO, Const.SRC_ALPHA]),
-  DST_OUT: _createBlendMode([Const.ZERO, Const.ONE_MINUS_SRC_ALPHA]),
-  DST_ATOP: _createBlendMode([Const.ONE_MINUS_DST_ALPHA, Const.SRC_ALPHA]),
-  XOR: _createBlendMode([Const.ONE_MINUS_DST_ALPHA, Const.ONE_MINUS_SRC_ALPHA]),
+  SRC_IN: _createBlendMode([WebGL2RenderingContext.DST_ALPHA, WebGL2RenderingContext.ZERO]),
+  SRC_OUT: _createBlendMode([WebGL2RenderingContext.ONE_MINUS_DST_ALPHA, WebGL2RenderingContext.ZERO]),
+  SRC_ATOP: _createBlendMode([WebGL2RenderingContext.DST_ALPHA, WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA]),
+  DST_OVER: _createBlendMode([WebGL2RenderingContext.ONE_MINUS_DST_ALPHA, WebGL2RenderingContext.ONE]),
+  DST_IN: _createBlendMode([WebGL2RenderingContext.ZERO, WebGL2RenderingContext.SRC_ALPHA]),
+  DST_OUT: _createBlendMode([WebGL2RenderingContext.ZERO, WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA]),
+  DST_ATOP: _createBlendMode([WebGL2RenderingContext.ONE_MINUS_DST_ALPHA, WebGL2RenderingContext.SRC_ALPHA]),
+  XOR: _createBlendMode([WebGL2RenderingContext.ONE_MINUS_DST_ALPHA, WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA]),
 
-  NORMAL: _createBlendMode([Const.SRC_ALPHA, Const.ONE_MINUS_SRC_ALPHA, Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
-  ADD: _createBlendMode([Const.SRC_ALPHA, Const.DST_ALPHA, Const.ONE, Const.DST_ALPHA]),
-  MULTIPLY: _createBlendMode([Const.DST_COLOR, Const.ZERO]),
-  SCREEN: _createBlendMode([Const.SRC_ALPHA, Const.ONE_MINUS_SRC_COLOR, Const.ONE, Const.ONE_MINUS_SRC_COLOR]),
-  OVERLAY: _createBlendMode([Const.ONE, Const.ONE_MINUS_SRC_ALPHA]),
-  EXCLUSION: _createBlendMode([Const.ONE_MINUS_DST_COLOR, Const.ONE_MINUS_SRC_COLOR]),
-  LIGHTEN: _createBlendMode([Const.ONE, Const.ONE], [Const.MAX]),
-  DARKEN: _createBlendMode([Const.ONE, Const.ONE], [Const.MIN]),
-  SHADOW: _createBlendMode([Const.DST_COLOR, Const.SRC_COLOR]),
+  NORMAL: _createBlendMode([
+    WebGL2RenderingContext.SRC_ALPHA,
+    WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA,
+    WebGL2RenderingContext.ONE,
+    WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA,
+  ]),
+  ADD: _createBlendMode([
+    WebGL2RenderingContext.SRC_ALPHA,
+    WebGL2RenderingContext.DST_ALPHA,
+    WebGL2RenderingContext.ONE,
+    WebGL2RenderingContext.DST_ALPHA,
+  ]),
+  MULTIPLY: _createBlendMode([WebGL2RenderingContext.DST_COLOR, WebGL2RenderingContext.ZERO]),
+  SCREEN: _createBlendMode([
+    WebGL2RenderingContext.SRC_ALPHA,
+    WebGL2RenderingContext.ONE_MINUS_SRC_COLOR,
+    WebGL2RenderingContext.ONE,
+    WebGL2RenderingContext.ONE_MINUS_SRC_COLOR,
+  ]),
+  OVERLAY: _createBlendMode([WebGL2RenderingContext.ONE, WebGL2RenderingContext.ONE_MINUS_SRC_ALPHA]),
+  EXCLUSION: _createBlendMode([WebGL2RenderingContext.ONE_MINUS_DST_COLOR, WebGL2RenderingContext.ONE_MINUS_SRC_COLOR]),
+  LIGHTEN: _createBlendMode([WebGL2RenderingContext.ONE, WebGL2RenderingContext.ONE], [WebGL2RenderingContext.MAX]),
+  DARKEN: _createBlendMode([WebGL2RenderingContext.ONE, WebGL2RenderingContext.ONE], [WebGL2RenderingContext.MIN]),
+  SHADOW: _createBlendMode([WebGL2RenderingContext.DST_COLOR, WebGL2RenderingContext.SRC_COLOR]),
 };
 </code></pre>
         </article>
@@ -149,7 +177,7 @@ export const BlendMode = {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#Const">Const</a></li><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
             </nav>
 
             <br class="clear">

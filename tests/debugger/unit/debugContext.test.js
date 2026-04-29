@@ -15,11 +15,6 @@ const loadDebugContextModule = async () => {
 
 describe("debugContext", () => {
   beforeEach(() => {
-    globalThis.PWGL = {
-      Const: {
-        COLOR_BUFFER_BIT: 16384,
-      },
-    };
     globalThis.PWGLDebugger = {
       instances: [],
     };
@@ -41,12 +36,12 @@ describe("debugContext", () => {
     expect(proxy.value).toBe(123);
 
     now = 1001;
-    proxy.clear(PWGL.Const.COLOR_BUFFER_BIT, null, "");
+    proxy.clear(WebGL2RenderingContext.COLOR_BUFFER_BIT, null, "");
 
     const snapshots = PWGLDebugger.instances[0].snapshots;
     expect(snapshots[0][0].prop).toBe("clear");
     expect(snapshots[0][0].args).toEqual(["COLOR_BUFFER_BIT", "null", '""']);
-    expect(context.clear).toHaveBeenCalledWith(PWGL.Const.COLOR_BUFFER_BIT, null, "");
+    expect(context.clear).toHaveBeenCalledWith(WebGL2RenderingContext.COLOR_BUFFER_BIT, null, "");
   });
 
   it("supports original values and compact array formatting", async () => {

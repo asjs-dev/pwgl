@@ -1,7 +1,7 @@
 import { noop } from "../../extensions/utils/noop";
 import { Color } from "../attributes/Color";
 import { Buffer } from "../core/Buffer";
-import { Const, Utils } from "../core/Utils";
+import { Utils } from "../core/Utils";
 import { Framebuffer } from "../textures/Framebuffer";
 
 /**
@@ -61,8 +61,8 @@ export class BaseRenderer {
       new Uint16Array([0, 1, 3, 2]),
       0,
       0,
-      Const.ELEMENT_ARRAY_BUFFER,
-      Const.STATIC_DRAW
+      WebGL2RenderingContext.ELEMENT_ARRAY_BUFFER,
+      WebGL2RenderingContext.STATIC_DRAW
     );
 
     // prettier-ignore
@@ -76,10 +76,10 @@ export class BaseRenderer {
       ]),
       1,
       2,
-      Const.ARRAY_BUFFER,
-      Const.STATIC_DRAW,
+      WebGL2RenderingContext.ARRAY_BUFFER,
+      WebGL2RenderingContext.STATIC_DRAW,
       0,
-      Const.UNSIGNED_SHORT
+      WebGL2RenderingContext.UNSIGNED_SHORT
     );
   }
 
@@ -158,7 +158,13 @@ export class BaseRenderer {
    * @ignore
    */
   $drawInstanced(count) {
-    this.$gl.drawElementsInstanced(Const.TRIANGLE_STRIP, 4, Const.UNSIGNED_SHORT, 0, count);
+    this.$gl.drawElementsInstanced(
+      WebGL2RenderingContext.TRIANGLE_STRIP,
+      4,
+      WebGL2RenderingContext.UNSIGNED_SHORT,
+      0,
+      count,
+    );
   }
 
   /**
@@ -243,7 +249,7 @@ export class BaseRenderer {
   _clear() {
     const { $gl, clearColor } = this;
     $gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
-    $gl.clear(Const.COLOR_BUFFER_BIT);
+    $gl.clear(WebGL2RenderingContext.COLOR_BUFFER_BIT);
   }
 
   /**
