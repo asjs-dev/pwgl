@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>PWGL Extensions: Source: utils/dataObserver.js</title>
+        <title>PWGL Extensions: Source: utils/stateMachine.js</title>
 
         <script src="../scripts/prettify/prettify.js"> </script>
         <script src="../scripts/prettify/lang-css.js"> </script>
@@ -44,7 +44,7 @@
         <div class="container">
             <div id="main">
 
-                <h1 class="page-title">Source: utils/dataObserver.js</h1>
+                <h1 class="page-title">Source: utils/stateMachine.js</h1>
 
                 
 
@@ -53,45 +53,115 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { clone } from "./clone";
-
-/**
- * DataObserver utility
- * @typedef {Object} DataObserver
- * @property {Object} state Proxy state object
- * @property {function} flush Flush changes and get the updated state
+            <pre class="prettyprint source linenums"><code>/**
+ * createStateMachine utility
+ * @typedef {Object} StateMachine
+ * @param {Object} initialState - The initial state of the state machine.
+ * @returns {StateMachine} The state machine instance.
+ * @property {function} createAction - Creates an action function that can modify the state.
+ * @property {function} subscribe - Subscribes a callback to state changes.
+ * @property {function} update - Updates the state and notifies subscribers if there are changes.
  */
-export const createDataObserver = (defaultState = {}) => {
-  let dirty = false,
-    prevState = clone(defaultState);
+export const createStateMachine = (initialState) => {
+  const listeners = new Set();
+  const writableCache = new WeakMap();
+  const readonlyCache = new WeakMap();
 
-  const state = new Proxy(defaultState, {
-    set(target, prop, value) {
-      dirty = true;
-      target[prop] = value;
-      return true;
-    },
-  });
+  let dirty = false;
 
-  /**
-   * Flush changes and get the updated state
-   * @returns {Object|null} The updated state and previous state, or null if no changes
-   */
-  const flush = () => {
-    if (!dirty) {
-      return null;
-    }
+  const rawState = structuredClone(initialState);
+  let previousSnapshot = structuredClone(rawState);
+  let previousReadonly;
 
-    const stateClone = clone(state),
-      prevStateClone = prevState;
+  const createWritableProxy = (obj) => {
+    if (!obj || typeof obj !== "object") return obj;
+    if (writableCache.has(obj)) return writableCache.get(obj);
 
-    prevState = stateClone;
-    dirty = false;
+    const proxy = new Proxy(obj, {
+      get(target, prop) {
+        return createWritableProxy(target[prop]);
+      },
 
-    return { state: stateClone, prevState: prevStateClone };
+      set(target, prop, value) {
+        if (target[prop] === value) return true;
+
+        target[prop] = value;
+        dirty = true;
+
+        return true;
+      },
+
+      deleteProperty(target, prop) {
+        if (!(prop in target)) return true;
+
+        delete target[prop];
+        dirty = true;
+
+        return true;
+      },
+    });
+
+    writableCache.set(obj, proxy);
+    return proxy;
   };
 
-  return { state, flush };
+  const createReadonlyProxy = (obj) => {
+    if (!obj || typeof obj !== "object") return obj;
+    if (readonlyCache.has(obj)) return readonlyCache.get(obj);
+
+    const proxy = new Proxy(obj, {
+      get(target, prop) {
+        return createReadonlyProxy(target[prop]);
+      },
+
+      set() {
+        throw new Error("State is readonly.");
+      },
+
+      deleteProperty() {
+        throw new Error("State is readonly.");
+      },
+    });
+
+    readonlyCache.set(obj, proxy);
+    return proxy;
+  };
+
+  const writableState = createWritableProxy(rawState);
+  const readonlyState = createReadonlyProxy(rawState);
+
+  previousReadonly = createReadonlyProxy(previousSnapshot);
+
+  return {
+    createAction(callback) {
+      return (...args) => callback(writableState, ...args);
+    },
+
+    subscribe(callback) {
+      listeners.add(callback);
+
+      callback(readonlyState, undefined);
+
+      return () => {
+        listeners.delete(callback);
+      };
+    },
+
+    update() {
+      if (!dirty) return false;
+
+      dirty = false;
+
+      for (const listener of listeners) {
+        listener(readonlyState, previousReadonly);
+      }
+
+      previousSnapshot = structuredClone(rawState);
+      previousReadonly = createReadonlyProxy(previousSnapshot);
+
+      return true;
+    },
+  };
 };
 </code></pre>
         </article>
@@ -103,7 +173,7 @@ export const createDataObserver = (defaultState = {}) => {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
             </nav>
 
             <br class="clear">

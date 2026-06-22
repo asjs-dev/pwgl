@@ -480,7 +480,7 @@ export class LightRenderer extends BatchRenderer {
       `vec3 ` +
         `stCl=uO.x>0.?texture(uC,v0).rgb:Z.yyy;` +
 
-      `oCl=vec4((stCl+spc)*v5.rgb*vol*min(shdw,1.),1);` +
+      `oCl=vec4((stCl+spc)*v5.rgb*vol*clamp(shdw,0.,1.),1);` +
     `}`;
   }
 }

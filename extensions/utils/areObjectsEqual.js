@@ -24,11 +24,12 @@ export const areObjectsEqual = (a, b) => {
     return false;
   }
 
-  let propName,
-    aPropValue,
-    bPropValue,
-    subeq,
-    i = aProps.length;
+  let propName;
+  let aPropValue;
+  let bPropValue;
+  let subeq;
+  let i = aProps.length;
+
   while ((propName = aProps[--i])) {
     aPropValue = a[propName];
     bPropValue = b[propName];

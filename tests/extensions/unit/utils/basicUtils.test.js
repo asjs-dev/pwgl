@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { areObjectsEqual } from "../../../../extensions/utils/areObjectsEqual";
 import { arraySet } from "../../../../extensions/utils/arraySet";
 import { clamp } from "../../../../extensions/utils/clamp";
-import { clone } from "../../../../extensions/utils/clone";
 import {
   areTwoLinesCollided,
   areTwoRectsCollided,
@@ -11,7 +10,6 @@ import {
   rectToRectIntersection,
 } from "../../../../extensions/utils/collisionDetection";
 import { cross } from "../../../../extensions/utils/cross";
-import { createDataObserver } from "../../../../extensions/utils/dataObserver";
 import { dot } from "../../../../extensions/utils/dot";
 import { enumCheck } from "../../../../extensions/utils/enumCheck";
 import { fract } from "../../../../extensions/utils/fract";
@@ -22,6 +20,7 @@ import { mix } from "../../../../extensions/utils/mix";
 import { noop } from "../../../../extensions/utils/noop";
 import { noopReturnsWith } from "../../../../extensions/utils/noopReturnsWith";
 import { removeFromArray } from "../../../../extensions/utils/removeFromArray";
+import { createStateMachine } from "../../../../extensions/utils/stateMachine";
 import { stepNoise } from "../../../../extensions/utils/stepNoise";
 
 describe("extensions basic utils", () => {
@@ -42,15 +41,6 @@ describe("extensions basic utils", () => {
     expect(clamp(0, 10, 6)).toBe(6);
   });
 
-  it("deep clones objects and arrays", () => {
-    const source = { a: 1, b: [2, { c: 3 }] };
-    const copy = clone(source);
-
-    expect(copy).toEqual(source);
-    expect(copy).not.toBe(source);
-    expect(copy.b).not.toBe(source.b);
-  });
-
   it("computes vector math helpers", () => {
     expect(cross({ x: 2, y: 3 }, { x: 4, y: 5 })).toBe(-2);
     expect(dot({ x: 2, y: 3 }, { x: 4, y: 5 })).toBe(23);
@@ -69,16 +59,43 @@ describe("extensions basic utils", () => {
     expect(rectToRectIntersection(rectA, rectB)).toEqual({ x: 5, y: 5, width: 10, height: 10 });
   });
 
-  it("tracks changes through the data observer", () => {
-    const observer = createDataObserver({ count: 1 });
-
-    expect(observer.flush()).toBe(null);
-
-    observer.state.count = 2;
-    expect(observer.flush()).toEqual({
-      state: { count: 2 },
-      prevState: { count: 1 },
+  it("tracks changes through the state machine", () => {
+    const machine = createStateMachine({ count: 1, nested: { enabled: true } });
+    const listener = vi.fn();
+    const increment = machine.createAction((state, amount = 1) => {
+      state.count += amount;
     });
+
+    const unsubscribe = machine.subscribe(listener);
+
+    expect(listener).toHaveBeenCalledWith({ count: 1, nested: { enabled: true } }, undefined);
+    expect(machine.update()).toBe(false);
+
+    increment(2);
+    expect(machine.update()).toBe(true);
+
+    expect(listener).toHaveBeenLastCalledWith(
+      { count: 3, nested: { enabled: true } },
+      { count: 1, nested: { enabled: true } },
+    );
+
+    unsubscribe();
+    increment();
+    expect(machine.update()).toBe(true);
+    expect(listener).toHaveBeenCalledTimes(2);
+  });
+
+  it("exposes readonly state snapshots to subscribers", () => {
+    const machine = createStateMachine({ nested: { value: 1 } });
+    let currentState;
+
+    machine.subscribe((state) => {
+      currentState = state;
+    });
+
+    expect(() => {
+      currentState.nested.value = 2;
+    }).toThrow("State is readonly.");
   });
 
   it("handles enum and numeric helper utilities", () => {

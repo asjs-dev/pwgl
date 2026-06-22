@@ -507,68 +507,6 @@
 
         
             
-<h4 class="name" id="clone"><span class="type-signature">(constant) </span>clone<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Deep clones an object or array
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_clone.js.html">utils/clone.js</a>, <a href="utils_clone.js.html#line6">line 6</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id="coordToVector"><span class="type-signature">(constant) </span>coordToVector<span class="type-signature"></span></h4>
 
 
@@ -1171,7 +1109,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_dungeon.js.html">utils/dungeon.js</a>, <a href="utils_dungeon.js.html#line12">line 12</a>
+        <a href="utils_dungeon.js.html">utils/dungeon.js</a>, <a href="utils_dungeon.js.html#line11">line 11</a>
     </li></ul></dd>
     
 
@@ -2706,153 +2644,6 @@
 
         
                 
-<h4 class="name" id="DataObserver">DataObserver</h4>
-
-
-
-
-<div class="description">
-    DataObserver utility
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type">Object</span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    
-
-<table class="props">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>state</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Proxy state object</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>flush</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Flush changes and get the updated state</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="utils_dataObserver.js.html">utils/dataObserver.js</a>, <a href="utils_dataObserver.js.html#line3">line 3</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-            
-                
 
     
 
@@ -3158,6 +2949,176 @@
 
 
             
+                
+<h4 class="name" id="StateMachine">StateMachine</h4>
+
+
+
+
+<div class="description">
+    createStateMachine utility
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">Object</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>createAction</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Creates an action function that can modify the state.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>subscribe</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Subscribes a callback to state changes.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>update</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Updates the state and notifies subscribers if there are changes.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="utils_stateMachine.js.html">utils/stateMachine.js</a>, <a href="utils_stateMachine.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+            
     
 
     
@@ -3171,7 +3132,7 @@
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
             </nav>
 
             <br class="clear">

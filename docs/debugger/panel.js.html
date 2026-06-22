@@ -271,10 +271,10 @@ export const panel = () => {
   const showDetails = (id) => {
     const instance = PWGLDebugger.instances[id];
     if (instance) {
-      let result = "",
-        maxSumFrameDurationMSLength = 0,
-        maxCurrentCallDurationMSLength = 0,
-        maxPropLength = 0;
+      let result = "";
+      let maxSumFrameDurationMSLength = 0;
+      let maxCurrentCallDurationMSLength = 0;
+      let maxPropLength = 0;
 
       instance.snapshots.forEach((frame) =>
         frame.forEach((entry) => {

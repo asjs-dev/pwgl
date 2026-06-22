@@ -10,7 +10,6 @@ import { SmoothLight } from "./display/SmoothLight";
 import { areObjectsEqual } from "./utils/areObjectsEqual";
 import { arraySet } from "./utils/arraySet";
 import { clamp } from "./utils/clamp";
-import { clone } from "./utils/clone";
 import {
   areTwoLinesCollided,
   areTwoRectsCollided,
@@ -19,7 +18,7 @@ import {
   rectToRectIntersection,
 } from "./utils/collisionDetection";
 import { cross } from "./utils/cross";
-import { createDataObserver } from "./utils/dataObserver";
+import { createStateMachine } from "./utils/stateMachine";
 import { dot } from "./utils/dot";
 import { generateDungeon } from "./utils/dungeon";
 import { enterFrame } from "./utils/enterFrame";
@@ -61,11 +60,10 @@ window.PWGLExtensions = window.AGLExtensions = {
 
   utils: {
     FPSCounter,
-    createDataObserver,
+    createStateMachine,
     areObjectsEqual,
     clamp,
     mix,
-    clone,
     collisionDetection: {
       distanceBetweenPointAndLine,
       areTwoLinesCollided,

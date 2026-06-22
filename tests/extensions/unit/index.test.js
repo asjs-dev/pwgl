@@ -31,6 +31,9 @@ describe("extensions index", () => {
     expect(window.PWGLExtensions).toBeDefined();
     expect(window.PWGLExtensions.controls.PressState).toBeDefined();
     expect(window.PWGLExtensions.audio.fadeAudioVolume).toBeDefined();
+    expect(window.PWGLExtensions.utils.createStateMachine).toBeDefined();
+    expect(window.PWGLExtensions.utils.clone).toBeUndefined();
+    expect(window.PWGLExtensions.utils.createDataObserver).toBeUndefined();
     expect(window.PWGLExtensions.utils.gridMapping.coordToVector(1, 2, 3)).toBe(7);
     expect(consoleSpy).toHaveBeenCalled();
 

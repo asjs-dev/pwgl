@@ -115,15 +115,13 @@ Advanced spatial collision algorithms for game development:
 
 ### Array and Object Utilities
 
-- **`clone(object)`** - Deep copy objects and arrays
 - **`areObjectsEqual(obj1, obj2)`** - Deep equality comparison
-- **`arraySet(array, value)`** - Set all array elements to a value
+- **`arraySet(target, source, offset)`** - Copy source values into a target array from an optional offset
 - **`removeFromArray(array, item)`** - Remove first occurrence from array
 
 ### Procedural Generation
 
-- **`generateDungeon(config)`** - Procedural dungeon layout generation
-- **`random()`** - Seeded random number generation
+- **`generateDungeon(iterations, sampleRooms)`** - Procedural dungeon layout generation
 - **`hashNoise2D(x, y)`** - 2D hash noise function for terrain generation
 - **`stepNoise(value, steps)`** - Quantized noise for stylized effects
 - **`getRandomFrom(array)`** - Get random element from array
@@ -139,11 +137,12 @@ Advanced spatial collision algorithms for game development:
 - **`coordToVector(x, y, width)`** - Convert 2D grid coordinates to linear index
 - **`vectorToCoord(index, width)`** - Convert linear index to 2D coordinates
 
-### Data Observation
+### State Management
 
-- **`createDataObserver(data, callback)`** - Reactive data changes detection
-  - Observe property changes
-  - Automatic callback invocation on mutations
+- **`createStateMachine(initialState)`** - Small observable state container
+  - Creates action functions that mutate a writable state proxy
+  - Notifies subscribers when `update()` is called after a mutation
+  - Exposes readonly state snapshots to subscribers
 
 ### Utility Functions
 
@@ -170,6 +169,16 @@ const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
 // Utilities
 const distance = PWGLExtensions.utils.clamp(value, 0, 100);
 const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rect1, rect2);
+
+const counter = PWGLExtensions.utils.createStateMachine({ count: 0 });
+const increment = counter.createAction((state) => {
+  state.count += 1;
+});
+counter.subscribe((state, prevState) => {
+  console.log(state.count, prevState?.count);
+});
+increment();
+counter.update();
 ```
 
 ## Installation
@@ -185,13 +194,14 @@ import { Keyboard, Mouse, AudioItem } from 'pwgl.extensions.es.min';
 ## Browser Compatibility
 
 - Requires **ECMAScript 2015 (ES6)** or later
+- Some utilities use **`structuredClone`** for deep copies
 - Audio features require **Web Audio API** support
 - Gamepad support requires the **Gamepad API**
 - Graphics features require **WebGL** context
 
 ## Performance Considerations
 
-- Use `clone()` and `areObjectsEqual()` judiciously for large datasets
+- Use `areObjectsEqual()` and `createStateMachine()` judiciously for large datasets
 - Collision detection functions are optimized for AABB and simple geometry
 - Audio processing is GPU-accelerated through Web Audio API
 - Frame-rate independent timing recommended for animation loops

@@ -1,4 +1,3 @@
-import { clone } from "./clone";
 import { areTwoRectsCollided } from "./collisionDetection";
 import { getRandomFrom } from "./getRandomFrom";
 import { coordToVector, vectorToCoord } from "./gridMapping";
@@ -28,7 +27,7 @@ export const generateDungeon = (iterations, sampleRooms) => {
 
   for (let i = 0; i < iterations; i++) {
     const direction = getRandomFrom(directions);
-    const randomRoom = clone(getRandomFrom(sampleRooms));
+    const randomRoom = structuredClone(getRandomFrom(sampleRooms));
 
     if (Math.random() < 0.5) {
       randomRoom.data.reverse();
