@@ -8,6 +8,7 @@ import { Item } from "../display/Item";
 import { Light } from "../display/Light";
 import { StageContainer } from "../display/StageContainer";
 import "../math/PointType";
+import { getCanvasPointerPosition } from "../utils/pointerUtils";
 import { BASE_VERTEX_SHADER_ATTRIBUTES, BASE_VERTEX_SHADER_UNIFORMS, TINT_TYPE_SHADER } from "../utils/shaderUtils";
 import { BatchRenderer } from "./BatchRenderer";
 import { LightRenderer } from "./LightRenderer";
@@ -298,10 +299,9 @@ export class Stage2D extends BatchRenderer {
   _onMouseEventHandler(event) {
     this._currentEvent = event;
     const { canvas } = this.context;
-    this._setMousePosition(
-      (canvas.width / canvas.offsetWidth) * event.offsetX,
-      (canvas.height / canvas.offsetHeight) * event.offsetY,
-    );
+    const pointerPosition = getCanvasPointerPosition(canvas, event);
+
+    this._setMousePosition(pointerPosition.x, pointerPosition.y);
   }
 
   /**
