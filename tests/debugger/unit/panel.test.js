@@ -28,11 +28,17 @@ describe("panel", () => {
   it("creates and appends the debugger overlay to the document body", async () => {
     const { panel } = await import("../../../debugger/panel.js");
 
-    panel();
+    const destroy = panel();
+    const appended = document.body.appendChild.mock.calls.map(([element]) => element);
 
     expect(document.body.appendChild).toHaveBeenCalledTimes(3);
     expect(document.created.some((el) => el.tagName === "STYLE")).toBe(true);
     expect(document.created.some((el) => el.tagName === "PRE")).toBe(true);
+
+    destroy();
+    appended.forEach((element) => {
+      expect(element.remove).toHaveBeenCalled();
+    });
   });
 
   it("updates the panel output when instance buttons are clicked", async () => {

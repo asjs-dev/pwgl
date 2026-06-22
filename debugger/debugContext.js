@@ -131,11 +131,12 @@ export const debugContext = (context, options = {}) => {
       return value.apply(target, args);
     };
 
-  enterFrame(render);
+  const frameLoop = enterFrame(render);
 
   PWGLDebugger.instances.push({
     canvas: context.canvas,
     snapshots: debug,
+    cleanup: () => frameLoop.stop(),
   });
 
   return new Proxy(context, {

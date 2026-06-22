@@ -290,4 +290,10 @@ export const panel = () => {
   document.body.appendChild(styleElement);
   document.body.appendChild(infoButton);
   document.body.appendChild(debuggerContainer);
+
+  return () => {
+    styleElement.remove();
+    infoButton.remove();
+    debuggerContainer.remove();
+  };
 };

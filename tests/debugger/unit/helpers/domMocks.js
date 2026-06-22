@@ -34,6 +34,7 @@ export const createElementMock = (tagName = "div") => {
     removeAttribute: vi.fn((name) => {
       delete attributes[name];
     }),
+    remove: vi.fn(),
     addEventListener: vi.fn((type, handler) => {
       listeners[type] = handler;
     }),
