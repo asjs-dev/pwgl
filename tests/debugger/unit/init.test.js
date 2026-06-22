@@ -14,6 +14,9 @@ describe("init", () => {
       panel: panelMock.mockReturnValue(vi.fn()),
     }));
 
+    globalThis.PWGLDebugger = {
+      instances: [],
+    };
     globalThis.HTMLCanvasElement = function HTMLCanvasElement() {};
     HTMLCanvasElement.prototype.getContext = vi.fn(function (type) {
       return { type, canvas: this };

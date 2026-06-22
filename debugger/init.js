@@ -35,10 +35,8 @@ export const init = (options = {}) => {
     cleanedUp = true;
     HTMLCanvasElement.prototype.getContext = getContextFV;
 
-    if (typeof PWGLDebugger !== "undefined" && PWGLDebugger.instances) {
-      PWGLDebugger.instances.forEach((instance) => instance.cleanup && instance.cleanup());
-      PWGLDebugger.instances.length = 0;
-    }
+    PWGLDebugger.instances.forEach((instance) => instance.cleanup && instance.cleanup());
+    PWGLDebugger.instances.length = 0;
 
     destroyPanel();
 
