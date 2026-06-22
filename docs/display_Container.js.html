@@ -232,6 +232,13 @@ export class Container extends Item {
 
     let i = -1;
 
+    if (!length) {
+      $bounds.x = this.transform?.x ?? 0;
+      $bounds.y = this.transform?.y ?? 0;
+      $bounds.width = $bounds.height = 0;
+      return $bounds;
+    }
+
     $bounds.x = $bounds.y = 1 / 0;
     $bounds.width = $bounds.height = -1 / 0;
 

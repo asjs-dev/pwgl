@@ -55,6 +55,15 @@ describe("Container", () => {
     expect(container.getBounds()).toEqual({ x: 5, y: 20, width: 35, height: 50 });
   });
 
+  it("returns zero-size bounds at its own position when empty", () => {
+    const container = new Container();
+
+    container.transform.x = 10;
+    container.transform.y = 20;
+
+    expect(container.getBounds()).toEqual({ x: 10, y: 20, width: 0, height: 0 });
+  });
+
   it("empties the container during destruct", () => {
     const container = new Container();
     const child = new Item();
