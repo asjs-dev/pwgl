@@ -139,9 +139,9 @@ Advanced spatial collision algorithms for game development:
 
 ### State Management
 
-- **`createStateMachine(initialState)`** - Small observable state container
-  - Creates action functions that mutate a writable state proxy
-  - Notifies subscribers when `update()` is called after a mutation
+- **`createStateMachine(config)`** - Small observable state container
+  - Accepts `initialState` and action functions on the same config object
+  - Batches subscriber notifications into the next microtask after actions run
   - Exposes readonly state snapshots to subscribers
 
 ### Utility Functions
@@ -170,15 +170,16 @@ const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
 const distance = PWGLExtensions.utils.clamp(value, 0, 100);
 const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rect1, rect2);
 
-const counter = PWGLExtensions.utils.createStateMachine({ count: 0 });
-const increment = counter.createAction((state) => {
-  state.count += 1;
+const counter = PWGLExtensions.utils.createStateMachine({
+  initialState: { count: 0 },
+  increment(state) {
+    state.count += 1;
+  },
 });
 counter.subscribe((state, prevState) => {
   console.log(state.count, prevState?.count);
 });
-increment();
-counter.update();
+counter.increment();
 ```
 
 ## Installation

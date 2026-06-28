@@ -23,6 +23,8 @@ import { removeFromArray } from "../../../../extensions/utils/removeFromArray";
 import { createStateMachine } from "../../../../extensions/utils/stateMachine";
 import { stepNoise } from "../../../../extensions/utils/stepNoise";
 
+const flushMicrotasks = () => Promise.resolve();
+
 describe("extensions basic utils", () => {
   it("compares nested objects deeply", () => {
     expect(areObjectsEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(true);
@@ -59,34 +61,48 @@ describe("extensions basic utils", () => {
     expect(rectToRectIntersection(rectA, rectB)).toEqual({ x: 5, y: 5, width: 10, height: 10 });
   });
 
-  it("tracks changes through the state machine", () => {
-    const machine = createStateMachine({ count: 1, nested: { enabled: true } });
-    const listener = vi.fn();
-    const increment = machine.createAction((state, amount = 1) => {
-      state.count += amount;
+  it("tracks changes through the state machine", async () => {
+    const machine = createStateMachine({
+      initialState: { count: 1, nested: { enabled: true } },
+      increment(state, amount = 1) {
+        state.count += amount;
+      },
+      toggle(state) {
+        state.nested.enabled = !state.nested.enabled;
+      },
     });
+    const listener = vi.fn();
 
     const unsubscribe = machine.subscribe(listener);
 
     expect(listener).toHaveBeenCalledWith({ count: 1, nested: { enabled: true } }, undefined);
-    expect(machine.update()).toBe(false);
 
-    increment(2);
-    expect(machine.update()).toBe(true);
+    machine.increment(2);
+    machine.toggle();
+
+    expect(listener).toHaveBeenCalledTimes(1);
+
+    await flushMicrotasks();
 
     expect(listener).toHaveBeenLastCalledWith(
-      { count: 3, nested: { enabled: true } },
-      { count: 1, nested: { enabled: true } },
+      { count: 3, nested: { enabled: false } },
+      undefined,
     );
 
     unsubscribe();
-    increment();
-    expect(machine.update()).toBe(true);
+    machine.increment();
+    await flushMicrotasks();
+
     expect(listener).toHaveBeenCalledTimes(2);
   });
 
   it("exposes readonly state snapshots to subscribers", () => {
-    const machine = createStateMachine({ nested: { value: 1 } });
+    const machine = createStateMachine({
+      initialState: { nested: { value: 1 } },
+      setNestedValue(state, value) {
+        state.nested.value = value;
+      },
+    });
     let currentState;
 
     machine.subscribe((state) => {
@@ -96,6 +112,22 @@ describe("extensions basic utils", () => {
     expect(() => {
       currentState.nested.value = 2;
     }).toThrow("State is readonly.");
+  });
+
+  it("notifies subscribers after actions even when state values stay the same", async () => {
+    const machine = createStateMachine({
+      initialState: { count: 1 },
+      keepCount(state) {
+        state.count = 1;
+      },
+    });
+    const listener = vi.fn();
+
+    machine.subscribe(listener);
+    machine.keepCount();
+    await flushMicrotasks();
+
+    expect(listener).toHaveBeenLastCalledWith({ count: 1 }, undefined);
   });
 
   it("handles enum and numeric helper utilities", () => {

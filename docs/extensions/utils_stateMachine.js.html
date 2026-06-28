@@ -54,56 +54,39 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
+ * Action function that receives mutable state and optional arguments.
+ * @callback StateMachineAction
+ * @param {Object} state - Mutable state owned by the state machine
+ * @param {...*} args - Arguments passed to the exposed action
+ * @returns {void}
+ */
+
+/**
+ * State change listener.
+ * @callback StateMachineSubscriber
+ * @param {Object} state - Readonly state snapshot
+ * @param {Object|undefined} previousState - Previous notified state snapshot
+ * @returns {void}
+ */
+
+/**
  * createStateMachine utility
  * @typedef {Object} StateMachine
- * @param {Object} initialState - The initial state of the state machine.
- * @returns {StateMachine} The state machine instance.
- * @property {function} createAction - Creates an action function that can modify the state.
- * @property {function} subscribe - Subscribes a callback to state changes.
- * @property {function} update - Updates the state and notifies subscribers if there are changes.
+ * @property {function(StateMachineSubscriber): function} subscribe - Subscribe to state changes
+ * @property {StateMachineAction} [actionName] - Action functions to modify the state
+ * @param {Object} config - Configuration object
+ * @param {Object} config.initialState - Initial state of the state machine
+ * @param {StateMachineAction} [config.actionName] - Action functions to expose on the state machine
+ * @returns {StateMachine} - State machine instance
  */
-export const createStateMachine = (initialState) => {
+
+export const createStateMachine = ({ initialState, ...actions }) => {
   const listeners = new Set();
-  const writableCache = new WeakMap();
   const readonlyCache = new WeakMap();
+  const state = structuredClone(initialState);
 
-  let dirty = false;
-
-  const rawState = structuredClone(initialState);
-  let previousSnapshot = structuredClone(rawState);
-  let previousReadonly;
-
-  const createWritableProxy = (obj) => {
-    if (!obj || typeof obj !== "object") return obj;
-    if (writableCache.has(obj)) return writableCache.get(obj);
-
-    const proxy = new Proxy(obj, {
-      get(target, prop) {
-        return createWritableProxy(target[prop]);
-      },
-
-      set(target, prop, value) {
-        if (target[prop] === value) return true;
-
-        target[prop] = value;
-        dirty = true;
-
-        return true;
-      },
-
-      deleteProperty(target, prop) {
-        if (!(prop in target)) return true;
-
-        delete target[prop];
-        dirty = true;
-
-        return true;
-      },
-    });
-
-    writableCache.set(obj, proxy);
-    return proxy;
-  };
+  let previousSnapshot;
+  let scheduled = false;
 
   const createReadonlyProxy = (obj) => {
     if (!obj || typeof obj !== "object") return obj;
@@ -127,40 +110,52 @@ export const createStateMachine = (initialState) => {
     return proxy;
   };
 
-  const writableState = createWritableProxy(rawState);
-  const readonlyState = createReadonlyProxy(rawState);
+  const createReadonlySnapshot = () => createReadonlyProxy(structuredClone(state));
 
-  previousReadonly = createReadonlyProxy(previousSnapshot);
+  const notify = () => {
+    const currentReadonlyState = createReadonlySnapshot();
+
+    for (const listener of listeners) {
+      listener(currentReadonlyState, previousSnapshot);
+    }
+
+    previousSnapshot = currentReadonlyState;
+  };
+
+  const scheduleNotify = () => {
+    if (scheduled) return;
+
+    scheduled = true;
+
+    queueMicrotask(() => {
+      scheduled = false;
+      notify();
+    });
+  };
+
+  for (const key of Object.keys(actions)) {
+    const action = actions[key];
+
+    actions[key] = (...args) => {
+      action(state, ...args);
+      scheduleNotify();
+    };
+  }
 
   return {
-    createAction(callback) {
-      return (...args) => callback(writableState, ...args);
-    },
-
     subscribe(callback) {
       listeners.add(callback);
 
-      callback(readonlyState, undefined);
+      const currentReadonlyState = createReadonlySnapshot();
+
+      callback(currentReadonlyState, undefined);
 
       return () => {
         listeners.delete(callback);
       };
     },
 
-    update() {
-      if (!dirty) return false;
-
-      dirty = false;
-
-      for (const listener of listeners) {
-        listener(readonlyState, previousReadonly);
-      }
-
-      previousSnapshot = structuredClone(rawState);
-      previousReadonly = createReadonlyProxy(previousSnapshot);
-
-      return true;
-    },
+    ...actions,
   };
 };
 </code></pre>

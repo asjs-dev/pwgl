@@ -214,10 +214,10 @@
 </ul>
 <h3>State Management</h3>
 <ul>
-<li><strong><code>createStateMachine(initialState)</code></strong> - Small observable state container
+<li><strong><code>createStateMachine(config)</code></strong> - Small observable state container
 <ul>
-<li>Creates action functions that mutate a writable state proxy</li>
-<li>Notifies subscribers when <code>update()</code> is called after a mutation</li>
+<li>Accepts <code>initialState</code> and action functions on the same config object</li>
+<li>Batches subscriber notifications into the next microtask after actions run</li>
 <li>Exposes readonly state snapshots to subscribers</li>
 </ul>
 </li>
@@ -245,15 +245,16 @@ const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
 const distance = PWGLExtensions.utils.clamp(value, 0, 100);
 const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rect1, rect2);
 
-const counter = PWGLExtensions.utils.createStateMachine({ count: 0 });
-const increment = counter.createAction((state) => {
-  state.count += 1;
+const counter = PWGLExtensions.utils.createStateMachine({
+  initialState: { count: 0 },
+  increment(state) {
+    state.count += 1;
+  },
 });
 counter.subscribe((state, prevState) => {
   console.log(state.count, prevState?.count);
 });
-increment();
-counter.update();
+counter.increment();
 </code></pre>
 <h2>Installation</h2>
 <p>The extensions package is included with PWGL. Import from your project:</p>
