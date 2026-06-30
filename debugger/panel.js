@@ -185,7 +185,8 @@ const _createElement = (elementType = "div", classList = []) => {
   return element;
 };
 
-const _createEntry = (textContent, typeName) => `<span type=\"${typeName}\">${textContent}</span>\n`;
+const _createEntry = (textContent, typeName) =>
+  `<span type=\"${typeName}\">${textContent}</span>\n`;
 
 /**
  * Create and attach the PWGL debugger UI overlay.
@@ -198,10 +199,15 @@ export const panel = () => {
   styleElement.textContent = _STYLE;
 
   const infoButton = _createElement("div", ["info-button-" + _HASH]);
-  const debuggerContainer = _createElement("div", ["debugger-container-" + _HASH]);
+  const debuggerContainer = _createElement("div", [
+    "debugger-container-" + _HASH,
+  ]);
   const debuggerPanel = _createElement("div", ["debugger-panel-" + _HASH]);
   const topPanelContainer = _createElement("div", ["panel-container-" + _HASH]);
-  const bottomPanelContainer = _createElement("div", ["panel-container-" + _HASH, "panel-container-bottom-" + _HASH]);
+  const bottomPanelContainer = _createElement("div", [
+    "panel-container-" + _HASH,
+    "panel-container-bottom-" + _HASH,
+  ]);
   const panelTitle = _createElement("div", ["panel-title-" + _HASH]);
   const closeButton = _createElement("div", ["close-button-" + _HASH]);
   const instanceList = _createElement("ul", ["instance-list-" + _HASH]);
@@ -223,7 +229,10 @@ export const panel = () => {
 
       instance.snapshots.forEach((frame) =>
         frame.forEach((entry) => {
-          maxSumFrameDurationMSLength = Math.max(maxSumFrameDurationMSLength, String(entry.sumFrameDurationMS).length);
+          maxSumFrameDurationMSLength = Math.max(
+            maxSumFrameDurationMSLength,
+            String(entry.sumFrameDurationMS).length,
+          );
           maxCurrentCallDurationMSLength = Math.max(
             maxCurrentCallDurationMSLength,
             String(entry.currentCallDurationMS).length,
@@ -233,7 +242,10 @@ export const panel = () => {
       );
 
       const paramIndent = String("").padStart(
-        14 + maxSumFrameDurationMSLength + maxCurrentCallDurationMSLength + maxPropLength,
+        14 +
+          maxSumFrameDurationMSLength +
+          maxCurrentCallDurationMSLength +
+          maxPropLength,
       );
 
       instance.snapshots.forEach((frame, frameId) => {
@@ -246,8 +258,8 @@ export const panel = () => {
             `${String(entry.sumFrameDurationMS).padStart(maxSumFrameDurationMSLength)}ms ` +
               `${String(entry.currentCallDurationMS).padStart(maxCurrentCallDurationMSLength)}ms ` +
               `${String(entry.prop).padStart(maxPropLength)} ` +
-              (entry.args.length ? entry.args.join("\n" + paramIndent) : "") +
-              entry.stackTrace,
+              (entry.args?.length ? entry.args.join("\n" + paramIndent) : "") +
+              (entry.stackTrace ?? ""),
             format,
           );
         });
@@ -261,7 +273,9 @@ export const panel = () => {
     [...instanceList.children].forEach((child) => child.remove());
 
     PWGLDebugger.instances.forEach((instance, id) => {
-      const instanceButton = _createElement("div", ["instance-button-" + _HASH]);
+      const instanceButton = _createElement("div", [
+        "instance-button-" + _HASH,
+      ]);
       instanceButton.setAttribute("instance-id", id);
       instanceButton.textContent = `#${id + 1} Canvas`;
       instanceList.appendChild(instanceButton);
@@ -277,8 +291,12 @@ export const panel = () => {
     showDebugger();
   });
   closeButton.addEventListener("click", hideDebugger);
-  instanceList.addEventListener("click", (event) => showDetails(parseInt(event.target.getAttribute("instance-id"))));
-  debuggerContainer.addEventListener("mousedown", (event) => event.stopPropagation());
+  instanceList.addEventListener("click", (event) =>
+    showDetails(parseInt(event.target.getAttribute("instance-id"))),
+  );
+  debuggerContainer.addEventListener("mousedown", (event) =>
+    event.stopPropagation(),
+  );
 
   topPanelContainer.appendChild(panelTitle);
   topPanelContainer.appendChild(closeButton);

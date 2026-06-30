@@ -124,6 +124,9 @@ PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
 <li><code>SHOW_ORIGINAL_VALUES = 2</code> - keep original argument values (skip enum name mapping)</li>
 <li><code>SHOW_ARRAYS = 4</code> - print full arrays instead of compact <code>[Type(length)]</code> form</li>
 </ul>
+<p>When <code>SHOW_ARRAYS</code> is enabled, <code>bufferData</code> entries that include <code>srcOffset</code> and
+<code>length</code> display only the uploaded slice of the source array. The original WebGL call
+still receives the unchanged arguments.</p>
 <p>Example:</p>
 <pre class="prettyprint source lang-js"><code>PWGLDebugger.init({
   maxFrameCount: 5,
@@ -145,8 +148,19 @@ PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
 <li><code>currentCallDurationMS</code> - elapsed time since previous call</li>
 <li><code>sumFrameDurationMS</code> - cumulative time within the current frame</li>
 <li><code>prop</code> - called WebGL method name</li>
-<li><code>args</code> - formatted call arguments</li>
-</ul></article>
+<li><code>args</code> - formatted call arguments; arrays are compacted unless <code>SHOW_ARRAYS</code> is enabled</li>
+</ul>
+<h2>Cleanup</h2>
+<p><code>init()</code> returns a cleanup function. Calling it restores the original
+<code>HTMLCanvasElement.prototype.getContext</code>, stops active frame tracking, removes recorded
+instances, and detaches the in-page panel.</p>
+<p>Calling <code>PWGLDebugger.init(...)</code> again also cleans up the previous debugger instance before
+installing the new one.</p>
+<pre class="prettyprint source lang-js"><code>const destroyDebugger = PWGLDebugger.init({ maxFrameCount: 5 });
+
+// later
+destroyDebugger();
+</code></pre></article>
     </section>
 
 

@@ -74,6 +74,10 @@ Flags are bitmasks and can be combined with OR (`|`):
 - `SHOW_ORIGINAL_VALUES = 2` - keep original argument values (skip enum name mapping)
 - `SHOW_ARRAYS = 4` - print full arrays instead of compact `[Type(length)]` form
 
+When `SHOW_ARRAYS` is enabled, `bufferData` entries that include `srcOffset` and
+`length` display only the uploaded slice of the source array. The original WebGL call
+still receives the unchanged arguments.
+
 Example:
 
 ```js
@@ -99,4 +103,20 @@ Each frame is an array of call entries:
 - `currentCallDurationMS` - elapsed time since previous call
 - `sumFrameDurationMS` - cumulative time within the current frame
 - `prop` - called WebGL method name
-- `args` - formatted call arguments
+- `args` - formatted call arguments; arrays are compacted unless `SHOW_ARRAYS` is enabled
+
+## Cleanup
+
+`init()` returns a cleanup function. Calling it restores the original
+`HTMLCanvasElement.prototype.getContext`, stops active frame tracking, removes recorded
+instances, and detaches the in-page panel.
+
+Calling `PWGLDebugger.init(...)` again also cleans up the previous debugger instance before
+installing the new one.
+
+```js
+const destroyDebugger = PWGLDebugger.init({ maxFrameCount: 5 });
+
+// later
+destroyDebugger();
+```

@@ -20,6 +20,8 @@ export const SHOW_ORIGINAL_VALUES = 2;
 /**
  * Display full array contents (e.g. TypedArrays) when formatting snapshots.
  * By default arrays are compacted to a short form: `[Type(length)]`.
+ * For `bufferData` calls with `srcOffset` and `length`, only the uploaded
+ * slice is displayed.
  * @constant {number}
  */
 export const SHOW_ARRAYS = 4;

@@ -2,7 +2,11 @@ import { clamp } from "../extensions/utils/clamp";
 import { enterFrame } from "../extensions/utils/enterFrame";
 import { enumCheck } from "../extensions/utils/enumCheck";
 import { noopReturnsWith } from "../extensions/utils/noopReturnsWith";
-import { SHOW_ARRAYS, SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES } from "./constants";
+import {
+  SHOW_ARRAYS,
+  SHOW_CALL_STACKS,
+  SHOW_ORIGINAL_VALUES,
+} from "./constants";
 
 /**
  * @typedef {Object} DebugCall
@@ -26,6 +30,22 @@ const _noopConvert = (values) => values;
 /**
  * @ignore
  */
+const _sliceUploadedArray = (value, srcOffset = 0, length) =>
+  value?.slice && length ? value.slice(srcOffset, srcOffset + length) : value;
+
+/**
+ * @ignore
+ */
+const _noopConvertArrays = (prop, values) =>
+  prop === "bufferData"
+    ? values.map((value, index) =>
+        index === 1 ? _sliceUploadedArray(value, values[3], values[4]) : value,
+      )
+    : values;
+
+/**
+ * @ignore
+ */
 // prettier-ignore
 const _captureStackFormatted = () => "\n\n<i>Stack trace:\n| " + 
   (new Error()).stack
@@ -42,10 +62,13 @@ const _captureStackFormatted = () => "\n\n<i>Stack trace:\n| " +
 /**
  * @ignore
  */
-const _convertArrays = (values) =>
+const _convertArrays = (prop, values) =>
   values.map((v) =>
-    v && (Array.isArray(v) || v.constructor?.name?.endsWith("Array")) ? `[${v.constructor.name}(${v.length})]` : v,
+    v && (Array.isArray(v) || v.constructor?.name?.endsWith("Array"))
+      ? `[${v.constructor.name}(${v.length})]`
+      : v,
   );
+
 /**
  * Wrap a WebGL rendering context with a debug proxy.
  *
@@ -76,13 +99,20 @@ export const debugContext = (context, options = {}) => {
   let sumFrameDurationMS;
   let frames = -1;
 
-  const convertToReadableNames = (values) => values.map((v) => constMap[v] ?? v);
+  const convertToReadableNames = (values) =>
+    values.map((v) => constMap[v] ?? v);
 
-  const convertArrays = enumCheck(FLAGS, SHOW_ARRAYS) ? _noopConvert : _convertArrays;
+  const convertArrays = enumCheck(FLAGS, SHOW_ARRAYS)
+    ? _noopConvertArrays
+    : _convertArrays;
 
-  const convert = enumCheck(FLAGS, SHOW_ORIGINAL_VALUES) ? _noopConvert : convertToReadableNames;
+  const convert = enumCheck(FLAGS, SHOW_ORIGINAL_VALUES)
+    ? _noopConvert
+    : convertToReadableNames;
 
-  const convertCallStack = enumCheck(FLAGS, SHOW_CALL_STACKS) ? _captureStackFormatted : noopReturnsWith("");
+  const convertCallStack = enumCheck(FLAGS, SHOW_CALL_STACKS)
+    ? _captureStackFormatted
+    : noopReturnsWith("");
 
   /**
    * Advance frame counter.
@@ -119,10 +149,15 @@ export const debugContext = (context, options = {}) => {
           logsForFrame.push({
             stackTrace: convertCallStack(),
             currentCallDurationMS: 0,
-            sumFrameDurationMS: sumFrameDurationMS,
-            prop: prop,
+            sumFrameDurationMS,
+            prop,
             args: convert(
-              convertArrays(args.map((v) => ([null, undefined].includes(v) ? `${v}` : v === "" ? '""' : v))),
+              convertArrays(
+                prop,
+                args.map((v) =>
+                  [null, undefined].includes(v) ? `${v}` : v === "" ? '""' : v,
+                ),
+              ),
             ),
           });
         }
@@ -142,7 +177,9 @@ export const debugContext = (context, options = {}) => {
   return new Proxy(context, {
     get(target, prop) {
       const value = target[prop];
-      return typeof value === "function" ? debugCallback(value, target, prop) : value;
+      return typeof value === "function"
+        ? debugCallback(value, target, prop)
+        : value;
     },
   });
 };

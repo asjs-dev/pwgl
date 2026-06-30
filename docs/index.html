@@ -133,8 +133,28 @@ PWGL is a JavaScript framework for creating <strong>2D WebGL2 games and applicat
 <td><code>dist/pwgl.extensions.umd.js</code></td>
 <td>UMD with extensions, minified</td>
 </tr>
+<tr>
+<td><code>dist/pwgl.debugger.es.js</code></td>
+<td>ES Module debugger</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.debugger.umd.js</code></td>
+<td>UMD debugger</td>
+</tr>
 </tbody>
 </table>
+<hr>
+<h2>Debugger</h2>
+<p>PWGL includes an optional debugger bundle for inspecting WebGL calls in the browser.
+Load it before creating WebGL contexts, then initialize it once:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;pwgl.debugger.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+&lt;script>
+  PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
+&lt;/script>
+</code></pre>
+<p>The debugger wraps <code>webgl</code> and <code>webgl2</code> contexts returned by <code>canvas.getContext(...)</code>,
+records calls frame-by-frame, and adds an in-page panel. See
+<a href="./debugger/README.md"><code>debugger/README.md</code></a> for flags and recorded data details.</p>
 <hr>
 <h2>How to use</h2>
 <p>Create your index html ( include pwgl.umd.js and pwgl.extensions.umd.js )</p>

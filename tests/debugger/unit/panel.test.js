@@ -65,4 +65,33 @@ describe("panel", () => {
     });
     expect(output.innerHTML).toContain("FRAME");
   });
+
+  it("renders entries with missing args and stack trace fields", async () => {
+    PWGLDebugger.instances = [
+      {
+        canvas: { id: "a" },
+        snapshots: [
+          [
+            {
+              sumFrameDurationMS: 0,
+              currentCallDurationMS: 0,
+              prop: "flush",
+            },
+          ],
+        ],
+      },
+    ];
+
+    const { panel } = await import("../../../debugger/panel.js");
+
+    panel();
+
+    const infoButton = document.created.find((el) => el.classList.toArray().some((v) => v.includes("info-button")));
+    const output = document.created.find((el) => el.tagName === "PRE");
+
+    infoButton.dispatch("mousedown", { stopPropagation: vi.fn() });
+
+    expect(output.innerHTML).toContain("flush");
+    expect(output.innerHTML).not.toContain("undefined");
+  });
 });

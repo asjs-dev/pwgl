@@ -1,6 +1,6 @@
 {
   "name": "pwgl-debugger",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./dist/pwgl.debugger.umd.js",
   "module": "./dist/pwgl.debugger.es.js",
   "description": "PWGL Debugger",

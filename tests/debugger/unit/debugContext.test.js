@@ -57,6 +57,54 @@ describe("debugContext", () => {
     expect(PWGLDebugger.instances[0].snapshots[0][0].args).toEqual(["[Float32Array(3)]"]);
   });
 
+  it("shows only the uploaded bufferData slice when array output is enabled", async () => {
+    const { debugContext } = await loadDebugContextModule();
+    const context = {
+      canvas: {},
+      bufferData: vi.fn(),
+    };
+
+    const proxy = debugContext(context, { flags: 6 });
+    const data = new Float32Array([1, 2, 3, 4, 5]);
+    proxy.bufferData(WebGL2RenderingContext.ARRAY_BUFFER, data, WebGL2RenderingContext.STATIC_DRAW, 1, 3);
+
+    expect(PWGLDebugger.instances[0].snapshots[0][0].args).toEqual([
+      WebGL2RenderingContext.ARRAY_BUFFER,
+      new Float32Array([2, 3, 4]),
+      WebGL2RenderingContext.STATIC_DRAW,
+      1,
+      3,
+    ]);
+    expect(context.bufferData).toHaveBeenCalledWith(
+      WebGL2RenderingContext.ARRAY_BUFFER,
+      data,
+      WebGL2RenderingContext.STATIC_DRAW,
+      1,
+      3,
+    );
+  });
+
+  it("keeps bufferSubData arguments unchanged when array output is enabled", async () => {
+    const { debugContext } = await loadDebugContextModule();
+    const context = {
+      canvas: {},
+      bufferSubData: vi.fn(),
+    };
+
+    const proxy = debugContext(context, { flags: 6 });
+    const data = new Uint16Array([10, 20, 30, 40]);
+    proxy.bufferSubData(WebGL2RenderingContext.ARRAY_BUFFER, 8, data, 1, 2);
+
+    expect(PWGLDebugger.instances[0].snapshots[0][0].args).toEqual([
+      WebGL2RenderingContext.ARRAY_BUFFER,
+      8,
+      data,
+      1,
+      2,
+    ]);
+    expect(context.bufferSubData).toHaveBeenCalledWith(WebGL2RenderingContext.ARRAY_BUFFER, 8, data, 1, 2);
+  });
+
   it("stores stack traces when the corresponding flag is enabled", async () => {
     const { debugContext } = await loadDebugContextModule();
     const context = {

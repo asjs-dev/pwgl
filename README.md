@@ -45,6 +45,26 @@ PWGL provides multiple builds for different use cases.
 | `dist/pwgl.umd.js`            | UMD, minified                       |
 | `dist/pwgl.extensions.es.js`  | ES Module with extensions, minified |
 | `dist/pwgl.extensions.umd.js` | UMD with extensions, minified       |
+| `dist/pwgl.debugger.es.js`    | ES Module debugger                  |
+| `dist/pwgl.debugger.umd.js`   | UMD debugger                        |
+
+---
+
+## Debugger
+
+PWGL includes an optional debugger bundle for inspecting WebGL calls in the browser.
+Load it before creating WebGL contexts, then initialize it once:
+
+```html
+<script src="pwgl.debugger.umd.js" type="text/javascript"></script>
+<script>
+  PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
+</script>
+```
+
+The debugger wraps `webgl` and `webgl2` contexts returned by `canvas.getContext(...)`,
+records calls frame-by-frame, and adds an in-page panel. See
+[`debugger/README.md`](./debugger/README.md) for flags and recorded data details.
 
 ---
 
