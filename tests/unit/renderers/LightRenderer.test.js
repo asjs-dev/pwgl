@@ -205,13 +205,24 @@ describe("LightRenderer", () => {
     const { LightRenderer } = await loadLightRendererModule();
 
     const { renderer, gl } = createLightRendererHarness(LightRenderer);
+    renderer._batchItems = 4;
 
     renderer._extensionBuffer = {
+      uploadElements: vi.fn()
+    };
+    renderer.$matrixBuffer = {
+      uploadElements: vi.fn()
+    };
+    renderer._positionBuffer = {
+      upload: vi.fn()
+    };
+    renderer._elementArrayBuffer = {
       upload: vi.fn()
     };
 
     renderer.$uploadBuffers();
 
-    expect(renderer._extensionBuffer.upload).toHaveBeenCalledWith(gl);
+    expect(renderer._extensionBuffer.uploadElements).toHaveBeenCalledWith(gl, 4);
+    expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 4);
   });
 });

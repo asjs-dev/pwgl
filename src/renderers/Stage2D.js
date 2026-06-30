@@ -319,9 +319,10 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    const { $gl } = this;
-    this._dataBuffer.upload($gl);
-    this._distortionBuffer.upload($gl);
+    const { $gl, _batchItems } = this;
+
+    this._dataBuffer.uploadElements($gl, _batchItems);
+    this._distortionBuffer.uploadElements($gl, _batchItems);
     super.$uploadBuffers();
   }
 

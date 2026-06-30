@@ -68,7 +68,19 @@ export class Buffer {
   upload(gl) {
     this.bind(gl);
     this._enable(gl);
+
     gl.bufferData(this._target, this.data, this._type);
+  }
+
+  /**
+   * Upload a limited number of buffer elements.
+   * @param {WebGLContext} gl
+   * @param {number} elementCount - Number of structured elements to upload
+   */
+  uploadElements(gl, elementCount) {
+    this.bind(gl);
+    this._enable(gl);
+    gl.bufferData(this._target, this.data, this._type, 0, elementCount * this._rows * this._cols);
   }
 
   /**

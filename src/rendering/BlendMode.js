@@ -1,6 +1,6 @@
 const _createBlendMode = (functions, equations) => ({
   functionName: "blendFunc" + (functions.length < 3 ? "" : "Separate"),
-  functions: functions,
+  functions,
   equationName: "blendEquation" + (!equations || equations.length < 2 ? "" : "Separate"),
   equations: equations || [WebGL2RenderingContext.FUNC_ADD],
 });

@@ -44,10 +44,7 @@ export const areTwoLinesCollided = (lineA, lineB) => {
     const gamma = (h * e + b * g) / denom;
 
     if (lambda > 0 && lambda < 1 && gamma > 0 && gamma < 1) {
-      return {
-        lambda: lambda,
-        gamma: gamma,
-      };
+      return { lambda, gamma };
     }
   }
 };

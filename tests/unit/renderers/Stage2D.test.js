@@ -37,4 +37,40 @@ describe("Stage2D", () => {
 
     expect(renderer._mousePosition).toEqual({ x: -50, y: 0 });
   });
+
+  it("uploads stage buffers for the active batch only", async () => {
+    installWebGL2RenderingContextMock();
+    const { Stage2D } = await loadStage2DModule();
+    const renderer = new Stage2D({
+      context: {
+        canvas: createCanvas(),
+      },
+      locations: [],
+    });
+    const gl = {};
+
+    renderer.$gl = gl;
+    renderer._batchItems = 5;
+    renderer._dataBuffer = {
+      uploadElements: vi.fn(),
+    };
+    renderer._distortionBuffer = {
+      uploadElements: vi.fn(),
+    };
+    renderer.$matrixBuffer = {
+      uploadElements: vi.fn(),
+    };
+    renderer._positionBuffer = {
+      upload: vi.fn(),
+    };
+    renderer._elementArrayBuffer = {
+      upload: vi.fn(),
+    };
+
+    renderer.$uploadBuffers();
+
+    expect(renderer._dataBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
+    expect(renderer._distortionBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
+    expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
+  });
 });

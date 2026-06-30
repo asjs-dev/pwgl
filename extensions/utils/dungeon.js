@@ -114,5 +114,5 @@ export const generateDungeon = (iterations, sampleRooms) => {
     }
   }
 
-  return { width: width, height: height, data: data };
+  return { width, height, data };
 };

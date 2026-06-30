@@ -199,7 +199,7 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    this._extensionBuffer.upload(this.$gl);
+    this._extensionBuffer.uploadElements(this.$gl, this._batchItems);
     super.$uploadBuffers();
   }
 

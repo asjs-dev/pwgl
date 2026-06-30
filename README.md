@@ -297,6 +297,7 @@ Wraps WebGL buffer objects for efficient vertex and index data management.
 - Vertex buffer object (VBO) handling
 - Index buffer management
 - Dynamic buffer updates
+- Partial structured uploads for active batch data
 - Data type conversions
 
 #### **Utils** (`Utils.js`)

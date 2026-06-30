@@ -35,6 +35,24 @@ describe("Buffer", () => {
     expect(gl.bufferData).toHaveBeenCalledWith(buffer._target, buffer.data, buffer._type);
   });
 
+  it("uploads only the requested number of structured elements", async () => {
+    const { Buffer } = await loadBufferModule();
+    const buffer = new Buffer("aA", new Float32Array(32), 4, 2);
+    const gl = createMockGl();
+
+    gl.createBuffer = vi.fn(() => ({ id: "buffer" }));
+    gl.bindBuffer = vi.fn();
+    gl.enableVertexAttribArray = vi.fn();
+    gl.vertexAttribPointer = vi.fn();
+    gl.vertexAttribDivisor = vi.fn();
+    gl.bufferData = vi.fn();
+
+    buffer.create(gl, { aA: 3 });
+    buffer.uploadElements(gl, 3);
+
+    expect(gl.bufferData).toHaveBeenCalledWith(buffer._target, buffer.data, buffer._type, 0, 24);
+  });
+
   it("drops references during destruct", async () => {
     const { Buffer } = await loadBufferModule();
     const buffer = new Buffer("aA", new Float32Array([1, 2]));

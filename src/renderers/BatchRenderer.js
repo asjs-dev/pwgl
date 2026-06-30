@@ -44,7 +44,7 @@ export class BatchRenderer extends BaseRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    this.$matrixBuffer.upload(this.$gl);
+    this.$matrixBuffer.uploadElements(this.$gl, this._batchItems);
     super.$uploadBuffers();
   }
 

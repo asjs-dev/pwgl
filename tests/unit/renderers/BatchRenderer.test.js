@@ -47,9 +47,10 @@ describe("BatchRenderer", () => {
     const { BatchRenderer } = await loadBatchRendererModule();
 
     const { renderer, gl } = createBatchRendererHarness(BatchRenderer);
+    renderer._batchItems = 7;
 
     renderer.$matrixBuffer = {
-      upload: vi.fn(),
+      uploadElements: vi.fn(),
     };
     renderer._positionBuffer = {
       upload: vi.fn(),
@@ -60,7 +61,7 @@ describe("BatchRenderer", () => {
 
     renderer.$uploadBuffers();
 
-    expect(renderer.$matrixBuffer.upload).toHaveBeenCalledWith(gl);
+    expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 7);
     expect(renderer._positionBuffer.upload).toHaveBeenCalledWith(gl);
     expect(renderer._elementArrayBuffer.upload).toHaveBeenCalledWith(gl);
   });

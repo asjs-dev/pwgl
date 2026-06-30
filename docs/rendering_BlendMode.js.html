@@ -59,7 +59,7 @@
         <article>
             <pre class="prettyprint source linenums"><code>const _createBlendMode = (functions, equations) => ({
   functionName: "blendFunc" + (functions.length &lt; 3 ? "" : "Separate"),
-  functions: functions,
+  functions,
   equationName: "blendEquation" + (!equations || equations.length &lt; 2 ? "" : "Separate"),
   equations: equations || [WebGL2RenderingContext.FUNC_ADD],
 });
