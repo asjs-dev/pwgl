@@ -80,6 +80,23 @@ describe("AudioItem", () => {
     expect(item._source.start).toHaveBeenLastCalledWith(mixer.context.currentTime, 3);
   });
 
+  it("normalizes invalid pitch values", () => {
+    const mixer = createMixer();
+    const item = new AudioItem(null, { pitch: Number.NaN });
+
+    item._buffer = { duration: 8 };
+    item.connect(mixer);
+    item.play();
+
+    expect(item.pitch).toBe(1);
+    expect(item._source.playbackRate.value).toBe(1);
+
+    item.pitch = -2;
+
+    expect(item.pitch).toBe(0);
+    expect(item._source.playbackRate.value).toBe(0);
+  });
+
   it("disconnects and unloads", () => {
     const mixer = createMixer();
     const item = new AudioItem();

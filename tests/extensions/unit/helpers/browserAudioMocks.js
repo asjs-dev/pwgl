@@ -5,14 +5,22 @@ const createConnectableNode = () => ({
   disconnect: vi.fn(),
 });
 
+const createBiquadNode = () => ({
+  ...createConnectableNode(),
+  frequency: { value: 0 },
+  Q: { value: 0 },
+  gain: { value: 0 },
+  type: "",
+});
+
 export const createAudioContextMock = () => {
   const destination = { id: "destination" };
   const gainNode = { ...createConnectableNode(), gain: { value: 0 } };
   const panNode = { ...createConnectableNode(), pan: { value: 0 } };
   const delayNode = { ...createConnectableNode(), delayTime: { value: 0 } };
   const feedbackGainNode = { ...createConnectableNode(), gain: { value: 0 } };
-  const lowPassNode = { ...createConnectableNode(), frequency: { value: 0 }, Q: { value: 0 }, type: "" };
-  const highPassNode = { ...createConnectableNode(), frequency: { value: 0 }, Q: { value: 0 }, type: "" };
+  const biquadNodes = [createBiquadNode(), createBiquadNode(), createBiquadNode(), createBiquadNode(), createBiquadNode(), createBiquadNode()];
+  const [lowPassNode, highPassNode] = biquadNodes;
   let gainCount = 0;
 
   const context = {
@@ -21,10 +29,7 @@ export const createAudioContextMock = () => {
     createGain: vi.fn(() => (gainCount++ === 0 ? gainNode : feedbackGainNode)),
     createStereoPanner: vi.fn(() => panNode),
     createDelay: vi.fn(() => delayNode),
-    createBiquadFilter: vi.fn(() => {
-      const node = context._biquadCount++ === 0 ? lowPassNode : highPassNode;
-      return node;
-    }),
+    createBiquadFilter: vi.fn(() => biquadNodes[context._biquadCount++] ?? createBiquadNode()),
     createBufferSource: vi.fn(() => ({
       connect: vi.fn(),
       disconnect: vi.fn(),
@@ -43,6 +48,7 @@ export const createAudioContextMock = () => {
       feedbackGainNode,
       lowPassNode,
       highPassNode,
+      biquadNodes,
       destination,
     },
   };

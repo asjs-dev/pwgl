@@ -25,6 +25,14 @@ describe("extension entrypoints", () => {
 
     expect(audio.AudioItem).toBeDefined();
     expect(audio.AudioMixer).toBeDefined();
+    expect(audio.BaseAudioFilter).toBeDefined();
+    expect(audio.LowPassAudioFilter).toBeDefined();
+    expect(audio.HighPassAudioFilter).toBeDefined();
+    expect(audio.BandPassAudioFilter).toBeDefined();
+    expect(audio.NotchAudioFilter).toBeDefined();
+    expect(audio.PeakingAudioFilter).toBeDefined();
+    expect(audio.LowShelfAudioFilter).toBeDefined();
+    expect(audio.HighShelfAudioFilter).toBeDefined();
     expect(audio.fadeAudioVolume).toBeDefined();
     expect(audio.crossFadeAudioVolumes).toBeDefined();
   });

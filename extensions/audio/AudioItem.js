@@ -1,4 +1,5 @@
 import { BaseAudio } from "./BaseAudio";
+import { normalizeAudioValue } from "./internal/normalizeAudioValue";
 
 /**
  * Represents an audio item that can be loaded, played, and manipulated.
@@ -75,9 +76,9 @@ export class AudioItem extends BaseAudio {
     return this._pitch;
   }
   set pitch(pitch) {
-    this._pitch = pitch;
+    this._pitch = normalizeAudioValue(pitch, 1, 0);
     if (this.$nodesConnected) {
-      this._source.playbackRate.value = pitch;
+      this._source.playbackRate.value = this._pitch;
     }
   }
 

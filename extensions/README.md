@@ -51,9 +51,22 @@ Abstract base class for audio node management and control.
   - `muted` - Mutes output without changing the stored volume
   - `pan` - Stereo panning (-1 to 1)
   - `reverb` - Reverb effect parameter
-  - `lowPassFilterFrequency` / `lowPassFilterQ` - Low-pass filter control
-  - `highPassFilterFrequency` / `highPassFilterQ` - High-pass filter control
+  - `filters` - Ordered audio filter list
 - **Features:** Manages Web Audio API node connections, audio routing, and effect chains
+
+#### **Audio Filters** (`audio/filters/`)
+Ordered Web Audio filter classes that can be attached to `AudioItem` or `AudioMixer` instances.
+- `BaseAudioFilter` - Base input/output interface for custom audio filters
+- `BiquadAudioFilter` - Base class for `BiquadFilterNode` filters
+- `LowPassAudioFilter` - Low-pass filter
+- `HighPassAudioFilter` - High-pass filter
+- `BandPassAudioFilter` - Band-pass filter
+- `NotchAudioFilter` - Notch filter
+- `PeakingAudioFilter` - Boosts or cuts a focused frequency band
+- `LowShelfAudioFilter` - Boosts or cuts frequencies below a cutoff
+- `HighShelfAudioFilter` - Boosts or cuts frequencies above a cutoff
+- Filters run in array order and can be bypassed with `filter.on = false`
+- Built-in numeric parameters are normalized before they are written to Web Audio params
 
 #### **AudioItem** (`audio/AudioItem.js`)
 Single audio playback with full playback control.
@@ -73,6 +86,29 @@ Multi-channel audio mixer for complex audio management.
 Helper functions for audio manipulation.
 - `fadeAudioVolume(audioItem, min, max, step)` - Set a mixed volume value
 - `crossFadeAudioVolumes(audioItemA, audioItemB, min, max, step)` - Crossfade between two items
+
+#### **Migration: Audio Filters**
+The fixed low-pass and high-pass `BaseAudio` properties were removed in the major filter API update.
+
+Replace old direct filter properties:
+
+```javascript
+audio.lowPassFilterFrequency = 6000;
+audio.lowPassFilterQ = 1;
+audio.highPassFilterFrequency = 120;
+audio.highPassFilterQ = 0.7;
+```
+
+with explicit filter instances:
+
+```javascript
+audio.filters = [
+  new PWGLExtensions.audio.HighPassAudioFilter({ frequency: 120, Q: 0.7 }),
+  new PWGLExtensions.audio.LowPassAudioFilter({ frequency: 6000, Q: 1 }),
+];
+```
+
+Use the same `filters` array on `AudioMixer` for master output filtering.
 
 ### Display
 
@@ -162,8 +198,25 @@ const mouse = new PWGLExtensions.controls.Mouse();
 const gamepad = new PWGLExtensions.controls.Gamepad();
 
 // Audio
-const audio = new PWGLExtensions.audio.AudioItem(audioBuffer);
+const audio = new PWGLExtensions.audio.AudioItem(audioUrl);
 const mixer = new PWGLExtensions.audio.AudioMixer();
+audio.filters = [
+  new PWGLExtensions.audio.HighPassAudioFilter({ frequency: 120 }),
+  new PWGLExtensions.audio.NotchAudioFilter({ frequency: 440, Q: 8 }),
+  new PWGLExtensions.audio.LowPassAudioFilter({ frequency: 6000 }),
+];
+
+class TelephoneAudioFilter extends PWGLExtensions.audio.BaseAudioFilter {
+  createNodes(context) {
+    this.input = this.output = context.createBiquadFilter();
+    this.input.type = "bandpass";
+    this.input.frequency.value = 1400;
+    this.input.Q.value = 0.8;
+  }
+}
+
+audio.filters.push(new TelephoneAudioFilter());
+audio.filters[0].on = false;
 
 // Visual effects
 const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
@@ -191,7 +244,7 @@ The extensions package is included with PWGL. Import from your project:
 ```javascript
 import * as PWGLExt from 'pwgl.extensions.es.min';
 // or
-import { Keyboard, Mouse, AudioItem } from 'pwgl.extensions.es.min';
+import { Keyboard, Mouse, AudioItem, LowPassAudioFilter } from 'pwgl.extensions.es.min';
 ```
 
 ## Browser Compatibility

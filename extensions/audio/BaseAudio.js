@@ -1,3 +1,5 @@
+import { normalizeAudioValue } from "./internal/normalizeAudioValue";
+
 /**
  * The BaseAudio class provides methods and properties to control audio playback,
  * including volume, panning, reverb, and filtering effects. It manages the creation,
@@ -10,10 +12,7 @@ export class BaseAudio {
     this._pan = 0;
     this._reverbDelayTime = 0;
     this._reverbFeedbackGain = 0;
-    this._lowPassFilterFrequency = 22050;
-    this._lowPassFilterQ = 1;
-    this._highPassFilterFrequency = 0;
-    this._highPassFilterQ = 1;
+    this.filters = [];
   }
 
   /**
@@ -24,7 +23,7 @@ export class BaseAudio {
     return this._volume;
   }
   set volume(volume) {
-    this._volume = volume;
+    this._volume = normalizeAudioValue(volume, 1, 0);
     this.$updateGain();
   }
 
@@ -41,6 +40,44 @@ export class BaseAudio {
   }
 
   /**
+   * Gets the ordered audio filter list.
+   * @returns {Array<Object>} The current filter list.
+   */
+  get filters() {
+    return this._filters;
+  }
+  set filters(filters) {
+    const currentFilters = this._filters;
+
+    if (this.$nodesConnected && this.$filterInputNode) {
+      this.$filterInputNode.disconnect();
+      currentFilters?.forEach((filter) => filter?.disconnect?.());
+    }
+
+    currentFilters?.forEach((filter) => filter?.$setOnChange?.(null));
+
+    this._filters = new Proxy(filters ?? [], {
+      deleteProperty: (target, property) => {
+        target[property]?.$setOnChange?.(null);
+        delete target[property];
+        this.$reconnectFilterChain();
+        return true;
+      },
+      set: (target, property, value) => {
+        target[property]?.$setOnChange?.(null);
+        target[property] = value;
+        value?.$setOnChange?.(() => this.$reconnectFilterChain());
+        this.$reconnectFilterChain();
+        return true;
+      },
+    });
+
+    this._filters.forEach((filter) => filter?.$setOnChange?.(() => this.$reconnectFilterChain()));
+
+    this.$reconnectFilterChain();
+  }
+
+  /**
    * Gets the value of the pan property.
    * @returns {number} The current value of the pan.
    */
@@ -48,9 +85,9 @@ export class BaseAudio {
     return this._pan;
   }
   set pan(pan) {
-    this._pan = pan;
+    this._pan = normalizeAudioValue(pan, 0, -1, 1);
     if (this.$nodesConnected) {
-      this.$panNode.pan.value = pan;
+      this.$panNode.pan.value = this._pan;
     }
   }
 
@@ -62,9 +99,9 @@ export class BaseAudio {
     return this._reverbDelayTime;
   }
   set reverbDelayTime(delayTime) {
-    this._reverbDelayTime = delayTime;
+    this._reverbDelayTime = normalizeAudioValue(delayTime, 0, 0);
     if (this.$nodesConnected) {
-      this.$delayNode.delayTime.value = delayTime;
+      this.$delayNode.delayTime.value = this._reverbDelayTime;
     }
   }
 
@@ -76,65 +113,9 @@ export class BaseAudio {
     return this._reverbFeedbackGain;
   }
   set reverbFeedbackGain(feedbackGain) {
-    this._reverbFeedbackGain = feedbackGain;
+    this._reverbFeedbackGain = normalizeAudioValue(feedbackGain, 0, 0);
     if (this.$nodesConnected) {
-      this.$feedbackGainNode.gain.value = feedbackGain;
-    }
-  }
-
-  /**
-   * Gets the frequency of the low-pass filter.
-   * @returns {number} The current low-pass filter frequency.
-   */
-  get lowPassFilterFrequency() {
-    return this._lowPassFilterFrequency;
-  }
-  set lowPassFilterFrequency(frequency) {
-    this._lowPassFilterFrequency = frequency;
-    if (this.$nodesConnected) {
-      this.$lowPassNode.frequency.value = frequency;
-    }
-  }
-
-  /**
-   * Gets the Q value of the low-pass filter.
-   * @returns {number} The current low-pass filter Q value.
-   */
-  get lowPassFilterQ() {
-    return this._lowPassFilterQ;
-  }
-  set lowPassFilterQ(q) {
-    this._lowPassFilterQ = q;
-    if (this.$nodesConnected) {
-      this.$lowPassNode.Q.value = q;
-    }
-  }
-
-  /**
-   * Gets the frequency of the high-pass filter.
-   * @returns {number} The current high-pass filter frequency.
-   */
-  get highPassFilterFrequency() {
-    return this._highPassFilterFrequency;
-  }
-  set highPassFilterFrequency(frequency) {
-    this._highPassFilterFrequency = frequency;
-    if (this.$nodesConnected) {
-      this.$highPassNode.frequency.value = frequency;
-    }
-  }
-
-  /**
-   * Gets the Q value of the high-pass filter.
-   * @returns {number} The current high-pass filter Q value.
-   */
-  get highPassFilterQ() {
-    return this._highPassFilterQ;
-  }
-  set highPassFilterQ(q) {
-    this._highPassFilterQ = q;
-    if (this.$nodesConnected) {
-      this.$highPassNode.Q.value = q;
+      this.$feedbackGainNode.gain.value = this._reverbFeedbackGain;
     }
   }
 
@@ -143,14 +124,11 @@ export class BaseAudio {
    */
   $createNodes(context) {
     if (context) {
+      this.$context = context;
       this.$gainNode = context.createGain();
       this.$panNode = context.createStereoPanner();
       this.$delayNode = context.createDelay();
       this.$feedbackGainNode = context.createGain();
-      this.$lowPassNode = context.createBiquadFilter();
-      this.$lowPassNode.type = "lowpass";
-      this.$highPassNode = context.createBiquadFilter();
-      this.$highPassNode.type = "highpass";
 
       this.$nodesCreated = true;
       this.$updateGain();
@@ -162,13 +140,13 @@ export class BaseAudio {
    */
   $connectNodes(destination) {
     if (destination && this.$nodesCreated) {
+      this.$destinationNode = destination;
       this.$gainNode.connect(this.$panNode);
       this.$panNode.connect(this.$delayNode);
       this.$delayNode.connect(this.$feedbackGainNode);
       this.$feedbackGainNode.connect(this.$delayNode);
-      this.$delayNode.connect(this.$highPassNode);
-      this.$highPassNode.connect(this.$lowPassNode);
-      this.$lowPassNode.connect(destination);
+      this.$filterInputNode = this.$delayNode;
+      this.$connectFilterChain(this.$filterInputNode, destination);
 
       this.$nodesConnected = true;
     }
@@ -177,15 +155,64 @@ export class BaseAudio {
   /**
    * @ignore
    */
+  $connectFilterChain(inputNode, destination) {
+    if (inputNode && destination) {
+      let previousNode = inputNode;
+
+      this._filters.forEach((filter) => {
+        if (filter && filter.on !== false) {
+          if (filter.$context !== this.$context) {
+            filter.destruct?.();
+            filter.$context = this.$context;
+          }
+
+          if (!filter.input || !filter.output) {
+            filter.createNodes(this.$context);
+          }
+
+          filter.updateNodes?.();
+
+          if (filter.input && filter.output) {
+            previousNode.connect(filter.input);
+            previousNode = filter.output;
+          }
+        }
+      });
+
+      previousNode.connect(destination);
+    }
+  }
+
+  /**
+   * @ignore
+   */
+  $disconnectFilterChain() {
+    this._filters.forEach((filter) => filter?.disconnect?.());
+  }
+
+  /**
+   * @ignore
+   */
+  $reconnectFilterChain() {
+    if (this.$nodesConnected && this.$filterInputNode && this.$destinationNode) {
+      this.$filterInputNode.disconnect();
+      this.$disconnectFilterChain();
+      this.$connectFilterChain(this.$filterInputNode, this.$destinationNode);
+    }
+  }
+
+  /**
+   * @ignore
+   */
   $disconnectNodes() {
     if (this.$nodesConnected) {
+      this.$disconnectFilterChain();
       this.$gainNode.disconnect();
       this.$panNode.disconnect();
       this.$delayNode.disconnect();
       this.$feedbackGainNode.disconnect();
-      this.$lowPassNode.disconnect();
 
-      this.$gainNode = this.$panNode = this.$delayNode = this.$feedbackGainNode = this.$lowPassNode = null;
+      this.$gainNode = this.$panNode = this.$delayNode = this.$feedbackGainNode = this.$filterInputNode = this.$destinationNode = null;
 
       this.$nodesConnected = this.$nodesCreated = false;
     }
@@ -195,15 +222,15 @@ export class BaseAudio {
    * @ignore
    */
   $setConfig(config) {
+    if (config.filters && config.filters !== this._filters) {
+      this.filters = config.filters;
+    }
+
     this.volume = config.volume ?? 1;
     this.muted = config.muted ?? false;
     this.pan = config.pan ?? 0;
     this.reverbDelayTime = config.reverbDelayTime ?? 0;
     this.reverbFeedbackGain = config.reverbFeedbackGain ?? 0;
-    this.lowPassFilterFrequency = config.lowPassFilterFrequency ?? 22050;
-    this.lowPassFilterQ = config.lowPassFilterQ ?? 1;
-    this.highPassFilterFrequency = config.highPassFilterFrequency ?? 0;
-    this.highPassFilterQ = config.highPassFilterQ ?? 1;
   }
 
   /**
@@ -211,7 +238,7 @@ export class BaseAudio {
    */
   $updateGain() {
     if (this.$gainNode) {
-      this.$gainNode.gain.value = this._muted ? 0 : Number.isFinite(this._volume) ? this._volume : 1;
+      this.$gainNode.gain.value = this._muted ? 0 : this._volume;
     }
   }
 }

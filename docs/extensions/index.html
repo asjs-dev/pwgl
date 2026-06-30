@@ -123,11 +123,25 @@
 <li><code>muted</code> - Mutes output without changing the stored volume</li>
 <li><code>pan</code> - Stereo panning (-1 to 1)</li>
 <li><code>reverb</code> - Reverb effect parameter</li>
-<li><code>lowPassFilterFrequency</code> / <code>lowPassFilterQ</code> - Low-pass filter control</li>
-<li><code>highPassFilterFrequency</code> / <code>highPassFilterQ</code> - High-pass filter control</li>
+<li><code>filters</code> - Ordered audio filter list</li>
 </ul>
 </li>
 <li><strong>Features:</strong> Manages Web Audio API node connections, audio routing, and effect chains</li>
+</ul>
+<h4><strong>Audio Filters</strong> (<code>audio/filters/</code>)</h4>
+<p>Ordered Web Audio filter classes that can be attached to <code>AudioItem</code> or <code>AudioMixer</code> instances.</p>
+<ul>
+<li><code>BaseAudioFilter</code> - Base input/output interface for custom audio filters</li>
+<li><code>BiquadAudioFilter</code> - Base class for <code>BiquadFilterNode</code> filters</li>
+<li><code>LowPassAudioFilter</code> - Low-pass filter</li>
+<li><code>HighPassAudioFilter</code> - High-pass filter</li>
+<li><code>BandPassAudioFilter</code> - Band-pass filter</li>
+<li><code>NotchAudioFilter</code> - Notch filter</li>
+<li><code>PeakingAudioFilter</code> - Boosts or cuts a focused frequency band</li>
+<li><code>LowShelfAudioFilter</code> - Boosts or cuts frequencies below a cutoff</li>
+<li><code>HighShelfAudioFilter</code> - Boosts or cuts frequencies above a cutoff</li>
+<li>Filters run in array order and can be bypassed with <code>filter.on = false</code></li>
+<li>Built-in numeric parameters are normalized before they are written to Web Audio params</li>
 </ul>
 <h4><strong>AudioItem</strong> (<code>audio/AudioItem.js</code>)</h4>
 <p>Single audio playback with full playback control.</p>
@@ -151,6 +165,21 @@
 <li><code>fadeAudioVolume(audioItem, min, max, step)</code> - Set a mixed volume value</li>
 <li><code>crossFadeAudioVolumes(audioItemA, audioItemB, min, max, step)</code> - Crossfade between two items</li>
 </ul>
+<h4><strong>Migration: Audio Filters</strong></h4>
+<p>The fixed low-pass and high-pass <code>BaseAudio</code> properties were removed in the major filter API update.</p>
+<p>Replace old direct filter properties:</p>
+<pre class="prettyprint source lang-javascript"><code>audio.lowPassFilterFrequency = 6000;
+audio.lowPassFilterQ = 1;
+audio.highPassFilterFrequency = 120;
+audio.highPassFilterQ = 0.7;
+</code></pre>
+<p>with explicit filter instances:</p>
+<pre class="prettyprint source lang-javascript"><code>audio.filters = [
+  new PWGLExtensions.audio.HighPassAudioFilter({ frequency: 120, Q: 0.7 }),
+  new PWGLExtensions.audio.LowPassAudioFilter({ frequency: 6000, Q: 1 }),
+];
+</code></pre>
+<p>Use the same <code>filters</code> array on <code>AudioMixer</code> for master output filtering.</p>
 <h3>Display</h3>
 <p>Specialized rendering components for visual effects.</p>
 <h4><strong>AnimatedWater</strong> (<code>display/AnimatedWater.js</code>)</h4>
@@ -237,8 +266,25 @@ const mouse = new PWGLExtensions.controls.Mouse();
 const gamepad = new PWGLExtensions.controls.Gamepad();
 
 // Audio
-const audio = new PWGLExtensions.audio.AudioItem(audioBuffer);
+const audio = new PWGLExtensions.audio.AudioItem(audioUrl);
 const mixer = new PWGLExtensions.audio.AudioMixer();
+audio.filters = [
+  new PWGLExtensions.audio.HighPassAudioFilter({ frequency: 120 }),
+  new PWGLExtensions.audio.NotchAudioFilter({ frequency: 440, Q: 8 }),
+  new PWGLExtensions.audio.LowPassAudioFilter({ frequency: 6000 }),
+];
+
+class TelephoneAudioFilter extends PWGLExtensions.audio.BaseAudioFilter {
+  createNodes(context) {
+    this.input = this.output = context.createBiquadFilter();
+    this.input.type = &quot;bandpass&quot;;
+    this.input.frequency.value = 1400;
+    this.input.Q.value = 0.8;
+  }
+}
+
+audio.filters.push(new TelephoneAudioFilter());
+audio.filters[0].on = false;
 
 // Visual effects
 const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
@@ -262,7 +308,7 @@ counter.increment();
 <p>The extensions package is included with PWGL. Import from your project:</p>
 <pre class="prettyprint source lang-javascript"><code>import * as PWGLExt from 'pwgl.extensions.es.min';
 // or
-import { Keyboard, Mouse, AudioItem } from 'pwgl.extensions.es.min';
+import { Keyboard, Mouse, AudioItem, LowPassAudioFilter } from 'pwgl.extensions.es.min';
 </code></pre>
 <h2>Browser Compatibility</h2>
 <ul>
@@ -291,7 +337,7 @@ import { Keyboard, Mouse, AudioItem } from 'pwgl.extensions.es.min';
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
             </nav>
 
             <br class="clear">
