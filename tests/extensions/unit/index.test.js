@@ -34,7 +34,10 @@ describe("extensions index", () => {
     expect(window.PWGLExtensions.utils.createStateMachine).toBeDefined();
     expect(window.PWGLExtensions.utils.clone).toBeUndefined();
     expect(window.PWGLExtensions.utils.createDataObserver).toBeUndefined();
+    expect(window.PWGLExtensions.utils.getRandomFrom).toBeUndefined();
+    expect(window.PWGLExtensions.utils.hashNoise2D).toBeUndefined();
     expect(window.PWGLExtensions.utils.gridMapping.coordToVector(1, 2, 3)).toBe(7);
+    expect(window.PWGLExtensions.utils.random.getRandomFrom).toBeDefined();
     expect(consoleSpy).toHaveBeenCalled();
 
     consoleSpy.mockRestore();

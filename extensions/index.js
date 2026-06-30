@@ -1,97 +1,34 @@
-import { AudioItem } from "./audio/AudioItem";
-import { AudioMixer } from "./audio/AudioMixer";
-import { crossFadeAudioVolumes, fadeAudioVolume } from "./audio/utils";
-import { Gamepad } from "./controls/Gamepad";
-import { Keyboard } from "./controls/Keyboard";
-import { Mouse } from "./controls/Mouse";
-import { PressState } from "./controls/PressState";
-import { AnimatedWater } from "./display/AnimatedWater";
-import { SmoothLight } from "./display/SmoothLight";
-import { areObjectsEqual } from "./utils/areObjectsEqual";
-import { arraySet } from "./utils/arraySet";
-import { clamp } from "./utils/clamp";
-import {
-  areTwoLinesCollided,
-  areTwoRectsCollided,
-  distanceBetweenPointAndLine,
-  lineToLineIntersection,
-  rectToRectIntersection,
-} from "./utils/collisionDetection";
-import { cross } from "./utils/cross";
-import { createStateMachine } from "./utils/stateMachine";
-import { dot } from "./utils/dot";
-import { generateDungeon } from "./utils/dungeon";
-import { enterFrame } from "./utils/enterFrame";
-import { enumCheck } from "./utils/enumCheck";
-import { FPSCounter } from "./utils/FPSCounter";
-import { fract } from "./utils/fract";
-import { getFPS } from "./utils/getFPS";
-import { getRandomFrom } from "./utils/getRandomFrom";
-import { coordToVector, vectorToCoord } from "./utils/gridMapping";
-import { hashNoise2D } from "./utils/hashNoise2D";
-import { mix } from "./utils/mix";
-import { noop } from "./utils/noop";
-import { noopReturnsWith } from "./utils/noopReturnsWith";
-import { nthCall } from "./utils/nthCall";
-import { removeFromArray } from "./utils/removeFromArray";
-import { stepNoise } from "./utils/stepNoise";
+import * as audio from "./audio";
+import * as controls from "./controls";
+import * as display from "./display";
+import * as utils from "./utils";
 
 window.PWGLExtensions = window.AGLExtensions = {
   version: "{{appVersion}}",
-
-  controls: {
-    PressState,
-    Mouse,
-    Keyboard,
-    Gamepad,
-  },
-
-  audio: {
-    AudioItem,
-    AudioMixer,
-    fadeAudioVolume,
-    crossFadeAudioVolumes,
-  },
-
-  display: {
-    AnimatedWater,
-    SmoothLight,
-  },
-
+  controls,
+  audio,
+  display,
   utils: {
-    FPSCounter,
-    createStateMachine,
-    areObjectsEqual,
-    clamp,
-    mix,
-    collisionDetection: {
-      distanceBetweenPointAndLine,
-      areTwoLinesCollided,
-      lineToLineIntersection,
-      areTwoRectsCollided,
-      rectToRectIntersection,
-    },
-    cross,
-    dot,
-    enterFrame,
-    enumCheck,
-    fract,
-    getFPS,
-    nthCall,
-    generateDungeon,
-    noop,
-    noopReturnsWith,
-    arraySet,
-    removeFromArray,
-    gridMapping: {
-      coordToVector,
-      vectorToCoord,
-    },
-    random: {
-      getRandomFrom,
-      hashNoise2D,
-      stepNoise,
-    },
+    FPSCounter: utils.FPSCounter,
+    createStateMachine: utils.createStateMachine,
+    areObjectsEqual: utils.areObjectsEqual,
+    clamp: utils.clamp,
+    mix: utils.mix,
+    collisionDetection: utils.collisionDetection,
+    cross: utils.cross,
+    dot: utils.dot,
+    enterFrame: utils.enterFrame,
+    enumCheck: utils.enumCheck,
+    fract: utils.fract,
+    getFPS: utils.getFPS,
+    nthCall: utils.nthCall,
+    generateDungeon: utils.generateDungeon,
+    noop: utils.noop,
+    noopReturnsWith: utils.noopReturnsWith,
+    arraySet: utils.arraySet,
+    removeFromArray: utils.removeFromArray,
+    gridMapping: utils.gridMapping,
+    random: utils.random,
   },
 };
 
