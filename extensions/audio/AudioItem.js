@@ -14,8 +14,43 @@ export class AudioItem extends BaseAudio {
   constructor(url = null, config = {}) {
     super();
 
+    this.seek = 0;
+    this.isPlaying = false;
+    this.isPaused = false;
     this.$setConfig(config);
     this.load(url);
+  }
+
+  /**
+   * Gets the audio duration in seconds.
+   * @returns {number} The decoded audio duration.
+   */
+  get duration() {
+    return this._buffer?.duration ?? 0;
+  }
+
+  /**
+   * Gets the current playback position in seconds.
+   * @returns {number} The current playback position.
+   */
+  get currentTime() {
+    return this.isPlaying ? this._getCurrentSeek() : this.seek;
+  }
+
+  /**
+   * Gets the seek position in seconds.
+   * @returns {number} The seek position.
+   */
+  get seek() {
+    return this._seek;
+  }
+  set seek(seek) {
+    const wasPlaying = this.isPlaying;
+    this._seek = this._normalizeSeek(seek);
+
+    if (wasPlaying) {
+      this.play(this._seek);
+    }
   }
 
   /**
@@ -96,14 +131,16 @@ export class AudioItem extends BaseAudio {
   }
 
   /**
-   * Starts playing the audio from a specified time.
+   * Starts playing the audio from the current seek position or a specified time.
    *
-   * @param {number} [from=0] - The time in seconds from which to start playing the audio.
+   * @param {number} [from=this.seek] - The time in seconds from which to start playing the audio.
    */
-  play(from = 0) {
-    this.stop();
+  play(from = this.seek) {
+    this.$disconnectNodes();
 
+    this._seek = this._normalizeSeek(from);
     this.isPlaying = true;
+    this.isPaused = false;
 
     const { _audioMixer } = this;
     const { context } = _audioMixer;
@@ -114,7 +151,7 @@ export class AudioItem extends BaseAudio {
     if (context) {
       this._startTime = context.currentTime;
       try {
-        this.$nodesConnected && this._source.start(context.currentTime, from);
+        this.$nodesConnected && this._source.start(context.currentTime, this._seek);
       } catch {}
     }
 
@@ -122,26 +159,48 @@ export class AudioItem extends BaseAudio {
   }
 
   /**
-   * Stops the audio playback and updates the start time based on the current playback position.
-   * If an audio mixer and buffer are present, the start time is recalculated to allow resuming from the same position.
+   * Pauses the audio playback and stores the current seek position.
+   */
+  pause() {
+    if (this.isPlaying) {
+      this._seek = this.currentTime;
+      this.isPlaying = false;
+      this.isPaused = true;
+      this.$disconnectNodes();
+    }
+  }
+
+  /**
+   * Stops the audio playback and resets the seek position.
    */
   stop() {
     this.isPlaying = false;
-
-    const { _audioMixer, _buffer } = this;
-
-    if (_audioMixer && _buffer) {
-      this._startTime = (_audioMixer.context.currentTime - this._startTime) % _buffer.duration;
-    }
-
+    this.isPaused = false;
+    this.seek = 0;
     this.$disconnectNodes();
   }
 
   /**
-   * Resumes playback from the specified start time.
+   * @ignore
    */
-  resume() {
-    this.play(this._startTime);
+  _getCurrentSeek() {
+    const { _audioMixer, _buffer, _seek, _startTime } = this;
+
+    if (!_audioMixer || !_buffer || typeof _startTime !== "number") {
+      return _seek;
+    }
+
+    return (_audioMixer.context.currentTime - _startTime + _seek) % _buffer.duration;
+  }
+
+  /**
+   * @ignore
+   */
+  _normalizeSeek(seek) {
+    const value = Number.isFinite(seek) ? seek : 0;
+    const duration = this.duration;
+
+    return Math.max(0, duration ? Math.min(duration, value) : value);
   }
 
   /**

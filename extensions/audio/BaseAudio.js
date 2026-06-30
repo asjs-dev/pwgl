@@ -4,6 +4,18 @@
  * connection, and disconnection of audio nodes in a Web Audio API context.
  */
 export class BaseAudio {
+  constructor() {
+    this._volume = 1;
+    this._muted = false;
+    this._pan = 0;
+    this._reverbDelayTime = 0;
+    this._reverbFeedbackGain = 0;
+    this._lowPassFilterFrequency = 22050;
+    this._lowPassFilterQ = 1;
+    this._highPassFilterFrequency = 0;
+    this._highPassFilterQ = 1;
+  }
+
   /**
    * Gets the volume.
    * @returns {number} The current volume.
@@ -13,9 +25,19 @@ export class BaseAudio {
   }
   set volume(volume) {
     this._volume = volume;
-    if (this.$nodesConnected) {
-      this.$gainNode.gain.value = volume;
-    }
+    this.$updateGain();
+  }
+
+  /**
+   * Gets muted state.
+   * @returns {boolean} Whether the audio output is muted.
+   */
+  get muted() {
+    return this._muted;
+  }
+  set muted(muted) {
+    this._muted = muted;
+    this.$updateGain();
   }
 
   /**
@@ -75,6 +97,20 @@ export class BaseAudio {
   }
 
   /**
+   * Gets the Q value of the low-pass filter.
+   * @returns {number} The current low-pass filter Q value.
+   */
+  get lowPassFilterQ() {
+    return this._lowPassFilterQ;
+  }
+  set lowPassFilterQ(q) {
+    this._lowPassFilterQ = q;
+    if (this.$nodesConnected) {
+      this.$lowPassNode.Q.value = q;
+    }
+  }
+
+  /**
    * Gets the frequency of the high-pass filter.
    * @returns {number} The current high-pass filter frequency.
    */
@@ -85,6 +121,20 @@ export class BaseAudio {
     this._highPassFilterFrequency = frequency;
     if (this.$nodesConnected) {
       this.$highPassNode.frequency.value = frequency;
+    }
+  }
+
+  /**
+   * Gets the Q value of the high-pass filter.
+   * @returns {number} The current high-pass filter Q value.
+   */
+  get highPassFilterQ() {
+    return this._highPassFilterQ;
+  }
+  set highPassFilterQ(q) {
+    this._highPassFilterQ = q;
+    if (this.$nodesConnected) {
+      this.$highPassNode.Q.value = q;
     }
   }
 
@@ -103,6 +153,7 @@ export class BaseAudio {
       this.$highPassNode.type = "highpass";
 
       this.$nodesCreated = true;
+      this.$updateGain();
     }
   }
 
@@ -145,10 +196,22 @@ export class BaseAudio {
    */
   $setConfig(config) {
     this.volume = config.volume ?? 1;
+    this.muted = config.muted ?? false;
     this.pan = config.pan ?? 0;
     this.reverbDelayTime = config.reverbDelayTime ?? 0;
     this.reverbFeedbackGain = config.reverbFeedbackGain ?? 0;
     this.lowPassFilterFrequency = config.lowPassFilterFrequency ?? 22050;
+    this.lowPassFilterQ = config.lowPassFilterQ ?? 1;
     this.highPassFilterFrequency = config.highPassFilterFrequency ?? 0;
+    this.highPassFilterQ = config.highPassFilterQ ?? 1;
+  }
+
+  /**
+   * @ignore
+   */
+  $updateGain() {
+    if (this.$gainNode) {
+      this.$gainNode.gain.value = this._muted ? 0 : Number.isFinite(this._volume) ? this._volume : 1;
+    }
   }
 }

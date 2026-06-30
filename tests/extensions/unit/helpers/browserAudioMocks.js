@@ -11,8 +11,8 @@ export const createAudioContextMock = () => {
   const panNode = { ...createConnectableNode(), pan: { value: 0 } };
   const delayNode = { ...createConnectableNode(), delayTime: { value: 0 } };
   const feedbackGainNode = { ...createConnectableNode(), gain: { value: 0 } };
-  const lowPassNode = { ...createConnectableNode(), frequency: { value: 0 }, type: "" };
-  const highPassNode = { ...createConnectableNode(), frequency: { value: 0 }, type: "" };
+  const lowPassNode = { ...createConnectableNode(), frequency: { value: 0 }, Q: { value: 0 }, type: "" };
+  const highPassNode = { ...createConnectableNode(), frequency: { value: 0 }, Q: { value: 0 }, type: "" };
   let gainCount = 0;
 
   const context = {

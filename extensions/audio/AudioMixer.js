@@ -3,7 +3,7 @@ import { BaseAudio } from "./BaseAudio";
 /**
  * AudioMixer class that extends BaseAudio to manage and control multiple audio items.
  * It initializes an audio context, creates and connects audio nodes, and provides methods
- * to play, stop, resume, connect, and disconnect audio items.
+ * to play, pause, stop, connect, and disconnect audio items.
  */
 export class AudioMixer extends BaseAudio {
   /**
@@ -48,6 +48,13 @@ export class AudioMixer extends BaseAudio {
   }
 
   /**
+   * Pauses all playing items in the collection.
+   */
+  pause() {
+    this._items.forEach((item) => item.pause());
+  }
+
+  /**
    * Stops all items in the collection and then calls the parent class's stop method.
    */
   stop() {
@@ -61,13 +68,6 @@ export class AudioMixer extends BaseAudio {
   destruct() {
     this.stop();
     this.$disconnectNodes();
-  }
-
-  /**
-   * Resumes all items in the collection by calling their resume method.
-   */
-  resume() {
-    this._items.forEach((item) => item.resume());
   }
 
   /**

@@ -48,16 +48,18 @@ Professional audio manipulation and mixing utilities powered by the Web Audio AP
 Abstract base class for audio node management and control.
 - **Properties:**
   - `volume` - Audio gain control (0-1 range)
+  - `muted` - Mutes output without changing the stored volume
   - `pan` - Stereo panning (-1 to 1)
   - `reverb` - Reverb effect parameter
-  - `filter` - Audio filter configuration
+  - `lowPassFilterFrequency` / `lowPassFilterQ` - Low-pass filter control
+  - `highPassFilterFrequency` / `highPassFilterQ` - High-pass filter control
 - **Features:** Manages Web Audio API node connections, audio routing, and effect chains
 
 #### **AudioItem** (`audio/AudioItem.js`)
 Single audio playback with full playback control.
-- Play, pause, resume, and stop controls
+- Play, pause, and stop controls
 - Looping support
-- Duration and current time tracking
+- Seek, duration, and current time tracking
 - Volume and panning envelope automation
 
 #### **AudioMixer** (`audio/AudioMixer.js`)
@@ -67,10 +69,10 @@ Multi-channel audio mixer for complex audio management.
 - Master volume control
 - Effect chain management
 
-#### **Audio Utilities** (`audio/utils.js`)
+#### **Audio Utilities** (`audio/utils/`)
 Helper functions for audio manipulation.
-- `fadeAudioVolume(duration)` - Smooth volume transitions
-- `crossFadeAudioVolumes(duration)` - Fade between tracks
+- `fadeAudioVolume(audioItem, min, max, step)` - Set a mixed volume value
+- `crossFadeAudioVolumes(audioItemA, audioItemB, min, max, step)` - Crossfade between two items
 
 ### Display
 

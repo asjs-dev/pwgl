@@ -31,7 +31,7 @@ describe("AudioItem", () => {
     expect(item._buffer).toEqual({ duration: 8 });
   });
 
-  it("connects to a mixer and can play, stop and resume", () => {
+  it("connects to a mixer and can play, pause, and stop", () => {
     const mixer = createMixer();
     const item = new AudioItem();
 
@@ -42,12 +42,42 @@ describe("AudioItem", () => {
     item.play(2);
     expect(item.isPlaying).toBe(true);
     expect(item._source.start).toHaveBeenCalledWith(mixer.context.currentTime, 2);
+    expect(item.currentTime).toBe(2);
+
+    mixer.context.currentTime = 15;
+    item.pause();
+    expect(item.isPlaying).toBe(false);
+    expect(item.isPaused).toBe(true);
+    expect(item.seek).toBe(5);
+    expect(item.currentTime).toBe(5);
+
+    item.play();
+    expect(item.isPlaying).toBe(true);
+    expect(item._source.start).toHaveBeenCalledWith(mixer.context.currentTime, 5);
 
     item.stop();
     expect(item.isPlaying).toBe(false);
+    expect(item.isPaused).toBe(false);
+    expect(item.seek).toBe(0);
+  });
 
-    item.resume();
+  it("seeks without starting stopped audio and restarts active playback when playing", () => {
+    const mixer = createMixer();
+    const item = new AudioItem();
+
+    item._buffer = { duration: 8 };
+    item.connect(mixer);
+
+    item.seek = 20;
+    expect(item.seek).toBe(8);
+    expect(item.isPlaying).toBe(false);
+
+    item.play();
+    expect(item._source.start).toHaveBeenCalledWith(mixer.context.currentTime, 8);
+
+    item.seek = 3;
     expect(item.isPlaying).toBe(true);
+    expect(item._source.start).toHaveBeenLastCalledWith(mixer.context.currentTime, 3);
   });
 
   it("disconnects and unloads", () => {

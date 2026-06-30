@@ -26,20 +26,20 @@ describe("AudioMixer", () => {
       connect: vi.fn(),
       disconnect: vi.fn(),
       play: vi.fn(),
+      pause: vi.fn(),
       stop: vi.fn(),
-      resume: vi.fn(),
     };
 
     mixer.connect(item);
     expect(item.connect).toHaveBeenCalledWith(mixer);
 
     mixer.play();
+    mixer.pause();
     mixer.stop();
-    mixer.resume();
 
     expect(item.play).toHaveBeenCalled();
+    expect(item.pause).toHaveBeenCalled();
     expect(item.stop).toHaveBeenCalled();
-    expect(item.resume).toHaveBeenCalled();
 
     mixer.disconnect(item);
     expect(item.disconnect).toHaveBeenCalled();

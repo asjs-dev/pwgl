@@ -120,9 +120,11 @@
 <li><strong>Properties:</strong>
 <ul>
 <li><code>volume</code> - Audio gain control (0-1 range)</li>
+<li><code>muted</code> - Mutes output without changing the stored volume</li>
 <li><code>pan</code> - Stereo panning (-1 to 1)</li>
 <li><code>reverb</code> - Reverb effect parameter</li>
-<li><code>filter</code> - Audio filter configuration</li>
+<li><code>lowPassFilterFrequency</code> / <code>lowPassFilterQ</code> - Low-pass filter control</li>
+<li><code>highPassFilterFrequency</code> / <code>highPassFilterQ</code> - High-pass filter control</li>
 </ul>
 </li>
 <li><strong>Features:</strong> Manages Web Audio API node connections, audio routing, and effect chains</li>
@@ -130,9 +132,9 @@
 <h4><strong>AudioItem</strong> (<code>audio/AudioItem.js</code>)</h4>
 <p>Single audio playback with full playback control.</p>
 <ul>
-<li>Play, pause, resume, and stop controls</li>
+<li>Play, pause, and stop controls</li>
 <li>Looping support</li>
-<li>Duration and current time tracking</li>
+<li>Seek, duration, and current time tracking</li>
 <li>Volume and panning envelope automation</li>
 </ul>
 <h4><strong>AudioMixer</strong> (<code>audio/AudioMixer.js</code>)</h4>
@@ -143,11 +145,11 @@
 <li>Master volume control</li>
 <li>Effect chain management</li>
 </ul>
-<h4><strong>Audio Utilities</strong> (<code>audio/utils.js</code>)</h4>
+<h4><strong>Audio Utilities</strong> (<code>audio/utils/</code>)</h4>
 <p>Helper functions for audio manipulation.</p>
 <ul>
-<li><code>fadeAudioVolume(duration)</code> - Smooth volume transitions</li>
-<li><code>crossFadeAudioVolumes(duration)</code> - Fade between tracks</li>
+<li><code>fadeAudioVolume(audioItem, min, max, step)</code> - Set a mixed volume value</li>
+<li><code>crossFadeAudioVolumes(audioItemA, audioItemB, min, max, step)</code> - Crossfade between two items</li>
 </ul>
 <h3>Display</h3>
 <p>Specialized rendering components for visual effects.</p>
