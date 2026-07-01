@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { SHOW_ARRAYS, SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES } from "../../../debugger/constants";
+import { SHOW_ARRAYS, SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES } from "../../../debugger/src/constants";
 
 describe("debugger constants", () => {
   it("exports stable bitmask flags", () => {

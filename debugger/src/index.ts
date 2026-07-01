@@ -11,6 +11,6 @@ window.PWGLDebugger = {
 };
 
 console.log(
-  `%cPWGL Debugger v${PWGLDebugger.version}\nhttps:\/\/github.com/asjs-dev/pwgl`,
+  `%cPWGL Debugger v${window.PWGLDebugger.version}\nhttps:\/\/github.com/asjs-dev/pwgl`,
   "background:#222;color:#0F0",
 );

@@ -1,6 +1,6 @@
 {
   "name": "pwgl-debugger",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "./dist/pwgl.debugger.umd.js",
   "module": "./dist/pwgl.debugger.es.js",
   "description": "PWGL Debugger",
@@ -18,7 +18,7 @@
     "webgl2",
     "2d",
     "renderer",
-    "game",
-    "graphics"
+    "graphics",
+    "debugger"
   ]
 }

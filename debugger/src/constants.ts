@@ -6,14 +6,12 @@
 /**
  * Include captured JavaScript call stacks for each logged WebGL call.
  * Useful to trace where a call originated from.
- * @constant {number}
  */
 export const SHOW_CALL_STACKS = 1;
 
 /**
  * Display original argument values instead of converting them
  * to human-readable WebGL constant names.
- * @constant {number}
  */
 export const SHOW_ORIGINAL_VALUES = 2;
 
@@ -22,6 +20,5 @@ export const SHOW_ORIGINAL_VALUES = 2;
  * By default arrays are compacted to a short form: `[Type(length)]`.
  * For `bufferData` calls with `srcOffset` and `length`, only the uploaded
  * slice is displayed.
- * @constant {number}
  */
 export const SHOW_ARRAYS = 4;

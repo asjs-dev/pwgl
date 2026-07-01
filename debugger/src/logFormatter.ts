@@ -1,3 +1,17 @@
+type ColorDefinition = {
+  icon: string;
+  label: LogType;
+  color: string;
+  bg: string;
+};
+
+const _createColorDefinition = (icon: string, label: LogType, color: string, bg: string): ColorDefinition => ({
+  icon,
+  label,
+  color,
+  bg,
+});
+
 export const TYPES = {
   FRAME: "FRAME",
   BASE: "    ",
@@ -18,43 +32,36 @@ export const TYPES = {
   DRAW: "DRAW",
   ALERT: "ALRT",
   WARN: "WARN",
-};
+} as const;
 
-export const COLORS = [
-  { icon: "", label: TYPES.FRAME, color: "#0f0", bg: "#000" },
-  { icon: "-", label: TYPES.BASE, color: "#999", bg: "#111" },
-  { icon: "◉", label: TYPES.PROGRAM, color: "#7CFF9B", bg: "#0b3d1f" },
-  { icon: "↔", label: TYPES.BINDING, color: "#4FC3F7", bg: "#002233" },
-  { icon: "□", label: TYPES.RESOURCES, color: "#FFD54F", bg: "#3a2a00" },
-  { icon: "↑", label: TYPES.BUFFER_UPLOAD, color: "#FF7043", bg: "#3b1200" },
-  { icon: "▦", label: TYPES.TEXTURE_PARAMS, color: "#c792ea", bg: "#2a1433" },
-  { icon: "≡", label: TYPES.UNIFORMS, color: "#FF7AA2", bg: "#2a0f1a" },
-  {
-    icon: "▣",
-    label: TYPES.VERTEX_ATTRIBUTES,
-    color: "#26E6A6",
-    bg: "#00382f",
-  },
-  { icon: "▢", label: TYPES.VIEWPORT, color: "#90a4ae", bg: "#1c262b" },
-  { icon: "≈", label: TYPES.BLENDING, color: "#69f0ae", bg: "#032" },
-  { icon: "⇅", label: TYPES.SAMPLERS, color: "#000", bg: "#33F" },
-  { icon: "▭", label: TYPES.FRAMEBUFFERS, color: "#fff", bg: "#4a148c" },
-  { icon: "▩", label: TYPES.RENDERBUFFERS, color: "#fff", bg: "#004d40" },
-  { icon: "∠", label: TYPES.DEPTH_STENCIL, color: "#999", bg: "#333" },
-  { icon: "∞", label: TYPES.SHADER, color: "#8cedd4", bg: "#390b5a" },
-  { icon: "●", label: TYPES.DRAW, color: "#fff", bg: "#086818" },
-  { icon: "■", label: TYPES.ALERT, color: "#fff", bg: "#b00020" },
-  { icon: "▲", label: TYPES.WARN, color: "#000", bg: "#fc0" },
+export type LogType = (typeof TYPES)[keyof typeof TYPES];
+
+export const COLORS: ColorDefinition[] = [
+  _createColorDefinition("", TYPES.FRAME, "#0f0", "#000"),
+  _createColorDefinition("-", TYPES.BASE, "#999", "#111"),
+  _createColorDefinition("◉", TYPES.PROGRAM, "#7CFF9B", "#0b3d1f"),
+  _createColorDefinition("↔", TYPES.BINDING, "#4FC3F7", "#002233"),
+  _createColorDefinition("□", TYPES.RESOURCES, "#FFD54F", "#3a2a00"),
+  _createColorDefinition("↑", TYPES.BUFFER_UPLOAD, "#FF7043", "#3b1200"),
+  _createColorDefinition("▦", TYPES.TEXTURE_PARAMS, "#c792ea", "#2a1433"),
+  _createColorDefinition("≡", TYPES.UNIFORMS, "#FF7AA2", "#2a0f1a"),
+  _createColorDefinition("▣", TYPES.VERTEX_ATTRIBUTES, "#26E6A6", "#00382f"),
+  _createColorDefinition("▢", TYPES.VIEWPORT, "#90a4ae", "#1c262b"),
+  _createColorDefinition("≈", TYPES.BLENDING, "#69f0ae", "#032"),
+  _createColorDefinition("⇅", TYPES.SAMPLERS, "#000", "#33F"),
+  _createColorDefinition("▭", TYPES.FRAMEBUFFERS, "#fff", "#4a148c"),
+  _createColorDefinition("▩", TYPES.RENDERBUFFERS, "#fff", "#004d40"),
+  _createColorDefinition("∠", TYPES.DEPTH_STENCIL, "#999", "#333"),
+  _createColorDefinition("∞", TYPES.SHADER, "#8cedd4", "#390b5a"),
+  _createColorDefinition("●", TYPES.DRAW, "#fff", "#086818"),
+  _createColorDefinition("■", TYPES.ALERT, "#fff", "#b00020"),
+  _createColorDefinition("▲", TYPES.WARN, "#000", "#fc0"),
 ];
 
 /**
  * Resolve the output label used to style a logged WebGL call.
- *
- * @param {number} duration Elapsed time in milliseconds for the previous call.
- * @param {string} command WebGL method name.
- * @returns {string} One of the labels defined in `TYPES`.
  */
-export const getFormat = (duration, command) => {
+export const getFormat = (duration: number, command: string): LogType => {
   if (duration > 5) {
     return TYPES.ALERT;
   }

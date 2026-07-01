@@ -78,7 +78,7 @@ It wraps WebGL contexts returned by <code>canvas.getContext(...)</code> and reco
 <h2>Entry point and build output</h2>
 <p>The debugger entry point is:</p>
 <ul>
-<li><code>debugger/index.js</code></li>
+<li><code>debugger/src/index.ts</code></li>
 </ul>
 <p>This file creates a global <code>window.PWGLDebugger</code> object and attaches:</p>
 <ul>
@@ -87,13 +87,20 @@ It wraps WebGL contexts returned by <code>canvas.getContext(...)</code> and reco
 <li><code>instances</code></li>
 <li>formatting flags: <code>SHOW_CALL_STACKS</code>, <code>SHOW_ORIGINAL_VALUES</code>, <code>SHOW_ARRAYS</code></li>
 </ul>
-<p>Build config (<code>debugger/vite.config.js</code>) generates:</p>
+<p>Build config (<code>debugger/vite.config.ts</code>) runs type checking, builds the TypeScript source, and generates:</p>
 <ul>
 <li><code>dist/pwgl.debugger.es.js</code></li>
 <li><code>dist/pwgl.debugger.umd.js</code></li>
 </ul>
 <p>Run build from project root:</p>
 <pre class="prettyprint source lang-bash"><code>npm run build:debugger
+</code></pre>
+<h2>Development</h2>
+<p>Debugger source files are TypeScript. Run the type checker from the project root:</p>
+<pre class="prettyprint source lang-bash"><code>npm run typecheck
+</code></pre>
+<p>Run debugger unit tests:</p>
+<pre class="prettyprint source lang-bash"><code>npm run test:run -- tests/debugger/unit
 </code></pre>
 <h2>Initialization</h2>
 <p>Initialize once during app startup:</p>
@@ -171,7 +178,7 @@ destroyDebugger();
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#SHOW_ARRAYS">SHOW_ARRAYS</a></li><li><a href="global.html#SHOW_CALL_STACKS">SHOW_CALL_STACKS</a></li><li><a href="global.html#SHOW_ORIGINAL_VALUES">SHOW_ORIGINAL_VALUES</a></li><li><a href="global.html#debugContext">debugContext</a></li><li><a href="global.html#getFormat">getFormat</a></li><li><a href="global.html#init">init</a></li><li><a href="global.html#panel">panel</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-PWGLDebugger.html">PWGLDebugger</a></li></ul>
             </nav>
 
             <br class="clear">

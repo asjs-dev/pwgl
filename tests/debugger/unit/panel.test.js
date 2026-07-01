@@ -26,7 +26,7 @@ describe("panel", () => {
   });
 
   it("creates and appends the debugger overlay to the document body", async () => {
-    const { panel } = await import("../../../debugger/panel.js");
+    const { panel } = await import("../../../debugger/src/panel.ts");
 
     const destroy = panel();
     const appended = document.body.appendChild.mock.calls.map(([element]) => element);
@@ -42,7 +42,7 @@ describe("panel", () => {
   });
 
   it("updates the panel output when instance buttons are clicked", async () => {
-    const { panel } = await import("../../../debugger/panel.js");
+    const { panel } = await import("../../../debugger/src/panel.ts");
 
     panel();
 
@@ -59,9 +59,7 @@ describe("panel", () => {
     expect(output.innerHTML).toContain("useProgram");
 
     instanceList.dispatch("click", {
-      target: {
-        getAttribute: () => "0",
-      },
+      target: instanceList.children[0],
     });
     expect(output.innerHTML).toContain("FRAME");
   });
@@ -82,7 +80,7 @@ describe("panel", () => {
       },
     ];
 
-    const { panel } = await import("../../../debugger/panel.js");
+    const { panel } = await import("../../../debugger/src/panel.ts");
 
     panel();
 

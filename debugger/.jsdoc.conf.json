@@ -3,11 +3,12 @@
   "recurseDepth": 10,
   "opts": {
     "recurse": true,
-    "destination": "./docs/debugger/"
+    "destination": "./docs/debugger/",
+    "readme": "debugger/README.md"
   },
   "source": {
-    "include": ["debugger", "debugger/README.md"],
-    "includePattern": ".+\\.js(doc|x)?$",
+    "include": ["debugger/docs.ts"],
+    "includePattern": ".+\\.ts$",
     "excludePattern": "node_modules"
   },
   "sourceType": "module",

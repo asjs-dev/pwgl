@@ -24,16 +24,18 @@
   "scripts": {
     "build:pwgl": "vite build --config vite.config.js",
     "build:ext": "vite build --config extensions/vite.config.js",
-    "build:debugger": "vite build --config debugger/vite.config.js",
+    "build:debugger": "npm run typecheck && vite build --config debugger/vite.config.ts",
     "docs": "node build-scripts/build-docs.js",
     "build:all": "npm run build:pwgl && npm run build:ext && npm run build:debugger && npm run docs",
     "test": "vitest",
-    "test:run": "vitest run"
+    "test:run": "vitest run",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.3",
     "jsdoc": "^4.0.2",
     "terser": "^5.46.1",
+    "typescript": "^6.0.3",
     "vite": "^7.3.1",
     "vitest": "^3.2.4"
   }

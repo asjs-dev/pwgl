@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { COLORS, TYPES, getFormat } from "../../../debugger/logFormatter";
+import { COLORS, TYPES, getFormat } from "../../../debugger/src/logFormatter";
 
 describe("logFormatter", () => {
   it("exports known type labels and color definitions", () => {

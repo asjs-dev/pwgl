@@ -15,7 +15,7 @@ export const createElementMock = (tagName = "div") => {
   const children = [];
   const classList = createClassList();
 
-  return {
+  const element = {
     tagName: tagName.toUpperCase(),
     children,
     classList,
@@ -41,9 +41,19 @@ export const createElementMock = (tagName = "div") => {
     dispatch: (type, event = {}) => listeners[type]?.(event),
     attributes,
   };
+
+  if (globalThis.HTMLElement) {
+    Object.setPrototypeOf(element, globalThis.HTMLElement.prototype);
+  }
+
+  return element;
 };
 
 export const installDocumentMock = () => {
+  if (!globalThis.HTMLElement) {
+    globalThis.HTMLElement = function HTMLElement() {};
+  }
+
   const created = [];
   const body = createElementMock("body");
 

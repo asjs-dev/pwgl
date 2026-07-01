@@ -10,7 +10,7 @@ const loadDebugContextModule = async () => {
       };
     }),
   }));
-  return import("../../../debugger/debugContext.js");
+  return import("../../../debugger/src/debugContext.ts");
 };
 
 describe("debugContext", () => {

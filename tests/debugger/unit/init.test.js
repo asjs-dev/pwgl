@@ -7,10 +7,10 @@ describe("init", () => {
     const debugContextMock = vi.fn((ctx) => ({ wrapped: ctx }));
     const panelMock = vi.fn();
 
-    vi.doMock("../../../debugger/debugContext.js", () => ({
+    vi.doMock("../../../debugger/src/debugContext.ts", () => ({
       debugContext: debugContextMock,
     }));
-    vi.doMock("../../../debugger/panel.js", () => ({
+    vi.doMock("../../../debugger/src/panel.ts", () => ({
       panel: panelMock.mockReturnValue(vi.fn()),
     }));
 
@@ -22,7 +22,7 @@ describe("init", () => {
       return { type, canvas: this };
     });
 
-    const { init } = await import("../../../debugger/init.js");
+    const { init } = await import("../../../debugger/src/init.ts");
     const canvas = new HTMLCanvasElement();
 
     const cleanup = init({ maxFrameCount: 3 });
@@ -47,10 +47,10 @@ describe("init", () => {
     const secondPanelCleanup = vi.fn();
     const panelMock = vi.fn().mockReturnValueOnce(firstPanelCleanup).mockReturnValueOnce(secondPanelCleanup);
 
-    vi.doMock("../../../debugger/debugContext.js", () => ({
+    vi.doMock("../../../debugger/src/debugContext.ts", () => ({
       debugContext: vi.fn((ctx) => ({ wrapped: ctx })),
     }));
-    vi.doMock("../../../debugger/panel.js", () => ({
+    vi.doMock("../../../debugger/src/panel.ts", () => ({
       panel: panelMock,
     }));
 
@@ -62,7 +62,7 @@ describe("init", () => {
       return { type, canvas: this };
     });
 
-    const { init } = await import("../../../debugger/init.js");
+    const { init } = await import("../../../debugger/src/init.ts");
 
     const firstCleanup = init();
     const cleanup = init();

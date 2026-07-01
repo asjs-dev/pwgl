@@ -37,7 +37,7 @@ PWGL is a JavaScript framework for creating **2D WebGL2 games and applications**
 
 PWGL provides multiple builds for different use cases.
 
-**Vite 4 production builds:**
+**Vite production builds:**
 
 | File                          | Format                              |
 | ----------------------------- | ----------------------------------- |
@@ -53,6 +53,7 @@ PWGL provides multiple builds for different use cases.
 ## Debugger
 
 PWGL includes an optional debugger bundle for inspecting WebGL calls in the browser.
+The debugger source is written in TypeScript and is published as JavaScript bundles.
 Load it before creating WebGL contexts, then initialize it once:
 
 ```html

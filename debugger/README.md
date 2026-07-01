@@ -11,7 +11,7 @@ The debugger is read-only: intercepted calls are forwarded to the original conte
 
 The debugger entry point is:
 
-- `debugger/index.js`
+- `debugger/src/index.ts`
 
 This file creates a global `window.PWGLDebugger` object and attaches:
 
@@ -20,7 +20,7 @@ This file creates a global `window.PWGLDebugger` object and attaches:
 - `instances`
 - formatting flags: `SHOW_CALL_STACKS`, `SHOW_ORIGINAL_VALUES`, `SHOW_ARRAYS`
 
-Build config (`debugger/vite.config.js`) generates:
+Build config (`debugger/vite.config.ts`) runs type checking, builds the TypeScript source, and generates:
 
 - `dist/pwgl.debugger.es.js`
 - `dist/pwgl.debugger.umd.js`
@@ -29,6 +29,20 @@ Run build from project root:
 
 ```bash
 npm run build:debugger
+```
+
+## Development
+
+Debugger source files are TypeScript. Run the type checker from the project root:
+
+```bash
+npm run typecheck
+```
+
+Run debugger unit tests:
+
+```bash
+npm run test:run -- tests/debugger/unit
 ```
 
 ## Initialization

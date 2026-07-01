@@ -7,11 +7,11 @@ describe("debugger index", () => {
     const initMock = vi.fn();
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    vi.doMock("../../../debugger/init.js", () => ({
+    vi.doMock("../../../debugger/src/init.ts", () => ({
       init: initMock,
     }));
 
-    await import("../../../debugger/index.js");
+    await import("../../../debugger/src/index.ts");
 
     expect(window.PWGLDebugger).toBeDefined();
     expect(window.PWGLDebugger.SHOW_CALL_STACKS).toBe(1);

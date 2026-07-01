@@ -1,4 +1,4 @@
-import { COLORS, getFormat, TYPES } from "./logFormatter";
+import { COLORS, getFormat, TYPES, type LogType } from "./logFormatter";
 
 const _HASH = String(Math.random()).split(".")[1];
 // prettier-ignore
@@ -179,14 +179,13 @@ const _STYLE = `` +
     `color:` + `inherit;` +
   `}`;
 
-const _createElement = (elementType = "div", classList = []) => {
+const _createElement = (elementType = "div", classList: string[] = []): HTMLElement => {
   const element = document.createElement(elementType);
   element.classList.add(...classList);
   return element;
 };
 
-const _createEntry = (textContent, typeName) =>
-  `<span type=\"${typeName}\">${textContent}</span>\n`;
+const _createEntry = (textContent: string, typeName: LogType) => `<span type=\"${typeName}\">${textContent}</span>\n`;
 
 /**
  * Create and attach the PWGL debugger UI overlay.
@@ -194,20 +193,15 @@ const _createEntry = (textContent, typeName) =>
  * The panel is mounted once to `document.body` and displays
  * captured frame snapshots for each tracked WebGL canvas.
  */
-export const panel = () => {
+export const panel = (): (() => void) => {
   const styleElement = _createElement("style");
   styleElement.textContent = _STYLE;
 
   const infoButton = _createElement("div", ["info-button-" + _HASH]);
-  const debuggerContainer = _createElement("div", [
-    "debugger-container-" + _HASH,
-  ]);
+  const debuggerContainer = _createElement("div", ["debugger-container-" + _HASH]);
   const debuggerPanel = _createElement("div", ["debugger-panel-" + _HASH]);
   const topPanelContainer = _createElement("div", ["panel-container-" + _HASH]);
-  const bottomPanelContainer = _createElement("div", [
-    "panel-container-" + _HASH,
-    "panel-container-bottom-" + _HASH,
-  ]);
+  const bottomPanelContainer = _createElement("div", ["panel-container-" + _HASH, "panel-container-bottom-" + _HASH]);
   const panelTitle = _createElement("div", ["panel-title-" + _HASH]);
   const closeButton = _createElement("div", ["close-button-" + _HASH]);
   const instanceList = _createElement("ul", ["instance-list-" + _HASH]);
@@ -217,9 +211,9 @@ export const panel = () => {
 
   const showDebugger = () => debuggerContainer.removeAttribute("hidden");
 
-  const hideDebugger = () => debuggerContainer.setAttribute("hidden", null);
+  const hideDebugger = () => debuggerContainer.setAttribute("hidden", "");
 
-  const showDetails = (id) => {
+  const showDetails = (id: number) => {
     const instance = PWGLDebugger.instances[id];
     if (instance) {
       let result = "";
@@ -229,10 +223,7 @@ export const panel = () => {
 
       instance.snapshots.forEach((frame) =>
         frame.forEach((entry) => {
-          maxSumFrameDurationMSLength = Math.max(
-            maxSumFrameDurationMSLength,
-            String(entry.sumFrameDurationMS).length,
-          );
+          maxSumFrameDurationMSLength = Math.max(maxSumFrameDurationMSLength, String(entry.sumFrameDurationMS).length);
           maxCurrentCallDurationMSLength = Math.max(
             maxCurrentCallDurationMSLength,
             String(entry.currentCallDurationMS).length,
@@ -242,10 +233,7 @@ export const panel = () => {
       );
 
       const paramIndent = String("").padStart(
-        14 +
-          maxSumFrameDurationMSLength +
-          maxCurrentCallDurationMSLength +
-          maxPropLength,
+        14 + maxSumFrameDurationMSLength + maxCurrentCallDurationMSLength + maxPropLength,
       );
 
       instance.snapshots.forEach((frame, frameId) => {
@@ -273,10 +261,8 @@ export const panel = () => {
     [...instanceList.children].forEach((child) => child.remove());
 
     PWGLDebugger.instances.forEach((instance, id) => {
-      const instanceButton = _createElement("div", [
-        "instance-button-" + _HASH,
-      ]);
-      instanceButton.setAttribute("instance-id", id);
+      const instanceButton = _createElement("div", ["instance-button-" + _HASH]);
+      instanceButton.setAttribute("instance-id", String(id));
       instanceButton.textContent = `#${id + 1} Canvas`;
       instanceList.appendChild(instanceButton);
       id === 0 && showDetails(0);
@@ -291,12 +277,22 @@ export const panel = () => {
     showDebugger();
   });
   closeButton.addEventListener("click", hideDebugger);
-  instanceList.addEventListener("click", (event) =>
-    showDetails(parseInt(event.target.getAttribute("instance-id"))),
-  );
-  debuggerContainer.addEventListener("mousedown", (event) =>
-    event.stopPropagation(),
-  );
+  instanceList.addEventListener("click", (event) => {
+    const target = event.target;
+
+    if (!(target instanceof HTMLElement)) {
+      return;
+    }
+
+    const instanceId = target.getAttribute("instance-id");
+
+    if (instanceId === null) {
+      return;
+    }
+
+    showDetails(parseInt(instanceId, 10));
+  });
+  debuggerContainer.addEventListener("mousedown", (event) => event.stopPropagation());
 
   topPanelContainer.appendChild(panelTitle);
   topPanelContainer.appendChild(closeButton);
