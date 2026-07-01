@@ -1,5 +1,9 @@
 import { PressState } from "./PressState";
 
+const POINTER_ID = 0;
+const PRIMARY_MOUSE_BUTTON = 0;
+const PRIMARY_MOUSE_WHICH = 1;
+
 /**
  * Mouse input handling
  * @class Mouse
@@ -11,13 +15,6 @@ export class Mouse extends PressState {
     this.position = { x: 0, y: 0 };
 
     this._target = target ?? window;
-
-    this._typeMap = {
-      mousedown: 1,
-      mouseup: 1,
-      touchstart: 0,
-      touchend: 0,
-    };
 
     this._onMouseDown = this._onMouseDown.bind(this);
     this._onMouseUp = this._onMouseUp.bind(this);
@@ -41,21 +38,29 @@ export class Mouse extends PressState {
   }
 
   _onMouseDown(event) {
-    if (this._typeMap[event.type] === event.which) {
-      this.$setDownState(0);
+    if (this._isPrimaryPointerEvent(event)) {
+      this.$setDownState(POINTER_ID);
     }
   }
 
   _onMouseUp(event) {
-    if (this._typeMap[event.type] === event.which) {
-      this.$setUpState(0);
+    if (this._isPrimaryPointerEvent(event)) {
+      this.$setUpState(POINTER_ID);
     }
   }
 
   _onMouseMove(event) {
-    const postion = event.type === "touchmove" ? event.touches[0] : event;
+    const position = event.type === "touchmove" ? event.touches[0] : event;
 
-    this.position.x = postion.clientX;
-    this.position.y = postion.clientY;
+    if (!position) {
+      return;
+    }
+
+    this.position.x = position.clientX;
+    this.position.y = position.clientY;
+  }
+
+  _isPrimaryPointerEvent(event) {
+    return event.type.startsWith("touch") || event.button === PRIMARY_MOUSE_BUTTON || event.which === PRIMARY_MOUSE_WHICH;
   }
 }

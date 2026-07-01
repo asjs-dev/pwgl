@@ -17,25 +17,19 @@ export const areObjectsEqual = (a, b) => {
     return false;
   }
 
-  const aProps = Object.getOwnPropertyNames(a);
-  const bProps = Object.getOwnPropertyNames(b);
+  const aProps = Reflect.ownKeys(a);
+  const bProps = Reflect.ownKeys(b);
 
   if (aProps.length !== bProps.length) {
     return false;
   }
 
-  let propName;
-  let aPropValue;
-  let bPropValue;
-  let subeq;
-  let i = aProps.length;
-
-  while ((propName = aProps[--i])) {
-    aPropValue = a[propName];
-    bPropValue = b[propName];
+  for (const propName of aProps) {
+    const aPropValue = a[propName];
+    const bPropValue = b[propName];
 
     if (aPropValue !== bPropValue) {
-      subeq = false;
+      let subeq = false;
 
       if (typeof aPropValue === "object" && typeof bPropValue === "object") {
         subeq = areObjectsEqual(aPropValue, bPropValue);
@@ -46,5 +40,6 @@ export const areObjectsEqual = (a, b) => {
       }
     }
   }
+
   return true;
 };

@@ -1,12 +1,16 @@
+const DOWN = 0;
+const UP = 1;
+const LONG_PRESS_THRESHOLD_MS = 200;
+
 /**
  * Press state tracking for input controls
  * @class PressState
  */
 export class PressState {
   constructor() {
-    this._state = {};
-    this._timestamp = {};
-    this._duration = {};
+    this._state = Object.create(null);
+    this._timestamp = Object.create(null);
+    this._duration = Object.create(null);
   }
 
   /**
@@ -15,7 +19,7 @@ export class PressState {
    * @returns {boolean} True if down, false otherwise
    */
   isDown(id) {
-    return this._state[id] === 0;
+    return this._state[id] === DOWN;
   }
 
   /**
@@ -24,7 +28,7 @@ export class PressState {
    * @returns {boolean} True if up, false otherwise
    */
   isUp(id) {
-    return this._state[id] === 1;
+    return this._state[id] === UP;
   }
 
   /**
@@ -33,7 +37,7 @@ export class PressState {
    * @returns {boolean} True if it was a short press, false otherwise
    */
   isPressed(id) {
-    return this.isUp(id) && this._duration[id] <= 200;
+    return this.isUp(id) && this._duration[id] <= LONG_PRESS_THRESHOLD_MS;
   }
 
   /**
@@ -42,7 +46,7 @@ export class PressState {
    * @returns {boolean} True if it was a long press, false otherwise
    */
   isLongPressed(id) {
-    return this.isUp(id) && this._duration[id] > 200;
+    return this.isUp(id) && this._duration[id] > LONG_PRESS_THRESHOLD_MS;
   }
 
   /**
@@ -51,7 +55,8 @@ export class PressState {
    * @returns {number} The duration in milliseconds
    */
   getDuration(id) {
-    return Date.now() - this._timestamp[id];
+    const timestamp = this._timestamp[id];
+    return timestamp === undefined ? 0 : Date.now() - timestamp;
   }
 
   /**
@@ -59,7 +64,7 @@ export class PressState {
    */
   update() {
     for (let key in this._state) {
-      if (this._state[key]) {
+      if (this._state[key] === UP) {
         delete this._state[key];
         delete this._duration[key];
         delete this._timestamp[key];
@@ -68,13 +73,21 @@ export class PressState {
   }
 
   $setDownState(id) {
-    this._state[id] = 0;
+    if (this.isDown(id)) {
+      return;
+    }
+
+    this._state[id] = DOWN;
     this._timestamp[id] = Date.now();
   }
 
   $setUpState(id) {
+    if (!this.isDown(id)) {
+      return;
+    }
+
     const now = Date.now();
-    this._state[id] = 1;
+    this._state[id] = UP;
     this._duration[id] = now - this._timestamp[id];
     this._timestamp[id] = now;
   }

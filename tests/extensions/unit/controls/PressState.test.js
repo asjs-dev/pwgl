@@ -31,4 +31,34 @@ describe("PressState", () => {
     expect(state._duration.A).toBeUndefined();
     expect(state._timestamp.A).toBeUndefined();
   });
+
+  it("ignores repeated down events while already held", () => {
+    const state = new PressState();
+    const timeSpy = vi.spyOn(Date, "now");
+    let now = 1000;
+
+    timeSpy.mockImplementation(() => now);
+    state.$setDownState("Space");
+
+    now = 1050;
+    state.$setDownState("Space");
+
+    now = 1300;
+    state.$setUpState("Space");
+
+    expect(state.isLongPressed("Space")).toBe(true);
+
+    timeSpy.mockRestore();
+  });
+
+  it("ignores up events without a matching down state", () => {
+    const state = new PressState();
+
+    state.$setUpState("Space");
+
+    expect(state.isUp("Space")).toBe(false);
+    expect(state.isPressed("Space")).toBe(false);
+    expect(state.isLongPressed("Space")).toBe(false);
+    expect(state.getDuration("Space")).toBe(0);
+  });
 });

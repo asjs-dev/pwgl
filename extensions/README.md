@@ -14,8 +14,9 @@ Comprehensive input handling for keyboard, mouse, and gamepad devices.
 
 #### **PressState** (`controls/PressState.js`)
 Base class for tracking pressed and released states of input devices.
-- Manages boolean state tracking for input events
-- Provides methods for setting down/up states
+- Tracks down/up/pressed state and press duration for input events
+- Provides `isDown()`, `isUp()`, `isPressed()`, `isLongPressed()`, and `getDuration()`
+- Ignores repeated down events while a key/button is already held
 - Foundation for all input handler implementations
 
 #### **Keyboard** (`controls/Keyboard.js`)
@@ -27,18 +28,19 @@ Handles keyboard input events and key state tracking.
   - `destruct()` - Clean up event listeners
 
 #### **Mouse** (`controls/Mouse.js`)
-Tracks mouse position, buttons, and wheel events.
+Tracks primary mouse/touch position and press state.
 - Position tracking (`x`, `y` coordinates)
-- Button state management (left, right, middle)
-- Wheel event detection and delta tracking
+- Primary pointer state management through `PressState`
+- Supports mouse and touch events
 - Supports both document and element-scoped tracking
 
 #### **Gamepad** (`controls/Gamepad.js`)
 Full gamepad/controller input support using the Gamepad API.
-- Button and axis tracking
+- Normalized button and axis snapshots
 - Multi-gamepad support
-- Rumble/vibration feedback capabilities
-- Analog stick and trigger detection
+- `get(id)` returns a normalized gamepad or `null`
+- `any` returns the first connected normalized gamepad or `null`
+- `isAnyConnected()` checks if at least one gamepad is available
 
 ### Audio
 
@@ -135,7 +137,7 @@ A comprehensive collection of mathematical, collision detection, and utility fun
 
 ### Mathematical Utilities
 
-- **`clamp(value, min, max)`** - Constrain value within range
+- **`clamp(min, max, value)`** - Constrain value within range
 - **`mix(a, b, t)`** - Linear interpolation between values
 - **`fract(value)`** - Fractional part of a number (same as `fract()` in GLSL)
 - **`dot(a, b)`** - Dot product of two vectors
@@ -150,6 +152,8 @@ Advanced spatial collision algorithms for game development:
 - **`rectToRectIntersection(rect1, rect2)`** - Get intersection rectangle
 - **`lineToLineIntersection(line1, line2)`** - Find intersection point
 - **`distanceBetweenPointAndLine(point, line)`** - Point-to-line distance calculation
+
+Rectangles use `{ x, y, width, height }`, where `width` and `height` are sizes.
 
 ### Array and Object Utilities
 
@@ -196,6 +200,7 @@ All extensions are accessed through the global namespace:
 const keyboard = new PWGLExtensions.controls.Keyboard();
 const mouse = new PWGLExtensions.controls.Mouse();
 const gamepad = new PWGLExtensions.controls.Gamepad();
+const firstPad = gamepad.any;
 
 // Audio
 const audio = new PWGLExtensions.audio.AudioItem(audioUrl);
@@ -222,7 +227,7 @@ audio.filters[0].on = false;
 const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
 
 // Utilities
-const distance = PWGLExtensions.utils.clamp(value, 0, 100);
+const distance = PWGLExtensions.utils.clamp(0, 100, value);
 const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rect1, rect2);
 
 const counter = PWGLExtensions.utils.createStateMachine({

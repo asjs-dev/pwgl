@@ -29,6 +29,7 @@ describe("extensions basic utils", () => {
   it("compares nested objects deeply", () => {
     expect(areObjectsEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(true);
     expect(areObjectsEqual({ a: 1 }, { a: 2 })).toBe(false);
+    expect(areObjectsEqual({ "": 1 }, { "": 2 })).toBe(false);
   });
 
   it("copies values into arrays with an offset", () => {
@@ -55,10 +56,12 @@ describe("extensions basic utils", () => {
     const rectB = { x: 5, y: 5, width: 15, height: 15 };
 
     expect(distanceBetweenPointAndLine({ x: 5, y: 2 }, { a: { x: 0, y: 0 }, b: { x: 10, y: 0 } })).toBe(2);
+    expect(distanceBetweenPointAndLine({ x: 3, y: 4 }, { a: { x: 0, y: 0 }, b: { x: 0, y: 0 } })).toBe(5);
     expect(areTwoLinesCollided(lineA, lineB)).toEqual({ lambda: 0.5, gamma: 0.5 });
     expect(lineToLineIntersection(lineA, lineB)).toEqual({ x: 5, y: 5 });
     expect(areTwoRectsCollided(rectA, rectB)).toBe(true);
-    expect(rectToRectIntersection(rectA, rectB)).toEqual({ x: 5, y: 5, width: 10, height: 10 });
+    expect(areTwoRectsCollided(rectA, { x: 20, y: 20, width: 5, height: 5 })).toBe(false);
+    expect(rectToRectIntersection(rectA, rectB)).toEqual({ x: 5, y: 5, width: 5, height: 5 });
   });
 
   it("tracks changes through the state machine", async () => {

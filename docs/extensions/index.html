@@ -80,8 +80,9 @@
 <h4><strong>PressState</strong> (<code>controls/PressState.js</code>)</h4>
 <p>Base class for tracking pressed and released states of input devices.</p>
 <ul>
-<li>Manages boolean state tracking for input events</li>
-<li>Provides methods for setting down/up states</li>
+<li>Tracks down/up/pressed state and press duration for input events</li>
+<li>Provides <code>isDown()</code>, <code>isUp()</code>, <code>isPressed()</code>, <code>isLongPressed()</code>, and <code>getDuration()</code></li>
+<li>Ignores repeated down events while a key/button is already held</li>
 <li>Foundation for all input handler implementations</li>
 </ul>
 <h4><strong>Keyboard</strong> (<code>controls/Keyboard.js</code>)</h4>
@@ -97,20 +98,21 @@
 </li>
 </ul>
 <h4><strong>Mouse</strong> (<code>controls/Mouse.js</code>)</h4>
-<p>Tracks mouse position, buttons, and wheel events.</p>
+<p>Tracks primary mouse/touch position and press state.</p>
 <ul>
 <li>Position tracking (<code>x</code>, <code>y</code> coordinates)</li>
-<li>Button state management (left, right, middle)</li>
-<li>Wheel event detection and delta tracking</li>
+<li>Primary pointer state management through <code>PressState</code></li>
+<li>Supports mouse and touch events</li>
 <li>Supports both document and element-scoped tracking</li>
 </ul>
 <h4><strong>Gamepad</strong> (<code>controls/Gamepad.js</code>)</h4>
 <p>Full gamepad/controller input support using the Gamepad API.</p>
 <ul>
-<li>Button and axis tracking</li>
+<li>Normalized button and axis snapshots</li>
 <li>Multi-gamepad support</li>
-<li>Rumble/vibration feedback capabilities</li>
-<li>Analog stick and trigger detection</li>
+<li><code>get(id)</code> returns a normalized gamepad or <code>null</code></li>
+<li><code>any</code> returns the first connected normalized gamepad or <code>null</code></li>
+<li><code>isAnyConnected()</code> checks if at least one gamepad is available</li>
 </ul>
 <h3>Audio</h3>
 <p>Professional audio manipulation and mixing utilities powered by the Web Audio API.</p>
@@ -203,7 +205,7 @@ audio.highPassFilterQ = 0.7;
 <p>A comprehensive collection of mathematical, collision detection, and utility functions.</p>
 <h3>Mathematical Utilities</h3>
 <ul>
-<li><strong><code>clamp(value, min, max)</code></strong> - Constrain value within range</li>
+<li><strong><code>clamp(min, max, value)</code></strong> - Constrain value within range</li>
 <li><strong><code>mix(a, b, t)</code></strong> - Linear interpolation between values</li>
 <li><strong><code>fract(value)</code></strong> - Fractional part of a number (same as <code>fract()</code> in GLSL)</li>
 <li><strong><code>dot(a, b)</code></strong> - Dot product of two vectors</li>
@@ -219,6 +221,7 @@ audio.highPassFilterQ = 0.7;
 <li><strong><code>lineToLineIntersection(line1, line2)</code></strong> - Find intersection point</li>
 <li><strong><code>distanceBetweenPointAndLine(point, line)</code></strong> - Point-to-line distance calculation</li>
 </ul>
+<p>Rectangles use <code>{ x, y, width, height }</code>, where <code>width</code> and <code>height</code> are sizes.</p>
 <h3>Array and Object Utilities</h3>
 <ul>
 <li><strong><code>areObjectsEqual(obj1, obj2)</code></strong> - Deep equality comparison</li>
@@ -264,6 +267,7 @@ audio.highPassFilterQ = 0.7;
 const keyboard = new PWGLExtensions.controls.Keyboard();
 const mouse = new PWGLExtensions.controls.Mouse();
 const gamepad = new PWGLExtensions.controls.Gamepad();
+const firstPad = gamepad.any;
 
 // Audio
 const audio = new PWGLExtensions.audio.AudioItem(audioUrl);
@@ -290,7 +294,7 @@ audio.filters[0].on = false;
 const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
 
 // Utilities
-const distance = PWGLExtensions.utils.clamp(value, 0, 100);
+const distance = PWGLExtensions.utils.clamp(0, 100, value);
 const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rect1, rect2);
 
 const counter = PWGLExtensions.utils.createStateMachine({

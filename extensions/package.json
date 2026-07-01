@@ -1,6 +1,6 @@
 {
   "name": "pwgl-extensions",
-  "version": "7.0.0",
+  "version": "8.0.0",
   "main": "./dist/pwgl.extensions.umd.js",
   "module": "./dist/pwgl.extensions.es.js",
   "description": "WebGL2 2D framework extensions",

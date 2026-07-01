@@ -9,6 +9,16 @@ const loadAnimatedWaterModule = async () => {
 };
 
 describe("AnimatedWater", () => {
+  it("exports null when PWGL is not available", async () => {
+    vi.resetModules();
+    delete globalThis.window;
+    delete globalThis.PWGL;
+
+    const { AnimatedWater } = await import("../../../../extensions/display/AnimatedWater.js");
+
+    expect(AnimatedWater).toBe(null);
+  });
+
   it("builds its internal display hierarchy and updates colors", async () => {
     const { AnimatedWater, PWGL } = await loadAnimatedWaterModule();
     const water = new AnimatedWater("/noise.png", 2, 0.4, 3);
@@ -32,5 +42,16 @@ describe("AnimatedWater", () => {
     expect(water._waterDisplacementImageSmall.transform.width).toBe(200);
     expect(water._waterDisplacementImageSmall.textureTransform.repeatY).toBeCloseTo(2);
     expect(water._waterDisplacementImageLarge.textureTransform.x).not.toBe(0);
+  });
+
+  it("handles zero size without producing invalid movement values", async () => {
+    const { AnimatedWater } = await loadAnimatedWaterModule();
+    const water = new AnimatedWater("/noise.png");
+
+    water.setSize(0, 0);
+    water.move(10, 20);
+
+    expect(water._moveTarget).toEqual({ x: 0, y: 0 });
+    expect(water._waterDisplacementImageSmall.textureTransform.repeatY).toBe(0);
   });
 });

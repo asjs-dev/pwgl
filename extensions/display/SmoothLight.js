@@ -1,5 +1,7 @@
 import { noop } from "../utils/noop";
 
+const PWGLGlobal = globalThis.window?.PWGL ?? globalThis.PWGL;
+
 /**
  * @typedef {Object} SmoothLightRendererConfig
  * @extends {LightRendererConfig}
@@ -12,8 +14,8 @@ import { noop } from "../utils/noop";
  * @extends {PWGL.Image}
  */
 
-export const SmoothLight = window.PWGL
-  ? class SmoothLight extends PWGL.Image {
+export const SmoothLight = PWGLGlobal
+  ? class SmoothLight extends PWGLGlobal.Image {
       /**
        * Creates an instance of SmoothLight.
        * @constructor
@@ -22,13 +24,13 @@ export const SmoothLight = window.PWGL
       constructor(config = {}) {
         super();
 
-        this._framebuffer = new PWGL.Framebuffer();
+        this._framebuffer = new PWGLGlobal.Framebuffer();
 
-        this.lightRenderer = new PWGL.LightRenderer(config);
+        this.lightRenderer = new PWGLGlobal.LightRenderer(config);
 
-        this._filter = new PWGL.BlurFilter();
+        this._filter = new PWGLGlobal.BlurFilter();
 
-        this.filterRenderer = new PWGL.FilterRenderer({
+        this.filterRenderer = new PWGLGlobal.FilterRenderer({
           context: this.lightRenderer.context,
           sourceTexture: this._framebuffer,
           filters: [this._filter],
@@ -38,10 +40,11 @@ export const SmoothLight = window.PWGL
 
         this.addLightForRender = this.lightRenderer.addLightForRender.bind(this.lightRenderer);
 
-        this.blendMode = PWGL.BlendMode.SHADOW;
+        this.blendMode = PWGLGlobal.BlendMode.SHADOW;
 
-        this._filterFramebuffer = new PWGL.Framebuffer();
+        this._filterFramebuffer = new PWGLGlobal.Framebuffer();
         this.texture = this._filterFramebuffer;
+        this._resizeFunc = noop;
 
         this.blur = typeof config.blur === "number" ? config.blur : 1;
       }

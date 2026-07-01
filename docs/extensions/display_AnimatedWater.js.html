@@ -57,31 +57,33 @@
  * Animated water effect using a noise texture for displacement
  * @class AnimatedWater
  */
-export const AnimatedWater = window.PWGL
-  ? class AnimatedWater extends PWGL.Container {
+const PWGLGlobal = globalThis.window?.PWGL ?? globalThis.PWGL;
+
+export const AnimatedWater = PWGLGlobal
+  ? class AnimatedWater extends PWGLGlobal.Container {
       constructor(noiseTexture, speed = 1, level = 0, scale = 1) {
         super();
 
         this._width = 1;
         this._height = 1;
 
-        const heightMapTexture = PWGL.Texture.loadImage(noiseTexture);
+        const heightMapTexture = PWGLGlobal.Texture.loadImage(noiseTexture);
         heightMapTexture.magFilter = WebGL2RenderingContext.LINEAR;
 
-        this._backdropImage = new PWGL.Image();
+        this._backdropImage = new PWGLGlobal.Image();
         this.addChild(this._backdropImage);
 
-        this._waterDisplacementImageLarge = new PWGL.Image(heightMapTexture);
-        this._waterDisplacementImageLarge.blendMode = PWGL.BlendMode.ADD;
+        this._waterDisplacementImageLarge = new PWGLGlobal.Image(heightMapTexture);
+        this._waterDisplacementImageLarge.blendMode = PWGLGlobal.BlendMode.ADD;
         this._waterDisplacementImageLarge.textureTransform.repeatX = 0.7;
-        this._waterDisplacementImageLarge.tintType = PWGL.TintType.GRAYSCALE;
+        this._waterDisplacementImageLarge.tintType = PWGLGlobal.TintType.GRAYSCALE;
         this.addChild(this._waterDisplacementImageLarge);
 
-        this._waterDisplacementImageSmall = new PWGL.Image(heightMapTexture);
-        this._waterDisplacementImageSmall.blendMode = PWGL.BlendMode.ADD;
+        this._waterDisplacementImageSmall = new PWGLGlobal.Image(heightMapTexture);
+        this._waterDisplacementImageSmall.blendMode = PWGLGlobal.BlendMode.ADD;
         this._waterDisplacementImageSmall.textureTransform.repeatX = 4;
         this._waterDisplacementImageSmall.textureTransform.repeatRandomRotation = 1;
-        this._waterDisplacementImageSmall.tintType = PWGL.TintType.GRAYSCALE;
+        this._waterDisplacementImageSmall.tintType = PWGLGlobal.TintType.GRAYSCALE;
         this.addChild(this._waterDisplacementImageSmall);
 
         this.speed = speed;
@@ -141,7 +143,7 @@ export const AnimatedWater = window.PWGL
         this._width = w;
         this._height = h;
 
-        const ratio = h / w;
+        const ratio = w ? h / w : 0;
 
         this._waterDisplacementImageSmall.transform.width =
           this._waterDisplacementImageLarge.transform.width =
@@ -183,8 +185,8 @@ export const AnimatedWater = window.PWGL
       }
 
       move(x, y) {
-        this._moveTarget.x = x / this._width;
-        this._moveTarget.y = y / this._height;
+        this._moveTarget.x = this._width ? x / this._width : 0;
+        this._moveTarget.y = this._height ? y / this._height : 0;
       }
     }
   : null;

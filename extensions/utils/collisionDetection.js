@@ -11,11 +11,16 @@ export const distanceBetweenPointAndLine = (p, l) => {
   const AB = { x: l.b.x - l.a.x, y: l.b.y - l.a.y };
   const AP = { x: p.x - l.a.x, y: p.y - l.a.y };
   const BP = { x: p.x - l.b.x, y: p.y - l.b.y };
+  const length = Math.hypot(AB.x, AB.y);
   const useAP = dot(AB, AP) < 0;
   const useBP = dot(AB, BP) > 0;
 
+  if (length === 0) {
+    return Math.hypot(AP.x, AP.y);
+  }
+
   if (!useAP && !useBP) {
-    return Math.abs(cross(AB, AP)) / Math.hypot(AB.x, AB.y);
+    return Math.abs(cross(AB, AP)) / length;
   }
 
   const P = useAP ? AP : BP;
@@ -72,7 +77,10 @@ export const lineToLineIntersection = (lineA, lineB) => {
  * @returns {boolean} True if the rectangles are collided, otherwise false
  */
 export const areTwoRectsCollided = (rectA, rectB) =>
-  rectA.width > rectB.x && rectA.x < rectB.width && rectA.height > rectB.y && rectA.y < rectB.height;
+  rectA.x + rectA.width > rectB.x &&
+  rectA.x < rectB.x + rectB.width &&
+  rectA.y + rectA.height > rectB.y &&
+  rectA.y < rectB.y + rectB.height;
 
 /**
  * Calculates the intersection rectangle of two rectangles if they collide
@@ -85,7 +93,7 @@ export const rectToRectIntersection = (rectA, rectB) =>
     ? {
         x: Math.max(rectA.x, rectB.x),
         y: Math.max(rectA.y, rectB.y),
-        width: Math.min(rectA.width, rectB.width),
-        height: Math.min(rectA.height, rectB.height),
+        width: Math.min(rectA.x + rectA.width, rectB.x + rectB.width) - Math.max(rectA.x, rectB.x),
+        height: Math.min(rectA.y + rectA.height, rectB.y + rectB.height) - Math.max(rectA.y, rectB.y),
       }
     : null;

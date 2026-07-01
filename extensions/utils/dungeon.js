@@ -40,22 +40,7 @@ export const generateDungeon = (iterations, sampleRooms) => {
       let collision = false;
 
       for (const roomToTest of rooms) {
-        if (
-          areTwoRectsCollided(
-            {
-              x: roomToTest.x,
-              y: roomToTest.y,
-              width: roomToTest.x + roomToTest.width,
-              height: roomToTest.y + roomToTest.height,
-            },
-            {
-              x: room.x,
-              y: room.y,
-              width: room.x + room.width,
-              height: room.y + room.height,
-            },
-          )
-        ) {
+        if (areTwoRectsCollided(roomToTest, room)) {
           const rnd = Math.random() - 0.5;
           const randomPosition = Math.round((Math.random() - 0.5) * 2);
 

@@ -9,6 +9,16 @@ const loadSmoothLightModule = async () => {
 };
 
 describe("SmoothLight", () => {
+  it("exports null when PWGL is not available", async () => {
+    vi.resetModules();
+    delete globalThis.window;
+    delete globalThis.PWGL;
+
+    const { SmoothLight } = await import("../../../../extensions/display/SmoothLight.js");
+
+    expect(SmoothLight).toBe(null);
+  });
+
   it("creates renderer helpers and exposes addLightForRender", async () => {
     const { SmoothLight, PWGL } = await loadSmoothLightModule();
     const light = new SmoothLight({ blur: 4 });
@@ -17,6 +27,15 @@ describe("SmoothLight", () => {
     expect(light.blur).toBe(4);
     expect(typeof light.addLightForRender).toBe("function");
     expect(light.blendMode).toBe(PWGL.BlendMode.SHADOW);
+  });
+
+  it("renders before resize without throwing", async () => {
+    const { SmoothLight } = await loadSmoothLightModule();
+    const light = new SmoothLight({ blur: 2 });
+
+    expect(() => light.render()).not.toThrow();
+    expect(light.lightRenderer.setSize).not.toHaveBeenCalled();
+    expect(light.lightRenderer.renderToFramebuffer).toHaveBeenCalledWith(light._framebuffer);
   });
 
   it("resizes dependent renderers and renders to framebuffers", async () => {
