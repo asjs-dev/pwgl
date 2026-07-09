@@ -89,7 +89,7 @@ describe("extensions basic utils", () => {
 
     expect(listener).toHaveBeenLastCalledWith(
       { count: 3, nested: { enabled: false } },
-      undefined,
+      { count: 1, nested: { enabled: true } },
     );
 
     unsubscribe();
@@ -130,7 +130,7 @@ describe("extensions basic utils", () => {
     machine.keepCount();
     await flushMicrotasks();
 
-    expect(listener).toHaveBeenLastCalledWith({ count: 1 }, undefined);
+    expect(listener).toHaveBeenLastCalledWith({ count: 1 }, { count: 1 });
   });
 
   it("handles enum and numeric helper utilities", () => {

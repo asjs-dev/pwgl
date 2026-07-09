@@ -253,6 +253,7 @@ audio.highPassFilterQ = 0.7;
 <li>Accepts <code>initialState</code> and action functions on the same config object</li>
 <li>Batches subscriber notifications into the next microtask after actions run</li>
 <li>Exposes readonly state snapshots to subscribers</li>
+<li>Passes the previous readonly snapshot as the second subscriber argument; it is <code>undefined</code> only during the initial subscription</li>
 </ul>
 </li>
 </ul>

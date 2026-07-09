@@ -185,6 +185,7 @@ Rectangles use `{ x, y, width, height }`, where `width` and `height` are sizes.
   - Accepts `initialState` and action functions on the same config object
   - Batches subscriber notifications into the next microtask after actions run
   - Exposes readonly state snapshots to subscribers
+  - Passes the previous readonly snapshot as the second subscriber argument; it is `undefined` only during the initial subscription
 
 ### Utility Functions
 

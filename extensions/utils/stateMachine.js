@@ -10,7 +10,7 @@
  * State change listener.
  * @callback StateMachineSubscriber
  * @param {Object} state - Readonly state snapshot
- * @param {Object|undefined} previousState - Previous notified state snapshot
+ * @param {Object|undefined} previousState - Previous readonly state snapshot, or undefined for the initial subscription
  * @returns {void}
  */
 
@@ -26,13 +26,6 @@
  */
 
 export const createStateMachine = ({ initialState, ...actions }) => {
-  const listeners = new Set();
-  const readonlyCache = new WeakMap();
-  const state = structuredClone(initialState);
-
-  let previousSnapshot;
-  let scheduled = false;
-
   const createReadonlyProxy = (obj) => {
     if (!obj || typeof obj !== "object") return obj;
     if (readonlyCache.has(obj)) return readonlyCache.get(obj);
@@ -52,6 +45,7 @@ export const createStateMachine = ({ initialState, ...actions }) => {
     });
 
     readonlyCache.set(obj, proxy);
+
     return proxy;
   };
 
@@ -77,6 +71,13 @@ export const createStateMachine = ({ initialState, ...actions }) => {
       notify();
     });
   };
+
+  const listeners = new Set();
+  const readonlyCache = new WeakMap();
+  const state = structuredClone(initialState);
+
+  let previousSnapshot = createReadonlySnapshot();
+  let scheduled = false;
 
   for (const key of Object.keys(actions)) {
     const action = actions[key];
