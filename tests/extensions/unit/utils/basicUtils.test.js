@@ -117,7 +117,24 @@ describe("extensions basic utils", () => {
     }).toThrow("State is readonly.");
   });
 
-  it("notifies subscribers after actions even when state values stay the same", async () => {
+  it("does not notify subscribers when an action explicitly returns false", async () => {
+    const machine = createStateMachine({
+      initialState: { count: 1 },
+      keepCount(state) {
+        state.count = 1;
+        return false;
+      },
+    });
+    const listener = vi.fn();
+
+    machine.subscribe(listener);
+    machine.keepCount();
+    await flushMicrotasks();
+
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it("notifies subscribers when an action returns undefined", async () => {
     const machine = createStateMachine({
       initialState: { count: 1 },
       keepCount(state) {
@@ -130,6 +147,7 @@ describe("extensions basic utils", () => {
     machine.keepCount();
     await flushMicrotasks();
 
+    expect(listener).toHaveBeenCalledTimes(2);
     expect(listener).toHaveBeenLastCalledWith({ count: 1 }, { count: 1 });
   });
 

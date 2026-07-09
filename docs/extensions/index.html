@@ -252,6 +252,7 @@ audio.highPassFilterQ = 0.7;
 <ul>
 <li>Accepts <code>initialState</code> and action functions on the same config object</li>
 <li>Batches subscriber notifications into the next microtask after actions run</li>
+<li>Skips notification when an action explicitly returns <code>false</code></li>
 <li>Exposes readonly state snapshots to subscribers</li>
 <li>Passes the previous readonly snapshot as the second subscriber argument; it is <code>undefined</code> only during the initial subscription</li>
 </ul>
@@ -302,6 +303,11 @@ const counter = PWGLExtensions.utils.createStateMachine({
   initialState: { count: 0 },
   increment(state) {
     state.count += 1;
+  },
+  setCount(state, count) {
+    if (state.count === count) return false;
+
+    state.count = count;
   },
 });
 counter.subscribe((state, prevState) => {

@@ -3,7 +3,7 @@
  * @callback StateMachineAction
  * @param {Object} state - Mutable state owned by the state machine
  * @param {...*} args - Arguments passed to the exposed action
- * @returns {void}
+ * @returns {boolean|void} Return false to skip the subscriber notification
  */
 
 /**
@@ -83,8 +83,9 @@ export const createStateMachine = ({ initialState, ...actions }) => {
     const action = actions[key];
 
     actions[key] = (...args) => {
-      action(state, ...args);
-      scheduleNotify();
+      if (action(state, ...args) !== false) {
+        scheduleNotify();
+      }
     };
   }
 

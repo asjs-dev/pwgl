@@ -184,6 +184,7 @@ Rectangles use `{ x, y, width, height }`, where `width` and `height` are sizes.
 - **`createStateMachine(config)`** - Small observable state container
   - Accepts `initialState` and action functions on the same config object
   - Batches subscriber notifications into the next microtask after actions run
+  - Skips notification when an action explicitly returns `false`
   - Exposes readonly state snapshots to subscribers
   - Passes the previous readonly snapshot as the second subscriber argument; it is `undefined` only during the initial subscription
 
@@ -235,6 +236,11 @@ const counter = PWGLExtensions.utils.createStateMachine({
   initialState: { count: 0 },
   increment(state) {
     state.count += 1;
+  },
+  setCount(state, count) {
+    if (state.count === count) return false;
+
+    state.count = count;
   },
 });
 counter.subscribe((state, prevState) => {
