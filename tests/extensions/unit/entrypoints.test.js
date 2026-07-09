@@ -6,9 +6,13 @@ describe("extension entrypoints", () => {
     const utils = await import("../../../extensions/utils/index.js");
 
     expect(utils.clamp(0, 10, 12)).toBe(10);
+    expect(utils.deepFreeze).toBeDefined();
     expect(utils.gridMapping.coordToVector(1, 2, 3)).toBe(7);
     expect(utils.random.hashNoise2D(1, 2)).toBeTypeOf("number");
     expect(utils.collisionDetection.areTwoRectsCollided).toBeDefined();
+    expect(utils.coordToVector).toBeUndefined();
+    expect(utils.hashNoise2D).toBeUndefined();
+    expect(utils.areTwoRectsCollided).toBeUndefined();
   });
 
   it("exports input helpers from the controls entrypoint", async () => {

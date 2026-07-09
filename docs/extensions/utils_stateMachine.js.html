@@ -53,7 +53,9 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>/**
+            <pre class="prettyprint source linenums"><code>import { deepFreeze } from "./deepFreeze";
+
+/**
  * Action function that receives mutable state and optional arguments.
  * @callback StateMachineAction
  * @param {Object} state - Mutable state owned by the state machine
@@ -64,8 +66,8 @@
 /**
  * State change listener.
  * @callback StateMachineSubscriber
- * @param {Object} state - Readonly state snapshot
- * @param {Object|undefined} previousState - Previous readonly state snapshot, or undefined for the initial subscription
+ * @param {Object} state - State snapshot, deeply frozen in strict mode
+ * @param {Object|undefined} previousState - Previous state snapshot, or undefined for the initial subscription
  * @returns {void}
  */
 
@@ -76,44 +78,23 @@
  * @property {StateMachineAction} [actionName] - Action functions to modify the state
  * @param {Object} config - Configuration object
  * @param {Object} config.initialState - Initial state of the state machine
+ * @param {boolean} [config.strict=true] - Deeply freeze subscriber snapshots
  * @param {StateMachineAction} [config.actionName] - Action functions to expose on the state machine
  * @returns {StateMachine} - State machine instance
  */
 
-export const createStateMachine = ({ initialState, ...actions }) => {
-  const createReadonlyProxy = (obj) => {
-    if (!obj || typeof obj !== "object") return obj;
-    if (readonlyCache.has(obj)) return readonlyCache.get(obj);
-
-    const proxy = new Proxy(obj, {
-      get(target, prop) {
-        return createReadonlyProxy(target[prop]);
-      },
-
-      set() {
-        throw new Error("State is readonly.");
-      },
-
-      deleteProperty() {
-        throw new Error("State is readonly.");
-      },
-    });
-
-    readonlyCache.set(obj, proxy);
-
-    return proxy;
-  };
-
-  const createReadonlySnapshot = () => createReadonlyProxy(structuredClone(state));
+export const createStateMachine = ({ initialState, strict = true, ...actions }) => {
+  const prepareSnapshot = strict ? deepFreeze : (snapshot) => snapshot;
+  const createSnapshot = () => prepareSnapshot(structuredClone(state));
 
   const notify = () => {
-    const currentReadonlyState = createReadonlySnapshot();
+    const currentSnapshot = createSnapshot();
 
     for (const listener of listeners) {
-      listener(currentReadonlyState, previousSnapshot);
+      listener(currentSnapshot, previousSnapshot);
     }
 
-    previousSnapshot = currentReadonlyState;
+    previousSnapshot = currentSnapshot;
   };
 
   const scheduleNotify = () => {
@@ -128,10 +109,9 @@ export const createStateMachine = ({ initialState, ...actions }) => {
   };
 
   const listeners = new Set();
-  const readonlyCache = new WeakMap();
   const state = structuredClone(initialState);
 
-  let previousSnapshot = createReadonlySnapshot();
+  let previousSnapshot = createSnapshot();
   let scheduled = false;
 
   for (const key of Object.keys(actions)) {
@@ -148,9 +128,9 @@ export const createStateMachine = ({ initialState, ...actions }) => {
     subscribe(callback) {
       listeners.add(callback);
 
-      const currentReadonlyState = createReadonlySnapshot();
+      const currentSnapshot = createSnapshot();
 
-      callback(currentReadonlyState, undefined);
+      callback(currentSnapshot, undefined);
 
       return () => {
         listeners.delete(callback);
@@ -170,7 +150,7 @@ export const createStateMachine = ({ initialState, ...actions }) => {
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#deepFreeze">deepFreeze</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
             </nav>
 
             <br class="clear">

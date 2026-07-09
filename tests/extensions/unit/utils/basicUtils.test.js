@@ -21,6 +21,7 @@ import { noop } from "../../../../extensions/utils/noop";
 import { noopReturnsWith } from "../../../../extensions/utils/noopReturnsWith";
 import { removeFromArray } from "../../../../extensions/utils/removeFromArray";
 import { createStateMachine } from "../../../../extensions/utils/stateMachine";
+import { deepFreeze } from "../../../../extensions/utils/deepFreeze";
 import { stepNoise } from "../../../../extensions/utils/stepNoise";
 
 const flushMicrotasks = () => Promise.resolve();
@@ -30,6 +31,19 @@ describe("extensions basic utils", () => {
     expect(areObjectsEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(true);
     expect(areObjectsEqual({ a: 1 }, { a: 2 })).toBe(false);
     expect(areObjectsEqual({ "": 1 }, { "": 2 })).toBe(false);
+  });
+
+  it("deeply freezes objects, arrays, and cyclic references", () => {
+    const value = { nested: { items: [1, 2] } };
+    value.self = value;
+
+    const frozen = deepFreeze(value);
+
+    expect(frozen).toBe(value);
+    expect(Object.isFrozen(frozen)).toBe(true);
+    expect(Object.isFrozen(frozen.nested)).toBe(true);
+    expect(Object.isFrozen(frozen.nested.items)).toBe(true);
+    expect(frozen.self).toBe(frozen);
   });
 
   it("copies values into arrays with an offset", () => {
@@ -114,7 +128,38 @@ describe("extensions basic utils", () => {
 
     expect(() => {
       currentState.nested.value = 2;
-    }).toThrow("State is readonly.");
+    }).toThrow();
+  });
+
+  it("allows mutable snapshots when strict mode is disabled", async () => {
+    const machine = createStateMachine({
+      initialState: { count: 0, metadata: { source: "state" } },
+      strict: false,
+      increment(state) {
+        state.count += 1;
+      },
+    });
+    const secondListener = vi.fn();
+
+    machine.subscribe((state, previousState) => {
+      if (previousState) {
+        state.metadata.source = "first listener";
+      }
+    });
+    machine.subscribe(secondListener);
+
+    machine.increment();
+    await flushMicrotasks();
+
+    expect(secondListener).toHaveBeenLastCalledWith(
+      { count: 1, metadata: { source: "first listener" } },
+      { count: 0, metadata: { source: "state" } },
+    );
+
+    machine.increment();
+    await flushMicrotasks();
+
+    expect(secondListener.mock.lastCall[1].metadata.source).toBe("first listener");
   });
 
   it("does not notify subscribers when an action explicitly returns false", async () => {

@@ -32,6 +32,7 @@ describe("extensions index", () => {
     expect(window.PWGLExtensions.controls.PressState).toBeDefined();
     expect(window.PWGLExtensions.audio.fadeAudioVolume).toBeDefined();
     expect(window.PWGLExtensions.utils.createStateMachine).toBeDefined();
+    expect(window.PWGLExtensions.utils.deepFreeze).toBeDefined();
     expect(window.PWGLExtensions.utils.clone).toBeUndefined();
     expect(window.PWGLExtensions.utils.createDataObserver).toBeUndefined();
     expect(window.PWGLExtensions.utils.getRandomFrom).toBeUndefined();

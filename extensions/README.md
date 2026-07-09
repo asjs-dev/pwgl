@@ -159,6 +159,7 @@ Rectangles use `{ x, y, width, height }`, where `width` and `height` are sizes.
 
 - **`areObjectsEqual(obj1, obj2)`** - Deep equality comparison
 - **`arraySet(target, source, offset)`** - Copy source values into a target array from an optional offset
+- **`deepFreeze(value)`** - Recursively freeze a plain object or array
 - **`removeFromArray(array, item)`** - Remove first occurrence from array
 
 ### Procedural Generation
@@ -185,8 +186,11 @@ Rectangles use `{ x, y, width, height }`, where `width` and `height` are sizes.
   - Accepts `initialState` and action functions on the same config object
   - Batches subscriber notifications into the next microtask after actions run
   - Skips notification when an action explicitly returns `false`
-  - Exposes readonly state snapshots to subscribers
-  - Passes the previous readonly snapshot as the second subscriber argument; it is `undefined` only during the initial subscription
+  - Deeply freezes subscriber snapshots by default
+  - Supports `strict: false` to skip freezing in performance-critical code
+  - Passes the previous snapshot as the second subscriber argument; it is `undefined` only during the initial subscription
+
+With `strict: false`, snapshots are still cloned but are mutable. Subscribers must not modify them: all listeners in the same notification receive the same snapshot, and that object becomes the next `previousState`.
 
 ### Utility Functions
 
@@ -234,6 +238,7 @@ const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rec
 
 const counter = PWGLExtensions.utils.createStateMachine({
   initialState: { count: 0 },
+  strict: true,
   increment(state) {
     state.count += 1;
   },

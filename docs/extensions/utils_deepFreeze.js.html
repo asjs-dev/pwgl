@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>PWGL Extensions: Source: utils/arraySet.js</title>
+        <title>PWGL Extensions: Source: utils/deepFreeze.js</title>
 
         <script src="../scripts/prettify/prettify.js"> </script>
         <script src="../scripts/prettify/lang-css.js"> </script>
@@ -44,7 +44,7 @@
         <div class="container">
             <div id="main">
 
-                <h1 class="page-title">Source: utils/arraySet.js</h1>
+                <h1 class="page-title">Source: utils/deepFreeze.js</h1>
 
                 
 
@@ -54,18 +54,27 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>/**
- * Sets values from a source array into a target array starting from a specified index
- * @param {array} target - The target array to set values into
- * @param {array} source - The source array to get values from
- * @param {number} [from=0] - The starting index in the target array
- * @returns {array} The modified target array
+ * Recursively freezes a plain object or array.
+ * @template T
+ * @param {T} value - Value to freeze
+ * @returns {Readonly&lt;T>} The frozen value
  */
-export const arraySet = (target, source, from = 0) => {
-  let i = source.length;
-  while (--i > -1) {
-    target[from + i] = source[i];
-  }
-  return target;
+export const deepFreeze = (value) => {
+  const freeze = (item, visited) => {
+    if (!item || typeof item !== "object" || visited.has(item)) {
+      return item;
+    }
+
+    visited.add(item);
+
+    for (const key of Reflect.ownKeys(item)) {
+      freeze(item[key], visited);
+    }
+
+    return Object.freeze(item);
+  };
+
+  return freeze(value, new WeakSet());
 };
 </code></pre>
         </article>

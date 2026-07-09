@@ -1,3 +1,5 @@
+import { deepFreeze } from "./deepFreeze";
+
 /**
  * Action function that receives mutable state and optional arguments.
  * @callback StateMachineAction
@@ -9,8 +11,8 @@
 /**
  * State change listener.
  * @callback StateMachineSubscriber
- * @param {Object} state - Readonly state snapshot
- * @param {Object|undefined} previousState - Previous readonly state snapshot, or undefined for the initial subscription
+ * @param {Object} state - State snapshot, deeply frozen in strict mode
+ * @param {Object|undefined} previousState - Previous state snapshot, or undefined for the initial subscription
  * @returns {void}
  */
 
@@ -21,44 +23,23 @@
  * @property {StateMachineAction} [actionName] - Action functions to modify the state
  * @param {Object} config - Configuration object
  * @param {Object} config.initialState - Initial state of the state machine
+ * @param {boolean} [config.strict=true] - Deeply freeze subscriber snapshots
  * @param {StateMachineAction} [config.actionName] - Action functions to expose on the state machine
  * @returns {StateMachine} - State machine instance
  */
 
-export const createStateMachine = ({ initialState, ...actions }) => {
-  const createReadonlyProxy = (obj) => {
-    if (!obj || typeof obj !== "object") return obj;
-    if (readonlyCache.has(obj)) return readonlyCache.get(obj);
-
-    const proxy = new Proxy(obj, {
-      get(target, prop) {
-        return createReadonlyProxy(target[prop]);
-      },
-
-      set() {
-        throw new Error("State is readonly.");
-      },
-
-      deleteProperty() {
-        throw new Error("State is readonly.");
-      },
-    });
-
-    readonlyCache.set(obj, proxy);
-
-    return proxy;
-  };
-
-  const createReadonlySnapshot = () => createReadonlyProxy(structuredClone(state));
+export const createStateMachine = ({ initialState, strict = true, ...actions }) => {
+  const prepareSnapshot = strict ? deepFreeze : (snapshot) => snapshot;
+  const createSnapshot = () => prepareSnapshot(structuredClone(state));
 
   const notify = () => {
-    const currentReadonlyState = createReadonlySnapshot();
+    const currentSnapshot = createSnapshot();
 
     for (const listener of listeners) {
-      listener(currentReadonlyState, previousSnapshot);
+      listener(currentSnapshot, previousSnapshot);
     }
 
-    previousSnapshot = currentReadonlyState;
+    previousSnapshot = currentSnapshot;
   };
 
   const scheduleNotify = () => {
@@ -73,10 +54,9 @@ export const createStateMachine = ({ initialState, ...actions }) => {
   };
 
   const listeners = new Set();
-  const readonlyCache = new WeakMap();
   const state = structuredClone(initialState);
 
-  let previousSnapshot = createReadonlySnapshot();
+  let previousSnapshot = createSnapshot();
   let scheduled = false;
 
   for (const key of Object.keys(actions)) {
@@ -93,9 +73,9 @@ export const createStateMachine = ({ initialState, ...actions }) => {
     subscribe(callback) {
       listeners.add(callback);
 
-      const currentReadonlyState = createReadonlySnapshot();
+      const currentSnapshot = createSnapshot();
 
-      callback(currentReadonlyState, undefined);
+      callback(currentSnapshot, undefined);
 
       return () => {
         listeners.delete(callback);
