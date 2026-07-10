@@ -1,4 +1,4 @@
-import { noop } from "../../extensions/utils/noop";
+import { noop } from "../../extensions/src/utils/noop";
 
 /**
  * Base class for positioning elements

@@ -1,4 +1,4 @@
-import { noop } from "../../extensions/utils/noop";
+import { noop } from "../../extensions/src/utils/noop";
 import "../math/RectangleType";
 import { TextureInfo } from "../textures/TextureInfo";
 import { Image } from "./Image";

@@ -1,5 +1,5 @@
-import { arraySet } from "../../extensions/utils/arraySet";
-import { noop } from "../../extensions/utils/noop";
+import { arraySet } from "../../extensions/src/utils/arraySet";
+import { noop } from "../../extensions/src/utils/noop";
 import { Buffer } from "../core/Buffer";
 import { Utils } from "../core/Utils";
 import { Container } from "../display/Container";

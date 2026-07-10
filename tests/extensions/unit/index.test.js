@@ -2,12 +2,12 @@ import { describe, expect, it, vi } from "vitest";
 import { installPWGLMock } from "./helpers/pwglExtensionMocks";
 
 describe("extensions index", () => {
-  it("registers PWGLExtensions on window", async () => {
-    vi.resetModules();
+  const installBrowserMocks = () => {
     globalThis.window = globalThis;
     const PWGL = installPWGLMock();
     globalThis.PWGL = PWGL;
     globalThis.AGLExtensions = undefined;
+    globalThis.PWGLExtensions = undefined;
     Object.defineProperty(globalThis, "navigator", {
       value: { getGamepads: () => [] },
       configurable: true,
@@ -24,9 +24,14 @@ describe("extensions index", () => {
       destination: {},
     }));
     globalThis.window.webkitAudioContext = globalThis.window.AudioContext;
+  };
+
+  it("registers PWGLExtensions on window", async () => {
+    vi.resetModules();
+    installBrowserMocks();
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    await import("../../../extensions/index.js");
+    await import("../../../extensions/src/index.js");
 
     expect(window.PWGLExtensions).toBeDefined();
     expect(window.PWGLExtensions.controls.PressState).toBeDefined();
@@ -40,6 +45,26 @@ describe("extensions index", () => {
     expect(window.PWGLExtensions.utils.gridMapping.coordToVector(1, 2, 3)).toBe(7);
     expect(window.PWGLExtensions.utils.random.getRandomFrom).toBeDefined();
     expect(consoleSpy).toHaveBeenCalled();
+
+    consoleSpy.mockRestore();
+  });
+
+  it("registers split extension entrypoints without replacing existing groups", async () => {
+    vi.resetModules();
+    installBrowserMocks();
+    const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+
+    await import("../../../extensions/src/utils/entry.js");
+
+    expect(window.PWGLExtensions.utils.createStateMachine).toBeDefined();
+    expect(window.PWGLExtensions.controls).toBeUndefined();
+
+    await import("../../../extensions/src/controls/entry.js");
+
+    expect(window.PWGLExtensions.utils.createStateMachine).toBeDefined();
+    expect(window.PWGLExtensions.controls.PressState).toBeDefined();
+    expect(window.AGLExtensions).toBe(window.PWGLExtensions);
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
 
     consoleSpy.mockRestore();
   });

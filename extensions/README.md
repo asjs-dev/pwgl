@@ -6,20 +6,29 @@ A comprehensive utility package extending the capabilities of **PWGL** (Programm
 
 The PWGL Extensions library provides a collection of modules designed to streamline common development patterns, from input handling and audio management to collision detection and mathematical utilities. All functionality is exposed through the global `PWGLExtensions` (alias `AGLExtensions`) namespace.
 
+Extension source files live under `extensions/src`. The full bundle starts from `extensions/src/index.js`, while the standalone group bundles start from:
+
+- `extensions/src/utils/entry.js`
+- `extensions/src/audio/entry.js`
+- `extensions/src/controls/entry.js`
+- `extensions/src/display/entry.js`
+
+Each group entry creates `PWGLExtensions` if needed and then merges its own group namespace, so the UMD files can be loaded independently or together.
+
 ## Modules
 
 ### Controls
 
 Comprehensive input handling for keyboard, mouse, and gamepad devices.
 
-#### **PressState** (`controls/PressState.js`)
+#### **PressState** (`src/controls/PressState.js`)
 Base class for tracking pressed and released states of input devices.
 - Tracks down/up/pressed state and press duration for input events
 - Provides `isDown()`, `isUp()`, `isPressed()`, `isLongPressed()`, and `getDuration()`
 - Ignores repeated down events while a key/button is already held
 - Foundation for all input handler implementations
 
-#### **Keyboard** (`controls/Keyboard.js`)
+#### **Keyboard** (`src/controls/Keyboard.js`)
 Handles keyboard input events and key state tracking.
 - Extends `PressState` for consistent state management
 - Tracks pressed keys in real-time
@@ -27,14 +36,14 @@ Handles keyboard input events and key state tracking.
 - Methods:
   - `destruct()` - Clean up event listeners
 
-#### **Mouse** (`controls/Mouse.js`)
+#### **Mouse** (`src/controls/Mouse.js`)
 Tracks primary mouse/touch position and press state.
 - Position tracking (`x`, `y` coordinates)
 - Primary pointer state management through `PressState`
 - Supports mouse and touch events
 - Supports both document and element-scoped tracking
 
-#### **Gamepad** (`controls/Gamepad.js`)
+#### **Gamepad** (`src/controls/Gamepad.js`)
 Full gamepad/controller input support using the Gamepad API.
 - Normalized button and axis snapshots
 - Multi-gamepad support
@@ -46,7 +55,7 @@ Full gamepad/controller input support using the Gamepad API.
 
 Professional audio manipulation and mixing utilities powered by the Web Audio API.
 
-#### **BaseAudio** (`audio/BaseAudio.js`)
+#### **BaseAudio** (`src/audio/BaseAudio.js`)
 Abstract base class for audio node management and control.
 - **Properties:**
   - `volume` - Audio gain control (0-1 range)
@@ -56,7 +65,7 @@ Abstract base class for audio node management and control.
   - `filters` - Ordered audio filter list
 - **Features:** Manages Web Audio API node connections, audio routing, and effect chains
 
-#### **Audio Filters** (`audio/filters/`)
+#### **Audio Filters** (`src/audio/filters/`)
 Ordered Web Audio filter classes that can be attached to `AudioItem` or `AudioMixer` instances.
 - `BaseAudioFilter` - Base input/output interface for custom audio filters
 - `BiquadAudioFilter` - Base class for `BiquadFilterNode` filters
@@ -70,21 +79,21 @@ Ordered Web Audio filter classes that can be attached to `AudioItem` or `AudioMi
 - Filters run in array order and can be bypassed with `filter.on = false`
 - Built-in numeric parameters are normalized before they are written to Web Audio params
 
-#### **AudioItem** (`audio/AudioItem.js`)
+#### **AudioItem** (`src/audio/AudioItem.js`)
 Single audio playback with full playback control.
 - Play, pause, and stop controls
 - Looping support
 - Seek, duration, and current time tracking
 - Volume and panning envelope automation
 
-#### **AudioMixer** (`audio/AudioMixer.js`)
+#### **AudioMixer** (`src/audio/AudioMixer.js`)
 Multi-channel audio mixer for complex audio management.
 - Mix multiple audio tracks simultaneously
 - Per-track volume and pan control
 - Master volume control
 - Effect chain management
 
-#### **Audio Utilities** (`audio/utils/`)
+#### **Audio Utilities** (`src/audio/utils/`)
 Helper functions for audio manipulation.
 - `fadeAudioVolume(audioItem, min, max, step)` - Set a mixed volume value
 - `crossFadeAudioVolumes(audioItemA, audioItemB, min, max, step)` - Crossfade between two items
@@ -116,7 +125,7 @@ Use the same `filters` array on `AudioMixer` for master output filtering.
 
 Specialized rendering components for visual effects.
 
-#### **AnimatedWater** (`display/AnimatedWater.js`)
+#### **AnimatedWater** (`src/display/AnimatedWater.js`)
 Realistic animated water surface effect using displacement mapping.
 - Layered water displacement simulation
 - Configurable animation speed and distortion level
@@ -124,7 +133,7 @@ Realistic animated water surface effect using displacement mapping.
 - Uses noise textures for natural water behavior
 - Optimized for real-time rendering
 
-#### **SmoothLight** (`display/SmoothLight.js`)
+#### **SmoothLight** (`src/display/SmoothLight.js`)
 Smooth lighting and shadow calculations for dynamic scenes.
 - Soft shadow rendering
 - Light falloff and attenuation
@@ -256,12 +265,26 @@ counter.increment();
 
 ## Installation
 
-The extensions package is included with PWGL. Import from your project:
+The extensions package is included with PWGL. Load the all-in-one bundle when you need every group:
+
+```html
+<script src="pwgl.extensions.umd.js" type="text/javascript"></script>
+```
+
+Or load only the standalone group bundles you need:
+
+```html
+<script src="pwgl.extensions.utils.umd.js" type="text/javascript"></script>
+<script src="pwgl.extensions.controls.umd.js" type="text/javascript"></script>
+<script src="pwgl.extensions.audio.umd.js" type="text/javascript"></script>
+<script src="pwgl.extensions.display.umd.js" type="text/javascript"></script>
+```
+
+The same outputs are available as ES modules:
 
 ```javascript
-import * as PWGLExt from 'pwgl.extensions.es.min';
-// or
-import { Keyboard, Mouse, AudioItem, LowPassAudioFilter } from 'pwgl.extensions.es.min';
+import * as PWGLExtensions from "./dist/pwgl.extensions.es.js";
+import * as PWGLControls from "./dist/pwgl.extensions.controls.es.js";
 ```
 
 ## Browser Compatibility

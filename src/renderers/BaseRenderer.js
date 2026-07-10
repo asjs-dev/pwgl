@@ -1,4 +1,4 @@
-import { noop } from "../../extensions/utils/noop";
+import { noop } from "../../extensions/src/utils/noop";
 import { Color } from "../attributes/Color";
 import { Buffer } from "../core/Buffer";
 import { Utils } from "../core/Utils";

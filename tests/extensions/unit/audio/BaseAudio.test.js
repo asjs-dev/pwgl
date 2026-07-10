@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { BaseAudio } from "../../../../extensions/audio/BaseAudio";
-import { HighPassAudioFilter, LowPassAudioFilter, NotchAudioFilter } from "../../../../extensions/audio/filters";
+import { BaseAudio } from "../../../../extensions/src/audio/BaseAudio";
+import { HighPassAudioFilter, LowPassAudioFilter, NotchAudioFilter } from "../../../../extensions/src/audio/filters";
 import { createAudioContextMock } from "../helpers/browserAudioMocks";
 
 describe("BaseAudio", () => {

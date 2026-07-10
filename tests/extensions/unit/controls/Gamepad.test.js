@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Gamepad } from "../../../../extensions/controls/Gamepad";
+import { Gamepad } from "../../../../extensions/src/controls/Gamepad";
 
 const setNavigatorMock = (value) => {
   Object.defineProperty(globalThis, "navigator", {

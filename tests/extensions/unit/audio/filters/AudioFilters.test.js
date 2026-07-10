@@ -9,7 +9,7 @@ import {
   LowPassAudioFilter,
   NotchAudioFilter,
   PeakingAudioFilter,
-} from "../../../../../extensions/audio/filters";
+} from "../../../../../extensions/src/audio/filters";
 import { createAudioContextMock } from "../../helpers/browserAudioMocks";
 
 describe("audio filters", () => {

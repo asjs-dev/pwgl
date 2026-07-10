@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Keyboard } from "../../../../extensions/controls/Keyboard";
+import { Keyboard } from "../../../../extensions/src/controls/Keyboard";
 import { createEventTargetMock } from "../helpers/browserAudioMocks";
 
 describe("Keyboard", () => {

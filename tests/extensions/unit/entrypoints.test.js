@@ -3,7 +3,7 @@ import { installPWGLMock } from "./helpers/pwglExtensionMocks";
 
 describe("extension entrypoints", () => {
   it("exports utility helpers from the utils entrypoint", async () => {
-    const utils = await import("../../../extensions/utils/index.js");
+    const utils = await import("../../../extensions/src/utils/index.js");
 
     expect(utils.clamp(0, 10, 12)).toBe(10);
     expect(utils.deepFreeze).toBeDefined();
@@ -16,7 +16,7 @@ describe("extension entrypoints", () => {
   });
 
   it("exports input helpers from the controls entrypoint", async () => {
-    const controls = await import("../../../extensions/controls/index.js");
+    const controls = await import("../../../extensions/src/controls/index.js");
 
     expect(controls.PressState).toBeDefined();
     expect(controls.Mouse).toBeDefined();
@@ -25,7 +25,7 @@ describe("extension entrypoints", () => {
   });
 
   it("exports audio helpers from the audio entrypoint", async () => {
-    const audio = await import("../../../extensions/audio/index.js");
+    const audio = await import("../../../extensions/src/audio/index.js");
 
     expect(audio.AudioItem).toBeDefined();
     expect(audio.AudioMixer).toBeDefined();
@@ -46,7 +46,7 @@ describe("extension entrypoints", () => {
     globalThis.window = globalThis;
     globalThis.PWGL = installPWGLMock();
 
-    const display = await import("../../../extensions/display/index.js");
+    const display = await import("../../../extensions/src/display/index.js");
 
     expect(display.AnimatedWater).toBeDefined();
     expect(display.SmoothLight).toBeDefined();

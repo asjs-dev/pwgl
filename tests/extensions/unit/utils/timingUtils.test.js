@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { FPSCounter } from "../../../../extensions/utils/FPSCounter";
-import { enterFrame } from "../../../../extensions/utils/enterFrame";
-import { getFPS } from "../../../../extensions/utils/getFPS";
-import { nthCall } from "../../../../extensions/utils/nthCall";
+import { FPSCounter } from "../../../../extensions/src/utils/FPSCounter";
+import { enterFrame } from "../../../../extensions/src/utils/enterFrame";
+import { getFPS } from "../../../../extensions/src/utils/getFPS";
+import { nthCall } from "../../../../extensions/src/utils/nthCall";
 
 describe("extensions timing utils", () => {
   beforeEach(() => {

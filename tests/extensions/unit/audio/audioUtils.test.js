@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { crossFadeAudioVolumes, fadeAudioVolume } from "../../../../extensions/audio/utils";
+import { crossFadeAudioVolumes, fadeAudioVolume } from "../../../../extensions/src/audio/utils";
 
 describe("audio utils", () => {
   it("fades a single audio item volume", () => {

@@ -1,4 +1,4 @@
-import { arraySet } from "../../extensions/utils/arraySet";
+import { arraySet } from "../../extensions/src/utils/arraySet";
 import { Buffer } from "../core/Buffer";
 import { Utils } from "../core/Utils";
 import { Light } from "../display/Light";

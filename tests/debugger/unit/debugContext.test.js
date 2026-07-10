@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const loadDebugContextModule = async () => {
   vi.resetModules();
-  vi.doMock("../../../extensions/utils/enterFrame", () => ({
+  vi.doMock("../../../extensions/src/utils/enterFrame", () => ({
     enterFrame: vi.fn((callback) => {
       callback();
       return {

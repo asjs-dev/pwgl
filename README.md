@@ -39,14 +39,22 @@ PWGL provides multiple builds for different use cases.
 
 **Vite production builds:**
 
-| File                          | Format                              |
-| ----------------------------- | ----------------------------------- |
-| `dist/pwgl.es.js`             | ES Module, minified                 |
-| `dist/pwgl.umd.js`            | UMD, minified                       |
-| `dist/pwgl.extensions.es.js`  | ES Module with extensions, minified |
-| `dist/pwgl.extensions.umd.js` | UMD with extensions, minified       |
-| `dist/pwgl.debugger.es.js`    | ES Module debugger                  |
-| `dist/pwgl.debugger.umd.js`   | UMD debugger                        |
+| File                                   | Format                                      |
+| -------------------------------------- | ------------------------------------------- |
+| `dist/pwgl.es.js`                      | ES Module, minified                         |
+| `dist/pwgl.umd.js`                     | UMD, minified                               |
+| `dist/pwgl.extensions.es.js`           | ES Module with all extensions, minified     |
+| `dist/pwgl.extensions.umd.js`          | UMD with all extensions, minified           |
+| `dist/pwgl.extensions.utils.es.js`     | ES Module with utility extensions, minified |
+| `dist/pwgl.extensions.utils.umd.js`    | UMD with utility extensions, minified       |
+| `dist/pwgl.extensions.audio.es.js`     | ES Module with audio extensions, minified   |
+| `dist/pwgl.extensions.audio.umd.js`    | UMD with audio extensions, minified         |
+| `dist/pwgl.extensions.controls.es.js`  | ES Module with control extensions, minified |
+| `dist/pwgl.extensions.controls.umd.js` | UMD with control extensions, minified       |
+| `dist/pwgl.extensions.display.es.js`   | ES Module with display extensions, minified |
+| `dist/pwgl.extensions.display.umd.js`  | UMD with display extensions, minified       |
+| `dist/pwgl.debugger.es.js`             | ES Module debugger                          |
+| `dist/pwgl.debugger.umd.js`            | UMD debugger                                |
 
 ---
 
@@ -71,7 +79,7 @@ records calls frame-by-frame, and adds an in-page panel. See
 
 ## How to use
 
-Create your index html ( include pwgl.umd.js and pwgl.extensions.umd.js )
+Create your index html. Use `pwgl.extensions.umd.js` for every extension group, or load only the group bundles you need.
 
 ```html
 <!DOCTYPE html>
@@ -79,6 +87,10 @@ Create your index html ( include pwgl.umd.js and pwgl.extensions.umd.js )
   <head>
     <script src="pwgl.umd.js" type="text/javascript"></script>
     <script src="pwgl.extensions.umd.js" type="text/javascript"></script>
+    <!-- or, for smaller extension payloads:
+    <script src="pwgl.extensions.utils.umd.js" type="text/javascript"></script>
+    <script src="pwgl.extensions.controls.umd.js" type="text/javascript"></script>
+    -->
   </head>
   <body></body>
 </html>

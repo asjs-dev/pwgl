@@ -6,7 +6,7 @@
     "destination": "./docs/extensions/"
   },
   "source": {
-    "include": ["extensions", "extensions/README.md"],
+    "include": ["extensions/src", "extensions/README.md"],
     "includePattern": ".+\\.js(doc|x)?$",
     "excludePattern": "node_modules"
   },

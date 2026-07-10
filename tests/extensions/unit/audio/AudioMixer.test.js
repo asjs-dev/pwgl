@@ -6,7 +6,7 @@ const loadAudioMixerModule = async () => {
   installBasicWindowMocks();
   globalThis.window.AudioContext = vi.fn(() => context);
   globalThis.window.webkitAudioContext = vi.fn(() => context);
-  return { ...(await import("../../../../extensions/audio/AudioMixer.js")), context };
+  return { ...(await import("../../../../extensions/src/audio/AudioMixer.js")), context };
 };
 
 describe("AudioMixer", () => {

@@ -1,5 +1,5 @@
-import { noopReturnsWith } from "../../extensions/utils/noopReturnsWith";
-import { removeFromArray } from "../../extensions/utils/removeFromArray";
+import { noopReturnsWith } from "../../extensions/src/utils/noopReturnsWith";
+import { removeFromArray } from "../../extensions/src/utils/removeFromArray";
 import { Item } from "./Item";
 
 /**

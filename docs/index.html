@@ -127,11 +127,43 @@ PWGL is a JavaScript framework for creating <strong>2D WebGL2 games and applicat
 </tr>
 <tr>
 <td><code>dist/pwgl.extensions.es.js</code></td>
-<td>ES Module with extensions, minified</td>
+<td>ES Module with all extensions, minified</td>
 </tr>
 <tr>
 <td><code>dist/pwgl.extensions.umd.js</code></td>
-<td>UMD with extensions, minified</td>
+<td>UMD with all extensions, minified</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.extensions.utils.es.js</code></td>
+<td>ES Module with utility extensions, minified</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.extensions.utils.umd.js</code></td>
+<td>UMD with utility extensions, minified</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.extensions.audio.es.js</code></td>
+<td>ES Module with audio extensions, minified</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.extensions.audio.umd.js</code></td>
+<td>UMD with audio extensions, minified</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.extensions.controls.es.js</code></td>
+<td>ES Module with control extensions, minified</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.extensions.controls.umd.js</code></td>
+<td>UMD with control extensions, minified</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.extensions.display.es.js</code></td>
+<td>ES Module with display extensions, minified</td>
+</tr>
+<tr>
+<td><code>dist/pwgl.extensions.display.umd.js</code></td>
+<td>UMD with display extensions, minified</td>
 </tr>
 <tr>
 <td><code>dist/pwgl.debugger.es.js</code></td>
@@ -158,12 +190,16 @@ records calls frame-by-frame, and adds an in-page panel. See
 <a href="./debugger/README.md"><code>debugger/README.md</code></a> for flags and recorded data details.</p>
 <hr>
 <h2>How to use</h2>
-<p>Create your index html ( include pwgl.umd.js and pwgl.extensions.umd.js )</p>
+<p>Create your index html. Use <code>pwgl.extensions.umd.js</code> for every extension group, or load only the group bundles you need.</p>
 <pre class="prettyprint source lang-html"><code>&lt;!DOCTYPE html>
 &lt;html>
   &lt;head>
     &lt;script src=&quot;pwgl.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
     &lt;script src=&quot;pwgl.extensions.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+    &lt;!-- or, for smaller extension payloads:
+    &lt;script src=&quot;pwgl.extensions.utils.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+    &lt;script src=&quot;pwgl.extensions.controls.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+    -->
   &lt;/head>
   &lt;body>&lt;/body>
 &lt;/html>

@@ -23,7 +23,7 @@
   ],
   "scripts": {
     "build:pwgl": "vite build --config vite.config.js",
-    "build:ext": "vite build --config extensions/vite.config.js",
+    "build:ext": "node build-scripts/build-extensions.js",
     "build:debugger": "npm run typecheck && vite build --config debugger/vite.config.ts",
     "docs": "node build-scripts/build-docs.js",
     "build:all": "npm run build:pwgl && npm run build:ext && npm run build:debugger && npm run docs",

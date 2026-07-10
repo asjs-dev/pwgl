@@ -1,4 +1,4 @@
-import { noop } from "../../extensions/utils/noop";
+import { noop } from "../../extensions/src/utils/noop";
 import { Utils } from "../core/Utils";
 import { BlendMode } from "../rendering/BlendMode";
 import { Framebuffer } from "../textures/Framebuffer";

@@ -1,6 +1,6 @@
-import { noop } from "../../extensions/utils/noop";
-import { noopReturnsWith } from "../../extensions/utils/noopReturnsWith";
-import { removeFromArray } from "../../extensions/utils/removeFromArray";
+import { noop } from "../../extensions/src/utils/noop";
+import { noopReturnsWith } from "../../extensions/src/utils/noopReturnsWith";
+import { removeFromArray } from "../../extensions/src/utils/removeFromArray";
 import "../rendering/BlendMode";
 import { TextureInfo } from "../textures/TextureInfo";
 import { Utils } from "./Utils";

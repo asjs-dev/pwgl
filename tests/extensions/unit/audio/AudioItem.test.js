@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { AudioItem } from "../../../../extensions/audio/AudioItem";
+import { AudioItem } from "../../../../extensions/src/audio/AudioItem";
 import { createAudioContextMock } from "../helpers/browserAudioMocks";
 
 const createMixer = () => {

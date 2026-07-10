@@ -1,28 +1,28 @@
 import { describe, expect, it, vi } from "vitest";
-import { areObjectsEqual } from "../../../../extensions/utils/areObjectsEqual";
-import { arraySet } from "../../../../extensions/utils/arraySet";
-import { clamp } from "../../../../extensions/utils/clamp";
+import { areObjectsEqual } from "../../../../extensions/src/utils/areObjectsEqual";
+import { arraySet } from "../../../../extensions/src/utils/arraySet";
+import { clamp } from "../../../../extensions/src/utils/clamp";
 import {
   areTwoLinesCollided,
   areTwoRectsCollided,
   distanceBetweenPointAndLine,
   lineToLineIntersection,
   rectToRectIntersection,
-} from "../../../../extensions/utils/collisionDetection";
-import { cross } from "../../../../extensions/utils/cross";
-import { dot } from "../../../../extensions/utils/dot";
-import { enumCheck } from "../../../../extensions/utils/enumCheck";
-import { fract } from "../../../../extensions/utils/fract";
-import { getRandomFrom } from "../../../../extensions/utils/getRandomFrom";
-import { coordToVector, vectorToCoord } from "../../../../extensions/utils/gridMapping";
-import { hashNoise2D } from "../../../../extensions/utils/hashNoise2D";
-import { mix } from "../../../../extensions/utils/mix";
-import { noop } from "../../../../extensions/utils/noop";
-import { noopReturnsWith } from "../../../../extensions/utils/noopReturnsWith";
-import { removeFromArray } from "../../../../extensions/utils/removeFromArray";
-import { createStateMachine } from "../../../../extensions/utils/stateMachine";
-import { deepFreeze } from "../../../../extensions/utils/deepFreeze";
-import { stepNoise } from "../../../../extensions/utils/stepNoise";
+} from "../../../../extensions/src/utils/collisionDetection";
+import { cross } from "../../../../extensions/src/utils/cross";
+import { dot } from "../../../../extensions/src/utils/dot";
+import { enumCheck } from "../../../../extensions/src/utils/enumCheck";
+import { fract } from "../../../../extensions/src/utils/fract";
+import { getRandomFrom } from "../../../../extensions/src/utils/getRandomFrom";
+import { coordToVector, vectorToCoord } from "../../../../extensions/src/utils/gridMapping";
+import { hashNoise2D } from "../../../../extensions/src/utils/hashNoise2D";
+import { mix } from "../../../../extensions/src/utils/mix";
+import { noop } from "../../../../extensions/src/utils/noop";
+import { noopReturnsWith } from "../../../../extensions/src/utils/noopReturnsWith";
+import { removeFromArray } from "../../../../extensions/src/utils/removeFromArray";
+import { createStateMachine } from "../../../../extensions/src/utils/stateMachine";
+import { deepFreeze } from "../../../../extensions/src/utils/deepFreeze";
+import { stepNoise } from "../../../../extensions/src/utils/stepNoise";
 
 const flushMicrotasks = () => Promise.resolve();
 

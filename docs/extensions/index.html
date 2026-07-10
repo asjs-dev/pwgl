@@ -74,10 +74,18 @@
 <p>A comprehensive utility package extending the capabilities of <strong>PWGL</strong> (Programmable WebGL) with advanced controls, audio processing, rendering enhancements, and utility functions for game development and interactive graphics applications.</p>
 <h2>Overview</h2>
 <p>The PWGL Extensions library provides a collection of modules designed to streamline common development patterns, from input handling and audio management to collision detection and mathematical utilities. All functionality is exposed through the global <code>PWGLExtensions</code> (alias <code>AGLExtensions</code>) namespace.</p>
+<p>Extension source files live under <code>extensions/src</code>. The full bundle starts from <code>extensions/src/index.js</code>, while the standalone group bundles start from:</p>
+<ul>
+<li><code>extensions/src/utils/entry.js</code></li>
+<li><code>extensions/src/audio/entry.js</code></li>
+<li><code>extensions/src/controls/entry.js</code></li>
+<li><code>extensions/src/display/entry.js</code></li>
+</ul>
+<p>Each group entry creates <code>PWGLExtensions</code> if needed and then merges its own group namespace, so the UMD files can be loaded independently or together.</p>
 <h2>Modules</h2>
 <h3>Controls</h3>
 <p>Comprehensive input handling for keyboard, mouse, and gamepad devices.</p>
-<h4><strong>PressState</strong> (<code>controls/PressState.js</code>)</h4>
+<h4><strong>PressState</strong> (<code>src/controls/PressState.js</code>)</h4>
 <p>Base class for tracking pressed and released states of input devices.</p>
 <ul>
 <li>Tracks down/up/pressed state and press duration for input events</li>
@@ -85,7 +93,7 @@
 <li>Ignores repeated down events while a key/button is already held</li>
 <li>Foundation for all input handler implementations</li>
 </ul>
-<h4><strong>Keyboard</strong> (<code>controls/Keyboard.js</code>)</h4>
+<h4><strong>Keyboard</strong> (<code>src/controls/Keyboard.js</code>)</h4>
 <p>Handles keyboard input events and key state tracking.</p>
 <ul>
 <li>Extends <code>PressState</code> for consistent state management</li>
@@ -97,7 +105,7 @@
 </ul>
 </li>
 </ul>
-<h4><strong>Mouse</strong> (<code>controls/Mouse.js</code>)</h4>
+<h4><strong>Mouse</strong> (<code>src/controls/Mouse.js</code>)</h4>
 <p>Tracks primary mouse/touch position and press state.</p>
 <ul>
 <li>Position tracking (<code>x</code>, <code>y</code> coordinates)</li>
@@ -105,7 +113,7 @@
 <li>Supports mouse and touch events</li>
 <li>Supports both document and element-scoped tracking</li>
 </ul>
-<h4><strong>Gamepad</strong> (<code>controls/Gamepad.js</code>)</h4>
+<h4><strong>Gamepad</strong> (<code>src/controls/Gamepad.js</code>)</h4>
 <p>Full gamepad/controller input support using the Gamepad API.</p>
 <ul>
 <li>Normalized button and axis snapshots</li>
@@ -116,7 +124,7 @@
 </ul>
 <h3>Audio</h3>
 <p>Professional audio manipulation and mixing utilities powered by the Web Audio API.</p>
-<h4><strong>BaseAudio</strong> (<code>audio/BaseAudio.js</code>)</h4>
+<h4><strong>BaseAudio</strong> (<code>src/audio/BaseAudio.js</code>)</h4>
 <p>Abstract base class for audio node management and control.</p>
 <ul>
 <li><strong>Properties:</strong>
@@ -130,7 +138,7 @@
 </li>
 <li><strong>Features:</strong> Manages Web Audio API node connections, audio routing, and effect chains</li>
 </ul>
-<h4><strong>Audio Filters</strong> (<code>audio/filters/</code>)</h4>
+<h4><strong>Audio Filters</strong> (<code>src/audio/filters/</code>)</h4>
 <p>Ordered Web Audio filter classes that can be attached to <code>AudioItem</code> or <code>AudioMixer</code> instances.</p>
 <ul>
 <li><code>BaseAudioFilter</code> - Base input/output interface for custom audio filters</li>
@@ -145,7 +153,7 @@
 <li>Filters run in array order and can be bypassed with <code>filter.on = false</code></li>
 <li>Built-in numeric parameters are normalized before they are written to Web Audio params</li>
 </ul>
-<h4><strong>AudioItem</strong> (<code>audio/AudioItem.js</code>)</h4>
+<h4><strong>AudioItem</strong> (<code>src/audio/AudioItem.js</code>)</h4>
 <p>Single audio playback with full playback control.</p>
 <ul>
 <li>Play, pause, and stop controls</li>
@@ -153,7 +161,7 @@
 <li>Seek, duration, and current time tracking</li>
 <li>Volume and panning envelope automation</li>
 </ul>
-<h4><strong>AudioMixer</strong> (<code>audio/AudioMixer.js</code>)</h4>
+<h4><strong>AudioMixer</strong> (<code>src/audio/AudioMixer.js</code>)</h4>
 <p>Multi-channel audio mixer for complex audio management.</p>
 <ul>
 <li>Mix multiple audio tracks simultaneously</li>
@@ -161,7 +169,7 @@
 <li>Master volume control</li>
 <li>Effect chain management</li>
 </ul>
-<h4><strong>Audio Utilities</strong> (<code>audio/utils/</code>)</h4>
+<h4><strong>Audio Utilities</strong> (<code>src/audio/utils/</code>)</h4>
 <p>Helper functions for audio manipulation.</p>
 <ul>
 <li><code>fadeAudioVolume(audioItem, min, max, step)</code> - Set a mixed volume value</li>
@@ -184,7 +192,7 @@ audio.highPassFilterQ = 0.7;
 <p>Use the same <code>filters</code> array on <code>AudioMixer</code> for master output filtering.</p>
 <h3>Display</h3>
 <p>Specialized rendering components for visual effects.</p>
-<h4><strong>AnimatedWater</strong> (<code>display/AnimatedWater.js</code>)</h4>
+<h4><strong>AnimatedWater</strong> (<code>src/display/AnimatedWater.js</code>)</h4>
 <p>Realistic animated water surface effect using displacement mapping.</p>
 <ul>
 <li>Layered water displacement simulation</li>
@@ -193,7 +201,7 @@ audio.highPassFilterQ = 0.7;
 <li>Uses noise textures for natural water behavior</li>
 <li>Optimized for real-time rendering</li>
 </ul>
-<h4><strong>SmoothLight</strong> (<code>display/SmoothLight.js</code>)</h4>
+<h4><strong>SmoothLight</strong> (<code>src/display/SmoothLight.js</code>)</h4>
 <p>Smooth lighting and shadow calculations for dynamic scenes.</p>
 <ul>
 <li>Soft shadow rendering</li>
@@ -320,10 +328,18 @@ counter.subscribe((state, prevState) => {
 counter.increment();
 </code></pre>
 <h2>Installation</h2>
-<p>The extensions package is included with PWGL. Import from your project:</p>
-<pre class="prettyprint source lang-javascript"><code>import * as PWGLExt from 'pwgl.extensions.es.min';
-// or
-import { Keyboard, Mouse, AudioItem, LowPassAudioFilter } from 'pwgl.extensions.es.min';
+<p>The extensions package is included with PWGL. Load the all-in-one bundle when you need every group:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;pwgl.extensions.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+</code></pre>
+<p>Or load only the standalone group bundles you need:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;pwgl.extensions.utils.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+&lt;script src=&quot;pwgl.extensions.controls.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+&lt;script src=&quot;pwgl.extensions.audio.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+&lt;script src=&quot;pwgl.extensions.display.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+</code></pre>
+<p>The same outputs are available as ES modules:</p>
+<pre class="prettyprint source lang-javascript"><code>import * as PWGLExtensions from &quot;./dist/pwgl.extensions.es.js&quot;;
+import * as PWGLControls from &quot;./dist/pwgl.extensions.controls.es.js&quot;;
 </code></pre>
 <h2>Browser Compatibility</h2>
 <ul>

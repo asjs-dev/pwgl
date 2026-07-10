@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { Mouse } from "../../../../extensions/controls/Mouse";
+import { Mouse } from "../../../../extensions/src/controls/Mouse";
 import { createEventTargetMock } from "../helpers/browserAudioMocks";
 
 describe("Mouse", () => {

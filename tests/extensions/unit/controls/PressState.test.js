@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { PressState } from "../../../../extensions/controls/PressState";
+import { PressState } from "../../../../extensions/src/controls/PressState";
 
 describe("PressState", () => {
   it("tracks down, up, pressed and long-pressed states", () => {

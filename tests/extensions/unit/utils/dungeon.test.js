@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { generateDungeon } from "../../../../extensions/utils/dungeon";
+import { generateDungeon } from "../../../../extensions/src/utils/dungeon";
 
 describe("extensions dungeon", () => {
   it("generates a dungeon grid from sample rooms deterministically", () => {

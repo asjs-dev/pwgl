@@ -5,7 +5,7 @@ const loadSmoothLightModule = async () => {
   vi.resetModules();
   globalThis.window = {};
   const PWGL = installPWGLMock();
-  return { ...(await import("../../../../extensions/display/SmoothLight.js")), PWGL };
+  return { ...(await import("../../../../extensions/src/display/SmoothLight.js")), PWGL };
 };
 
 describe("SmoothLight", () => {
@@ -14,7 +14,7 @@ describe("SmoothLight", () => {
     delete globalThis.window;
     delete globalThis.PWGL;
 
-    const { SmoothLight } = await import("../../../../extensions/display/SmoothLight.js");
+    const { SmoothLight } = await import("../../../../extensions/src/display/SmoothLight.js");
 
     expect(SmoothLight).toBe(null);
   });

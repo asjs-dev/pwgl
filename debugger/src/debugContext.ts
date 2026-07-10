@@ -1,8 +1,8 @@
 import type { DebugCall, DebuggerOptions } from "./types";
-import { clamp } from "../../extensions/utils/clamp";
-import { enterFrame } from "../../extensions/utils/enterFrame";
-import { enumCheck } from "../../extensions/utils/enumCheck";
-import { noopReturnsWith } from "../../extensions/utils/noopReturnsWith";
+import { clamp } from "../../extensions/src/utils/clamp";
+import { enterFrame } from "../../extensions/src/utils/enterFrame";
+import { enumCheck } from "../../extensions/src/utils/enumCheck";
+import { noopReturnsWith } from "../../extensions/src/utils/noopReturnsWith";
 import { SHOW_ARRAYS, SHOW_CALL_STACKS, SHOW_ORIGINAL_VALUES } from "./constants";
 
 type SliceableValue = {

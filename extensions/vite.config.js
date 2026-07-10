@@ -14,7 +14,7 @@ replaceMap["{{date}}"] = Date.now().toString();
 export default defineConfig({
   build: {
     lib: {
-      entry: "extensions/index.js",
+      entry: "extensions/src/index.js",
       name: "PWGL Extensions",
       fileName: (format) => `pwgl.extensions.${format}.js`,
       formats: ["es", "umd"],

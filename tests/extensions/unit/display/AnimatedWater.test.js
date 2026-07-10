@@ -5,7 +5,7 @@ const loadAnimatedWaterModule = async () => {
   vi.resetModules();
   globalThis.window = {};
   const PWGL = installPWGLMock();
-  return { ...(await import("../../../../extensions/display/AnimatedWater.js")), PWGL };
+  return { ...(await import("../../../../extensions/src/display/AnimatedWater.js")), PWGL };
 };
 
 describe("AnimatedWater", () => {
@@ -14,7 +14,7 @@ describe("AnimatedWater", () => {
     delete globalThis.window;
     delete globalThis.PWGL;
 
-    const { AnimatedWater } = await import("../../../../extensions/display/AnimatedWater.js");
+    const { AnimatedWater } = await import("../../../../extensions/src/display/AnimatedWater.js");
 
     expect(AnimatedWater).toBe(null);
   });
