@@ -74,9 +74,9 @@
 <p>A comprehensive utility package extending the capabilities of <strong>PWGL</strong> (Programmable WebGL) with advanced controls, audio processing, rendering enhancements, and utility functions for game development and interactive graphics applications.</p>
 <h2>Overview</h2>
 <p>The PWGL Extensions library provides a collection of modules designed to streamline common development patterns, from input handling and audio management to collision detection and mathematical utilities. All functionality is exposed through the global <code>PWGLExtensions</code> (alias <code>AGLExtensions</code>) namespace.</p>
-<p>Extension source files live under <code>extensions/src</code>. The full bundle starts from <code>extensions/src/index.js</code>, while the standalone group bundles start from:</p>
+<p>Extension source files live under <code>extensions/src</code>. Utility sources are written in TypeScript, while the remaining groups can be migrated gradually. The full bundle starts from <code>extensions/src/index.js</code>, while the standalone group bundles start from:</p>
 <ul>
-<li><code>extensions/src/utils/entry.js</code></li>
+<li><code>extensions/src/utils/entry.ts</code></li>
 <li><code>extensions/src/audio/entry.js</code></li>
 <li><code>extensions/src/controls/entry.js</code></li>
 <li><code>extensions/src/display/entry.js</code></li>
@@ -254,7 +254,14 @@ audio.highPassFilterQ = 0.7;
 <ul>
 <li><strong><code>coordToVector(x, y, width)</code></strong> - Convert 2D grid coordinates to linear index</li>
 <li><strong><code>vectorToCoord(index, width)</code></strong> - Convert linear index to 2D coordinates</li>
+<li><strong><code>createIsoUtils(size)</code></strong> - Create fixed-size isometric projection and picking helpers
+<ul>
+<li><strong><code>toIsoCoordinates({ x, y, z })</code></strong> - Project grid coordinates to 2D isometric coordinates</li>
+<li><strong><code>getIsoItemByCoordinates(items, point)</code></strong> - Return the matching transformed isometric item with the highest <code>gridX + gridY</code> order</li>
 </ul>
+</li>
+</ul>
+<p>Isometric input coordinates use <code>{ x, y, z }</code>, where <code>z</code> is an optional vertical pixel offset. Item picking expects transformed 2D isometric positions with <code>z</code>, <code>gridX</code>, and <code>gridY</code> metadata. The item with the highest <code>gridX + gridY</code> order is returned regardless of array order.</p>
 <h3>State Management</h3>
 <ul>
 <li><strong><code>createStateMachine(config)</code></strong> - Small observable state container
@@ -309,6 +316,15 @@ const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
 // Utilities
 const distance = PWGLExtensions.utils.clamp(0, 100, value);
 const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rect1, rect2);
+const iso = PWGLExtensions.utils.createIsoUtils(64);
+const screenPosition = iso.toIsoCoordinates({ x: 2, y: 3, z: 8 });
+const transformedTiles = tiles.map((tile) => ({
+  ...iso.toIsoCoordinates(tile),
+  z: tile.z ?? 0,
+  gridX: tile.x,
+  gridY: tile.y,
+}));
+const selectedTile = iso.getIsoItemByCoordinates(transformedTiles, pointerPosition);
 
 const counter = PWGLExtensions.utils.createStateMachine({
   initialState: { count: 0 },
@@ -368,7 +384,7 @@ import * as PWGLControls from &quot;./dist/pwgl.extensions.controls.es.js&quot;;
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#areObjectsEqual">areObjectsEqual</a></li><li><a href="global.html#areTwoLinesCollided">areTwoLinesCollided</a></li><li><a href="global.html#areTwoRectsCollided">areTwoRectsCollided</a></li><li><a href="global.html#arraySet">arraySet</a></li><li><a href="global.html#blur">blur</a></li><li><a href="global.html#clamp">clamp</a></li><li><a href="global.html#coordToVector">coordToVector</a></li><li><a href="global.html#cross">cross</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#deepFreeze">deepFreeze</a></li><li><a href="global.html#distanceBetweenPointAndLine">distanceBetweenPointAndLine</a></li><li><a href="global.html#dot">dot</a></li><li><a href="global.html#enterFrame">enterFrame</a></li><li><a href="global.html#enumCheck">enumCheck</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#fract">fract</a></li><li><a href="global.html#generateDungeon">generateDungeon</a></li><li><a href="global.html#getFPS">getFPS</a></li><li><a href="global.html#getRandomFrom">getRandomFrom</a></li><li><a href="global.html#hashNoise2D">hashNoise2D</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#lineToLineIntersection">lineToLineIntersection</a></li><li><a href="global.html#mix">mix</a></li><li><a href="global.html#noop">noop</a></li><li><a href="global.html#noopReturnsWith">noopReturnsWith</a></li><li><a href="global.html#nthCall">nthCall</a></li><li><a href="global.html#rectToRectIntersection">rectToRectIntersection</a></li><li><a href="global.html#removeFromArray">removeFromArray</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li><li><a href="global.html#stepNoise">stepNoise</a></li><li><a href="global.html#vectorToCoord">vectorToCoord</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blur">blur</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li></ul>
             </nav>
 
             <br class="clear">

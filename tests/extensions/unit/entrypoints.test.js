@@ -3,10 +3,11 @@ import { installPWGLMock } from "./helpers/pwglExtensionMocks";
 
 describe("extension entrypoints", () => {
   it("exports utility helpers from the utils entrypoint", async () => {
-    const utils = await import("../../../extensions/src/utils/index.js");
+    const utils = await import("../../../extensions/src/utils/index.ts");
 
     expect(utils.clamp(0, 10, 12)).toBe(10);
     expect(utils.deepFreeze).toBeDefined();
+    expect(utils.createIsoUtils(64).toIsoCoordinates({ x: 1, y: 0 })).toEqual({ x: 32, y: 16 });
     expect(utils.gridMapping.coordToVector(1, 2, 3)).toBe(7);
     expect(utils.random.hashNoise2D(1, 2)).toBeTypeOf("number");
     expect(utils.collisionDetection.areTwoRectsCollided).toBeDefined();

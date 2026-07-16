@@ -10,6 +10,6 @@
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["debugger/**/*.ts", "debugger/**/*.js", "extensions/**/*.js"],
+  "include": ["debugger/**/*.ts", "debugger/**/*.js", "extensions/**/*.ts", "extensions/**/*.js", "tests/**/*.ts"],
   "exclude": ["debugger/docs.ts", "debugger/vite.config.ts"]
 }

@@ -54,7 +54,7 @@ describe("extensions index", () => {
     installBrowserMocks();
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
-    await import("../../../extensions/src/utils/entry.js");
+    await import("../../../extensions/src/utils/entry.ts");
 
     expect(window.PWGLExtensions.utils.createStateMachine).toBeDefined();
     expect(window.PWGLExtensions.controls).toBeUndefined();

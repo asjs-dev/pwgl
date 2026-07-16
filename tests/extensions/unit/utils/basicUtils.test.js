@@ -16,6 +16,7 @@ import { fract } from "../../../../extensions/src/utils/fract";
 import { getRandomFrom } from "../../../../extensions/src/utils/getRandomFrom";
 import { coordToVector, vectorToCoord } from "../../../../extensions/src/utils/gridMapping";
 import { hashNoise2D } from "../../../../extensions/src/utils/hashNoise2D";
+import { createIsoUtils } from "../../../../extensions/src/utils/iso";
 import { mix } from "../../../../extensions/src/utils/mix";
 import { noop } from "../../../../extensions/src/utils/noop";
 import { noopReturnsWith } from "../../../../extensions/src/utils/noopReturnsWith";
@@ -205,6 +206,40 @@ describe("extensions basic utils", () => {
   it("maps between grid coordinates and vector indices", () => {
     expect(coordToVector(2, 3, 10)).toBe(32);
     expect(vectorToCoord(32, 10)).toEqual({ x: 2, y: 3 });
+  });
+
+  it("creates isometric utilities with a fixed tile size", () => {
+    const iso = createIsoUtils(64);
+
+    expect(iso.toIsoCoordinates()).toEqual({ x: 0, y: 0 });
+    expect(iso.toIsoCoordinates({ x: 1, y: 0 })).toEqual({ x: 32, y: 16 });
+    expect(iso.toIsoCoordinates({ x: 0, y: 1 })).toEqual({ x: -32, y: 16 });
+    expect(iso.toIsoCoordinates({ x: 2, y: 3, z: 8 })).toEqual({ x: -32, y: 72 });
+  });
+
+  it("finds the topmost isometric item under a screen point", () => {
+    const iso = createIsoUtils(64);
+    const items = [
+      { ...iso.toIsoCoordinates({ x: 0, y: 0 }), z: 0, gridX: 0, gridY: 0 },
+      { ...iso.toIsoCoordinates({ x: 1, y: 0 }), z: 0, gridX: 1, gridY: 0 },
+      { ...iso.toIsoCoordinates({ x: 0, y: 1, z: 8 }), z: 8, gridX: 0, gridY: 1 },
+    ];
+
+    expect(iso.getIsoItemByCoordinates(items, { x: 0, y: 16 })).toBe(items[0]);
+    expect(iso.getIsoItemByCoordinates(items, { x: 32, y: 32 })).toBe(items[1]);
+    expect(iso.getIsoItemByCoordinates(items, { x: -32, y: 24 })).toBe(items[2]);
+    expect(iso.getIsoItemByCoordinates(items, { x: 96, y: 96 })).toBeUndefined();
+  });
+
+  it("returns the matching isometric item with the highest grid z-order", () => {
+    const iso = createIsoUtils(64);
+    const items = [
+      { ...iso.toIsoCoordinates({ x: 1, y: 1 }), z: 0, gridX: 1, gridY: 1 },
+      { ...iso.toIsoCoordinates({ x: 2, y: 2, z: 32 }), z: 32, gridX: 2, gridY: 2 },
+      { ...iso.toIsoCoordinates({ x: 3, y: 3, z: 64 }), z: 64, gridX: 3, gridY: 3 },
+    ];
+
+    expect(iso.getIsoItemByCoordinates(items, { x: 0, y: 48 })).toBe(items[2]);
   });
 
   it("returns deterministic values when randomness is stubbed", () => {

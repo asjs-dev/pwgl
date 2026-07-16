@@ -16,7 +16,7 @@ const entries = [
     fileBase: "pwgl.extensions",
   },
   {
-    entry: "extensions/src/utils/entry.js",
+    entry: "extensions/src/utils/entry.ts",
     name: "PWGLExtensionsUtils",
     fileBase: "pwgl.extensions.utils",
   },
