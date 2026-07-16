@@ -52,4 +52,15 @@ describe("extension entrypoints", () => {
     expect(display.AnimatedWater).toBeDefined();
     expect(display.SmoothLight).toBeDefined();
   });
+
+  it("exports texture atlas helpers from the texture atlas entrypoint", async () => {
+    const textureAtlas = await import("../../../extensions/src/textureAtlas/index.ts");
+
+    expect(textureAtlas.create).toBeDefined();
+    expect(textureAtlas.parse).toBeDefined();
+    expect(textureAtlas.getImage).toBeDefined();
+    expect(textureAtlas.Atlas.create).toBe(textureAtlas.create);
+    expect(textureAtlas.Atlas.parse).toBe(textureAtlas.parse);
+    expect(textureAtlas.Atlas.getImage).toBe(textureAtlas.getImage);
+  });
 });

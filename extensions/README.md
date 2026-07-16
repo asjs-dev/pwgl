@@ -140,6 +140,16 @@ Smooth lighting and shadow calculations for dynamic scenes.
 - Optimized lighting calculations
 - Suitable for deferred and forward rendering
 
+## Texture Atlas
+
+Texture atlas creation and JSON parsing helpers.
+
+- **`create(options)`** - Generate a texture atlas canvas and metadata JSON from image files
+- **`parse(json, name)`** - Return normalized asset data by name for long or short JSON keys
+- **`getImage(json)`** - Return the embedded base64 atlas image as an `HTMLImageElement`, or `null`
+
+Asset parsing normalizes `exact`/`e`, `percent`/`p`, `offset`/`o`, and `rotated`/`r`. Filenames containing `_offset_x_y` store `{ x, y }` offset metadata, while the generated asset name omits that suffix.
+
 ## Utilities
 
 A comprehensive collection of mathematical, collision detection, and utility functions.
@@ -292,6 +302,8 @@ Or load only the standalone group bundles you need:
 <script src="pwgl.extensions.controls.umd.js" type="text/javascript"></script>
 <script src="pwgl.extensions.audio.umd.js" type="text/javascript"></script>
 <script src="pwgl.extensions.display.umd.js" type="text/javascript"></script>
+<script src="pwgl.extensions.texture-atlas-creator.umd.js" type="text/javascript"></script>
+<script src="pwgl.extensions.texture-atlas-parser.umd.js" type="text/javascript"></script>
 ```
 
 The same outputs are available as ES modules:
@@ -299,6 +311,8 @@ The same outputs are available as ES modules:
 ```javascript
 import * as PWGLExtensions from "./dist/pwgl.extensions.es.js";
 import * as PWGLControls from "./dist/pwgl.extensions.controls.es.js";
+import * as TextureAtlasCreator from "./dist/pwgl.extensions.texture-atlas-creator.es.js";
+import * as TextureAtlasParser from "./dist/pwgl.extensions.texture-atlas-parser.es.js";
 ```
 
 ## Browser Compatibility

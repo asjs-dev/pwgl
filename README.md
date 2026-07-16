@@ -53,6 +53,10 @@ PWGL provides multiple builds for different use cases.
 | `dist/pwgl.extensions.controls.umd.js` | UMD with control extensions, minified       |
 | `dist/pwgl.extensions.display.es.js`   | ES Module with display extensions, minified |
 | `dist/pwgl.extensions.display.umd.js`  | UMD with display extensions, minified       |
+| `dist/pwgl.extensions.texture-atlas-creator.es.js` | ES Module texture atlas creator             |
+| `dist/pwgl.extensions.texture-atlas-creator.umd.js` | UMD texture atlas creator                   |
+| `dist/pwgl.extensions.texture-atlas-parser.es.js` | ES Module texture atlas parser              |
+| `dist/pwgl.extensions.texture-atlas-parser.umd.js` | UMD texture atlas parser                    |
 | `dist/pwgl.debugger.es.js`             | ES Module debugger                          |
 | `dist/pwgl.debugger.umd.js`            | UMD debugger                                |
 

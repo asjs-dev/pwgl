@@ -35,6 +35,16 @@ const entries = [
     name: "PWGLExtensionsDisplay",
     fileBase: "pwgl.extensions.display",
   },
+  {
+    entry: "extensions/src/textureAtlas/creator.ts",
+    name: "PWGLExtensionsTextureAtlasCreator",
+    fileBase: "pwgl.extensions.texture-atlas-creator",
+  },
+  {
+    entry: "extensions/src/textureAtlas/parser.ts",
+    name: "PWGLExtensionsTextureAtlasParser",
+    fileBase: "pwgl.extensions.texture-atlas-parser",
+  },
 ];
 
 const copyToDocs = (fileBase) => {
