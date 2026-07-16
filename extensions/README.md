@@ -6,7 +6,7 @@ A comprehensive utility package extending the capabilities of **PWGL** (Programm
 
 The PWGL Extensions library provides a collection of modules designed to streamline common development patterns, from input handling and audio management to collision detection and mathematical utilities. All functionality is exposed through the global `PWGLExtensions` (alias `AGLExtensions`) namespace.
 
-Extension source files live under `extensions/src`. Utility sources are written in TypeScript, while the remaining groups can be migrated gradually. The full bundle starts from `extensions/src/index.js`, while the standalone group bundles start from:
+Extension source files live under `extensions/src`. Utility sources are written in TypeScript, while the remaining groups can be migrated gradually. The full bundle starts from `extensions/src/index.ts`, while the standalone group bundles start from:
 
 - `extensions/src/utils/entry.ts`
 - `extensions/src/audio/entry.js`

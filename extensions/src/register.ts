@@ -1,6 +1,17 @@
 const logStateKey = Symbol.for("PWGLExtensions.logExtensions.state");
 
-export const getExtensionsRoot = () => {
+type ExtensionsRoot = Record<PropertyKey, unknown> & {
+  version?: string;
+};
+
+declare global {
+  interface Window {
+    AGLExtensions?: ExtensionsRoot;
+    PWGLExtensions?: ExtensionsRoot;
+  }
+}
+
+export const getExtensionsRoot = (): ExtensionsRoot => {
   const root = window.PWGLExtensions || window.AGLExtensions || {};
 
   root.version ??= "{{appVersion}}";
@@ -10,18 +21,18 @@ export const getExtensionsRoot = () => {
   return root;
 };
 
-export const registerExtensions = (groupName, extensions) => {
+export const registerExtensions = (groupName: string, extensions: Record<string, unknown>): ExtensionsRoot => {
   const root = getExtensionsRoot();
 
   root[groupName] = {
-    ...root[groupName],
+    ...(root[groupName] as Record<string, unknown> | undefined),
     ...extensions,
   };
 
   return root;
 };
 
-export const logExtensions = () => {
+export const logExtensions = (): void => {
   const root = getExtensionsRoot();
 
   if (root[logStateKey]) {

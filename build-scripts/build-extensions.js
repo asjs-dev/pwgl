@@ -11,7 +11,7 @@ replaceMap["{{date}}"] = Date.now().toString();
 
 const entries = [
   {
-    entry: "extensions/src/index.js",
+    entry: "extensions/src/index.ts",
     name: "PWGLExtensions",
     fileBase: "pwgl.extensions",
   },

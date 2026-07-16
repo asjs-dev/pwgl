@@ -74,7 +74,7 @@
 <p>A comprehensive utility package extending the capabilities of <strong>PWGL</strong> (Programmable WebGL) with advanced controls, audio processing, rendering enhancements, and utility functions for game development and interactive graphics applications.</p>
 <h2>Overview</h2>
 <p>The PWGL Extensions library provides a collection of modules designed to streamline common development patterns, from input handling and audio management to collision detection and mathematical utilities. All functionality is exposed through the global <code>PWGLExtensions</code> (alias <code>AGLExtensions</code>) namespace.</p>
-<p>Extension source files live under <code>extensions/src</code>. Utility sources are written in TypeScript, while the remaining groups can be migrated gradually. The full bundle starts from <code>extensions/src/index.js</code>, while the standalone group bundles start from:</p>
+<p>Extension source files live under <code>extensions/src</code>. Utility sources are written in TypeScript, while the remaining groups can be migrated gradually. The full bundle starts from <code>extensions/src/index.ts</code>, while the standalone group bundles start from:</p>
 <ul>
 <li><code>extensions/src/utils/entry.ts</code></li>
 <li><code>extensions/src/audio/entry.js</code></li>
@@ -209,6 +209,14 @@ audio.highPassFilterQ = 0.7;
 <li>Optimized lighting calculations</li>
 <li>Suitable for deferred and forward rendering</li>
 </ul>
+<h2>Texture Atlas</h2>
+<p>Texture atlas creation and JSON parsing helpers.</p>
+<ul>
+<li><strong><code>create(options)</code></strong> - Generate a texture atlas canvas and metadata JSON from image files</li>
+<li><strong><code>parse(json, name)</code></strong> - Return normalized asset data by name for long or short JSON keys</li>
+<li><strong><code>getImage(json)</code></strong> - Return the embedded base64 atlas image as an <code>HTMLImageElement</code>, or <code>null</code></li>
+</ul>
+<p>Asset parsing normalizes <code>exact</code>/<code>e</code>, <code>percent</code>/<code>p</code>, <code>offset</code>/<code>o</code>, and <code>rotated</code>/<code>r</code>. Filenames containing <code>_offset_x_y</code> store <code>{ x, y }</code> offset metadata, while the generated asset name omits that suffix.</p>
 <h2>Utilities</h2>
 <p>A comprehensive collection of mathematical, collision detection, and utility functions.</p>
 <h3>Mathematical Utilities</h3>
@@ -352,10 +360,14 @@ counter.increment();
 &lt;script src=&quot;pwgl.extensions.controls.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
 &lt;script src=&quot;pwgl.extensions.audio.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
 &lt;script src=&quot;pwgl.extensions.display.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+&lt;script src=&quot;pwgl.extensions.texture-atlas-creator.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
+&lt;script src=&quot;pwgl.extensions.texture-atlas-parser.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
 </code></pre>
 <p>The same outputs are available as ES modules:</p>
 <pre class="prettyprint source lang-javascript"><code>import * as PWGLExtensions from &quot;./dist/pwgl.extensions.es.js&quot;;
 import * as PWGLControls from &quot;./dist/pwgl.extensions.controls.es.js&quot;;
+import * as TextureAtlasCreator from &quot;./dist/pwgl.extensions.texture-atlas-creator.es.js&quot;;
+import * as TextureAtlasParser from &quot;./dist/pwgl.extensions.texture-atlas-parser.es.js&quot;;
 </code></pre>
 <h2>Browser Compatibility</h2>
 <ul>
