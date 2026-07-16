@@ -59,8 +59,6 @@ describe("extension entrypoints", () => {
     expect(textureAtlas.create).toBeDefined();
     expect(textureAtlas.parse).toBeDefined();
     expect(textureAtlas.getImage).toBeDefined();
-    expect(textureAtlas.Atlas.create).toBe(textureAtlas.create);
-    expect(textureAtlas.Atlas.parse).toBe(textureAtlas.parse);
-    expect(textureAtlas.Atlas.getImage).toBe(textureAtlas.getImage);
+    expect(textureAtlas.Atlas).toBeUndefined();
   });
 });
