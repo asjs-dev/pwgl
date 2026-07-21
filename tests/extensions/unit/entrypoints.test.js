@@ -7,6 +7,7 @@ describe("extension entrypoints", () => {
 
     expect(utils.clamp(0, 10, 12)).toBe(10);
     expect(utils.deepFreeze).toBeDefined();
+    expect(utils.startup).toBeDefined();
     expect(utils.createIsoUtils(64).toIsoCoordinates({ x: 1, y: 0 })).toEqual({ x: 32, y: 16 });
     expect(utils.gridMapping.coordToVector(1, 2, 3)).toBe(7);
     expect(utils.random.hashNoise2D(1, 2)).toBeTypeOf("number");

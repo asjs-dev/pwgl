@@ -3,6 +3,7 @@ import { FPSCounter } from "../../../../extensions/src/utils/FPSCounter";
 import { enterFrame } from "../../../../extensions/src/utils/enterFrame";
 import { getFPS } from "../../../../extensions/src/utils/getFPS";
 import { nthCall } from "../../../../extensions/src/utils/nthCall";
+import { startup } from "../../../../extensions/src/utils/startup";
 
 describe("extensions timing utils", () => {
   beforeEach(() => {
@@ -10,6 +11,7 @@ describe("extensions timing utils", () => {
   });
 
   afterEach(() => {
+    vi.restoreAllMocks();
     vi.useRealTimers();
     delete globalThis.requestAnimationFrame;
     delete globalThis.cancelAnimationFrame;
@@ -95,5 +97,37 @@ describe("extensions timing utils", () => {
     globalThis.requestAnimationFrame = vi.fn((fn) => fn(timestamps.shift()));
 
     await expect(getFPS()).resolves.toBe(60);
+  });
+
+  it("runs startup callback immediately when the document is already ready", () => {
+    const callback = vi.fn();
+    const addEventListener = vi.spyOn(document, "addEventListener");
+    vi.spyOn(document, "readyState", "get").mockReturnValue("interactive");
+
+    startup(callback);
+
+    expect(callback).toHaveBeenCalledOnce();
+    expect(addEventListener).not.toHaveBeenCalledWith("DOMContentLoaded", expect.any(Function), expect.anything());
+  });
+
+  it("runs startup callback once after DOMContentLoaded when the document is loading", () => {
+    const callback = vi.fn();
+    let listener;
+    const addEventListener = vi.spyOn(document, "addEventListener").mockImplementation((type, fn) => {
+      if (type === "DOMContentLoaded") {
+        listener = fn;
+      }
+    });
+    vi.spyOn(document, "readyState", "get").mockReturnValue("loading");
+
+    startup(callback);
+
+    expect(callback).not.toHaveBeenCalled();
+    expect(addEventListener).toHaveBeenCalledWith("DOMContentLoaded", expect.any(Function), { once: true });
+
+    listener(new Event("DOMContentLoaded"));
+
+    expect(callback).toHaveBeenCalledOnce();
+    expect(callback).toHaveBeenCalledWith();
   });
 });

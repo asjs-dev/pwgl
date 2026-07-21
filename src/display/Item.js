@@ -1,4 +1,4 @@
-import { noop } from "../../extensions/src/utils/noop";
+import { noop } from "../../common/utils/noop";
 import { Color } from "../attributes/Color";
 import { ItemTransform } from "../attributes/ItemTransform";
 import { Matrix3Utilities } from "../math/Matrix3Utilities";

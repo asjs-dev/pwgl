@@ -1,4 +1,4 @@
-import { noop } from "../../extensions/src/utils/noop";
+import { noop } from "../../common/utils/noop";
 import { Texture } from "../textures/Texture";
 import { layoutText } from "../utils/layoutText";
 import { Image } from "./Image";

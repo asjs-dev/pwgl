@@ -29,6 +29,7 @@ export { noopReturnsWith } from "./noopReturnsWith";
 export { nthCall } from "./nthCall";
 export { removeFromArray } from "./removeFromArray";
 export { createIsoUtils } from "./iso";
+export { startup } from "./startup";
 export type { IsoCoordinates, IsoItem, IsoUtils } from "./iso";
 export type { LineSegment, Rect, Vector2 } from "./types";
 

@@ -74,7 +74,7 @@
 <p>A comprehensive utility package extending the capabilities of <strong>PWGL</strong> (Programmable WebGL) with advanced controls, audio processing, rendering enhancements, and utility functions for game development and interactive graphics applications.</p>
 <h2>Overview</h2>
 <p>The PWGL Extensions library provides a collection of modules designed to streamline common development patterns, from input handling and audio management to collision detection and mathematical utilities. All functionality is exposed through the global <code>PWGLExtensions</code> (alias <code>AGLExtensions</code>) namespace.</p>
-<p>Extension source files live under <code>extensions/src</code>. Utility sources are written in TypeScript, while the remaining groups can be migrated gradually. The full bundle starts from <code>extensions/src/index.ts</code>, while the standalone group bundles start from:</p>
+<p>Extension source files live under <code>extensions/src</code>. Utility sources are written in TypeScript, while the remaining groups can be migrated gradually. Small helpers shared with the core PWGL build live under <code>common/utils</code> and are re-exported from <code>extensions/src/utils</code> when they are part of the public extensions API. The full bundle starts from <code>extensions/src/index.ts</code>, while the standalone group bundles start from:</p>
 <ul>
 <li><code>extensions/src/utils/entry.ts</code></li>
 <li><code>extensions/src/audio/entry.js</code></li>
@@ -254,6 +254,7 @@ audio.highPassFilterQ = 0.7;
 </ul>
 <h3>Animation and Timing</h3>
 <ul>
+<li><strong><code>startup(callback)</code></strong> - Run a callback immediately when the document is already ready, or once on <code>DOMContentLoaded</code></li>
 <li><strong><code>nthCall(fn, n)</code></strong> - Execute function every nth call</li>
 <li><strong><code>enterFrame(callback, fps)</code></strong> - Frame-based animation loop</li>
 <li><strong><code>FPSCounter</code> class / <code>getFPS()</code></strong> - Frame rate monitoring and statistics</li>

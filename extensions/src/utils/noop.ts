@@ -1,2 +1,1 @@
-/** A no-operation function */
-export const noop = (): void => {};
+export { noop } from "../../../common/utils/noop";

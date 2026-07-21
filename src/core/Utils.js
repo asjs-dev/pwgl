@@ -1,4 +1,5 @@
 import { Context } from "./Context";
+import { startup } from "../../common/utils/startup";
 
 /**
  * @typedef {Object} WebGLContext
@@ -154,15 +155,7 @@ export const Utils = {
    * Call the callback function if the document.readyState interactive or complete
    * @param {function} callback Callback function
    */
-  initApplication: (callback) => {
-    const loadedCallback = () => callback(Utils.INFO.isWebGl2Supported);
-
-    ["interactive", "complete"].includes(document.readyState)
-      ? loadedCallback()
-      : document.addEventListener("DOMContentLoaded", loadedCallback, {
-          once: true,
-        });
-  },
+  initApplication: (callback) => startup(() => callback(Utils.INFO.isWebGl2Supported)),
 
   /**
    * Create a WebGL program
