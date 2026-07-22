@@ -6,8 +6,13 @@
     "destination": "./docs/extensions/"
   },
   "source": {
-    "include": ["extensions/src", "extensions/README.md"],
-    "includePattern": ".+\\.js(doc|x)?$",
+    "include": [
+      "extensions/src/audio",
+      "extensions/src/controls",
+      "extensions/src/display",
+      "extensions/README.md"
+    ],
+    "includePattern": ".+\\.ts$",
     "excludePattern": "node_modules"
   },
   "sourceType": "module",

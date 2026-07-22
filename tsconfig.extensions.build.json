@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "allowJs": false,
+    "checkJs": false,
+    "declaration": true,
+    "declarationMap": false,
+    "emitDeclarationOnly": true,
+    "noCheck": true,
+    "noEmit": false,
+    "outDir": "./dist/types",
+    "rootDir": "."
+  },
+  "include": ["extensions/src/**/*.ts"],
+  "exclude": []
+}

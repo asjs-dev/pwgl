@@ -184,9 +184,10 @@ Rectangles use `{ x, y, width, height }`, where `width` and `height` are sizes.
 ### Procedural Generation
 
 - **`generateDungeon(iterations, sampleRooms)`** - Procedural dungeon layout generation
-- **`hashNoise2D(x, y)`** - 2D hash noise function for terrain generation
-- **`stepNoise(value, steps)`** - Quantized noise for stylized effects
+- **`hashNoise2D(x, y, seed = 1)`** - Deterministic hash-based 2D noise
+- **`stepNoise(x, y, seed = 1)`** - Stateful step-noise value
 - **`getRandomFrom(array)`** - Get random element from array
+- **`getUniqueId()`** - Return an incrementing runtime ID, starting at `0`; after `9_007_199_254_740_991` (`Number.MAX_SAFE_INTEGER`) it wraps to `0`
 
 ### Animation and Timing
 
@@ -259,6 +260,7 @@ const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
 
 // Utilities
 const distance = PWGLExtensions.utils.clamp(0, 100, value);
+const entityId = PWGLExtensions.utils.getUniqueId();
 const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rect1, rect2);
 const iso = PWGLExtensions.utils.createIsoUtils(64);
 const screenPosition = iso.toIsoCoordinates({ x: 2, y: 3, z: 8 });
@@ -307,11 +309,11 @@ Or load only the standalone group bundles you need:
 <script src="pwgl.extensions.texture-atlas-parser.umd.js" type="text/javascript"></script>
 ```
 
-The same outputs are available as ES modules:
+The same outputs are available as ES modules with named exports:
 
 ```javascript
-import * as PWGLExtensions from "./dist/pwgl.extensions.es.js";
-import * as PWGLControls from "./dist/pwgl.extensions.controls.es.js";
+import { utils, controls, textureAtlas } from "./dist/pwgl.extensions.es.js";
+import { Gamepad, Keyboard } from "./dist/pwgl.extensions.controls.es.js";
 import * as TextureAtlasCreator from "./dist/pwgl.extensions.texture-atlas-creator.es.js";
 import * as TextureAtlasParser from "./dist/pwgl.extensions.texture-atlas-parser.es.js";
 ```

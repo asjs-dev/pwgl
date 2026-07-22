@@ -41,10 +41,10 @@ PWGL provides multiple builds for different use cases.
 
 | File                                   | Format                                      |
 | -------------------------------------- | ------------------------------------------- |
-| `dist/pwgl.es.js`                      | ES Module, minified                         |
-| `dist/pwgl.umd.js`                     | UMD, minified                               |
-| `dist/pwgl.extensions.es.js`           | ES Module with all extensions, minified     |
-| `dist/pwgl.extensions.umd.js`          | UMD with all extensions, minified           |
+| `dist/pwgl.es.js`                      | ES Module with named exports, minified      |
+| `dist/pwgl.umd.js`                     | UMD global build, minified                  |
+| `dist/pwgl.extensions.es.js`           | ES Module with named extension exports      |
+| `dist/pwgl.extensions.umd.js`          | UMD global extensions build, minified       |
 | `dist/pwgl.extensions.utils.es.js`     | ES Module with utility extensions, minified |
 | `dist/pwgl.extensions.utils.umd.js`    | UMD with utility extensions, minified       |
 | `dist/pwgl.extensions.audio.es.js`     | ES Module with audio extensions, minified   |
@@ -53,19 +53,32 @@ PWGL provides multiple builds for different use cases.
 | `dist/pwgl.extensions.controls.umd.js` | UMD with control extensions, minified       |
 | `dist/pwgl.extensions.display.es.js`   | ES Module with display extensions, minified |
 | `dist/pwgl.extensions.display.umd.js`  | UMD with display extensions, minified       |
-| `dist/pwgl.extensions.texture-atlas-creator.es.js` | ES Module texture atlas creator             |
-| `dist/pwgl.extensions.texture-atlas-creator.umd.js` | UMD texture atlas creator                   |
-| `dist/pwgl.extensions.texture-atlas-parser.es.js` | ES Module texture atlas parser              |
-| `dist/pwgl.extensions.texture-atlas-parser.umd.js` | UMD texture atlas parser                    |
-| `dist/pwgl.debugger.es.js`             | ES Module debugger                          |
+| `dist/pwgl.extensions.texture-atlas-creator.es.js` | ES Module texture atlas creator |
+| `dist/pwgl.extensions.texture-atlas-creator.umd.js` | UMD texture atlas creator |
+| `dist/pwgl.extensions.texture-atlas-parser.es.js` | ES Module texture atlas parser |
+| `dist/pwgl.extensions.texture-atlas-parser.umd.js` | UMD texture atlas parser |
 | `dist/pwgl.debugger.umd.js`            | UMD debugger                                |
+
+The ES module builds are intended for bundlers and expose named exports:
+
+```javascript
+import { Stage2D, Texture, Image } from "./dist/pwgl.es.js";
+import { utils, controls } from "./dist/pwgl.extensions.es.js";
+```
+
+The UMD builds keep the browser globals:
+
+```html
+<script src="dist/pwgl.umd.js"></script>
+<script src="dist/pwgl.extensions.umd.js"></script>
+```
 
 ---
 
 ## Debugger
 
 PWGL includes an optional debugger bundle for inspecting WebGL calls in the browser.
-The debugger source is written in TypeScript and is published as JavaScript bundles.
+The debugger source is written in TypeScript and is built as a UMD/global JavaScript bundle.
 Load it before creating WebGL contexts, then initialize it once:
 
 ```html

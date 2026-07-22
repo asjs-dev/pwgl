@@ -22,8 +22,11 @@ This file creates a global `window.PWGLDebugger` object and attaches:
 
 Build config (`debugger/vite.config.ts`) runs type checking, builds the TypeScript source, and generates:
 
-- `dist/pwgl.debugger.es.js`
 - `dist/pwgl.debugger.umd.js`
+
+The debugger is intentionally built as a UMD/global bundle only. It patches
+browser WebGL context creation as a side effect, so it is not part of the
+tree-shakeable ES module build surface.
 
 Run build from project root:
 
@@ -70,14 +73,6 @@ UMD bundle in browser:
 <script>
   PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
 </script>
-```
-
-ES module:
-
-```js
-import "../dist/pwgl.debugger.es.js";
-
-PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
 ```
 
 ## Formatting flags

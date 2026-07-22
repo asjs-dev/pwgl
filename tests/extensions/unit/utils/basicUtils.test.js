@@ -28,6 +28,16 @@ import { stepNoise } from "../../../../extensions/src/utils/stepNoise";
 const flushMicrotasks = () => Promise.resolve();
 
 describe("extensions basic utils", () => {
+  it("generates incrementing runtime IDs starting at zero", async () => {
+    vi.resetModules();
+    const { getUniqueId } = await import("../../../../extensions/src/utils/uniqueId");
+
+    expect(getUniqueId()).toBe(0);
+    expect(getUniqueId()).toBe(1);
+    expect(getUniqueId()).toBe(2);
+    expect(Number.MAX_SAFE_INTEGER).toBe(9_007_199_254_740_991);
+  });
+
   it("compares nested objects deeply", () => {
     expect(areObjectsEqual({ a: 1, b: { c: 2 } }, { a: 1, b: { c: 2 } })).toBe(true);
     expect(areObjectsEqual({ a: 1 }, { a: 2 })).toBe(false);
@@ -246,8 +256,10 @@ describe("extensions basic utils", () => {
     const randomSpy = vi.spyOn(Math, "random").mockReturnValue(0.49);
 
     expect(getRandomFrom(["a", "b", "c"])).toBe("b");
+    expect(hashNoise2D(1, 2)).toBe(hashNoise2D(1, 2, 1));
     expect(hashNoise2D(1, 2, 3)).toBeGreaterThanOrEqual(0);
     expect(hashNoise2D(1, 2, 3)).toBeLessThanOrEqual(1);
+    expect(Number.isFinite(stepNoise(1, 2))).toBe(true);
     expect(stepNoise(1, 2, 3)).toBeGreaterThanOrEqual(0);
     expect(stepNoise(1, 2, 3)).toBeLessThanOrEqual(1);
 

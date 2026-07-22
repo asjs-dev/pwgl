@@ -119,19 +119,19 @@ PWGL is a JavaScript framework for creating <strong>2D WebGL2 games and applicat
 <tbody>
 <tr>
 <td><code>dist/pwgl.es.js</code></td>
-<td>ES Module, minified</td>
+<td>ES Module with named exports, minified</td>
 </tr>
 <tr>
 <td><code>dist/pwgl.umd.js</code></td>
-<td>UMD, minified</td>
+<td>UMD global build, minified</td>
 </tr>
 <tr>
 <td><code>dist/pwgl.extensions.es.js</code></td>
-<td>ES Module with all extensions, minified</td>
+<td>ES Module with named extension exports</td>
 </tr>
 <tr>
 <td><code>dist/pwgl.extensions.umd.js</code></td>
-<td>UMD with all extensions, minified</td>
+<td>UMD global extensions build, minified</td>
 </tr>
 <tr>
 <td><code>dist/pwgl.extensions.utils.es.js</code></td>
@@ -182,19 +182,23 @@ PWGL is a JavaScript framework for creating <strong>2D WebGL2 games and applicat
 <td>UMD texture atlas parser</td>
 </tr>
 <tr>
-<td><code>dist/pwgl.debugger.es.js</code></td>
-<td>ES Module debugger</td>
-</tr>
-<tr>
 <td><code>dist/pwgl.debugger.umd.js</code></td>
 <td>UMD debugger</td>
 </tr>
 </tbody>
 </table>
+<p>The ES module builds are intended for bundlers and expose named exports:</p>
+<pre class="prettyprint source lang-javascript"><code>import { Stage2D, Texture, Image } from &quot;./dist/pwgl.es.js&quot;;
+import { utils, controls } from &quot;./dist/pwgl.extensions.es.js&quot;;
+</code></pre>
+<p>The UMD builds keep the browser globals:</p>
+<pre class="prettyprint source lang-html"><code>&lt;script src=&quot;dist/pwgl.umd.js&quot;>&lt;/script>
+&lt;script src=&quot;dist/pwgl.extensions.umd.js&quot;>&lt;/script>
+</code></pre>
 <hr>
 <h2>Debugger</h2>
 <p>PWGL includes an optional debugger bundle for inspecting WebGL calls in the browser.
-The debugger source is written in TypeScript and is published as JavaScript bundles.
+The debugger source is written in TypeScript and is built as a UMD/global JavaScript bundle.
 Load it before creating WebGL contexts, then initialize it once:</p>
 <pre class="prettyprint source lang-html"><code>&lt;script src=&quot;pwgl.debugger.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
 &lt;script>

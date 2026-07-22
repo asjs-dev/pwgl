@@ -248,9 +248,10 @@ audio.highPassFilterQ = 0.7;
 <h3>Procedural Generation</h3>
 <ul>
 <li><strong><code>generateDungeon(iterations, sampleRooms)</code></strong> - Procedural dungeon layout generation</li>
-<li><strong><code>hashNoise2D(x, y)</code></strong> - 2D hash noise function for terrain generation</li>
-<li><strong><code>stepNoise(value, steps)</code></strong> - Quantized noise for stylized effects</li>
+<li><strong><code>hashNoise2D(x, y, seed = 1)</code></strong> - Deterministic hash-based 2D noise</li>
+<li><strong><code>stepNoise(x, y, seed = 1)</code></strong> - Stateful step-noise value</li>
 <li><strong><code>getRandomFrom(array)</code></strong> - Get random element from array</li>
+<li><strong><code>getUniqueId()</code></strong> - Return an incrementing runtime ID, starting at <code>0</code>; after <code>9_007_199_254_740_991</code> (<code>Number.MAX_SAFE_INTEGER</code>) it wraps to <code>0</code></li>
 </ul>
 <h3>Animation and Timing</h3>
 <ul>
@@ -324,6 +325,7 @@ const water = new PWGLExtensions.display.AnimatedWater(noiseTexture, speed);
 
 // Utilities
 const distance = PWGLExtensions.utils.clamp(0, 100, value);
+const entityId = PWGLExtensions.utils.getUniqueId();
 const collides = PWGLExtensions.utils.collisionDetection.areTwoRectsCollided(rect1, rect2);
 const iso = PWGLExtensions.utils.createIsoUtils(64);
 const screenPosition = iso.toIsoCoordinates({ x: 2, y: 3, z: 8 });
@@ -364,9 +366,9 @@ counter.increment();
 &lt;script src=&quot;pwgl.extensions.texture-atlas-creator.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
 &lt;script src=&quot;pwgl.extensions.texture-atlas-parser.umd.js&quot; type=&quot;text/javascript&quot;>&lt;/script>
 </code></pre>
-<p>The same outputs are available as ES modules:</p>
-<pre class="prettyprint source lang-javascript"><code>import * as PWGLExtensions from &quot;./dist/pwgl.extensions.es.js&quot;;
-import * as PWGLControls from &quot;./dist/pwgl.extensions.controls.es.js&quot;;
+<p>The same outputs are available as ES modules with named exports:</p>
+<pre class="prettyprint source lang-javascript"><code>import { utils, controls, textureAtlas } from &quot;./dist/pwgl.extensions.es.js&quot;;
+import { Gamepad, Keyboard } from &quot;./dist/pwgl.extensions.controls.es.js&quot;;
 import * as TextureAtlasCreator from &quot;./dist/pwgl.extensions.texture-atlas-creator.es.js&quot;;
 import * as TextureAtlasParser from &quot;./dist/pwgl.extensions.texture-atlas-parser.es.js&quot;;
 </code></pre>

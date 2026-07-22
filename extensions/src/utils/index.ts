@@ -23,6 +23,7 @@ export { enumCheck } from "./enumCheck";
 export { FPSCounter } from "./FPSCounter";
 export { fract } from "./fract";
 export { getFPS } from "./getFPS";
+export { getUniqueId } from "./uniqueId";
 export { mix } from "./mix";
 export { noop } from "./noop";
 export { noopReturnsWith } from "./noopReturnsWith";

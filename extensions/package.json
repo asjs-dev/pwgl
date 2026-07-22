@@ -1,17 +1,13 @@
 {
   "name": "pwgl-extensions",
-  "version": "8.0.6",
-  "main": "./dist/pwgl.extensions.umd.js",
-  "module": "./dist/pwgl.extensions.es.js",
+  "version": "8.0.7",
+  "private": true,
   "description": "WebGL2 2D framework extensions",
   "homepage": "https://asjs-dev.github.io/pwgl/",
   "repository": {
     "type": "git",
     "url": "https://github.com/asjs-dev/pwgl.git"
   },
-  "files": [
-    "dist"
-  ],
   "author": "ASJS",
   "license": "MIT",
   "keywords": [

@@ -1,8 +1,7 @@
 {
   "name": "pwgl",
-  "version": "8.0.5",
-  "main": "./dist/pwgl.umd.js",
-  "module": "dist/pwgl.es.js",
+  "version": "8.0.6",
+  "private": true,
   "description": "WebGL2 2D framework",
   "homepage": "https://asjs-dev.github.io/pwgl/",
   "repository": {
@@ -18,11 +17,8 @@
     "game",
     "graphics"
   ],
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build:pwgl": "vite build --config vite.config.js",
+    "build:pwgl": "node build-scripts/build-pwgl.mjs",
     "build:ext": "npm run typecheck && node build-scripts/build-extensions.js",
     "build:debugger": "npm run typecheck && vite build --config debugger/vite.config.ts",
     "docs": "node build-scripts/build-docs.js",
@@ -34,6 +30,7 @@
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.3",
     "jsdoc": "^4.0.2",
+    "rollup-plugin-dts": "^6.4.1",
     "terser": "^5.46.1",
     "typescript": "^6.0.3",
     "vite": "^7.3.1",

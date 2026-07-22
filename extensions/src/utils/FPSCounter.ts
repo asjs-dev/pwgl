@@ -11,22 +11,24 @@ export const FPSCounter = (): FPSCounterState => {
   let nextTime = 0;
   let then = Date.now();
 
-  return {
+  const counter: FPSCounterState = {
     fps: 0,
     delay: 0,
 
-    update(this: FPSCounterState) {
+    update: () => {
       const now = Date.now();
       frames++;
-      this.delay = (now - then) / 16.6667; // 60 FPS
+      counter.delay = (now - then) / 16.6667; // 60 FPS
       then = now;
 
       if (now >= nextTime) {
-        this.fps = (frames * 1000) / (now - prevTime);
+        counter.fps = (frames * 1000) / (now - prevTime);
         prevTime = now;
         nextTime = now + 1000;
         frames = 0;
       }
     },
   };
+
+  return counter;
 };

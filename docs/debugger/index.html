@@ -89,9 +89,11 @@ It wraps WebGL contexts returned by <code>canvas.getContext(...)</code> and reco
 </ul>
 <p>Build config (<code>debugger/vite.config.ts</code>) runs type checking, builds the TypeScript source, and generates:</p>
 <ul>
-<li><code>dist/pwgl.debugger.es.js</code></li>
 <li><code>dist/pwgl.debugger.umd.js</code></li>
 </ul>
+<p>The debugger is intentionally built as a UMD/global bundle only. It patches
+browser WebGL context creation as a side effect, so it is not part of the
+tree-shakeable ES module build surface.</p>
 <p>Run build from project root:</p>
 <pre class="prettyprint source lang-bash"><code>npm run build:debugger
 </code></pre>
@@ -118,11 +120,6 @@ context is automatically wrapped.</p>
 &lt;script>
   PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
 &lt;/script>
-</code></pre>
-<p>ES module:</p>
-<pre class="prettyprint source lang-js"><code>import &quot;../dist/pwgl.debugger.es.js&quot;;
-
-PWGLDebugger.init({ maxFrameCount: 5, flags: 0 });
 </code></pre>
 <h2>Formatting flags</h2>
 <p>Flags are bitmasks and can be combined with OR (<code>|</code>):</p>

@@ -32,6 +32,15 @@ describe("extensions timing utils", () => {
     expect(counter.fps).toBeGreaterThan(0);
   });
 
+  it("allows calling the FPS update function without its object receiver", () => {
+    vi.spyOn(Date, "now").mockReturnValue(1000);
+    const counter = FPSCounter();
+    const update = counter.update;
+
+    expect(update).not.toThrow();
+    expect(counter.fps).toBeGreaterThan(0);
+  });
+
   it("starts and stops the enterFrame loop", () => {
     const callback = vi.fn();
     let rafId = 0;
@@ -89,6 +98,13 @@ describe("extensions timing utils", () => {
     expect(nth.mock.calls).toEqual([["b"], ["e"]]);
 
     loop.stop();
+  });
+
+  it("preserves nthCall callback return values", () => {
+    const wrapped = nthCall((value) => `called:${value}`, 2);
+
+    expect(wrapped("a")).toBe("called:a");
+    expect(wrapped("b")).toBe(false);
   });
 
   it("measures fps from two animation frames", async () => {

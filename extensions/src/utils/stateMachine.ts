@@ -1,7 +1,5 @@
 import { deepFreeze } from "./deepFreeze";
 
-type PublicAction = (...args: any[]) => boolean | void;
-
 type InternalAction<State> = (state: State, ...args: any[]) => boolean | void;
 
 export type StateMachineSubscriber<State> = (state: State, previousState: State | undefined) => void;

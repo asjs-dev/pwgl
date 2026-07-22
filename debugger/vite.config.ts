@@ -18,8 +18,8 @@ export default defineConfig({
     lib: {
       entry: "debugger/src/index.ts",
       name: "PWGL Debugger",
-      fileName: (format) => `pwgl.debugger.${format}.js`,
-      formats: ["es", "umd"],
+      fileName: () => "pwgl.debugger.umd.js",
+      formats: ["umd"],
     },
     minify: "terser",
     terserOptions: {
@@ -38,7 +38,6 @@ export default defineConfig({
     }),
     copyFiles({
       "dist/pwgl.debugger.umd.js": "docs/assets/pwgl.debugger.umd.js",
-      "dist/pwgl.debugger.es.js": "docs/assets/pwgl.debugger.es.js",
     }),
   ],
 });

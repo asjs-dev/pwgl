@@ -2,11 +2,28 @@ import { describe, expect, it, vi } from "vitest";
 import { installPWGLMock } from "./helpers/pwglExtensionMocks";
 
 describe("extension entrypoints", () => {
+  it("exports extension groups from the tree-shakeable root entrypoint", async () => {
+    vi.resetModules();
+    globalThis.window = globalThis;
+    globalThis.PWGL = installPWGLMock();
+
+    const extensions = await import("../../../extensions/src/exports.ts");
+
+    expect(extensions.version).toBe("{{appVersion}}");
+    expect(extensions.controls.PressState).toBeDefined();
+    expect(extensions.audio.fadeAudioVolume).toBeDefined();
+    expect(extensions.textureAtlas.parse).toBeDefined();
+    expect(extensions.utils.createIsoUtils).toBeDefined();
+    expect(extensions.display.AnimatedWater).toBeDefined();
+    expect(window.PWGLExtensions).toBeUndefined();
+  });
+
   it("exports utility helpers from the utils entrypoint", async () => {
     const utils = await import("../../../extensions/src/utils/index.ts");
 
     expect(utils.clamp(0, 10, 12)).toBe(10);
     expect(utils.deepFreeze).toBeDefined();
+    expect(utils.getUniqueId()).toBeTypeOf("number");
     expect(utils.startup).toBeDefined();
     expect(utils.createIsoUtils(64).toIsoCoordinates({ x: 1, y: 0 })).toEqual({ x: 32, y: 16 });
     expect(utils.gridMapping.coordToVector(1, 2, 3)).toBe(7);

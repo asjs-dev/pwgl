@@ -14,7 +14,9 @@ declare global {
 export const getExtensionsRoot = (): ExtensionsRoot => {
   const root = window.PWGLExtensions || window.AGLExtensions || {};
 
-  root.version ??= "{{appVersion}}";
+  if (root.version == null) {
+    root.version = "{{appVersion}}";
+  }
   window.PWGLExtensions = root;
   window.AGLExtensions = root;
 
