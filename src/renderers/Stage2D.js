@@ -18,8 +18,6 @@ import { LightRenderer } from "./LightRenderer";
  * @extends {RendererConfig}
  */
 
-// Prefix for rendering functions.
-const _RENDERING_TYPE_PREFIX = "_draw";
 // Mouse move event type.
 const _INTERACTION_EVENT_TYPE_MOUSE_MOVE = "mousemove";
 // Mouse down event type.
@@ -98,14 +96,12 @@ export class Stage2D extends BatchRenderer {
     const { $MAX_RENDER_COUNT } = this;
 
     this.container = new StageContainer(this);
-
-    this._batchItems = 0;
-
-    this[_RENDERING_TYPE_PREFIX + Item.RENDERING_TYPE] = this[_RENDERING_TYPE_PREFIX + Light.RENDERING_TYPE] = noop;
-    this[_RENDERING_TYPE_PREFIX + Image.RENDERING_TYPE] = this._drawImage;
-    this[_RENDERING_TYPE_PREFIX + Container.RENDERING_TYPE] = this._drawContainer;
+    this._renderingTypes = Object.create(null);
+    this.setRenderingType(Item.RENDERING_TYPE, noop);
+    this.setRenderingType(Light.RENDERING_TYPE, noop);
+    this.setRenderingType(Image.RENDERING_TYPE, this._drawImage);
+    this.setRenderingType(Container.RENDERING_TYPE, this._drawContainer);
     this._batchDraw = this._batchDraw.bind(this);
-
     this._mousePosition = { x: 0, y: 0 };
 
     // prettier-ignore
@@ -134,19 +130,29 @@ export class Stage2D extends BatchRenderer {
   }
 
   /**
+   * Sets the draw function for a rendering type.
+   * @param {string} type
+   * @param {function} drawFunction
+   * @param {*} scope
+   */
+  setRenderingType(type, drawFunction, scope = this) {
+    this._renderingTypes[type] = drawFunction.bind(scope);
+  }
+
+  /**
    * Attach LightRenderer
    * Recommended to set LightRenderer when using Light
    * @param {LightRenderer} v
    */
   attachLightRenderer(v) {
-    this[_RENDERING_TYPE_PREFIX + Light.RENDERING_TYPE] = v.addLightForRender.bind(v);
+    this.setRenderingType(Light.RENDERING_TYPE, v.addLightForRender, v);
   }
 
   /**
    * Detach LightRenderer
    */
   detachLightRenderer() {
-    this[_RENDERING_TYPE_PREFIX + Light.RENDERING_TYPE] = noop;
+    this.setRenderingType(Light.RENDERING_TYPE, noop);
   }
 
   /**
@@ -216,7 +222,7 @@ export class Stage2D extends BatchRenderer {
 
     item.update($renderTime);
     item.callbackBeforeRender(item, $renderTime);
-    item.renderable && this[_RENDERING_TYPE_PREFIX + item.RENDERING_TYPE](item);
+    item.renderable && this._renderingTypes[item.RENDERING_TYPE](item);
     item.callbackAfterRender(item, $renderTime);
   }
 
@@ -227,7 +233,6 @@ export class Stage2D extends BatchRenderer {
   _drawContainer(container) {
     const { children } = container;
     const { length } = children;
-
     let i = -1;
 
     while (++i < length) {
@@ -243,37 +248,15 @@ export class Stage2D extends BatchRenderer {
     this.context.setBlendMode(image.blendMode, this._batchDraw);
 
     const { _batchItems } = this;
-    const dataBufferId = _batchItems * 12;
     const matrixBufferId = _batchItems * 16;
-    const itemParent = image.parent;
-    const dataBufferData = this._dataBuffer.data;
     const matrixBufferData = this.$matrixBuffer.data;
 
-    if (itemParent) {
-      if (this._isMousePositionSet && image.interactive && image.isContainsPoint(this._mousePosition)) {
-        this._eventTarget = image;
-      }
+    arraySet(matrixBufferData, image.matrixCache, matrixBufferId);
+    arraySet(matrixBufferData, image.textureMatrixCache, matrixBufferId + 6);
+    arraySet(matrixBufferData, image.textureCropCache, matrixBufferId + 12);
+    this.$addImageData(image, _batchItems);
 
-      arraySet(dataBufferData, image.colorCache, dataBufferId);
-      arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
-      dataBufferData[dataBufferId + 4] = image.alpha * itemParent.getPremultipliedAlpha();
-      dataBufferData[dataBufferId + 5] = image.tintType * itemParent.getPremultipliedUseTint();
-      dataBufferData[dataBufferId + 6] = this.context.useTexture(
-        image.texture,
-        this.$renderTime,
-        false,
-        this._batchDraw,
-      );
-      dataBufferData[dataBufferId + 7] = image.distortion.distortTexture;
-
-      arraySet(matrixBufferData, image.matrixCache, matrixBufferId);
-      arraySet(matrixBufferData, image.textureMatrixCache, matrixBufferId + 6);
-      arraySet(matrixBufferData, image.textureCropCache, matrixBufferId + 12);
-
-      arraySet(this._distortionBuffer.data, image.distortionCache, _batchItems * 8);
-
-      ++this._batchItems === this.$MAX_RENDER_COUNT && this._batchDraw();
-    }
+    ++this._batchItems === this.$MAX_RENDER_COUNT && this._batchDraw();
   }
 
   /**
@@ -302,6 +285,30 @@ export class Stage2D extends BatchRenderer {
     const pointerPosition = getCanvasPointerPosition(canvas, event);
 
     this._setMousePosition(pointerPosition.x, pointerPosition.y);
+  }
+
+  /**
+   * @param {Image} image
+   * @param {number} index
+   * @ignore
+   */
+  $addImageData(image, index) {
+    const dataBufferId = index * 12;
+    const itemParent = image.parent;
+    const dataBufferData = this._dataBuffer.data;
+
+    if (this._isMousePositionSet && image.interactive && image.isContainsPoint(this._mousePosition)) {
+      this._eventTarget = image;
+    }
+
+    arraySet(dataBufferData, image.colorCache, dataBufferId);
+    arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
+    dataBufferData[dataBufferId + 4] = image.alpha * itemParent.getPremultipliedAlpha();
+    dataBufferData[dataBufferId + 5] = image.tintType * itemParent.getPremultipliedUseTint();
+    dataBufferData[dataBufferId + 6] = this.context.useTexture(image.texture, this.$renderTime, false, this._batchDraw);
+    dataBufferData[dataBufferId + 7] = image.distortion.distortTexture;
+
+    arraySet(this._distortionBuffer.data, image.distortionCache, index * 8);
   }
 
   /**

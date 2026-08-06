@@ -3,6 +3,7 @@ import { installWebGL2RenderingContextMock } from "../helpers/browserMocks";
 import { loadSrcModuleWithBrowserMocks } from "../helpers/moduleLoaders";
 
 const loadStage2DModule = () => loadSrcModuleWithBrowserMocks("../../../src/renderers/Stage2D.js");
+const loadImageModule = () => loadSrcModuleWithBrowserMocks("../../../src/display/Image.js");
 
 const createCanvas = () => ({
   width: 200,
@@ -20,6 +21,49 @@ const createCanvas = () => ({
 });
 
 describe("Stage2D", () => {
+  it("allows subclasses to append per-image batch data", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }] = await Promise.all([loadStage2DModule(), loadImageModule()]);
+    const renderer = new Stage2D({
+      context: {
+        canvas: createCanvas(),
+        setBlendMode: vi.fn(),
+        useTexture: vi.fn(() => -1),
+      },
+      locations: [],
+    });
+    const image = new Image();
+    const addImageData = vi.spyOn(renderer, "$addImageData");
+
+    renderer.container.addChild(image);
+    renderer._drawItem(renderer.container);
+
+    expect(addImageData).toHaveBeenCalledWith(image, 0);
+    expect(renderer._batchItems).toBe(1);
+  });
+
+  it("supports externally registered rendering types and scopes", async () => {
+    installWebGL2RenderingContextMock();
+    const { Stage2D } = await loadStage2DModule();
+    const renderer = new Stage2D({
+      context: { canvas: createCanvas() },
+      locations: [],
+    });
+    const scope = { draw: vi.fn() };
+    const item = {
+      RENDERING_TYPE: "custom",
+      renderable: true,
+      update: vi.fn(),
+      callbackBeforeRender: vi.fn(),
+      callbackAfterRender: vi.fn(),
+    };
+
+    renderer.setRenderingType(item.RENDERING_TYPE, scope.draw, scope);
+    renderer._drawItem(item);
+
+    expect(scope.draw).toHaveBeenCalledWith(item);
+  });
+
   it("maps touch pointer events through the canvas bounds", async () => {
     installWebGL2RenderingContextMock();
     const { Stage2D } = await loadStage2DModule();

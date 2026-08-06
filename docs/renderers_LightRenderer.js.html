@@ -196,7 +196,7 @@ export class LightRenderer extends BatchRenderer {
     const { _batchItems } = this;
     const { parent } = light;
 
-    if (_batchItems &lt; this.$MAX_RENDER_COUNT &amp;&amp; parent) {
+    if (_batchItems &lt; this.$MAX_RENDER_COUNT) {
       const matrixBufferId = _batchItems * 16;
       const extensionBufferId = _batchItems * 6;
       const matrixBufferData = this.$matrixBuffer.data;
