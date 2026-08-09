@@ -62,8 +62,8 @@ describe("BatchRenderer", () => {
     renderer.$uploadBuffers();
 
     expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 7);
-    expect(renderer._positionBuffer.upload).toHaveBeenCalledWith(gl);
-    expect(renderer._elementArrayBuffer.upload).toHaveBeenCalledWith(gl);
+    expect(renderer._positionBuffer.upload).not.toHaveBeenCalled();
+    expect(renderer._elementArrayBuffer.upload).not.toHaveBeenCalled();
   });
 
   it("inherits from BaseRenderer", async () => {

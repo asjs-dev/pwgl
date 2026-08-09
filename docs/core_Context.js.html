@@ -214,13 +214,16 @@ export class Context {
    * @returns {boolean}
    */
   useProgram(program, vao) {
+    const { gl } = this;
+
     if (this._currentProgram !== program) {
       this._currentProgram = program;
       this.clearTextures();
-
-      const { gl } = this;
-      gl.bindVertexArray(null);
       gl.useProgram(program);
+    }
+
+    if (this._currentVertexArray !== vao) {
+      this._currentVertexArray = vao;
       gl.bindVertexArray(vao);
     }
   }
@@ -290,7 +293,12 @@ export class Context {
     gl.blendColor(1, 1, 1, 1);
     gl.enable(WebGL2RenderingContext.SCISSOR_TEST);
 
-    this._width = this._height = this._currentProgram = this._currentBlendMode = null;
+    this._width =
+      this._height =
+      this._currentProgram =
+      this._currentVertexArray =
+      this._currentBlendMode =
+        null;
 
     this._textureMap = [];
     this._emptyTextureSlots = [];

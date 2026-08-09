@@ -161,9 +161,10 @@ describe("Context", () => {
     expect(gl.useProgram).toHaveBeenCalledWith(program);
     expect(gl.bindVertexArray).toHaveBeenCalledWith(vao);
     expect(context._currentProgram).toBe(program);
+    expect(context._currentVertexArray).toBe(vao);
   });
 
-  it("skips program switch if same program", async () => {
+  it("skips program and vertex array switches if both are unchanged", async () => {
     const { Context } = await loadContextModule();
 
     const canvas = createMockDocument().createElement("canvas");
@@ -184,9 +185,67 @@ describe("Context", () => {
 
     // Second call with same program
     gl.useProgram.mockClear();
+    gl.bindVertexArray.mockClear();
     context.useProgram(program, vao);
 
     expect(gl.useProgram).not.toHaveBeenCalled();
+    expect(gl.bindVertexArray).not.toHaveBeenCalled();
+  });
+
+  it("switches vertex arrays independently from programs", async () => {
+    const { Context } = await loadContextModule();
+
+    const canvas = createMockDocument().createElement("canvas");
+    const gl = createMockGl();
+    canvas.getContext = vi.fn(() => gl);
+
+    gl.useProgram = vi.fn();
+    gl.bindVertexArray = vi.fn();
+
+    const context = new Context({ canvas });
+
+    const program = { id: "program" };
+    const firstVao = { id: "first-vao" };
+    const secondVao = { id: "second-vao" };
+
+    context.useProgram(program, firstVao);
+    gl.useProgram.mockClear();
+    gl.bindVertexArray.mockClear();
+
+    context.useProgram(program, secondVao);
+
+    expect(gl.useProgram).not.toHaveBeenCalled();
+    expect(gl.bindVertexArray).toHaveBeenCalledOnce();
+    expect(gl.bindVertexArray).toHaveBeenCalledWith(secondVao);
+    expect(context._currentVertexArray).toBe(secondVao);
+  });
+
+  it("switches programs independently from vertex arrays", async () => {
+    const { Context } = await loadContextModule();
+
+    const canvas = createMockDocument().createElement("canvas");
+    const gl = createMockGl();
+    canvas.getContext = vi.fn(() => gl);
+
+    gl.useProgram = vi.fn();
+    gl.bindVertexArray = vi.fn();
+
+    const context = new Context({ canvas });
+
+    const firstProgram = { id: "first-program" };
+    const secondProgram = { id: "second-program" };
+    const vao = { id: "vao" };
+
+    context.useProgram(firstProgram, vao);
+    gl.useProgram.mockClear();
+    gl.bindVertexArray.mockClear();
+
+    context.useProgram(secondProgram, vao);
+
+    expect(gl.useProgram).toHaveBeenCalledOnce();
+    expect(gl.useProgram).toHaveBeenCalledWith(secondProgram);
+    expect(gl.bindVertexArray).not.toHaveBeenCalled();
+    expect(context._currentProgram).toBe(secondProgram);
   });
 
   it("sets canvas size", async () => {
@@ -317,5 +376,12 @@ describe("Context", () => {
 
     expect(context._loseContext).toBeDefined();
     expect(context._restoreContext).toBeDefined();
+
+    context._currentProgram = { id: "program" };
+    context._currentVertexArray = { id: "vao" };
+    context._initContext();
+
+    expect(context._currentProgram).toBe(null);
+    expect(context._currentVertexArray).toBe(null);
   });
 });

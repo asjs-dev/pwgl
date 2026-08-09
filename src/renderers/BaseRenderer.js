@@ -189,11 +189,7 @@ export class BaseRenderer {
   /**
    * @ignore
    */
-  $uploadBuffers() {
-    const { $gl } = this;
-    this._positionBuffer.upload($gl);
-    this._elementArrayBuffer.upload($gl);
-  }
+  $uploadBuffers() {}
 
   /**
    * @ignore
@@ -202,6 +198,8 @@ export class BaseRenderer {
     const { $gl, $locations } = this;
     this._elementArrayBuffer.create($gl, $locations);
     this._positionBuffer.create($gl, $locations);
+    this._positionBuffer.upload($gl);
+    this._elementArrayBuffer.upload($gl);
   }
 
   /**

@@ -60,6 +60,7 @@ export const createMockGl = () => ({
   createBuffer: () => ({ id: "buffer" }),
   bindBuffer: () => {},
   bufferData: () => {},
+  bufferSubData: () => {},
   deleteBuffer: () => {},
   enableVertexAttribArray: () => {},
   vertexAttribPointer: () => {},

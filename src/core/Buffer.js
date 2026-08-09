@@ -37,6 +37,7 @@ export class Buffer {
     this._offset = cols * 4;
     this._divisor = divisor;
     this._dataType = dataType;
+    this._byteCapacity = 0;
     if (this._type === WebGL2RenderingContext.STATIC_DRAW) {
       this._stride = this._offset = 0;
     }
@@ -51,6 +52,9 @@ export class Buffer {
     this._location = locations[this._locationName];
     this._buffer = gl.createBuffer();
     this.bind(gl);
+    this._byteCapacity = this.data.byteLength;
+    gl.bufferData(this._target, this._byteCapacity, this._type);
+    this._enable(gl);
   }
 
   /**
@@ -67,9 +71,7 @@ export class Buffer {
    */
   upload(gl) {
     this.bind(gl);
-    this._enable(gl);
-
-    gl.bufferData(this._target, this.data, this._type);
+    this._uploadData(gl, this.data.length);
   }
 
   /**
@@ -79,8 +81,7 @@ export class Buffer {
    */
   uploadElements(gl, elementCount) {
     this.bind(gl);
-    this._enable(gl);
-    gl.bufferData(this._target, this.data, this._type, 0, elementCount * this._rows * this._cols);
+    this._uploadData(gl, elementCount * this._rows * this._cols);
   }
 
   /**
@@ -90,6 +91,21 @@ export class Buffer {
     this.bind(gl);
     gl.deleteBuffer(this._buffer);
     this.data = this._buffer = null;
+    this._byteCapacity = 0;
+  }
+
+  /**
+   * @param {WebGLContext} gl
+   * @param {number} elementCount
+   * @ignore
+   */
+  _uploadData(gl, elementCount) {
+    const { data } = this;
+    if (data.byteLength > this._byteCapacity) {
+      this._byteCapacity = data.byteLength;
+      gl.bufferData(this._target, this._byteCapacity, this._type);
+    }
+    gl.bufferSubData(this._target, 0, data, 0, elementCount);
   }
 
   /**

@@ -98,14 +98,18 @@ describe("BaseRenderer", () => {
     gl.enableVertexAttribArray = vi.fn();
     gl.vertexAttribPointer = vi.fn();
     gl.vertexAttribDivisor = vi.fn();
+    gl.bufferData = vi.fn();
+    gl.bufferSubData = vi.fn();
 
     renderer.$createBuffers();
 
     expect(gl.createBuffer).toHaveBeenCalledTimes(2); // position and element array buffers
-    expect(gl.bindBuffer).toHaveBeenCalledTimes(2);
+    expect(gl.bindBuffer).toHaveBeenCalledTimes(4);
+    expect(gl.bufferData).toHaveBeenCalledTimes(2);
+    expect(gl.bufferSubData).toHaveBeenCalledTimes(2);
   });
 
-  it("uploads buffers to WebGL", async () => {
+  it("does not re-upload constant buffers during batch draws", async () => {
     const { BaseRenderer } = await loadBaseRendererModule();
 
     const gl = createMockGl();
@@ -124,11 +128,13 @@ describe("BaseRenderer", () => {
     gl.vertexAttribPointer = vi.fn();
     gl.vertexAttribDivisor = vi.fn();
     gl.bufferData = vi.fn();
+    gl.bufferSubData = vi.fn();
 
     renderer.$uploadBuffers();
 
-    expect(gl.bindBuffer).toHaveBeenCalledTimes(2);
-    expect(gl.bufferData).toHaveBeenCalledTimes(2);
+    expect(gl.bindBuffer).not.toHaveBeenCalled();
+    expect(gl.bufferData).not.toHaveBeenCalled();
+    expect(gl.bufferSubData).not.toHaveBeenCalled();
   });
 
   it("uses texture at specific location", async () => {

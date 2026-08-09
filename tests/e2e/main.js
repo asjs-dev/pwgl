@@ -19,7 +19,7 @@ const createReport = () => {
   const lines = [
     `Adapter: ${document.querySelector("#adapter").textContent}`,
     `Case: ${activeTestCase ? `${activeTestCase.id} — ${activeTestCase.title}` : "-"}`,
-    "phase\trenders\ttimeMs\tpixels\tcreateBuffer\tdeleteBuffer\tbufferDataCalls\tbufferDataBytes\tbufferSubDataCalls\tbufferSubDataBytes\tcreateProgram\tlinkProgram\tuseProgram\tcreateVAO\tbindVAO\tdraws",
+    "phase\trenders\ttimeMs\tpixels\tcreateBuffer\tdeleteBuffer\tbindBuffer\tbufferDataCalls\tbufferDataBytes\tbufferSubDataCalls\tbufferSubDataBytes\tenableAttrib\tattribPointer\tattribDivisor\tcreateProgram\tlinkProgram\tuseProgram\tcreateVAO\tbindVAO\tdraws",
   ];
 
   measurements.forEach(({ label, count, elapsed, pixelStatus, calls }) => {
@@ -32,10 +32,14 @@ const createReport = () => {
         pixelStatus,
         counts.createBuffer,
         counts.deleteBuffer,
+        counts.bindBuffer,
         counts.bufferData,
         calls.bufferDataBytes,
         counts.bufferSubData,
         calls.bufferSubDataBytes,
+        counts.enableVertexAttribArray,
+        counts.vertexAttribPointer,
+        counts.vertexAttribDivisor,
         counts.createProgram,
         counts.linkProgram,
         counts.useProgram,
@@ -61,8 +65,10 @@ const updateMetrics = () => {
       `${elapsed.toFixed(2)} ms`,
       pixelStatus,
       `${counts.createBuffer}/${counts.deleteBuffer}`,
+      counts.bindBuffer,
       `${counts.bufferData} / ${formatBytes(calls.bufferDataBytes)}`,
       `${counts.bufferSubData} / ${formatBytes(calls.bufferSubDataBytes)}`,
+      `${counts.enableVertexAttribArray}/${counts.vertexAttribPointer}/${counts.vertexAttribDivisor}`,
       `${counts.createProgram}/${counts.linkProgram}/${counts.useProgram}`,
       `${counts.createVertexArray}/${counts.bindVertexArray}`,
       calls.drawCalls,
