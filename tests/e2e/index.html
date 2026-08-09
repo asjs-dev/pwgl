@@ -22,9 +22,39 @@
           <button id="render-once">Render once</button>
           <button id="stress-render">Render 120×</button>
           <button id="context-loss">Lose/restore context</button>
+          <button id="copy-report">Copy report</button>
         </div>
       </header>
       <section id="viewport"></section>
+      <section id="metrics">
+        <div class="metrics-heading">
+          <h3>Render metrics</h3>
+          <span id="instrumentation-status"></span>
+        </div>
+        <div class="metrics-table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Phase</th>
+                <th>Renders</th>
+                <th>Time</th>
+                <th>Pixels</th>
+                <th>Buffers C/D</th>
+                <th>bufferData</th>
+                <th>bufferSubData</th>
+                <th>Programs C/L/U</th>
+                <th>VAOs C/B</th>
+                <th>Draws</th>
+              </tr>
+            </thead>
+            <tbody id="metrics-body"></tbody>
+          </table>
+        </div>
+        <details>
+          <summary>Copyable report preview</summary>
+          <pre id="report"></pre>
+        </details>
+      </section>
       <footer>
         <span id="status">Ready</span>
         <span id="gl-error"></span>

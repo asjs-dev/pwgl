@@ -12,7 +12,7 @@ h1, h2, p { margin-top: 0; }
 nav { display: grid; gap: 8px; }
 button { padding: 9px 12px; color: inherit; background: #263242; border: 1px solid #425269; border-radius: 5px; cursor: pointer; }
 button:hover, button.active { background: #36516e; border-color: #6d94bd; }
-main { display: grid; grid-template-rows: auto 1fr auto; min-width: 0; }
+main { display: grid; grid-template-rows: auto 1fr auto auto; min-width: 0; }
 header, footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 24px; }
 header { border-bottom: 1px solid #303b49; }
 header p { margin-bottom: 0; color: #aebbc9; }
@@ -21,6 +21,20 @@ header p { margin-bottom: 0; color: #aebbc9; }
 canvas { width: min(100%, 960px); height: auto; image-rendering: auto; border: 1px solid #56677a; box-shadow: 0 12px 40px #0008; }
 footer { border-top: 1px solid #303b49; color: #91a1b5; }
 #gl-error.error { color: #ff8f8f; }
+#metrics { min-width: 0; padding: 16px 24px; border-top: 1px solid #303b49; background: #171e27; }
+.metrics-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.metrics-heading h3 { margin: 0 0 10px; }
+#instrumentation-status { color: #91a1b5; }
+.metrics-table-wrapper { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; white-space: nowrap; font-variant-numeric: tabular-nums; }
+th, td { padding: 7px 9px; text-align: right; border-bottom: 1px solid #303b49; }
+th:first-child, td:first-child { text-align: left; }
+th { color: #aebbc9; font-size: 12px; }
+.match { color: #77df9b; }
+.diff { color: #ff8f8f; }
+details { margin-top: 12px; color: #aebbc9; }
+summary { cursor: pointer; }
+pre { max-height: 220px; margin: 10px 0 0; overflow: auto; padding: 12px; color: #dbe7f3; background: #10151c; border: 1px solid #303b49; }
 
 @media (max-width: 800px) {
   body { grid-template-columns: 1fr; }

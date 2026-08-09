@@ -8,6 +8,10 @@ npm run test:e2e
 
 Open the printed local URL and inspect each case against its expected result. Use **Render 120×** to expose stale buffer, VAO, program, texture-slot and framebuffer state. Use **Lose/restore context** to verify resource reconstruction.
 
+The dashboard records WebGL buffer, program, VAO and draw calls separately for the first, repeated, stress and restored renders. It also compares the default framebuffer with the first render and reports `MATCH` or the number of differing pixels. Use **Copy report** to copy the adapter, timing, pixel hash and call counts for comparison between refactor steps and physical devices.
+
+Instrumentation exists only in the E2E harness and is not included in PWGL builds.
+
 `npm run test:e2e:build` verifies that every case compiles without starting a browser.
 
 ## Adding a case
@@ -20,6 +24,7 @@ Cases must be deterministic, use the public PWGL API, avoid network assets, and 
 
 ## Refactor coverage
 
+- `buffer-lifecycle`: fixed-capacity instance buffers, repeated partial batch uploads and allocation stability.
 - `stage2d-batch`: dynamic instance buffers, texture slots, painter order and blend-mode flushes.
 - `renderer-switch`: shared-context program/VAO switching and framebuffer-derived normal maps.
 - `filter-pipeline`: framebuffer attachment and multi-pass filter ping-pong.

@@ -1,4 +1,5 @@
 import { Context, Image, Texture } from "../../src/exports";
+import { instrumentContext } from "./metrics";
 
 export const WIDTH = 640;
 export const HEIGHT = 360;
@@ -7,6 +8,7 @@ export const createContext = () => {
   const canvas = document.createElement("canvas");
   const context = new Context({ canvas, contextAttributes: { preserveDrawingBuffer: true } });
   context.setCanvasSize(WIDTH, HEIGHT);
+  instrumentContext(context);
   return context;
 };
 
