@@ -35,15 +35,17 @@ export const createAtlas = () => new Texture(createAtlasSource());
 
 export const createImage = (texture, x, y, colorIndex = 0, size = 88) => {
   const image = new Image(texture);
+  const cropX = (colorIndex & 1) * 0.5;
+  const cropY = (colorIndex >> 1) * 0.5;
   image.transform.x = x;
   image.transform.y = y;
   image.transform.width = size;
   image.transform.height = size;
   image.textureCrop.setRect({
-    x: (colorIndex & 1) * 0.5,
-    y: (colorIndex >> 1) * 0.5,
-    width: 0.5,
-    height: 0.5,
+    x: cropX,
+    y: cropY,
+    width: cropX + 0.5,
+    height: cropY + 0.5,
   });
   return image;
 };

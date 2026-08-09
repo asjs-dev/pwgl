@@ -20,6 +20,7 @@ export const gamePipeline = {
     const normalRenderer = new NormalMapRenderer({ context });
     const compositor = new Stage2D({ context, maxRenderCount: 2 });
     const scene = new Framebuffer();
+    const filteredScene = new Framebuffer();
     const heightMap = new Framebuffer();
     const normalMap = new Framebuffer();
     const texture = new Texture();
@@ -47,7 +48,7 @@ export const gamePipeline = {
       }
     }
 
-    const sceneImage = new Image(scene);
+    const sceneImage = new Image(filteredScene);
     sceneImage.transform.width = WIDTH;
     sceneImage.transform.height = HEIGHT;
     compositor.container.addChild(sceneImage);
@@ -66,7 +67,7 @@ export const gamePipeline = {
         texture.source = heightSource;
         heightRenderer.renderToFramebuffer(heightMap);
         normalRenderer.renderToFramebuffer(normalMap);
-        filterRenderer.renderToFramebuffer(scene);
+        filterRenderer.renderToFramebuffer(filteredScene);
         compositor.render();
       },
     };
