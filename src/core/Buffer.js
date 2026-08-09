@@ -41,6 +41,9 @@ export class Buffer {
     if (this._type === WebGL2RenderingContext.STATIC_DRAW) {
       this._stride = this._offset = 0;
     }
+    // Chrome 151 ANGLE OpenGL ES may drop the final instance at the exact buffer boundary.
+    // Revisit and remove this padding after the upstream browser regression is fixed.
+    this._bytePadding = this._divisor ? this._stride : 0;
   }
 
   /**
@@ -52,7 +55,7 @@ export class Buffer {
     this._location = locations[this._locationName];
     this._buffer = gl.createBuffer();
     this.bind(gl);
-    this._byteCapacity = this.data.byteLength;
+    this._byteCapacity = this.data.byteLength + this._bytePadding;
     gl.bufferData(this._target, this._byteCapacity, this._type);
     this._enable(gl);
   }
@@ -101,8 +104,9 @@ export class Buffer {
    */
   _uploadData(gl, elementCount) {
     const { data } = this;
-    if (data.byteLength > this._byteCapacity) {
-      this._byteCapacity = data.byteLength;
+    const requiredByteCapacity = data.byteLength + this._bytePadding;
+    if (requiredByteCapacity > this._byteCapacity) {
+      this._byteCapacity = requiredByteCapacity;
       gl.bufferData(this._target, this._byteCapacity, this._type);
     }
     gl.bufferSubData(this._target, 0, data, 0, elementCount);

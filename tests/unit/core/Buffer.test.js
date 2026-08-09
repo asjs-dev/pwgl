@@ -41,7 +41,11 @@ describe("Buffer", () => {
     expect(gl.enableVertexAttribArray).not.toHaveBeenCalled();
     expect(gl.vertexAttribPointer).not.toHaveBeenCalled();
     expect(gl.vertexAttribDivisor).not.toHaveBeenCalled();
-    expect(gl.bufferData).toHaveBeenCalledWith(buffer._target, buffer.data.byteLength, buffer._type);
+    expect(gl.bufferData).toHaveBeenCalledWith(
+      buffer._target,
+      buffer.data.byteLength + buffer._stride,
+      buffer._type,
+    );
     expect(gl.bufferSubData).toHaveBeenCalledWith(buffer._target, 0, buffer.data, 0, buffer.data.length);
   });
 
@@ -61,7 +65,11 @@ describe("Buffer", () => {
     buffer.create(gl, { aA: 3 });
     buffer.uploadElements(gl, 3);
 
-    expect(gl.bufferData).toHaveBeenCalledWith(buffer._target, buffer.data.byteLength, buffer._type);
+    expect(gl.bufferData).toHaveBeenCalledWith(
+      buffer._target,
+      buffer.data.byteLength + buffer._stride,
+      buffer._type,
+    );
     expect(gl.bufferSubData).toHaveBeenCalledWith(buffer._target, 0, buffer.data, 0, 24);
   });
 
@@ -103,8 +111,8 @@ describe("Buffer", () => {
     buffer.data = new Float32Array(6);
     buffer.upload(gl);
 
-    expect(gl.bufferData).toHaveBeenNthCalledWith(1, buffer._target, 8, buffer._type);
-    expect(gl.bufferData).toHaveBeenNthCalledWith(2, buffer._target, 24, buffer._type);
+    expect(gl.bufferData).toHaveBeenNthCalledWith(1, buffer._target, 12, buffer._type);
+    expect(gl.bufferData).toHaveBeenNthCalledWith(2, buffer._target, 28, buffer._type);
     expect(gl.bufferSubData).toHaveBeenCalledWith(buffer._target, 0, buffer.data, 0, 6);
   });
 
