@@ -139,6 +139,8 @@ export class Texture extends TextureInfo {
       this.$currentAglId = gl.gl_id;
       this.$baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
+      this.$updated = this._loaded = false;
+      this._currentRenderTime = renderTime;
     } else if (
       this.$updated ||
       this._loaded ||

@@ -1,6 +1,6 @@
 {
   "name": "pwgl",
-  "version": "8.0.7",
+  "version": "8.0.8",
   "private": true,
   "description": "WebGL2 2D framework",
   "homepage": "https://asjs-dev.github.io/pwgl/",
@@ -25,6 +25,8 @@
     "build:all": "npm run build:pwgl && npm run build:ext && npm run build:debugger && npm run docs",
     "test": "vitest",
     "test:run": "vitest run",
+    "test:e2e": "vite --config tests/e2e/vite.config.js",
+    "test:e2e:build": "vite build --config tests/e2e/vite.config.js",
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {

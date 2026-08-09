@@ -56,6 +56,29 @@ describe("BaseRenderer", () => {
     expect(renderer._clearBeforeRenderFunc).toBeDefined(); // Should be noop again
   });
 
+  it("initializes a framebuffer texture before binding it as the render target", async () => {
+    const { BaseRenderer } = await loadBaseRendererModule();
+    const calls = [];
+    const gl = { uniform1f: vi.fn() };
+    const mockContext = {
+      gl,
+      useTexture: vi.fn(() => calls.push("use")),
+      deactivateTexture: vi.fn(() => calls.push("deactivate")),
+    };
+    const framebuffer = {
+      setSize: vi.fn(() => calls.push("size")),
+      bind: vi.fn(() => calls.push("bind")),
+    };
+    const renderer = new BaseRenderer({ context: mockContext, locations: [] });
+    renderer.$gl = gl;
+    renderer.$locations = { uA: 1 };
+    renderer.setSize(32, 16);
+
+    renderer.$attachFramebuffer(framebuffer);
+
+    expect(calls).toEqual(["size", "use", "deactivate", "bind"]);
+  });
+
   it("creates buffers with proper WebGL calls", async () => {
     const { BaseRenderer } = await loadBaseRendererModule();
 

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PWGL visual E2E</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <aside>
+      <h1>PWGL visual E2E</h1>
+      <p id="adapter"></p>
+      <nav id="cases"></nav>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <h2 id="title"></h2>
+          <p id="expectation"></p>
+        </div>
+        <div class="actions">
+          <button id="render-once">Render once</button>
+          <button id="stress-render">Render 120×</button>
+          <button id="context-loss">Lose/restore context</button>
+        </div>
+      </header>
+      <section id="viewport"></section>
+      <footer>
+        <span id="status">Ready</span>
+        <span id="gl-error"></span>
+      </footer>
+    </main>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>
