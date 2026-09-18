@@ -59,11 +59,6 @@
         <article>
             <pre class="prettyprint source linenums"><code>import { Utils } from "../core/Utils";
 import { BlendMode } from "../rendering/BlendMode";
-import {
-  BASE_VERTEX_SHADER,
-  BASE_VERTEX_SHADER_INITIALIZATION,
-  BASE_VERTEX_SHADER_POSITION,
-} from "../utils/shaderUtils";
 import { BaseRenderer } from "./BaseRenderer";
 
 /**
@@ -121,15 +116,15 @@ export class NormalMapRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return `${BASE_VERTEX_SHADER_INITIALIZATION}` +
+    return `${Utils.GLSL.BASE_VERTEX_SHADER_INITIALIZATION}` +
 
     `out vec2 ` +
       `v0;` +
 
     `void main(){` +
-      `${BASE_VERTEX_SHADER}` +
+      `${Utils.GLSL.BASE_VERTEX_SHADER}` +
       
-      `v0=${BASE_VERTEX_SHADER_POSITION};` +
+      `v0=${Utils.GLSL.BASE_VERTEX_SHADER_POSITION};` +
     `}`;
   }
 
@@ -159,18 +154,19 @@ export class NormalMapRenderer extends BaseRenderer {
         `p=1./ts,` +
         `p0=floor(v0.xy*ts);` +
 
-      `float ` + 
-        `h0=texture(uB,p0*p).g,` +
-        `h1=texture(uB,(p0+Z.yx)*p).g,` +
-        `h2=texture(uB,(p0+Z.xy)*p).g;` +
-      
-      `vec3 ` + 
-        `nm=normalize(` + 
-          `cross(` + 
-            `vec3(1,0,h1-h0),` + 
-            `vec3(0,1,h2-h0)` + 
-          `)` + 
-        `)*HEIGHT*Z.yzy;` +
+      `float ` +
+        `hL=texture(uB,(p0+Z.zx)*p).g,` +
+        `hR=texture(uB,(p0+Z.yx)*p).g,` +
+        `hU=texture(uB,(p0+Z.xz)*p).g,` +
+        `hD=texture(uB,(p0+Z.xy)*p).g;` +
+
+      `vec3 ` +
+        `nm=normalize(` +
+          `cross(` +
+            `vec3(1,0,(hR-hL)*.5*HEIGHT),` +
+            `vec3(0,1,(hD-hU)*.5*HEIGHT)` +
+          `)` +
+        `)*Z.yzy;` +
 
       `oCl=vec4(nm*.5+.5,1);` +
     `}`;

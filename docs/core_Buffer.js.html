@@ -100,6 +100,8 @@ export class Buffer {
     if (this._type === WebGL2RenderingContext.STATIC_DRAW) {
       this._stride = this._offset = 0;
     }
+    // Chrome 151 ANGLE OpenGL ES may drop the final instance at the exact buffer boundary.
+    // Revisit and remove this padding after the upstream browser regression is fixed.
     this._bytePadding = this._divisor ? this._stride : 0;
   }
 

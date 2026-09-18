@@ -2,11 +2,6 @@ import { noop } from "../../common/utils/noop";
 import { Utils } from "../core/Utils";
 import { BlendMode } from "../rendering/BlendMode";
 import { Framebuffer } from "../textures/Framebuffer";
-import {
-  BASE_VERTEX_SHADER,
-  BASE_VERTEX_SHADER_INITIALIZATION,
-  BASE_VERTEX_SHADER_POSITION,
-} from "../utils/shaderUtils";
 import { BaseRenderer } from "./BaseRenderer";
 
 /**
@@ -133,15 +128,15 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $createVertexShader() {
-    return `${BASE_VERTEX_SHADER_INITIALIZATION}` +
+    return `${Utils.GLSL.BASE_VERTEX_SHADER_INITIALIZATION}` +
 
     `out vec4 ` +
       `v0;` +
 
     `void main(){` +
-      `${BASE_VERTEX_SHADER}` +
+      `${Utils.GLSL.BASE_VERTEX_SHADER}` +
       
-      `v0=vec4(pos.xy,${BASE_VERTEX_SHADER_POSITION});` +
+      `v0=vec4(pos.xy,${Utils.GLSL.BASE_VERTEX_SHADER_POSITION});` +
     `}`;
   }
 

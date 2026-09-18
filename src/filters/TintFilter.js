@@ -1,5 +1,5 @@
+import { Utils } from "../core/Utils";
 import { TintType } from "../rendering/TintType";
-import { TINT_TYPE_SHADER } from "../utils/shaderUtils";
 import { BaseFilter } from "./BaseFilter";
 
 /**
@@ -15,7 +15,7 @@ export class TintFilter extends BaseFilter {
   }
 
   get GLSL() {
-    return TINT_TYPE_SHADER("uL[1].x", "oCl", "uL[0]");
+    return Utils.GLSL.TINT_TYPE_SHADER("uL[1].x", "oCl", "uL[0]");
   }
 
   /**

@@ -68,7 +68,6 @@ import { Light } from "../display/Light";
 import { StageContainer } from "../display/StageContainer";
 import "../math/PointType";
 import { getCanvasPointerPosition } from "../utils/pointerUtils";
-import { BASE_VERTEX_SHADER_ATTRIBUTES, BASE_VERTEX_SHADER_UNIFORMS, TINT_TYPE_SHADER } from "../utils/shaderUtils";
 import { BatchRenderer } from "./BatchRenderer";
 import { LightRenderer } from "./LightRenderer";
 
@@ -413,7 +412,7 @@ export class Stage2D extends BatchRenderer {
 
     return `${Utils.GLSL.DEFINE.Z}` +
 
-    `${BASE_VERTEX_SHADER_ATTRIBUTES}` +
+    `${Utils.GLSL.BASE_VERTEX_SHADER_ATTRIBUTES}` +
     `in mat4x2 ` +
       `aE;` +
     `in mat3x4 ` +
@@ -421,7 +420,7 @@ export class Stage2D extends BatchRenderer {
     `in mat4 ` +
       `aB;` +
 
-    `${BASE_VERTEX_SHADER_UNIFORMS}` +
+    `${Utils.GLSL.BASE_VERTEX_SHADER_UNIFORMS}` +
 
     `uniform vec2 ` +
       `uF[${maxTextureImageUnits}];` +
@@ -514,19 +513,14 @@ export class Stage2D extends BatchRenderer {
       `oCl;` +
 
     `vec4 gTxC(float i,vec4 s,vec2 m){` +
-      `vec2 ` + 
-        `sxy=s.xy,` +
-        `szw=s.zw,` +
-        `ofs=szw*m,` +
-        `cp=clamp(` +
-          `sxy+ofs,` +
-          `sxy+v2.zw,` +
-          `sxy+szw-v2.zw` +
-        `);` +
-      `${Array(maxTextureImageUnits).fill().map((v, i) => 
-      `if(i&lt;${i + 1}.)` + 
-        `return texture(uB[${i}],cp);`).join(``)}` +
-      `return Z.yyyy;` +
+      `vec2 cp=${Utils.GLSL.CREATE_ATLAS_CROP({ crop: "s", uv: "m", bias: "v2.zw" })};` +
+      `${Utils.GLSL.CREATE_TEXTURE_UNIT_LOOKUP({
+        index: "i",
+        uv: "cp",
+        samplerArray: "uB",
+        count: maxTextureImageUnits,
+        miss: "Z.yyyy",
+      })}` +
     `}` +
 
     `float cs(float a,float b,float v){` +
@@ -610,7 +604,7 @@ export class Stage2D extends BatchRenderer {
       `if(oCl.a&lt;=0.)discard;` +
 
       `${useTint
-        ? TINT_TYPE_SHADER(`v2.x`, `oCl`, `v4`)
+        ? Utils.GLSL.TINT_TYPE_SHADER(`v2.x`, `oCl`, `v4`)
         : ``}` +
     `}`;
   }

@@ -1,8 +1,8 @@
-import { CREATE_SAMPLING_FILTER } from "../utils/shaderUtils";
+import { Utils } from "../core/Utils";
 import { BaseFilter } from "./BaseFilter";
 
 // prettier-ignore
-const _GLSL = CREATE_SAMPLING_FILTER(
+const _GLSL = Utils.GLSL.CREATE_SAMPLING_FILTER(
   "oCl*=.2;"
 );
 

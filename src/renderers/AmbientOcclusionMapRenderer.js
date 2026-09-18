@@ -1,10 +1,5 @@
 import { Utils } from "../core/Utils";
 import { BlendMode } from "../rendering/BlendMode";
-import {
-  BASE_VERTEX_SHADER,
-  BASE_VERTEX_SHADER_INITIALIZATION,
-  BASE_VERTEX_SHADER_POSITION,
-} from "../utils/shaderUtils";
 import { BaseRenderer } from "./BaseRenderer";
 
 /**
@@ -100,7 +95,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
   $createVertexShader() {
     return `${Utils.GLSL.DEFINE.RADIANS_360}` +
 
-    `${BASE_VERTEX_SHADER_INITIALIZATION}` +
+    `${Utils.GLSL.BASE_VERTEX_SHADER_INITIALIZATION}` +
 
     `uniform vec2 ` +
       `uF;` +
@@ -114,7 +109,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       `v2;` +
 
     `void main(){` +
-      `${BASE_VERTEX_SHADER}` +
+      `${Utils.GLSL.BASE_VERTEX_SHADER}` +
       
       `float ` + 
         `r=RADIANS_360/uD.y;` + 
@@ -122,7 +117,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
       `vec2 ` +
         `ts=1./floor(uF);` +
 
-      `v0=${BASE_VERTEX_SHADER_POSITION};` +
+      `v0=${Utils.GLSL.BASE_VERTEX_SHADER_POSITION};` +
       `v1=vec3(ts,length(ts)*uD.x);` +
       `v2=vec3(cos(r),sin(r),clamp(uD.y,1.,32.));` +
     `}`;

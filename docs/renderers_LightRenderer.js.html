@@ -62,7 +62,6 @@ import { Buffer } from "../core/Buffer";
 import { Utils } from "../core/Utils";
 import { Light } from "../display/Light";
 import { BlendMode } from "../rendering/BlendMode";
-import { BASE_VERTEX_SHADER_ATTRIBUTES, BASE_VERTEX_SHADER_UNIFORMS } from "../utils/shaderUtils";
 import { BatchRenderer } from "./BatchRenderer";
 
 /**
@@ -280,13 +279,13 @@ export class LightRenderer extends BatchRenderer {
     `${Utils.GLSL.DEFINE.PI}` +
     `#define P vec4(1,-1,2,-2)\n` +
 
-    `${BASE_VERTEX_SHADER_ATTRIBUTES}` +
+    `${Utils.GLSL.BASE_VERTEX_SHADER_ATTRIBUTES}` +
     `in mat4 ` +
       `aB;` +
     `in mat2x3 ` +
       `aC;` +
 
-    `${BASE_VERTEX_SHADER_UNIFORMS}` +
+    `${Utils.GLSL.BASE_VERTEX_SHADER_UNIFORMS}` +
 
     `out vec2 ` +
       `v0;` +

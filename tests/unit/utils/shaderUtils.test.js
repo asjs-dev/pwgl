@@ -5,7 +5,9 @@ import {
   BASE_VERTEX_SHADER_INITIALIZATION,
   BASE_VERTEX_SHADER_POSITION,
   BASE_VERTEX_SHADER_UNIFORMS,
+  CREATE_ATLAS_CROP,
   CREATE_SAMPLING_FILTER,
+  CREATE_TEXTURE_UNIT_LOOKUP,
   TINT_TYPE_SHADER,
 } from "../../../src/utils/shaderUtils";
 
@@ -33,5 +35,28 @@ describe("shaderUtils", () => {
     expect(shader).toContain("if(v>0.)");
     expect(shader).toContain("texelFetch");
     expect(shader).toContain("oCl*=.5;");
+  });
+
+  it("creates a static if-chain dispatching a runtime index into a sampler array", () => {
+    const shader = CREATE_TEXTURE_UNIT_LOOKUP({
+      index: "i",
+      uv: "cp",
+      samplerArray: "uB",
+      count: 3,
+      miss: "Z.yyyy",
+    });
+
+    expect(shader).toBe(
+      "if(i<1.)return texture(uB[0],cp);" +
+        "if(i<2.)return texture(uB[1],cp);" +
+        "if(i<3.)return texture(uB[2],cp);" +
+        "return Z.yyyy;",
+    );
+  });
+
+  it("builds an atlas-crop clamp expression from the given identifiers", () => {
+    const expression = CREATE_ATLAS_CROP({ crop: "s", uv: "m", bias: "v2.zw" });
+
+    expect(expression).toBe("clamp(s.xy+s.zw*m,s.xy+v2.zw,s.xy+s.zw-v2.zw)");
   });
 });
