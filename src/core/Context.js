@@ -36,6 +36,7 @@ export class Context {
     canvas.addEventListener("webglcontextrestored", this.$initContext);
 
     this.$initContext();
+    this.setCanvasSize(1, 1);
   }
 
   /**
@@ -247,7 +248,6 @@ export class Context {
     this.textureSizes = [];
 
     this.clearTextures();
-    this.setCanvasSize(1, 1);
 
     const { initCallback } = this.$config;
     initCallback && setTimeout(initCallback, 1);

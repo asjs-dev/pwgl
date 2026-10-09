@@ -3,6 +3,7 @@ import { createAtlas, createContext, createImage, setRendererSize } from "../hel
 
 export const filterPipeline = {
   id: "filter-pipeline",
+  group: "Filters",
   title: "Framebuffer filter ping-pong",
   expectation:
     "A softly blurred bright 5×3 tile grid. No black frame, stale framebuffer, missing tile or alternating output is valid.",

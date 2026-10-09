@@ -81,6 +81,7 @@ Ordered Web Audio filter classes that can be attached to `AudioItem` or `AudioMi
 
 #### **AudioItem** (`src/audio/AudioItem.js`)
 Single audio playback with full playback control.
+- Loads from a URL or takes an already decoded `AudioBuffer`; items sharing one buffer can play the same sound over itself
 - Play, pause, and stop controls
 - Looping support
 - Seek, duration, and current time tracking
@@ -92,6 +93,7 @@ Multi-channel audio mixer for complex audio management.
 - Per-track volume and pan control
 - Master volume control
 - Effect chain management
+- Sub-mixers: `new AudioMixer({ output: master })` shares the master's audio context and feeds its node
 
 #### **Audio Utilities** (`src/audio/utils/`)
 Helper functions for audio manipulation.

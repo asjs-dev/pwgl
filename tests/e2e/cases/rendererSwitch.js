@@ -3,6 +3,7 @@ import { createAtlas, createContext, createImage, setRendererSize } from "../hel
 
 export const rendererSwitch = {
   id: "renderer-switch",
+  group: "Renderers",
   title: "Program and framebuffer switching",
   expectation: "A stable blue-violet normal map made from twelve height tiles. Repeated renders must not drop tiles or reuse the wrong VAO/program.",
   create() {

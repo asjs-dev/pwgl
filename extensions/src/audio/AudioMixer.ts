@@ -5,6 +5,10 @@ import { BaseAudio } from "./BaseAudio";
  * AudioMixer class that extends BaseAudio to manage and control multiple audio items.
  * It initializes an audio context, creates and connects audio nodes, and provides methods
  * to play, pause, stop, connect, and disconnect audio items.
+ *
+ * A mixer created with an `output` mixer is a sub-mixer: it shares the output's audio context
+ * and feeds its node, so groups such as effects and music get their own volume and filters
+ * under one master mixer.
  */
 export class AudioMixer extends BaseAudio {
   /**
@@ -12,16 +16,19 @@ export class AudioMixer extends BaseAudio {
    * Initializes the audio context, creates and connects audio nodes, and sets config.
    *
    * @param {Object} [config={}] - Configuration for the audio mixer.
+   * @param {AudioMixer|AudioNode} [config.output] - Mixer or node to feed instead of the speakers; its audio context is shared.
+   * @param {AudioContext} [config.context] - Audio context to use instead of creating a new one.
    */
   constructor(config = {}) {
     super();
 
-    const context = new (window.AudioContext || window.webkitAudioContext)();
+    const { output } = config;
+    const context = output?.context ?? config.context ?? new (window.AudioContext || window.webkitAudioContext)();
     this._context = context;
 
     this._items = [];
     this.$createNodes(context);
-    this.$connectNodes(context.destination);
+    this.$connectNodes(output instanceof AudioMixer ? output.node : (output ?? context.destination));
     this.$setConfig(config);
   }
 

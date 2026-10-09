@@ -3,6 +3,7 @@ import { createAtlas, createContext, createImage, setRendererSize } from "../hel
 
 export const stage2dBatch = {
   id: "stage2d-batch",
+  group: "Stage2D",
   title: "Stage2D batching and blend flush",
   expectation: "Four clean rows of overlapping colored tiles. The additive middle tile must glow without corrupting its neighbours or painter order.",
   create() {

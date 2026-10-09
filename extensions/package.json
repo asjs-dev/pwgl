@@ -1,6 +1,6 @@
 {
   "name": "pwgl-extensions",
-  "version": "8.0.7",
+  "version": "8.1.0",
   "private": true,
   "description": "WebGL2 2D framework extensions",
   "homepage": "https://asjs-dev.github.io/pwgl/",

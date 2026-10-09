@@ -10,17 +10,17 @@ export class AudioItem extends BaseAudio {
   /**
    * Creates an instance of AudioItem.
    *
-   * @param {string|null} [url=null] - The URL of the audio file to load.
+   * @param {string|AudioBuffer|null} [source=null] - The URL of the audio file to load, or decoded audio data.
    * @param {Object} [config={}] - Configuration for the audio item.
    */
-  constructor(url = null, config = {}) {
+  constructor(source = null, config = {}) {
     super();
 
     this.seek = 0;
     this.isPlaying = false;
     this.isPaused = false;
     this.$setConfig(config);
-    this.load(url);
+    this.load(source);
   }
 
   /**
@@ -84,16 +84,23 @@ export class AudioItem extends BaseAudio {
   }
 
   /**
-   * Asynchronously loads audio data from the provided URL.
+   * Asynchronously loads audio data from the provided URL, or uses already decoded audio data.
+   * One AudioBuffer can be shared by several items, so the same sound can overlap itself
+   * without fetching or decoding it again.
    *
-   * @param {string} url - The URL of the audio resource to load.
+   * @param {string|AudioBuffer} source - The URL of the audio resource to load, or decoded audio data.
    * @returns {Promise<void>} A promise that resolves when the audio data is loaded.
    */
-  async load(url) {
-    if (url) {
-      this.url = url;
-      this._audioResponse = await fetch(url);
+  async load(source) {
+    if (typeof source === "string") {
+      this.url = source;
+      this._audioResponse = await fetch(source);
       this._update();
+    } else if (source) {
+      this.url = null;
+      this._audioResponse = null;
+      this._buffer = source;
+      this.isPlaying && this.play();
     }
   }
 

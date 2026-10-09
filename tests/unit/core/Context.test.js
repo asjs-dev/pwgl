@@ -384,4 +384,21 @@ describe("Context", () => {
     expect(context.$currentProgram).toBe(null);
     expect(context.$currentVertexArray).toBe(null);
   });
+
+  it("keeps the canvas size when the context is restored", async () => {
+    const { Context } = await loadContextModule();
+
+    const canvas = createMockDocument().createElement("canvas");
+    canvas.getContext = vi.fn(() => createMockGl());
+
+    const context = new Context({ canvas });
+    expect(canvas.width).toBe(1);
+    expect(canvas.height).toBe(1);
+
+    context.setCanvasSize(320, 180);
+    context.$initContext();
+
+    expect(canvas.width).toBe(320);
+    expect(canvas.height).toBe(180);
+  });
 });

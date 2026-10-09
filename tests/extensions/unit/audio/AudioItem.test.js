@@ -31,6 +31,27 @@ describe("AudioItem", () => {
     expect(item._buffer).toEqual({ duration: 8 });
   });
 
+  it("uses decoded audio data without fetching it", () => {
+    globalThis.fetch = vi.fn();
+    const buffer = { duration: 2 };
+    const mixer = createMixer();
+    const first = new AudioItem(buffer);
+    const second = new AudioItem(buffer);
+
+    first.connect(mixer);
+    second.connect(mixer);
+    first.play();
+    second.play();
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(mixer.context.decodeAudioData).not.toHaveBeenCalled();
+    expect(first.duration).toBe(2);
+    expect(first._source.buffer).toBe(buffer);
+    expect(second._source.buffer).toBe(buffer);
+    expect(first._source).not.toBe(second._source);
+    expect(first.isPlaying && second.isPlaying).toBe(true);
+  });
+
   it("connects to a mixer and can play, pause, and stop", () => {
     const mixer = createMixer();
     const item = new AudioItem();

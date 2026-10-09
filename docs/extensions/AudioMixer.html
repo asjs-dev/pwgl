@@ -59,7 +59,11 @@
         
             <div class="class-description">AudioMixer class that extends BaseAudio to manage and control multiple audio items.
 It initializes an audio context, creates and connects audio nodes, and provides methods
-to play, pause, stop, connect, and disconnect audio items.</div>
+to play, pause, stop, connect, and disconnect audio items.
+
+A mixer created with an `output` mixer is a sub-mixer: it shares the output's audio context
+and feeds its node, so groups such as effects and music get their own volume and filters
+under one master mixer.</div>
         
     
 </header>
@@ -155,7 +159,104 @@ Initializes the audio context, creates and connects audio nodes, and sets config
                 </td>
             
 
-            <td class="description last">Configuration for the audio mixer.</td>
+            <td class="description last">Configuration for the audio mixer.
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>output</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="AudioMixer.html">AudioMixer</a></span>
+|
+
+<span class="param-type">AudioNode</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Mixer or node to feed instead of the speakers; its audio context is shared.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">AudioContext</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Audio context to use instead of creating a new one.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -196,7 +297,7 @@ Initializes the audio context, creates and connects audio nodes, and sets config
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line9">line 9</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line13">line 13</a>
     </li></ul></dd>
     
 
@@ -297,7 +398,7 @@ Initializes the audio context, creates and connects audio nodes, and sets config
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line32">line 32</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line39">line 39</a>
     </li></ul></dd>
     
 
@@ -359,7 +460,7 @@ Initializes the audio context, creates and connects audio nodes, and sets config
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line40">line 40</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line47">line 47</a>
     </li></ul></dd>
     
 
@@ -490,7 +591,7 @@ and calls the connect method on the audio item, passing the current instance.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line81">line 81</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line88">line 88</a>
     </li></ul></dd>
     
 
@@ -579,7 +680,7 @@ and disconnecting audio nodes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line69">line 69</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line76">line 76</a>
     </li></ul></dd>
     
 
@@ -716,7 +817,7 @@ and disconnecting audio nodes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line93">line 93</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line100">line 100</a>
     </li></ul></dd>
     
 
@@ -804,7 +905,7 @@ and disconnecting audio nodes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line54">line 54</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line61">line 61</a>
     </li></ul></dd>
     
 
@@ -892,7 +993,7 @@ and disconnecting audio nodes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line47">line 47</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line54">line 54</a>
     </li></ul></dd>
     
 
@@ -980,7 +1081,7 @@ and disconnecting audio nodes.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line61">line 61</a>
+        <a href="audio_AudioMixer.ts.html">audio/AudioMixer.ts</a>, <a href="audio_AudioMixer.ts.html#line68">line 68</a>
     </li></ul></dd>
     
 

@@ -55,7 +55,7 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>AudioItem<span class="signature">(url<span class="signature-attributes">opt</span>, config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>AudioItem<span class="signature">(source<span class="signature-attributes">opt</span>, config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h2>
         
             <div class="class-description">Represents an audio item that can be loaded, played, and manipulated.
 Extends the BaseAudio class to provide additional functionality for handling audio data.</div>
@@ -73,7 +73,7 @@ Extends the BaseAudio class to provide additional functionality for handling aud
     
 
     
-    <h4 class="name" id="AudioItem"><span class="type-signature"></span>new AudioItem<span class="signature">(url<span class="signature-attributes">opt</span>, config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="AudioItem"><span class="type-signature"></span>new AudioItem<span class="signature">(source<span class="signature-attributes">opt</span>, config<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
     
 
     
@@ -121,13 +121,16 @@ Extends the BaseAudio class to provide additional functionality for handling aud
 
         <tr>
             
-                <td class="name"><code>url</code></td>
+                <td class="name"><code>source</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
+|
+
+<span class="param-type">AudioBuffer</span>
 |
 
 <span class="param-type">null</span>
@@ -156,7 +159,7 @@ Extends the BaseAudio class to provide additional functionality for handling aud
                 </td>
             
 
-            <td class="description last">The URL of the audio file to load.</td>
+            <td class="description last">The URL of the audio file to load, or decoded audio data.</td>
         </tr>
 
     
@@ -715,7 +718,7 @@ If already connected to a different audio mixer, it will first disconnect from t
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line114">line 114</a>
+        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line121">line 121</a>
     </li></ul></dd>
     
 
@@ -804,7 +807,7 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line127">line 127</a>
+        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line134">line 134</a>
     </li></ul></dd>
     
 
@@ -840,7 +843,7 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
     
 
     
-    <h4 class="name" id="load"><span class="type-signature">(async) </span>load<span class="signature">(url)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
+    <h4 class="name" id="load"><span class="type-signature">(async) </span>load<span class="signature">(source)</span><span class="type-signature"> &rarr; {Promise.&lt;void>}</span></h4>
     
 
     
@@ -848,7 +851,9 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
 
 
 <div class="description">
-    Asynchronously loads audio data from the provided URL.
+    Asynchronously loads audio data from the provided URL, or uses already decoded audio data.
+One AudioBuffer can be shared by several items, so the same sound can overlap itself
+without fetching or decoding it again.
 </div>
 
 
@@ -884,13 +889,16 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
 
         <tr>
             
-                <td class="name"><code>url</code></td>
+                <td class="name"><code>source</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
+|
+
+<span class="param-type">AudioBuffer</span>
 
 
             
@@ -900,7 +908,7 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
 
             
 
-            <td class="description last">The URL of the audio resource to load.</td>
+            <td class="description last">The URL of the audio resource to load, or decoded audio data.</td>
         </tr>
 
     
@@ -941,7 +949,7 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line92">line 92</a>
+        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line94">line 94</a>
     </li></ul></dd>
     
 
@@ -1051,7 +1059,7 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line166">line 166</a>
+        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line173">line 173</a>
     </li></ul></dd>
     
 
@@ -1208,7 +1216,7 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line140">line 140</a>
+        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line147">line 147</a>
     </li></ul></dd>
     
 
@@ -1296,7 +1304,7 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line178">line 178</a>
+        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line185">line 185</a>
     </li></ul></dd>
     
 
@@ -1384,7 +1392,7 @@ If an audio mixer is connected, it stops the audio and disconnects the instance 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line103">line 103</a>
+        <a href="audio_AudioItem.ts.html">audio/AudioItem.ts</a>, <a href="audio_AudioItem.ts.html#line110">line 110</a>
     </li></ul></dd>
     
 

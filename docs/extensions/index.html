@@ -156,6 +156,7 @@
 <h4><strong>AudioItem</strong> (<code>src/audio/AudioItem.js</code>)</h4>
 <p>Single audio playback with full playback control.</p>
 <ul>
+<li>Loads from a URL or takes an already decoded <code>AudioBuffer</code>; items sharing one buffer can play the same sound over itself</li>
 <li>Play, pause, and stop controls</li>
 <li>Looping support</li>
 <li>Seek, duration, and current time tracking</li>
@@ -168,6 +169,7 @@
 <li>Per-track volume and pan control</li>
 <li>Master volume control</li>
 <li>Effect chain management</li>
+<li>Sub-mixers: <code>new AudioMixer({ output: master })</code> shares the master's audio context and feeds its node</li>
 </ul>
 <h4><strong>Audio Utilities</strong> (<code>src/audio/utils/</code>)</h4>
 <p>Helper functions for audio manipulation.</p>

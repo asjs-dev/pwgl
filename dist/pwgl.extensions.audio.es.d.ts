@@ -83,10 +83,10 @@ declare class AudioItem extends BaseAudio {
     /**
      * Creates an instance of AudioItem.
      *
-     * @param {string|null} [url=null] - The URL of the audio file to load.
+     * @param {string|AudioBuffer|null} [source=null] - The URL of the audio file to load, or decoded audio data.
      * @param {Object} [config={}] - Configuration for the audio item.
      */
-    constructor(url?: null, config?: {});
+    constructor(source?: null, config?: {});
     /**
      * Gets the audio duration in seconds.
      * @returns {number} The decoded audio duration.
@@ -116,12 +116,14 @@ declare class AudioItem extends BaseAudio {
     get pitch(): any;
     set pitch(pitch: any);
     /**
-     * Asynchronously loads audio data from the provided URL.
+     * Asynchronously loads audio data from the provided URL, or uses already decoded audio data.
+     * One AudioBuffer can be shared by several items, so the same sound can overlap itself
+     * without fetching or decoding it again.
      *
-     * @param {string} url - The URL of the audio resource to load.
+     * @param {string|AudioBuffer} source - The URL of the audio resource to load, or decoded audio data.
      * @returns {Promise<void>} A promise that resolves when the audio data is loaded.
      */
-    load(url: any): Promise<void>;
+    load(source: any): Promise<void>;
     /**
      * Unloads the current instance by disconnecting and clearing the buffer.
      */
@@ -186,6 +188,10 @@ declare class AudioItem extends BaseAudio {
  * AudioMixer class that extends BaseAudio to manage and control multiple audio items.
  * It initializes an audio context, creates and connects audio nodes, and provides methods
  * to play, pause, stop, connect, and disconnect audio items.
+ *
+ * A mixer created with an `output` mixer is a sub-mixer: it shares the output's audio context
+ * and feeds its node, so groups such as effects and music get their own volume and filters
+ * under one master mixer.
  */
 declare class AudioMixer extends BaseAudio {
     /**
@@ -193,6 +199,8 @@ declare class AudioMixer extends BaseAudio {
      * Initializes the audio context, creates and connects audio nodes, and sets config.
      *
      * @param {Object} [config={}] - Configuration for the audio mixer.
+     * @param {AudioMixer|AudioNode} [config.output] - Mixer or node to feed instead of the speakers; its audio context is shared.
+     * @param {AudioContext} [config.context] - Audio context to use instead of creating a new one.
      */
     constructor(config?: {});
     /**

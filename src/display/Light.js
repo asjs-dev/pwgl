@@ -26,7 +26,8 @@ import { BaseDrawable } from "./BaseDrawable";
  * @property {number} maxShadowStep - The maximum step of shadow caster per pixel <br>
  *                                  - Default value is 128
  * @property {number} specularStrength - Strength of specular light
- * @property {number} precision - Shadow precision <br>
+ * @property {number} precision - Growth of the shadow sampling step per sample, farther casters get fewer samples <br>
+ *                              - 0 samples at a fixed step <br>
  *                              - Default value is 1
  * @property {number} angle - Rotation of the light
  * @property {number} spotAngle - Angle of the light source <br>

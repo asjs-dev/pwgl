@@ -44,4 +44,26 @@ describe("AudioMixer", () => {
     mixer.disconnect(item);
     expect(item.disconnect).toHaveBeenCalled();
   });
+
+  it("creates a sub-mixer that shares the output mixer's context and feeds its node", async () => {
+    const { AudioMixer, context } = await loadAudioMixerModule();
+    const master = new AudioMixer();
+    const constructions = globalThis.window.AudioContext.mock.calls.length;
+    const music = new AudioMixer({ output: master, volume: 0.5 });
+
+    expect(globalThis.window.AudioContext.mock.calls.length).toBe(constructions);
+    expect(music.context).toBe(context);
+    expect(music.$destinationNode).toBe(master.node);
+    expect(music.volume).toBe(0.5);
+  });
+
+  it("uses a given audio context and output node", async () => {
+    const { AudioMixer } = await loadAudioMixerModule();
+    const own = createAudioContextMock();
+    const node = { id: "bus" };
+    const mixer = new AudioMixer({ context: own, output: node });
+
+    expect(mixer.context).toBe(own);
+    expect(mixer.$destinationNode).toBe(node);
+  });
 });

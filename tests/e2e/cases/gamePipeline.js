@@ -11,6 +11,7 @@ import { createAtlasSource, createContext, createImage, setRendererSize, HEIGHT,
 
 export const gamePipeline = {
   id: "game-pipeline",
+  group: "Renderers",
   title: "Game demo lifecycle",
   expectation: "A filtered colored grid with a blue normal-map preview in the top-right. Repeated renders must remain identical and complete.",
   create() {

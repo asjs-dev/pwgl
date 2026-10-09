@@ -10,22 +10,55 @@
     <aside>
       <h1>PWGL visual E2E</h1>
       <p id="adapter"></p>
+      <div class="suite">
+        <div id="counts"></div>
+        <div class="suite-actions">
+          <button id="run-all">Run all checks</button>
+          <label>Watch <select id="watch-speed">
+            <option value="0">Off</option>
+            <option value="600">Slow</option>
+            <option value="250">Normal</option>
+            <option value="60">Fast</option>
+          </select></label>
+          <label><input type="checkbox" id="failures-only" /> Failures only</label>
+        </div>
+      </div>
       <nav id="cases"></nav>
     </aside>
     <main>
       <header>
         <div>
+          <p id="group" class="eyebrow"></p>
           <h2 id="title"></h2>
           <p id="expectation"></p>
         </div>
         <div class="actions">
+          <button id="run-checks">Run checks</button>
           <button id="render-once">Render once</button>
           <button id="stress-render">Render 120×</button>
           <button id="context-loss">Lose/restore context</button>
           <button id="copy-report">Copy report</button>
         </div>
       </header>
-      <section id="viewport"></section>
+      <section id="views">
+        <div class="view">
+          <h3>Live render</h3>
+          <div id="viewport"></div>
+        </div>
+        <div class="view">
+          <div class="view-heading">
+            <h3>Checks <span id="check-title"></span></h3>
+            <span id="check-status" class="pill">NOT RUN</span>
+          </div>
+          <div id="check-frame">
+            <div id="check-stage"></div>
+            <div id="marks"></div>
+          </div>
+          <p id="check-step"></p>
+          <ul id="checks"></ul>
+          <pre id="check-log" hidden></pre>
+        </div>
+      </section>
       <section id="metrics">
         <div class="metrics-heading">
           <h3>Render metrics</h3>

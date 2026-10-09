@@ -1,24 +1,172 @@
 import { cases } from "./cases";
+import { runChecks, sleep } from "./checks";
 import { captureFrame, compareFrames, formatBytes, getContextMetrics, instrumentContext } from "./metrics";
 
-const viewport = document.querySelector("#viewport");
-const title = document.querySelector("#title");
-const expectation = document.querySelector("#expectation");
-const status = document.querySelector("#status");
-const glError = document.querySelector("#gl-error");
-const caseNavigation = document.querySelector("#cases");
-const metricsBody = document.querySelector("#metrics-body");
-const instrumentationStatus = document.querySelector("#instrumentation-status");
-const report = document.querySelector("#report");
+const $ = (selector) => document.querySelector(selector);
+const viewport = $("#viewport");
+const group = $("#group");
+const title = $("#title");
+const expectation = $("#expectation");
+const status = $("#status");
+const glError = $("#gl-error");
+const caseNavigation = $("#cases");
+const metricsBody = $("#metrics-body");
+const instrumentationStatus = $("#instrumentation-status");
+const report = $("#report");
+const checkStage = $("#check-stage");
+const checkTitle = $("#check-title");
+const checkStatus = $("#check-status");
+const checkStep = $("#check-step");
+const checkList = $("#checks");
+const checkLog = $("#check-log");
+const marks = $("#marks");
+const watchSpeed = $("#watch-speed");
+const failuresOnly = $("#failures-only");
+const runAllButton = $("#run-all");
+const runChecksButton = $("#run-checks");
 let activeCase;
 let activeTestCase;
 let baseline;
 let measurements = [];
+let checking = false;
+let summary = "";
+const checkResults = {};
+const navButtons = {};
+
+// ---------- checks ----------
+
+const SYMBOLS = { ok: "✓", fail: "✗", warn: "!", note: "·" };
+
+const addCheckLine = ({ status: lineStatus, name, detail }) => {
+  const item = document.createElement("li");
+  item.className = lineStatus;
+  const symbol = document.createElement("span");
+  symbol.textContent = SYMBOLS[lineStatus];
+  const text = document.createElement("span");
+  text.textContent = detail ? `${name} — ${detail}` : name;
+  item.append(symbol, text);
+  checkList.appendChild(item);
+  return item;
+};
+
+const addMark = ({ x, y, ok }, width, height) => {
+  const mark = document.createElement("i");
+  mark.className = ok ? "mark" : "mark fail";
+  mark.style.left = `${(x / width) * 100}%`;
+  mark.style.top = `${(y / height) * 100}%`;
+  marks.appendChild(mark);
+};
+
+const setPill = (pill, value) => {
+  pill.className = `pill ${value}`;
+  pill.textContent = value === "idle" ? "NOT RUN" : value.toUpperCase();
+};
+
+// Shows the stored result of a case in the checks panel.
+const showCheckResult = (testCase) => {
+  const result = checkResults[testCase.id];
+  checkTitle.textContent = "";
+  checkList.replaceChildren();
+  marks.replaceChildren();
+  checkStep.textContent = result ? `${result.results.filter((r) => r.status === "ok").length} checks passed in ${result.ms.toFixed(0)} ms` : "";
+  setPill(checkStatus, result ? result.status : "idle");
+  checkStage.replaceChildren(...(result ? [result.still] : []));
+  checkLog.hidden = !result?.logs.length;
+  checkLog.textContent = result?.logs.join("\n").slice(0, 6000) || "";
+  if (!result) return;
+  result.results.forEach(addCheckLine);
+  result.marks.forEach((mark) => addMark(mark, result.still.width, result.still.height));
+};
+
+const updateNavigation = () => {
+  cases.forEach((testCase) => {
+    const result = checkResults[testCase.id];
+    const button = navButtons[testCase.id];
+    button.dataset.status = result ? result.status : "idle";
+    button.hidden = failuresOnly.checked && result?.status !== "fail";
+  });
+  const values = Object.values(checkResults);
+  const count = (value) => values.filter((result) => result.status === value).length;
+  summary = `${count("ok")} pass, ${count("fail")} fail, ${count("warn")} warn, ${cases.length - values.length} not run`;
+  $("#counts").innerHTML =
+    `<span class="ok"><b>${count("ok")}</b> pass</span><span class="fail"><b>${count("fail")}</b> fail</span>` +
+    `<span class="warn"><b>${count("warn")}</b> warn</span><span><b>${cases.length - values.length}</b> not run</span>`;
+  report.textContent = createReport();
+};
+
+const runCaseChecks = async (testCase) => {
+  const delay = Number(watchSpeed.value);
+  checkTitle.textContent = `· ${testCase.title}`;
+  checkList.replaceChildren();
+  marks.replaceChildren();
+  checkLog.hidden = true;
+  setPill(checkStatus, "run");
+  checkStep.textContent = "building scene…";
+  const probed = [];
+  const watch = {
+    pace: () => (delay ? sleep(delay) : Promise.resolve()),
+    onStep: (text) => delay && (checkStep.textContent = text),
+    onCheck: (lineStatus, name, detail) => delay && addCheckLine({ status: lineStatus, name, detail }).scrollIntoView({ block: "nearest" }),
+    onMark(x, y, ok) {
+      probed.push({ x, y, ok });
+      const { width, height } = checkStage.firstChild || { width: 1, height: 1 };
+      delay && addMark({ x, y, ok }, width, height);
+    },
+  };
+  const result = await runChecks(testCase, checkStage, watch);
+  if (delay) await sleep(delay * 3);
+  checkResults[testCase.id] = { ...result, marks: probed, still: checkStage.firstChild };
+  updateNavigation();
+  return result;
+};
+
+const runSelectedChecks = async () => {
+  if (checking) return;
+  checking = true;
+  await runCaseChecks(activeTestCase);
+  checking = false;
+  showCheckResult(activeTestCase);
+};
+
+const runAllChecks = async () => {
+  if (checking) return;
+  checking = true;
+  runAllButton.disabled = runChecksButton.disabled = true;
+  for (const testCase of cases) {
+    status.textContent = `Checking ${testCase.title}…`;
+    await runCaseChecks(testCase);
+    await sleep(16);
+  }
+  const failed = Object.values(checkResults).filter((result) => result.status === "fail").length;
+  status.textContent = `All checks finished: ${failed} failing case(s)`;
+  runAllButton.disabled = runChecksButton.disabled = false;
+  checking = false;
+  showCheckResult(activeTestCase);
+};
+
+// ---------- metrics ----------
+
+const createChecksReport = () => {
+  const lines = [];
+  cases.forEach((testCase) => {
+    const result = checkResults[testCase.id];
+    if (!result) return lines.push(`[----] ${testCase.group} / ${testCase.title}`);
+    lines.push(`[${result.status.toUpperCase().padEnd(4)}] ${testCase.group} / ${testCase.title}  (${result.ms.toFixed(0)} ms)`);
+    result.results
+      .filter((line) => line.status !== "ok")
+      .forEach((line) => lines.push(`    ${line.status}: ${line.name}${line.detail ? ` — ${line.detail}` : ""}`));
+    result.logs.forEach((log) => lines.push(`    log: ${log.slice(0, 1500)}`));
+  });
+  return lines;
+};
 
 const createReport = () => {
   const lines = [
-    `Adapter: ${document.querySelector("#adapter").textContent}`,
-    `Case: ${activeTestCase ? `${activeTestCase.id} — ${activeTestCase.title}` : "-"}`,
+    `Adapter: ${$("#adapter").textContent}`,
+    `Checks: ${summary}`,
+    ...createChecksReport(),
+    "",
+    `Metrics case: ${activeTestCase ? `${activeTestCase.id} — ${activeTestCase.title}` : "-"}`,
     "phase\trenders\ttimeMs\tpixels\tcreateBuffer\tdeleteBuffer\tbindBuffer\tbufferDataCalls\tbufferDataBytes\tbufferSubDataCalls\tbufferSubDataBytes\tenableAttrib\tattribPointer\tattribDivisor\tcreateProgram\tlinkProgram\tuseProgram\tcreateVAO\tbindVAO\tdraws",
   ];
 
@@ -130,46 +278,60 @@ const render = (count = 1, label = count === 1 ? "Repeat" : "Stress") => {
 };
 
 const selectCase = (testCase) => {
+  // Browsers only allow a few live contexts, so the previous case gives its own back.
+  activeCase?.context.destruct();
   viewport.replaceChildren();
   activeTestCase = testCase;
   activeCase = testCase.create();
   baseline = null;
   measurements = [];
   viewport.appendChild(activeCase.context.canvas);
+  group.textContent = testCase.group;
   title.textContent = testCase.title;
   expectation.textContent = testCase.expectation;
-  [...caseNavigation.children].forEach((button) =>
-    button.classList.toggle("active", button.dataset.id === testCase.id),
-  );
+  Object.values(navButtons).forEach((button) => button.classList.toggle("active", button.dataset.id === testCase.id));
   render(1, "First");
+  if (checking) return;
+  showCheckResult(testCase);
+  if (!checkResults[testCase.id]) runSelectedChecks();
 };
 
+let lastGroup;
 cases.forEach((testCase) => {
+  if (testCase.group !== lastGroup) {
+    lastGroup = testCase.group;
+    const heading = document.createElement("h4");
+    heading.textContent = testCase.group;
+    caseNavigation.appendChild(heading);
+  }
   const button = document.createElement("button");
   button.textContent = testCase.title;
   button.dataset.id = testCase.id;
+  button.dataset.status = "idle";
   button.addEventListener("click", () => selectCase(testCase));
   caseNavigation.appendChild(button);
+  navButtons[testCase.id] = button;
 });
 
-document.querySelector("#render-once").addEventListener("click", () => render(1, "Repeat"));
-document.querySelector("#stress-render").addEventListener("click", () => render(120, "Stress"));
-document.querySelector("#copy-report").addEventListener("click", async () => {
+runAllButton.addEventListener("click", runAllChecks);
+runChecksButton.addEventListener("click", runSelectedChecks);
+failuresOnly.addEventListener("change", updateNavigation);
+$("#render-once").addEventListener("click", () => render(1, "Repeat"));
+$("#stress-render").addEventListener("click", () => render(120, "Stress"));
+$("#copy-report").addEventListener("click", async () => {
   await navigator.clipboard.writeText(createReport());
-  status.textContent = "Metrics report copied";
+  status.textContent = "Report copied";
 });
-document.querySelector("#context-loss").addEventListener("click", () => {
+$("#context-loss").addEventListener("click", () => {
   const { canvas, gl } = activeCase.context;
   const extension = gl.getExtension("WEBGL_lose_context");
   if (!extension) {
     status.textContent = "WEBGL_lose_context is unavailable";
     return;
   }
-  const { width, height } = canvas;
   canvas.addEventListener(
     "webglcontextrestored",
     () => {
-      activeCase.context.setCanvasSize(width, height);
       instrumentContext(activeCase.context);
       status.textContent = "Context restored";
       requestAnimationFrame(() => render(1, "Restore"));
@@ -182,8 +344,14 @@ document.querySelector("#context-loss").addEventListener("click", () => {
 
 const probe = document.createElement("canvas").getContext("webgl2");
 const debugInfo = probe?.getExtension("WEBGL_debug_renderer_info");
-document.querySelector("#adapter").textContent = debugInfo
+$("#adapter").textContent = debugInfo
   ? probe.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
   : "WebGL2 renderer information unavailable";
+probe?.getExtension("WEBGL_lose_context")?.loseContext();
 
+// Every check runs on load; `?manual` leaves them to the buttons.
+updateNavigation();
+checking = true;
 selectCase(cases[0]);
+checking = false;
+if (!new URLSearchParams(location.search).has("manual")) runAllChecks();

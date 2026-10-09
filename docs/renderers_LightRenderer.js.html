@@ -333,10 +333,13 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $createFragmentShader() {
-    const loop = (core) => `for(i=m;i&lt;l;i+=st){` +
+    // Marches from the receiver towards the light, jittered inside each step and growing it per sample.
+    const loop = (core, jitter = "0.", growth = "0.") => `for(;sd&lt;se;sd+=ss){` +
+            `i=max(fltDst-sd-${jitter}*ss,m);` +
             `p=ivec2((v1.zw+i*opdm)*uF);` +
             `tc=texelFetch(uB,p,0)*HEIGHT;` +
             `${core}` +
+            `ss+=${growth};` +
           `}`;
 
     return `${Utils.GLSL.DEFINE.HEIGHT}` +
@@ -459,7 +462,10 @@ export class LightRenderer extends BatchRenderer {
           `pc,` +
           `st=max(1.,ceil(fltDst/v3.x)),` + // loop step length
           `l=min(fltDst-st,4096.),` +
-          `m=max(st,l-v2.y);` +
+          `m=max(st,l-v2.y),` +
+          `ss=st,` + // current step length
+          `sd=fltDst-l,` + // distance from the receiver
+          `se=fltDst-m;` +
         
         `if((flg&amp;4)>0)` + 
           `${loop(`if(tc.g>=v4.z)discard;`)}` +
@@ -467,11 +473,12 @@ export class LightRenderer extends BatchRenderer {
           `float ` +
             `opdL=length(opd),` + // horizontal step
             `hst=(ph-v4.z)/fltDst,` + // vertical step
-            `rnd=v4.w*rand(v0+floor(uG)/floor(uF));` +
+            `rnd=rand(tUv+floor(uG));` + // world-anchored jitter
           `${loop(
-            `st+=rnd;` +
             `pc=v4.z+i*hst;` +
-            `shdw*=mix(1.,(fltDst-i*opdL)/v2.y,step(tc.r,pc)*step(pc,tc.g));`
+            `shdw*=mix(1.,(fltDst-i*opdL)/v2.y,step(tc.r,pc)*step(pc,tc.g));`,
+            "rnd",
+            "v4.w*.5"
           )}` +
         `}` +
       `}` +

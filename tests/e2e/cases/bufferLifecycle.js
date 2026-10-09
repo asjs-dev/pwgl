@@ -3,6 +3,7 @@ import { createAtlas, createContext, createImage, setRendererSize } from "../hel
 
 export const bufferLifecycle = {
   id: "buffer-lifecycle",
+  group: "Lifecycle",
   title: "Buffer allocation and uploads",
   expectation:
     "A complete 6×3 colored tile grid. First, repeated and stress renders must be identical while the metrics expose allocation and upload behaviour.",
