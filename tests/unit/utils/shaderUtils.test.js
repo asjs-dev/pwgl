@@ -57,6 +57,6 @@ describe("shaderUtils", () => {
   it("builds an atlas-crop clamp expression from the given identifiers", () => {
     const expression = CREATE_ATLAS_CROP({ crop: "s", uv: "m", bias: "v2.zw" });
 
-    expect(expression).toBe("clamp(s.xy+s.zw*m,s.xy+v2.zw,s.xy+s.zw-v2.zw)");
+    expect(expression).toBe("clamp(mix(s.xy,s.zw,m),s.xy+v2.zw,s.zw-v2.zw)");
   });
 });

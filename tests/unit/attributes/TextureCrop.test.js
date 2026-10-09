@@ -6,40 +6,25 @@ describe("TextureCrop", () => {
   it("initializes to a full texture crop", () => {
     const crop = new TextureCrop();
 
-    crop.update();
-
     expectCloseArray(expect, crop.cache, [0, 0, 1, 1]);
-    expect(crop.updated).toBe(true);
   });
 
-  it("recomputes width and height offsets from the crop origin", () => {
+  it("stores x/y and width/height as the raw top-left and bottom-right points", () => {
     const crop = new TextureCrop();
 
     crop.x = 0.2;
     crop.y = 0.1;
     crop.width = 0.8;
     crop.height = 0.9;
-    crop.update();
 
-    expectCloseArray(expect, crop.cache, [0.2, 0.1, 0.6, 0.8]);
+    expectCloseArray(expect, crop.cache, [0.2, 0.1, 0.8, 0.9]);
   });
 
   it("accepts rectangle objects via setRect", () => {
     const crop = new TextureCrop();
 
     crop.setRect({ x: 10, y: 20, width: 40, height: 70 });
-    crop.update();
 
-    expectCloseArray(expect, crop.cache, [10, 20, 30, 50]);
-  });
-
-  it("does not report changes twice without updates", () => {
-    const crop = new TextureCrop();
-
-    crop.update();
-    expect(crop.updated).toBe(true);
-
-    crop.update();
-    expect(crop.updated).toBe(false);
+    expectCloseArray(expect, crop.cache, [10, 20, 40, 70]);
   });
 });

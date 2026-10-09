@@ -51,7 +51,6 @@ export class Image extends BaseDrawable {
    */
   update() {
     super.update();
-    this.textureCrop.update();
 
     const { textureTransform } = this;
 

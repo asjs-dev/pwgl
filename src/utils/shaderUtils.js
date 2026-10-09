@@ -78,9 +78,9 @@ export const CREATE_TEXTURE_UNIT_LOOKUP = ({ index, uv, samplerArray, count, mis
 // prettier-ignore
 export const CREATE_ATLAS_CROP = ({ crop, uv, bias }) =>
   `clamp(` +
-    `${crop}.xy+${crop}.zw*${uv},` +
+    `mix(${crop}.xy,${crop}.zw,${uv}),` +
     `${crop}.xy+${bias},` +
-    `${crop}.xy+${crop}.zw-${bias}` +
+    `${crop}.zw-${bias}` +
   `)`;
 
 // prettier-ignore

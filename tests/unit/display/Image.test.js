@@ -27,7 +27,7 @@ describe("Image", () => {
     image.update();
 
     expectCloseArray(expect, image.textureMatrixCache, [2, 0, 0, 3, 0, 0]);
-    expectCloseArray(expect, image.textureCrop.cache, [0.2, 0.3, 0.6, 0.6]);
+    expectCloseArray(expect, image.textureCrop.cache, [0.2, 0.3, 0.8, 0.9]);
   });
 
   it("rebuilds the inverse matrix for interactive images", async () => {
