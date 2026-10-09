@@ -57,14 +57,11 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { noop } from "../../common/utils/noop";
-import "../math/RectangleType";
+            <pre class="prettyprint source linenums"><code>import "../math/RectangleType";
 
 /**
  * Class for texture crop properties
- * @property {boolean} updated
  * @property {Array&lt;number>} cache
- * @property {function} update
  */
 export class TextureCrop {
   /**
@@ -73,8 +70,6 @@ export class TextureCrop {
    */
   constructor() {
     this.cache = new Float32Array([0, 0, 1, 1]);
-    this._updateCacheFv = this._updateCache;
-    this._width = this._height = 1;
   }
 
   /**
@@ -86,7 +81,6 @@ export class TextureCrop {
   }
   set x(v) {
     this.cache[0] = v;
-    this._updateCacheFv = this._updateCache;
   }
 
   /**
@@ -98,7 +92,6 @@ export class TextureCrop {
   }
   set y(v) {
     this.cache[1] = v;
-    this._updateCacheFv = this._updateCache;
   }
 
   /**
@@ -106,11 +99,10 @@ export class TextureCrop {
    * @type {number}
    */
   get width() {
-    return this._width;
+    return this.cache[2];
   }
   set width(v) {
-    this._width = v;
-    this._updateCacheFv = this._updateCache;
+    this.cache[2] = v;
   }
 
   /**
@@ -118,15 +110,14 @@ export class TextureCrop {
    * @type {number}
    */
   get height() {
-    return this._height;
+    return this.cache[3];
   }
   set height(v) {
-    this._height = v;
-    this._updateCacheFv = this._updateCache;
+    this.cache[3] = v;
   }
 
   /**
-   * Set all values with a rectangle
+   * Set all values with a rectangle, the rectangle's (x, y) and (width, height) values are coordinates in the texture space (0-1)
    * @param {Rectangle} rect - The rectangle
    */
   setRect(rect) {
@@ -134,25 +125,6 @@ export class TextureCrop {
     this.y = rect.y;
     this.width = rect.width;
     this.height = rect.height;
-  }
-
-  update() {
-    this._updateCacheFv();
-    this.updated = this._cacheUpdated;
-    this._cacheUpdated = false;
-  }
-
-  /**
-   * Update calculated crop values
-   * @ignore
-   */
-  _updateCache() {
-    this._updateCacheFv = noop;
-    this._cacheUpdated = true;
-
-    const { cache } = this;
-    cache[2] = this._width - cache[0];
-    cache[3] = this._height - cache[1];
   }
 }
 </code></pre>

@@ -151,14 +151,17 @@ export class NormalMapRenderer extends BaseRenderer {
     `void main(){` +
       `vec2 ` +
         `ts=floor(uF),` +
-        `p=1./ts,` +
         `p0=floor(v0.xy*ts);` +
 
+      `ivec2 ` +
+        `mn=ivec2(Z.xx),` +
+        `mx=ivec2(ts)-1;` +
+
       `float ` +
-        `hL=texture(uB,(p0+Z.zx)*p).g,` +
-        `hR=texture(uB,(p0+Z.yx)*p).g,` +
-        `hU=texture(uB,(p0+Z.xz)*p).g,` +
-        `hD=texture(uB,(p0+Z.xy)*p).g;` +
+        `hL=texelFetch(uB,clamp(ivec2(p0+Z.zx),mn,mx),0).g,` +
+        `hR=texelFetch(uB,clamp(ivec2(p0+Z.yx),mn,mx),0).g,` +
+        `hU=texelFetch(uB,clamp(ivec2(p0+Z.xz),mn,mx),0).g,` +
+        `hD=texelFetch(uB,clamp(ivec2(p0+Z.xy),mn,mx),0).g;` +
 
       `vec3 ` +
         `nm=normalize(` +

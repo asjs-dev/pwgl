@@ -84,14 +84,14 @@ export class Texture extends TextureInfo {
   constructor(source, shouldUpdate) {
     super();
 
-    this._source = _placeholderImage;
+    this.$source = _placeholderImage;
 
     this.updateSize = this.updateSize.bind(this);
 
     this.source = source;
     this.shouldUpdate = shouldUpdate;
 
-    this._currentRenderTime = 0;
+    this.$currentRenderTime = 0;
   }
 
   /**
@@ -99,20 +99,20 @@ export class Texture extends TextureInfo {
    * @type {HTMLElement}
    */
   get source() {
-    return this._source;
+    return this.$source;
   }
 
   set source(value) {
     this.destruct();
 
     if (value) {
-      this._source = value;
+      this.$source = value;
 
       this.isVideo = value.tagName.toLowerCase() === "video";
-      this._eventType = this.isVideo ? "canplay" : "load";
+      this.$eventType = this.isVideo ? "canplay" : "load";
 
       !this.updateSize() &amp;&amp;
-        value.addEventListener(this._eventType, this.updateSize, {
+        value.addEventListener(this.$eventType, this.updateSize, {
           once: true,
         });
     }
@@ -122,8 +122,8 @@ export class Texture extends TextureInfo {
    * Destruct the class
    */
   destruct() {
-    const { _source } = this;
-    _source &amp;&amp; _source.removeEventListener(this._eventType, this.updateSize);
+    const { $source } = this;
+    $source &amp;&amp; $source.removeEventListener(this.$eventType, this.updateSize);
     this.$renderSource = null;
   }
 
@@ -139,16 +139,16 @@ export class Texture extends TextureInfo {
       this.$currentAglId = gl.gl_id;
       this.$baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
-      this.$updated = this._loaded = false;
-      this._currentRenderTime = renderTime;
+      this.$updated = this.$loaded = false;
+      this.$currentRenderTime = renderTime;
     } else if (
       this.$updated ||
-      this._loaded ||
-      (this.shouldUpdate &amp;&amp; this._currentRenderTime &lt; renderTime) ||
-      (this.isVideo &amp;&amp; !this._source.paused)
+      this.$loaded ||
+      (this.shouldUpdate &amp;&amp; this.$currentRenderTime &lt; renderTime) ||
+      (this.isVideo &amp;&amp; !this.$source.paused)
     ) {
-      this.$updated = this._loaded = false;
-      this._currentRenderTime = renderTime;
+      this.$updated = this.$loaded = false;
+      this.$currentRenderTime = renderTime;
       this.useActiveTexture(gl, id);
     } else if (this.$currentActiveId !== id || forceBind) {
       this.bindActiveTexture(gl, id);
@@ -160,15 +160,15 @@ export class Texture extends TextureInfo {
    * @returns {boolean}
    */
   updateSize() {
-    const { _source } = this;
-    const sourceWidth = _source.videoWidth || _source.naturalWidth || _source.width;
-    const sourceHeight = _source.videoHeight || _source.naturalHeight || _source.height;
+    const { $source } = this;
+    const sourceWidth = $source.videoWidth || $source.naturalWidth || $source.width;
+    const sourceHeight = $source.videoHeight || $source.naturalHeight || $source.height;
 
     if (sourceWidth * sourceHeight) {
       this.$width = sourceWidth;
       this.$height = sourceHeight;
-      this.$renderSource = _source;
-      return (this._loaded = this.$updated = true);
+      this.$renderSource = $source;
+      return (this.$loaded = this.$updated = true);
     }
   }
 }

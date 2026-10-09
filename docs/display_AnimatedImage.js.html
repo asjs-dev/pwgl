@@ -88,11 +88,11 @@ export class AnimatedImage extends Image {
   constructor(texture) {
     super(texture);
 
-    this._frame = 0;
-    this.frameLength = this._currentFrameLength = 120;
+    this.$frame = 0;
+    this.frameLength = this.$currentFrameLength = 120;
 
-    this._frames = [];
-    this._currentRenderTime = Date.now();
+    this.$frames = [];
+    this.$currentRenderTime = Date.now();
 
     this.stop();
   }
@@ -102,14 +102,14 @@ export class AnimatedImage extends Image {
    * @type {Array&lt;Frame>}
    */
   get frames() {
-    return this._frames;
+    return this.$frames;
   }
   set frames(v) {
-    this._frames = v;
-    const firstFrame = this._frames[0];
+    this.$frames = v;
+    const firstFrame = this.$frames[0];
     if (firstFrame) {
-      this._currentFrameLength = firstFrame.length ?? this.frameLength;
-      this._currentRenderTime = Date.now();
+      this.$currentFrameLength = firstFrame.length ?? this.frameLength;
+      this.$currentRenderTime = Date.now();
     }
   }
 
@@ -119,8 +119,8 @@ export class AnimatedImage extends Image {
    */
   gotoAndStop(frame) {
     this.stop();
-    this._frame = frame;
-    this._useTextureFrame();
+    this.$frame = frame;
+    this.$useTextureFrame();
   }
 
   /**
@@ -128,7 +128,7 @@ export class AnimatedImage extends Image {
    * @param {number} frame
    */
   gotoAndPlay(frame) {
-    this._frame = frame;
+    this.$frame = frame;
     this.play();
   }
 
@@ -136,7 +136,7 @@ export class AnimatedImage extends Image {
    * Stop the animation
    */
   stop() {
-    this._updateAnimationFv = noop;
+    this.$updateAnimationFv = noop;
     this.isPlaying = false;
   }
 
@@ -144,9 +144,9 @@ export class AnimatedImage extends Image {
    * Play the animation
    */
   play() {
-    this._updateAnimationFv = this._updateAnimation;
+    this.$updateAnimationFv = this.$updateAnimation;
     this.isPlaying = true;
-    this._useTextureFrame();
+    this.$useTextureFrame();
   }
 
   /**
@@ -155,7 +155,7 @@ export class AnimatedImage extends Image {
    */
   update(renderTime) {
     super.update();
-    this._updateAnimationFv(renderTime);
+    this.$updateAnimationFv(renderTime);
   }
 
   /**
@@ -170,25 +170,25 @@ export class AnimatedImage extends Image {
    * @param {number} renderTime
    * @ignore
    */
-  _updateAnimation(renderTime) {
-    const ellapsedTime = renderTime - this._currentRenderTime;
-    if (ellapsedTime > this._currentFrameLength) {
-      this._currentRenderTime = renderTime;
-      this._frame += ~~(ellapsedTime / this._currentFrameLength);
-      if (this._frame >= this._frames.length) {
-        this._frame = 0;
+  $updateAnimation(renderTime) {
+    const ellapsedTime = renderTime - this.$currentRenderTime;
+    if (ellapsedTime > this.$currentFrameLength) {
+      this.$currentRenderTime = renderTime;
+      this.$frame += ~~(ellapsedTime / this.$currentFrameLength);
+      if (this.$frame >= this.$frames.length) {
+        this.$frame = 0;
       }
-      this._useTextureFrame();
+      this.$useTextureFrame();
     }
   }
 
   /**
    * @ignore
    */
-  _useTextureFrame() {
-    const selectedFrame = this._frames[this._frame];
+  $useTextureFrame() {
+    const selectedFrame = this.$frames[this.$frame];
     this.textureCrop.setRect(selectedFrame);
-    this._currentFrameLength = selectedFrame.length ?? this.frameLength;
+    this.$currentFrameLength = selectedFrame.length ?? this.frameLength;
   }
 }
 </code></pre>
