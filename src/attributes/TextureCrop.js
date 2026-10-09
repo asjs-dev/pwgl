@@ -14,8 +14,8 @@ export class TextureCrop {
    */
   constructor() {
     this.cache = new Float32Array([0, 0, 1, 1]);
-    this._updateCacheFv = this._updateCache;
-    this._width = this._height = 1;
+    this.$updateCacheFv = this.$updateCache;
+    this.$width = this.$height = 1;
   }
 
   /**
@@ -27,7 +27,7 @@ export class TextureCrop {
   }
   set x(v) {
     this.cache[0] = v;
-    this._updateCacheFv = this._updateCache;
+    this.$updateCacheFv = this.$updateCache;
   }
 
   /**
@@ -39,7 +39,7 @@ export class TextureCrop {
   }
   set y(v) {
     this.cache[1] = v;
-    this._updateCacheFv = this._updateCache;
+    this.$updateCacheFv = this.$updateCache;
   }
 
   /**
@@ -47,11 +47,11 @@ export class TextureCrop {
    * @type {number}
    */
   get width() {
-    return this._width;
+    return this.$width;
   }
   set width(v) {
-    this._width = v;
-    this._updateCacheFv = this._updateCache;
+    this.$width = v;
+    this.$updateCacheFv = this.$updateCache;
   }
 
   /**
@@ -59,11 +59,11 @@ export class TextureCrop {
    * @type {number}
    */
   get height() {
-    return this._height;
+    return this.$height;
   }
   set height(v) {
-    this._height = v;
-    this._updateCacheFv = this._updateCache;
+    this.$height = v;
+    this.$updateCacheFv = this.$updateCache;
   }
 
   /**
@@ -78,21 +78,21 @@ export class TextureCrop {
   }
 
   update() {
-    this._updateCacheFv();
-    this.updated = this._cacheUpdated;
-    this._cacheUpdated = false;
+    this.$updateCacheFv();
+    this.updated = this.$cacheUpdated;
+    this.$cacheUpdated = false;
   }
 
   /**
    * Update calculated crop values
    * @ignore
    */
-  _updateCache() {
-    this._updateCacheFv = noop;
-    this._cacheUpdated = true;
+  $updateCache() {
+    this.$updateCacheFv = noop;
+    this.$cacheUpdated = true;
 
     const { cache } = this;
-    cache[2] = this._width - cache[0];
-    cache[3] = this._height - cache[1];
+    cache[2] = this.$width - cache[0];
+    cache[3] = this.$height - cache[1];
   }
 }

@@ -4,7 +4,7 @@ import { createBatchRendererHarness } from "../helpers/rendererTestHarness";
 
 const loadBatchRendererModule = () => loadSrcModuleWithBrowserMocks("../../../src/renderers/BatchRenderer.js");
 
-const getElementCountFromBuffer = (buffer) => buffer.data.length / buffer._cols / buffer._rows;
+const getElementCountFromBuffer = (buffer) => buffer.data.length / buffer.$cols / buffer.$rows;
 
 describe("BatchRenderer", () => {
   it("initializes with default max render count", async () => {
@@ -14,10 +14,10 @@ describe("BatchRenderer", () => {
 
     expect(renderer.$MAX_RENDER_COUNT).toBe(10000);
     expect(renderer.$matrixBuffer).toBeDefined();
-    expect(renderer.$matrixBuffer._locationName).toBe("aB");
+    expect(renderer.$matrixBuffer.$locationName).toBe("aB");
     expect(getElementCountFromBuffer(renderer.$matrixBuffer)).toBe(10000);
-    expect(renderer.$matrixBuffer._rows).toBe(4);
-    expect(renderer.$matrixBuffer._target).toBe(34962); // ARRAY_BUFFER
+    expect(renderer.$matrixBuffer.$rows).toBe(4);
+    expect(renderer.$matrixBuffer.$target).toBe(34962); // ARRAY_BUFFER
   });
 
   it("initializes with custom max render count", async () => {
@@ -40,30 +40,30 @@ describe("BatchRenderer", () => {
 
     expect(gl.createBuffer).toHaveBeenCalled();
     expect(gl.bindBuffer).toHaveBeenCalledWith(34962, { id: "matrixBuffer" });
-    expect(renderer.$matrixBuffer._locationName).toBe("aB");
+    expect(renderer.$matrixBuffer.$locationName).toBe("aB");
   });
 
   it("uploads matrix buffer data", async () => {
     const { BatchRenderer } = await loadBatchRendererModule();
 
     const { renderer, gl } = createBatchRendererHarness(BatchRenderer);
-    renderer._batchItems = 7;
+    renderer.$batchItems = 7;
 
     renderer.$matrixBuffer = {
       uploadElements: vi.fn(),
     };
-    renderer._positionBuffer = {
+    renderer.$positionBuffer = {
       upload: vi.fn(),
     };
-    renderer._elementArrayBuffer = {
+    renderer.$elementArrayBuffer = {
       upload: vi.fn(),
     };
 
     renderer.$uploadBuffers();
 
     expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 7);
-    expect(renderer._positionBuffer.upload).not.toHaveBeenCalled();
-    expect(renderer._elementArrayBuffer.upload).not.toHaveBeenCalled();
+    expect(renderer.$positionBuffer.upload).not.toHaveBeenCalled();
+    expect(renderer.$elementArrayBuffer.upload).not.toHaveBeenCalled();
   });
 
   it("inherits from BaseRenderer", async () => {

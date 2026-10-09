@@ -36,10 +36,10 @@ describe("Stage2D", () => {
     const addImageData = vi.spyOn(renderer, "$addImageData");
 
     renderer.container.addChild(image);
-    renderer._drawItem(renderer.container);
+    renderer.$drawItem(renderer.container);
 
     expect(addImageData).toHaveBeenCalledWith(image, 0);
-    expect(renderer._batchItems).toBe(1);
+    expect(renderer.$batchItems).toBe(1);
   });
 
   it("supports externally registered rendering types and scopes", async () => {
@@ -59,7 +59,7 @@ describe("Stage2D", () => {
     };
 
     renderer.setRenderingType(item.RENDERING_TYPE, scope.draw, scope);
-    renderer._drawItem(item);
+    renderer.$drawItem(item);
 
     expect(scope.draw).toHaveBeenCalledWith(item);
   });
@@ -77,9 +77,9 @@ describe("Stage2D", () => {
 
     renderer.setSize(200, 100);
     renderer.$resize();
-    renderer._onMouseEventHandler({ type: "touchmove", touches: [{ clientX: 35, clientY: 45 }] });
+    renderer.$onMouseEventHandler({ type: "touchmove", touches: [{ clientX: 35, clientY: 45 }] });
 
-    expect(renderer._mousePosition).toEqual({ x: -50, y: 0 });
+    expect(renderer.$mousePosition).toEqual({ x: -50, y: 0 });
   });
 
   it("uploads stage buffers for the active batch only", async () => {
@@ -94,27 +94,27 @@ describe("Stage2D", () => {
     const gl = {};
 
     renderer.$gl = gl;
-    renderer._batchItems = 5;
-    renderer._dataBuffer = {
+    renderer.$batchItems = 5;
+    renderer.$dataBuffer = {
       uploadElements: vi.fn(),
     };
-    renderer._distortionBuffer = {
+    renderer.$distortionBuffer = {
       uploadElements: vi.fn(),
     };
     renderer.$matrixBuffer = {
       uploadElements: vi.fn(),
     };
-    renderer._positionBuffer = {
+    renderer.$positionBuffer = {
       upload: vi.fn(),
     };
-    renderer._elementArrayBuffer = {
+    renderer.$elementArrayBuffer = {
       upload: vi.fn(),
     };
 
     renderer.$uploadBuffers();
 
-    expect(renderer._dataBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
-    expect(renderer._distortionBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
+    expect(renderer.$dataBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
+    expect(renderer.$distortionBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
     expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
   });
 });

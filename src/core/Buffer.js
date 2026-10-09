@@ -28,22 +28,22 @@ export class Buffer {
     const elemCount = rows * cols;
 
     this.data = typeof data === "number" ? new Float32Array(data * elemCount) : data;
-    this._locationName = locationName;
-    this._rows = rows;
-    this._cols = cols;
-    this._target = target;
-    this._type = type;
-    this._stride = elemCount * 4;
-    this._offset = cols * 4;
-    this._divisor = divisor;
-    this._dataType = dataType;
-    this._byteCapacity = 0;
-    if (this._type === WebGL2RenderingContext.STATIC_DRAW) {
-      this._stride = this._offset = 0;
+    this.$locationName = locationName;
+    this.$rows = rows;
+    this.$cols = cols;
+    this.$target = target;
+    this.$type = type;
+    this.$stride = elemCount * 4;
+    this.$offset = cols * 4;
+    this.$divisor = divisor;
+    this.$dataType = dataType;
+    this.$byteCapacity = 0;
+    if (this.$type === WebGL2RenderingContext.STATIC_DRAW) {
+      this.$stride = this.$offset = 0;
     }
     // Chrome 151 ANGLE OpenGL ES may drop the final instance at the exact buffer boundary.
     // Revisit and remove this padding after the upstream browser regression is fixed.
-    this._bytePadding = this._divisor ? this._stride : 0;
+    this.$bytePadding = this.$divisor ? this.$stride : 0;
   }
 
   /**
@@ -52,12 +52,12 @@ export class Buffer {
    * @param {Object} locations
    */
   create(gl, locations) {
-    this._location = locations[this._locationName];
-    this._buffer = gl.createBuffer();
+    this.$location = locations[this.$locationName];
+    this.$buffer = gl.createBuffer();
     this.bind(gl);
-    this._byteCapacity = this.data.byteLength + this._bytePadding;
-    gl.bufferData(this._target, this._byteCapacity, this._type);
-    this._enable(gl);
+    this.$byteCapacity = this.data.byteLength + this.$bytePadding;
+    gl.bufferData(this.$target, this.$byteCapacity, this.$type);
+    this.$enable(gl);
   }
 
   /**
@@ -65,7 +65,7 @@ export class Buffer {
    * @param {WebGLContext} gl
    */
   bind(gl) {
-    gl.bindBuffer(this._target, this._buffer);
+    gl.bindBuffer(this.$target, this.$buffer);
   }
 
   /**
@@ -74,7 +74,7 @@ export class Buffer {
    */
   upload(gl) {
     this.bind(gl);
-    this._uploadData(gl, this.data.length);
+    this.$uploadData(gl, this.data.length);
   }
 
   /**
@@ -84,7 +84,7 @@ export class Buffer {
    */
   uploadElements(gl, elementCount) {
     this.bind(gl);
-    this._uploadData(gl, elementCount * this._rows * this._cols);
+    this.$uploadData(gl, elementCount * this.$rows * this.$cols);
   }
 
   /**
@@ -92,9 +92,9 @@ export class Buffer {
    */
   destruct(gl) {
     this.bind(gl);
-    gl.deleteBuffer(this._buffer);
-    this.data = this._buffer = null;
-    this._byteCapacity = 0;
+    gl.deleteBuffer(this.$buffer);
+    this.data = this.$buffer = null;
+    this.$byteCapacity = 0;
   }
 
   /**
@@ -102,28 +102,28 @@ export class Buffer {
    * @param {number} elementCount
    * @ignore
    */
-  _uploadData(gl, elementCount) {
+  $uploadData(gl, elementCount) {
     const { data } = this;
-    const requiredByteCapacity = data.byteLength + this._bytePadding;
-    if (requiredByteCapacity > this._byteCapacity) {
-      this._byteCapacity = requiredByteCapacity;
-      gl.bufferData(this._target, this._byteCapacity, this._type);
+    const requiredByteCapacity = data.byteLength + this.$bytePadding;
+    if (requiredByteCapacity > this.$byteCapacity) {
+      this.$byteCapacity = requiredByteCapacity;
+      gl.bufferData(this.$target, this.$byteCapacity, this.$type);
     }
-    gl.bufferSubData(this._target, 0, data, 0, elementCount);
+    gl.bufferSubData(this.$target, 0, data, 0, elementCount);
   }
 
   /**
    * @param {WebGLContext} gl
    * @ignore
    */
-  _enable(gl) {
-    const { _rows, _location, _cols, _stride, _offset, _divisor, _dataType } = this;
+  $enable(gl) {
+    const { $rows, $location, $cols, $stride, $offset, $divisor, $dataType } = this;
     let i = -1;
-    while (++i < _rows) {
-      const loc = _location + i;
+    while (++i < $rows) {
+      const loc = $location + i;
       gl.enableVertexAttribArray(loc);
-      gl.vertexAttribPointer(loc, _cols, _dataType, false, _stride, i * _offset);
-      gl.vertexAttribDivisor(loc, _divisor);
+      gl.vertexAttribPointer(loc, $cols, $dataType, false, $stride, i * $offset);
+      gl.vertexAttribDivisor(loc, $divisor);
     }
   }
 }

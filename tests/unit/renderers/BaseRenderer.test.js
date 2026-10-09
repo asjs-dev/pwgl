@@ -12,7 +12,7 @@ describe("BaseRenderer", () => {
     const renderer = new BaseRenderer({ context: mockContext, locations: [] });
 
     // Trigger resize calculation
-    renderer._resizeCalcFv();
+    renderer.$resizeCalcFv();
 
     expect(renderer.width).toBe(1);
     expect(renderer.height).toBe(1);
@@ -20,8 +20,8 @@ describe("BaseRenderer", () => {
     expect(renderer.heightHalf).toBe(0.5);
     expect(renderer.clearColor).toBeDefined();
     expect(renderer.context).toBe(mockContext);
-    expect(renderer._positionBuffer).toBeDefined();
-    expect(renderer._elementArrayBuffer).toBeDefined();
+    expect(renderer.$positionBuffer).toBeDefined();
+    expect(renderer.$elementArrayBuffer).toBeDefined();
   });
 
   it("sets size correctly", async () => {
@@ -31,7 +31,7 @@ describe("BaseRenderer", () => {
     const renderer = new BaseRenderer({ context: mockContext, locations: [] });
 
     renderer.setSize(800, 600);
-    renderer._resizeCalcFv();
+    renderer.$resizeCalcFv();
 
     expect(renderer.width).toBe(800);
     expect(renderer.height).toBe(600);
@@ -47,13 +47,13 @@ describe("BaseRenderer", () => {
     const renderer = new BaseRenderer({ context: mockContext, locations: [] });
 
     // Initially should be noop
-    expect(renderer._clearBeforeRenderFunc).toBeDefined();
+    expect(renderer.$clearBeforeRenderFv).toBeDefined();
 
     renderer.clearBeforeRender = true;
-    expect(typeof renderer._clearBeforeRenderFunc).toBe("function");
+    expect(typeof renderer.$clearBeforeRenderFv).toBe("function");
 
     renderer.clearBeforeRender = false;
-    expect(renderer._clearBeforeRenderFunc).toBeDefined(); // Should be noop again
+    expect(renderer.$clearBeforeRenderFv).toBeDefined(); // Should be noop again
   });
 
   it("initializes a framebuffer texture before binding it as the render target", async () => {
@@ -91,7 +91,7 @@ describe("BaseRenderer", () => {
     renderer.$createFragmentShader = vi.fn(() => "fragment shader");
 
     // Initialize $gl
-    renderer._switchToProgram();
+    renderer.$switchToProgram();
 
     gl.createBuffer = vi.fn(() => ({ id: "buffer" }));
     gl.bindBuffer = vi.fn();
@@ -121,7 +121,7 @@ describe("BaseRenderer", () => {
     renderer.$createFragmentShader = vi.fn(() => "fragment shader");
 
     // Initialize $gl
-    renderer._switchToProgram();
+    renderer.$switchToProgram();
 
     gl.bindBuffer = vi.fn();
     gl.enableVertexAttribArray = vi.fn();
@@ -154,7 +154,7 @@ describe("BaseRenderer", () => {
     renderer.$createFragmentShader = vi.fn(() => "fragment shader");
 
     // Initialize $gl
-    renderer._switchToProgram();
+    renderer.$switchToProgram();
 
     gl.uniform1i = vi.fn();
 
@@ -182,7 +182,7 @@ describe("BaseRenderer", () => {
     renderer.$createFragmentShader = vi.fn(() => "fragment shader");
 
     // Initialize $gl
-    renderer._switchToProgram();
+    renderer.$switchToProgram();
 
     gl.uniform1i = vi.fn();
 
@@ -205,7 +205,7 @@ describe("BaseRenderer", () => {
     renderer.$createFragmentShader = vi.fn(() => "fragment shader");
 
     // Initialize $gl
-    renderer._switchToProgram();
+    renderer.$switchToProgram();
 
     gl.drawElementsInstanced = vi.fn();
 
@@ -226,13 +226,13 @@ describe("BaseRenderer", () => {
     renderer.$createFragmentShader = vi.fn(() => "fragment shader");
 
     // Initialize $gl
-    renderer._switchToProgram();
+    renderer.$switchToProgram();
 
     gl.clearColor = vi.fn();
     gl.clear = vi.fn();
 
     renderer.clearColor.set(0.5, 0.3, 0.8, 0.9);
-    renderer._clear();
+    renderer.$clear();
 
     const clearColorCall = gl.clearColor.mock.calls[0];
     expect(clearColorCall[0]).toBeCloseTo(0.5);
@@ -272,7 +272,7 @@ describe("BaseRenderer", () => {
     renderer.$createVertexShader = vi.fn(() => "vertex shader code");
     renderer.$createFragmentShader = vi.fn(() => "fragment shader code");
 
-    renderer._switchToProgram();
+    renderer.$switchToProgram();
 
     expect(renderer.$createVertexShader).toHaveBeenCalled();
     expect(renderer.$createFragmentShader).toHaveBeenCalled();
@@ -295,12 +295,12 @@ describe("BaseRenderer", () => {
     const renderer = new BaseRenderer({ context: mockContext, locations: [] });
 
     // Set up initial state as if program was already created
-    renderer._currentContextId = 1;
-    renderer._currentRendererId = 1;
-    renderer._rendererId = 1;
-    renderer._program = { id: "existingProgram" };
+    renderer.$currentContextId = 1;
+    renderer.$currentRendererId = 1;
+    renderer.$rendererId = 1;
+    renderer.$program = { id: "existingProgram" };
 
-    renderer._switchToProgram();
+    renderer.$switchToProgram();
 
     expect(gl.createProgram).not.toHaveBeenCalled();
     expect(mockContext.useProgram).toHaveBeenCalled();

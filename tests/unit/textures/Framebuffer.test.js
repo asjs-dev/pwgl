@@ -26,7 +26,7 @@ describe("Framebuffer", () => {
     expect(gl.createFramebuffer).toHaveBeenCalledOnce();
     expect(gl.framebufferTexture2D).toHaveBeenCalledOnce();
     expect(framebuffer.$updated).toBe(false);
-    expect(framebuffer._resized).toBe(false);
+    expect(framebuffer.$resized).toBe(false);
   });
 
   it("resizes immediately when size and texture parameters change together", async () => {
@@ -44,6 +44,6 @@ describe("Framebuffer", () => {
     expect(framebuffer.useActiveTexture).toHaveBeenCalledWith(gl, 0);
     expect(framebuffer.useActiveTextureAfterUpdate).not.toHaveBeenCalled();
     expect(framebuffer.$updated).toBe(false);
-    expect(framebuffer._resized).toBe(false);
+    expect(framebuffer.$resized).toBe(false);
   });
 });

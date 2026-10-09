@@ -62,11 +62,11 @@ export class Light extends BaseDrawable {
    * @type {boolean}
    */
   get castShadow() {
-    return this._castShadow;
+    return this.$castShadow;
   }
   set castShadow(v) {
-    this._castShadow = v;
-    this._updateFlags();
+    this.$castShadow = v;
+    this.$updateFlags();
   }
 
   /**
@@ -74,11 +74,11 @@ export class Light extends BaseDrawable {
    * @type {boolean}
    */
   get shading() {
-    return this._shading;
+    return this.$shading;
   }
   set shading(v) {
-    this._shading = v;
-    this._updateFlags();
+    this.$shading = v;
+    this.$updateFlags();
   }
 
   /**
@@ -90,11 +90,11 @@ export class Light extends BaseDrawable {
    * @type {boolean}
    */
   get flattenShadow() {
-    return this._flattenShadow;
+    return this.$flattenShadow;
   }
   set flattenShadow(v) {
-    this._flattenShadow = v;
-    this._updateFlags();
+    this.$flattenShadow = v;
+    this.$updateFlags();
   }
 
   /**
@@ -104,11 +104,11 @@ export class Light extends BaseDrawable {
    * @type {boolean}
    */
   get fading() {
-    return this._fading;
+    return this.$fading;
   }
   set fading(v) {
-    this._fading = v;
-    this._updateFlags();
+    this.$fading = v;
+    this.$updateFlags();
   }
 
   /**
@@ -116,11 +116,11 @@ export class Light extends BaseDrawable {
    * @type {boolean}
    */
   get centerReflection() {
-    return this._centerReflection;
+    return this.$centerReflection;
   }
   set centerReflection(v) {
-    this._centerReflection = v;
-    this._updateFlags();
+    this.$centerReflection = v;
+    this.$updateFlags();
   }
 
   /**
@@ -153,13 +153,13 @@ export class Light extends BaseDrawable {
   /**
    * @ignore
    */
-  _updateFlags() {
+  $updateFlags() {
     this.flags =
-      this._castShadow |
-      (this._shading * 2) |
-      (this._flattenShadow * 4) |
-      (this._centerReflection * 8) |
-      (this._fading * 16);
+      this.$castShadow |
+      (this.$shading * 2) |
+      (this.$flattenShadow * 4) |
+      (this.$centerReflection * 8) |
+      (this.$fading * 16);
   }
 }
 

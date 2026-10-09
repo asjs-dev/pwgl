@@ -12,7 +12,7 @@ export class Framebuffer extends TextureInfo {
   constructor() {
     super();
 
-    this._resized = true;
+    this.$resized = true;
   }
 
   /**
@@ -25,7 +25,7 @@ export class Framebuffer extends TextureInfo {
   set width(v) {
     if (this.$width !== v) {
       this.$width = v;
-      this._resized = true;
+      this.$resized = true;
     }
   }
 
@@ -39,7 +39,7 @@ export class Framebuffer extends TextureInfo {
   set height(v) {
     if (this.$height !== v) {
       this.$height = v;
-      this._resized = true;
+      this.$resized = true;
     }
   }
 
@@ -58,7 +58,7 @@ export class Framebuffer extends TextureInfo {
    * @param {WebGLContext} gl - The WebGL context
    */
   bind(gl) {
-    gl.bindFramebuffer(WebGL2RenderingContext.FRAMEBUFFER, this._framebuffer);
+    gl.bindFramebuffer(WebGL2RenderingContext.FRAMEBUFFER, this.$framebuffer);
   }
 
   /**
@@ -81,7 +81,7 @@ export class Framebuffer extends TextureInfo {
       this.$baseTexture = gl.createTexture();
       this.useActiveTexture(gl, id);
 
-      this._framebuffer = gl.createFramebuffer();
+      this.$framebuffer = gl.createFramebuffer();
 
       this.bind(gl);
 
@@ -94,9 +94,9 @@ export class Framebuffer extends TextureInfo {
       );
 
       this.unbind(gl);
-      this.$updated = this._resized = false;
-    } else if (this._resized) {
-      this.$updated = this._resized = false;
+      this.$updated = this.$resized = false;
+    } else if (this.$resized) {
+      this.$updated = this.$resized = false;
       this.useActiveTexture(gl, id);
     } else if (this.$updated) {
       this.$updated = false;

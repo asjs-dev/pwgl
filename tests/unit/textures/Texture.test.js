@@ -58,8 +58,8 @@ describe("Texture", () => {
     expect(gl.createTexture).toHaveBeenCalled();
     expect(texture.useActiveTexture).toHaveBeenCalledWith(gl, 0);
     expect(texture.$updated).toBe(false);
-    expect(texture._loaded).toBe(false);
-    expect(texture._currentRenderTime).toBe(10);
+    expect(texture.$loaded).toBe(false);
+    expect(texture.$currentRenderTime).toBe(10);
 
     texture.useActiveTexture.mockClear();
     texture.$currentAglId = 1;
@@ -69,7 +69,7 @@ describe("Texture", () => {
 
     texture.useActiveTexture.mockClear();
     texture.$updated = false;
-    texture._loaded = false;
+    texture.$loaded = false;
     texture.shouldUpdate = false;
     texture.$currentActiveId = 0;
     texture.use(gl, 2, true, 20);

@@ -26,18 +26,18 @@ export class BaseRenderer {
    * @param {BaseRendererConfig} config
    */
   constructor(config) {
-    this._clearBeforeRenderFunc = noop;
+    this.$clearBeforeRenderFv = noop;
 
-    this._resizeCalcFv = noop;
+    this.$resizeCalcFv = noop;
 
-    this._rendererId = 1;
+    this.$rendererId = 1;
 
     this.width =
       this.height =
       this.widthHalf =
       this.heightHalf =
-      this._currentContextId =
-      this._currentRendererId =
+      this.$currentContextId =
+      this.$currentRendererId =
       this.$renderTime =
         0;
 
@@ -45,7 +45,7 @@ export class BaseRenderer {
 
     this.clearColor = new Color();
 
-    this._config = config;
+    this.$config = config;
     this.context = config.context;
 
     // prettier-ignore
@@ -56,7 +56,7 @@ export class BaseRenderer {
     ]);
 
     // prettier-ignore
-    this._elementArrayBuffer = new Buffer(
+    this.$elementArrayBuffer = new Buffer(
       "",
       new Uint16Array([0, 1, 3, 2]),
       0,
@@ -66,7 +66,7 @@ export class BaseRenderer {
     );
 
     // prettier-ignore
-    this._positionBuffer = new Buffer(
+    this.$positionBuffer = new Buffer(
       "aA",
       new Uint16Array([
         0, 0,
@@ -88,7 +88,7 @@ export class BaseRenderer {
    * @param {boolean} v
    */
   set clearBeforeRender(v) {
-    this._clearBeforeRenderFunc = v ? this._clear : noop;
+    this.$clearBeforeRenderFv = v ? this.$clear : noop;
   }
 
   /**
@@ -99,7 +99,7 @@ export class BaseRenderer {
   setSize(width, height) {
     this.width = width;
     this.height = height;
-    this._resizeCalcFv = this.$resize;
+    this.$resizeCalcFv = this.$resize;
   }
 
   /**
@@ -108,9 +108,9 @@ export class BaseRenderer {
    */
   renderToFramebuffer(framebuffer) {
     if (!this.context.isLost()) {
-      this._switchToProgram();
+      this.$switchToProgram();
       this.$attachFramebufferAndClear(framebuffer);
-      this._renderBatch(framebuffer);
+      this.$renderBatch(framebuffer);
       framebuffer.unbind(this.$gl);
     }
   }
@@ -120,10 +120,10 @@ export class BaseRenderer {
    */
   render() {
     if (!this.context.isLost()) {
-      this._switchToProgram();
+      this.$switchToProgram();
       this.$gl.uniform1f(this.$locations.uA, 1);
-      this._clearBeforeRenderFunc();
-      this._renderBatch();
+      this.$clearBeforeRenderFv();
+      this.$renderBatch();
     }
   }
 
@@ -150,7 +150,7 @@ export class BaseRenderer {
    */
   $attachFramebufferAndClear(framebuffer) {
     this.$attachFramebuffer(framebuffer);
-    this._clearBeforeRenderFunc();
+    this.$clearBeforeRenderFv();
   }
 
   /**
@@ -196,10 +196,10 @@ export class BaseRenderer {
    */
   $createBuffers() {
     const { $gl, $locations } = this;
-    this._elementArrayBuffer.create($gl, $locations);
-    this._positionBuffer.create($gl, $locations);
-    this._positionBuffer.upload($gl);
-    this._elementArrayBuffer.upload($gl);
+    this.$elementArrayBuffer.create($gl, $locations);
+    this.$positionBuffer.create($gl, $locations);
+    this.$positionBuffer.upload($gl);
+    this.$elementArrayBuffer.upload($gl);
   }
 
   /**
@@ -207,7 +207,7 @@ export class BaseRenderer {
    */
   $resize() {
     this.resized = true;
-    this._resizeCalcFv = noop;
+    this.$resizeCalcFv = noop;
     this.widthHalf = this.width / 2;
     this.heightHalf = this.height / 2;
   }
@@ -216,7 +216,7 @@ export class BaseRenderer {
    * @param {Framebuffer} framebuffer
    * @ignore
    */
-  _renderBatch(framebuffer) {
+  $renderBatch(framebuffer) {
     this.$renderTime = Date.now();
     this.$render(framebuffer);
   }
@@ -224,27 +224,27 @@ export class BaseRenderer {
   /**
    * @ignore
    */
-  _switchToProgram() {
+  $switchToProgram() {
     this.$gl = this.context.gl;
 
     const { context } = this;
     const { contextId } = context;
 
-    if (this._currentContextId !== contextId || this._currentRendererId !== this._rendererId) {
-      this._currentContextId = contextId;
-      this._currentRendererId = this._rendererId;
-      this._buildProgram();
-    } else this._useProgram();
+    if (this.$currentContextId !== contextId || this.$currentRendererId !== this.$rendererId) {
+      this.$currentContextId = contextId;
+      this.$currentRendererId = this.$rendererId;
+      this.$buildProgram();
+    } else this.$useProgram();
 
     this.resized = false;
-    this._resizeCalcFv();
+    this.$resizeCalcFv();
     this.context.setSize(this.width, this.height);
   }
 
   /**
    * @ignore
    */
-  _clear() {
+  $clear() {
     const { $gl, clearColor } = this;
     $gl.clearColor(clearColor.r, clearColor.g, clearColor.b, clearColor.a);
     $gl.clear(WebGL2RenderingContext.COLOR_BUFFER_BIT);
@@ -253,21 +253,21 @@ export class BaseRenderer {
   /**
    * @ignore
    */
-  _buildProgram() {
+  $buildProgram() {
     const { $gl } = this;
     const shaderHeader = Utils.GLSL.VERSION + "precision highp float;\n";
 
-    this._program = Utils.createProgram(
+    this.$program = Utils.createProgram(
       $gl,
       shaderHeader + this.$createVertexShader(),
       shaderHeader + this.$createFragmentShader(),
     );
 
-    this.$locations = Utils.getLocationsFor($gl, this._program, this._config.locations);
+    this.$locations = Utils.getLocationsFor($gl, this.$program, this.$config.locations);
 
-    this._vao = $gl.createVertexArray();
+    this.$vao = $gl.createVertexArray();
 
-    this._useProgram();
+    this.$useProgram();
 
     this.$createBuffers();
   }
@@ -275,7 +275,7 @@ export class BaseRenderer {
   /**
    * @ignore
    */
-  _useProgram() {
-    this.context.useProgram(this._program, this._vao);
+  $useProgram() {
+    this.context.useProgram(this.$program, this.$vao);
   }
 }

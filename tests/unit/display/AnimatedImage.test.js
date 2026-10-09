@@ -43,7 +43,7 @@ describe("AnimatedImage", () => {
     ];
 
     image.gotoAndPlay(0);
-    image.update(image._currentRenderTime + 45);
+    image.update(image.$currentRenderTime + 45);
 
     expect(image.isPlaying).toBe(true);
     expect(image.textureCrop.x).toBe(10);

@@ -39,33 +39,33 @@ export class FilterRenderer extends BaseRenderer {
 
     super(config);
 
-    this._attachFramebufferAndClearFv = this.$attachFramebufferAndClear;
+    this.$attachFramebufferAndClearFv = this.$attachFramebufferAndClear;
     this.$attachFramebufferAndClear = noop;
 
     this.filters = config.filters || [];
     this.sourceTexture = config.sourceTexture;
 
-    this._framebuffers = [new Framebuffer(), new Framebuffer()];
+    this.$framebuffers = [new Framebuffer(), new Framebuffer()];
   }
 
   get filters() {
-    return this._filters;
+    return this.$filters;
   }
 
   set filters(v) {
-    this._filters = new Proxy(v, {
+    this.$filters = new Proxy(v, {
       deleteProperty: (target, property) => {
         delete target[property];
-        this._rendererId++;
+        this.$rendererId++;
         return true;
       },
       set: (target, property, value) => {
         target[property] = value;
-        this._rendererId++;
+        this.$rendererId++;
         return true;
       },
     });
-    this._rendererId++;
+    this.$rendererId++;
   }
 
   /**
@@ -73,8 +73,8 @@ export class FilterRenderer extends BaseRenderer {
    * @ignore
    */
   $render(framebuffer) {
-    const { context, $gl, $renderTime, $locations, _filters } = this;
-    const l = _filters.length || 1;
+    const { context, $gl, $renderTime, $locations, $filters } = this;
+    const l = $filters.length || 1;
     const minL = l - 2;
 
     let i = -1;
@@ -88,7 +88,7 @@ export class FilterRenderer extends BaseRenderer {
     $gl.uniform3f($locations.uF, this.width, this.height, $renderTime % 864e5);
 
     while (++i < l) {
-      const filter = _filters[i];
+      const filter = $filters[i];
       const useFilter = filter && filter.on;
       const isLast = i > minL;
       const filterTexture = useFilter && filter.texture;
@@ -98,10 +98,10 @@ export class FilterRenderer extends BaseRenderer {
       filterTexture && this.$useTextureAt(filterTexture, $locations.uH, 1);
 
       if (isLast) {
-        framebuffer ? this._attachFramebufferAndClearFv(framebuffer) : $gl.uniform1f($locations.uA, 1);
+        framebuffer ? this.$attachFramebufferAndClearFv(framebuffer) : $gl.uniform1f($locations.uA, 1);
       } else if (useFilter) {
-        filterFramebuffer = this._framebuffers[i & 1];
-        this._attachFramebufferAndClearFv(filterFramebuffer);
+        filterFramebuffer = this.$framebuffers[i & 1];
+        this.$attachFramebufferAndClearFv(filterFramebuffer);
       }
 
       if (useFilter) {

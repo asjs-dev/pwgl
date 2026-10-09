@@ -55,7 +55,7 @@ export class Item {
   }
   set parent(v) {
     this.$parent = v;
-    this._parentChanged = true;
+    this.$parentChanged = true;
   }
 
   /**
@@ -66,10 +66,10 @@ export class Item {
    * @type {function}
    */
   get callbackBeforeRender() {
-    return this._callbackBeforeRender;
+    return this.$callbackBeforeRender;
   }
   set callbackBeforeRender(v) {
-    this._callbackBeforeRender = v ?? noop;
+    this.$callbackBeforeRender = v ?? noop;
   }
 
   /**
@@ -80,10 +80,10 @@ export class Item {
    * @type {function}
    */
   get callbackAfterRender() {
-    return this._callbackAfterRender;
+    return this.$callbackAfterRender;
   }
   set callbackAfterRender(v) {
-    this._callbackAfterRender = v ?? noop;
+    this.$callbackAfterRender = v ?? noop;
   }
 
   /**
@@ -129,13 +129,13 @@ export class Item {
    * Update color and transform values
    */
   update() {
-    const { transform, color, $parent, _parentChanged } = this;
+    const { transform, color, $parent, $parentChanged } = this;
 
-    this._parentChanged = false;
+    this.$parentChanged = false;
 
     color.update();
 
-    this.colorUpdated = _parentChanged || color.updated || $parent.colorUpdated;
+    this.colorUpdated = $parentChanged || color.updated || $parent.colorUpdated;
 
     if (this.colorUpdated) {
       const { colorCache } = this;
@@ -150,7 +150,7 @@ export class Item {
 
     transform.update();
 
-    this.transformUpdated = _parentChanged || transform.updated || $parent.transformUpdated;
+    this.transformUpdated = $parentChanged || transform.updated || $parent.transformUpdated;
 
     this.transformUpdated && Matrix3Utilities.transform(this.matrixCache, $parent.matrixCache, transform);
   }

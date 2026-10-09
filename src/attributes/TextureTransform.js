@@ -22,10 +22,10 @@ export class TextureTransform extends BaseTransform {
    * @type {number}
    */
   get repeatX() {
-    return this._repeatX;
+    return this.$repeatX;
   }
   set repeatX(v) {
-    this._repeatX = this.scaledWidth = v;
+    this.$repeatX = this.scaledWidth = v;
     this.$transformUpdated = true;
   }
 
@@ -34,10 +34,10 @@ export class TextureTransform extends BaseTransform {
    * @type {number}
    */
   get repeatY() {
-    return this._repeatY;
+    return this.$repeatY;
   }
   set repeatY(v) {
-    this._repeatY = this.scaledHeight = v;
+    this.$repeatY = this.scaledHeight = v;
     this.$transformUpdated = true;
   }
 

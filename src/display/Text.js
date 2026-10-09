@@ -19,8 +19,8 @@ export class Text extends Image {
 
     super(new Texture(canvas, true));
 
-    this._canvas = canvas;
-    this._ctx = canvas.getContext("2d", {
+    this.$canvas = canvas;
+    this.$ctx = canvas.getContext("2d", {
       alpha: true,
     });
 
@@ -36,12 +36,12 @@ export class Text extends Image {
    * @type {string}
    */
   get text() {
-    return this._text;
+    return this.$text;
   }
 
   set text(v) {
-    this._text = v;
-    this._updateFv = this._updateTexture;
+    this.$text = v;
+    this.$updateFv = this.$updateTexture;
   }
 
   /**
@@ -49,12 +49,12 @@ export class Text extends Image {
    * @type {number}
    */
   get fontSize() {
-    return this._fontSize;
+    return this.$fontSize;
   }
 
   set fontSize(v) {
-    this._fontSize = v;
-    this._updateFv = this._updateTexture;
+    this.$fontSize = v;
+    this.$updateFv = this.$updateTexture;
   }
 
   /**
@@ -62,12 +62,12 @@ export class Text extends Image {
    * @type {string}
    */
   get fontFamily() {
-    return this._fontFamily;
+    return this.$fontFamily;
   }
 
   set fontFamily(v) {
-    this._fontFamily = v;
-    this._updateFv = this._updateTexture;
+    this.$fontFamily = v;
+    this.$updateFv = this.$updateTexture;
   }
 
   /**
@@ -75,12 +75,12 @@ export class Text extends Image {
    * @type {string}
    */
   get fontColor() {
-    return this._fontColor;
+    return this.$fontColor;
   }
 
   set fontColor(v) {
-    this._fontColor = v;
-    this._updateFv = this._updateTexture;
+    this.$fontColor = v;
+    this.$updateFv = this.$updateTexture;
   }
 
   /**
@@ -88,12 +88,12 @@ export class Text extends Image {
    * @type {string}
    */
   get align() {
-    return this._align;
+    return this.$align;
   }
 
   set align(v) {
-    this._align = v;
-    this._updateFv = this._updateTexture;
+    this.$align = v;
+    this.$updateFv = this.$updateTexture;
   }
 
   /**
@@ -101,42 +101,42 @@ export class Text extends Image {
    * @type {number}
    */
   get lineHeight() {
-    return this._lineHeight;
+    return this.$lineHeight;
   }
 
   set lineHeight(v) {
-    this._lineHeight = v;
-    this._updateFv = this._updateTexture;
+    this.$lineHeight = v;
+    this.$updateFv = this.$updateTexture;
   }
 
   update() {
     super.update();
-    this.transformUpdated ? this._updateTexture() : this._updateFv();
+    this.transformUpdated ? this.$updateTexture() : this.$updateFv();
   }
 
-  _updateTexture() {
-    this._updateFv = noop;
+  $updateTexture() {
+    this.$updateFv = noop;
 
-    const { _ctx, _canvas, _align, _fontSize, _lineHeight, transform } = this;
-    const lineHeight = _lineHeight * _fontSize;
+    const { $ctx, $canvas, $align, $fontSize, $lineHeight, transform } = this;
+    const lineHeight = $lineHeight * $fontSize;
     const maxWidth = transform.width;
 
-    _canvas.width = transform.width;
-    _canvas.height = transform.height;
+    $canvas.width = transform.width;
+    $canvas.height = transform.height;
 
-    _ctx.font = _fontSize + "px " + this._fontFamily;
-    _ctx.textBaseline = "top";
-    _ctx.textAlign = _align;
-    _ctx.fillStyle = this._fontColor;
+    $ctx.font = $fontSize + "px " + this.$fontFamily;
+    $ctx.textBaseline = "top";
+    $ctx.textAlign = $align;
+    $ctx.fillStyle = this.$fontColor;
 
-    const lines = layoutText(_ctx, this._text, maxWidth);
-    const x = _align === "center" ? maxWidth / 2 : _align === "right" ? maxWidth : 0;
+    const lines = layoutText($ctx, this.$text, maxWidth);
+    const x = $align === "center" ? maxWidth / 2 : $align === "right" ? maxWidth : 0;
 
     for (let i = 0, l = lines.length; i < l; i++) {
       const line = lines[i];
       const y = lineHeight * i;
 
-      _ctx.fillText(line, x, y);
+      $ctx.fillText(line, x, y);
     }
 
     this.texture.updateSize();

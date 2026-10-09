@@ -17,7 +17,7 @@ export class ItemTransform extends BaseTransform {
     super();
 
     this.$updateScaleFv = noop;
-    this.scaledWidth = this.scaledHeight = this._scaleX = this._scaleY = this.$width = this.$height = 1;
+    this.scaledWidth = this.scaledHeight = this.$scaleX = this.$scaleY = this.$width = this.$height = 1;
   }
 
   /**
@@ -25,10 +25,10 @@ export class ItemTransform extends BaseTransform {
    * @type {number}
    */
   get scaleX() {
-    return this._scaleX;
+    return this.$scaleX;
   }
   set scaleX(v) {
-    this._scaleX = v;
+    this.$scaleX = v;
     this.$updateScaleFv = this.$updateScale;
   }
 
@@ -37,10 +37,10 @@ export class ItemTransform extends BaseTransform {
    * @type {number}
    */
   get scaleY() {
-    return this._scaleY;
+    return this.$scaleY;
   }
   set scaleY(v) {
-    this._scaleY = v;
+    this.$scaleY = v;
     this.$updateScaleFv = this.$updateScale;
   }
 
@@ -81,7 +81,7 @@ export class ItemTransform extends BaseTransform {
     this.$updateScaleFv = noop;
     this.$transformUpdated = true;
 
-    this.scaledWidth = this.$width * this._scaleX;
-    this.scaledHeight = this.$height * this._scaleY;
+    this.scaledWidth = this.$width * this.$scaleX;
+    this.scaledHeight = this.$height * this.$scaleY;
   }
 }

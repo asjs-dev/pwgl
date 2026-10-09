@@ -42,11 +42,11 @@ describe("Buffer", () => {
     expect(gl.vertexAttribPointer).not.toHaveBeenCalled();
     expect(gl.vertexAttribDivisor).not.toHaveBeenCalled();
     expect(gl.bufferData).toHaveBeenCalledWith(
-      buffer._target,
-      buffer.data.byteLength + buffer._stride,
-      buffer._type,
+      buffer.$target,
+      buffer.data.byteLength + buffer.$stride,
+      buffer.$type,
     );
-    expect(gl.bufferSubData).toHaveBeenCalledWith(buffer._target, 0, buffer.data, 0, buffer.data.length);
+    expect(gl.bufferSubData).toHaveBeenCalledWith(buffer.$target, 0, buffer.data, 0, buffer.data.length);
   });
 
   it("uploads only the requested number of structured elements", async () => {
@@ -66,11 +66,11 @@ describe("Buffer", () => {
     buffer.uploadElements(gl, 3);
 
     expect(gl.bufferData).toHaveBeenCalledWith(
-      buffer._target,
-      buffer.data.byteLength + buffer._stride,
-      buffer._type,
+      buffer.$target,
+      buffer.data.byteLength + buffer.$stride,
+      buffer.$type,
     );
-    expect(gl.bufferSubData).toHaveBeenCalledWith(buffer._target, 0, buffer.data, 0, 24);
+    expect(gl.bufferSubData).toHaveBeenCalledWith(buffer.$target, 0, buffer.data, 0, 24);
   });
 
   it("retains GPU capacity when the logical data size decreases", async () => {
@@ -91,7 +91,7 @@ describe("Buffer", () => {
     buffer.upload(gl);
 
     expect(gl.bufferData).toHaveBeenCalledTimes(1);
-    expect(gl.bufferSubData).toHaveBeenCalledWith(buffer._target, 0, buffer.data, 0, 4);
+    expect(gl.bufferSubData).toHaveBeenCalledWith(buffer.$target, 0, buffer.data, 0, 4);
   });
 
   it("grows GPU capacity before uploading larger replacement data", async () => {
@@ -111,9 +111,9 @@ describe("Buffer", () => {
     buffer.data = new Float32Array(6);
     buffer.upload(gl);
 
-    expect(gl.bufferData).toHaveBeenNthCalledWith(1, buffer._target, 12, buffer._type);
-    expect(gl.bufferData).toHaveBeenNthCalledWith(2, buffer._target, 28, buffer._type);
-    expect(gl.bufferSubData).toHaveBeenCalledWith(buffer._target, 0, buffer.data, 0, 6);
+    expect(gl.bufferData).toHaveBeenNthCalledWith(1, buffer.$target, 12, buffer.$type);
+    expect(gl.bufferData).toHaveBeenNthCalledWith(2, buffer.$target, 28, buffer.$type);
+    expect(gl.bufferSubData).toHaveBeenCalledWith(buffer.$target, 0, buffer.data, 0, 6);
   });
 
   it("drops references during destruct", async () => {

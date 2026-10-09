@@ -36,7 +36,7 @@ export class Image extends BaseDrawable {
     this.texture = texture;
     this.tintType = TintType.MULTIPLY;
     this.blendMode = BlendMode.NORMAL;
-    this._inverseMatrixCache = new Float32Array(6);
+    this.$inverseMatrixCache = new Float32Array(6);
     this.textureMatrixCache = Matrix3Utilities.identity();
     this.textureTransform = new TextureTransform();
     this.textureCrop = new TextureCrop();
@@ -58,7 +58,7 @@ export class Image extends BaseDrawable {
     textureTransform.update();
     textureTransform.updated && Matrix3Utilities.transformLocal(this.textureMatrixCache, textureTransform);
 
-    this.interactive && this.transformUpdated && Matrix3Utilities.inverse(this._inverseMatrixCache, this.matrixCache);
+    this.interactive && this.transformUpdated && Matrix3Utilities.inverse(this.$inverseMatrixCache, this.matrixCache);
   }
 
   /**
@@ -67,7 +67,7 @@ export class Image extends BaseDrawable {
    * @returns {boolean}
    */
   isContainsPoint(point) {
-    return Matrix3Utilities.isPointInMatrix(this._inverseMatrixCache, point);
+    return Matrix3Utilities.isPointInMatrix(this.$inverseMatrixCache, point);
   }
 }
 

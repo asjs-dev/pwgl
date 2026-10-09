@@ -61,7 +61,7 @@ describe("LightRenderer", () => {
     renderer.sourceTexture = texture;
 
     expect(renderer.sourceTexture).toBe(texture);
-    expect(renderer._sizable).toBe(texture);
+    expect(renderer.$sizable).toBe(texture);
   });
 
   it("updates sizable reference when setting normalMap", async () => {
@@ -73,7 +73,7 @@ describe("LightRenderer", () => {
     renderer.normalMap = texture;
 
     expect(renderer.normalMap).toBe(texture);
-    expect(renderer._sizable).toBe(texture);
+    expect(renderer.$sizable).toBe(texture);
   });
 
   it("updates sizable reference when setting heightMap", async () => {
@@ -85,7 +85,7 @@ describe("LightRenderer", () => {
     renderer.heightMap = texture;
 
     expect(renderer.heightMap).toBe(texture);
-    expect(renderer._sizable).toBe(texture);
+    expect(renderer.$sizable).toBe(texture);
   });
 
   it("updates sizable reference when setting roughnessMap", async () => {
@@ -97,7 +97,7 @@ describe("LightRenderer", () => {
     renderer.roughnessMap = texture;
 
     expect(renderer.roughnessMap).toBe(texture);
-    expect(renderer._sizable).toBe(texture);
+    expect(renderer.$sizable).toBe(texture);
   });
 
   it("creates vertex shader with proper GLSL defines", async () => {
@@ -151,7 +151,7 @@ describe("LightRenderer", () => {
     renderer.roughnessMap = { id: 4 };
     renderer.offsetX = 10;
     renderer.offsetY = 20;
-    renderer._sizable = { width: 800, height: 600 };
+    renderer.$sizable = { width: 800, height: 600 };
 
     renderer.$render();
 
@@ -178,7 +178,7 @@ describe("LightRenderer", () => {
 
     // Only set heightMap (required for shadows)
     renderer.heightMap = { id: 3 };
-    renderer._sizable = { width: 800, height: 600 };
+    renderer.$sizable = { width: 800, height: 600 };
 
     renderer.$render();
 
@@ -196,7 +196,7 @@ describe("LightRenderer", () => {
 
     renderer.$createBuffers();
 
-    expect(renderer._extensionBuffer).toBeDefined();
+    expect(renderer.$extensionBuffer).toBeDefined();
     expect(gl.createBuffer).toHaveBeenCalled();
     expect(gl.bindBuffer).toHaveBeenCalled();
   });
@@ -205,24 +205,24 @@ describe("LightRenderer", () => {
     const { LightRenderer } = await loadLightRendererModule();
 
     const { renderer, gl } = createLightRendererHarness(LightRenderer);
-    renderer._batchItems = 4;
+    renderer.$batchItems = 4;
 
-    renderer._extensionBuffer = {
+    renderer.$extensionBuffer = {
       uploadElements: vi.fn()
     };
     renderer.$matrixBuffer = {
       uploadElements: vi.fn()
     };
-    renderer._positionBuffer = {
+    renderer.$positionBuffer = {
       upload: vi.fn()
     };
-    renderer._elementArrayBuffer = {
+    renderer.$elementArrayBuffer = {
       upload: vi.fn()
     };
 
     renderer.$uploadBuffers();
 
-    expect(renderer._extensionBuffer.uploadElements).toHaveBeenCalledWith(gl, 4);
+    expect(renderer.$extensionBuffer.uploadElements).toHaveBeenCalledWith(gl, 4);
     expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 4);
   });
 });

@@ -22,7 +22,7 @@ export class Color {
   }
   set r(v) {
     this.cache[0] = v;
-    this._colorUpdated = true;
+    this.$colorUpdated = true;
   }
 
   /**
@@ -34,7 +34,7 @@ export class Color {
   }
   set g(v) {
     this.cache[1] = v;
-    this._colorUpdated = true;
+    this.$colorUpdated = true;
   }
 
   /**
@@ -46,7 +46,7 @@ export class Color {
   }
   set b(v) {
     this.cache[2] = v;
-    this._colorUpdated = true;
+    this.$colorUpdated = true;
   }
 
   /**
@@ -58,7 +58,7 @@ export class Color {
   }
   set a(v) {
     this.cache[3] = v;
-    this._colorUpdated = true;
+    this.$colorUpdated = true;
   }
 
   /**
@@ -73,14 +73,14 @@ export class Color {
     this.cache[1] = g;
     this.cache[2] = b;
     this.cache[3] = a;
-    this._colorUpdated = true;
+    this.$colorUpdated = true;
   }
 
   /**
    * Update calculated color values
    */
   update() {
-    this.updated = this._colorUpdated;
-    this._colorUpdated = false;
+    this.updated = this.$colorUpdated;
+    this.$colorUpdated = false;
   }
 }

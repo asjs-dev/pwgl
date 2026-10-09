@@ -29,7 +29,7 @@ export class BatchRenderer extends BaseRenderer {
     super(config);
 
     this.$MAX_RENDER_COUNT = config.maxRenderCount || 10000;
-    this._batchItems = 0;
+    this.$batchItems = 0;
 
     // prettier-ignore
     this.$matrixBuffer = new Buffer(
@@ -44,7 +44,7 @@ export class BatchRenderer extends BaseRenderer {
    * @ignore
    */
   $uploadBuffers() {
-    this.$matrixBuffer.uploadElements(this.$gl, this._batchItems);
+    this.$matrixBuffer.uploadElements(this.$gl, this.$batchItems);
     super.$uploadBuffers();
   }
 

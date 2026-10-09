@@ -56,7 +56,7 @@ export class LightRenderer extends BatchRenderer {
     this.clearBeforeRender = true;
     this.clearColor.set(0, 0, 0, 1);
 
-    this._sizable = this;
+    this.$sizable = this;
 
     this.sourceTexture = config.sourceTexture;
     this.normalMap = config.normalMap;
@@ -66,7 +66,7 @@ export class LightRenderer extends BatchRenderer {
     this.offsetY = config.offsetY ?? 0;
 
     // prettier-ignore
-    this._extensionBuffer = new Buffer(
+    this.$extensionBuffer = new Buffer(
       "aC",
       this.$MAX_RENDER_COUNT,
       2,
@@ -75,46 +75,46 @@ export class LightRenderer extends BatchRenderer {
   }
 
   get sourceTexture() {
-    return this._sourceTexture;
+    return this.$sourceTexture;
   }
 
   set sourceTexture(v) {
-    this._sourceTexture = v;
+    this.$sourceTexture = v;
     if (v) {
-      this._sizable = v;
+      this.$sizable = v;
     }
   }
 
   get normalMap() {
-    return this._normalMap;
+    return this.$normalMap;
   }
 
   set normalMap(v) {
-    this._normalMap = v;
+    this.$normalMap = v;
     if (v) {
-      this._sizable = v;
+      this.$sizable = v;
     }
   }
 
   get heightMap() {
-    return this._heightMap;
+    return this.$heightMap;
   }
 
   set heightMap(v) {
-    this._heightMap = v;
+    this.$heightMap = v;
     if (v) {
-      this._sizable = v;
+      this.$sizable = v;
     }
   }
 
   get roughnessMap() {
-    return this._roughnessMap;
+    return this.$roughnessMap;
   }
 
   set roughnessMap(v) {
-    this._roughnessMap = v;
+    this.$roughnessMap = v;
     if (v) {
-      this._sizable = v;
+      this.$sizable = v;
     }
   }
 
@@ -133,14 +133,14 @@ export class LightRenderer extends BatchRenderer {
    * @param {Light} light
    */
   addLightForRender(light) {
-    const { _batchItems } = this;
+    const { $batchItems } = this;
     const { parent } = light;
 
-    if (_batchItems < this.$MAX_RENDER_COUNT) {
-      const matrixBufferId = _batchItems * 16;
-      const extensionBufferId = _batchItems * 6;
+    if ($batchItems < this.$MAX_RENDER_COUNT) {
+      const matrixBufferId = $batchItems * 16;
+      const extensionBufferId = $batchItems * 6;
       const matrixBufferData = this.$matrixBuffer.data;
-      const extensionBufferData = this._extensionBuffer.data;
+      const extensionBufferData = this.$extensionBuffer.data;
 
       arraySet(matrixBufferData, light.matrixCache, matrixBufferId);
       matrixBufferData[matrixBufferId + 6] = light.transform.width;
@@ -159,7 +159,7 @@ export class LightRenderer extends BatchRenderer {
       extensionBufferData[extensionBufferId + 4] = light.specularStrength;
       extensionBufferData[extensionBufferId + 5] = light.attenuation;
 
-      ++this._batchItems;
+      ++this.$batchItems;
     }
   }
 
@@ -167,38 +167,38 @@ export class LightRenderer extends BatchRenderer {
    * @ignore
    */
   $render() {
-    const { $gl, $locations, _sourceTexture, _normalMap, _roughnessMap, _heightMap } = this;
-    const sourceTextureBoolean = !!_sourceTexture;
-    const normalMapBoolean = !!_normalMap;
-    const roughnessMapBoolean = !!_roughnessMap;
-    const heightMapBoolean = !!_heightMap;
+    const { $gl, $locations, $sourceTexture, $normalMap, $roughnessMap, $heightMap } = this;
+    const sourceTextureBoolean = !!$sourceTexture;
+    const normalMapBoolean = !!$normalMap;
+    const roughnessMapBoolean = !!$roughnessMap;
+    const heightMapBoolean = !!$heightMap;
 
     this.context.setBlendMode(BlendMode.ADD);
 
-    sourceTextureBoolean && this.$useTexture(_sourceTexture, $locations.uC);
+    sourceTextureBoolean && this.$useTexture($sourceTexture, $locations.uC);
 
-    normalMapBoolean && this.$useTexture(_normalMap, $locations.uM);
+    normalMapBoolean && this.$useTexture($normalMap, $locations.uM);
 
-    roughnessMapBoolean && this.$useTexture(_roughnessMap, $locations.uN);
+    roughnessMapBoolean && this.$useTexture($roughnessMap, $locations.uN);
 
-    heightMapBoolean && this.$useTexture(_heightMap, $locations.uB);
+    heightMapBoolean && this.$useTexture($heightMap, $locations.uB);
 
     $gl.uniform3f($locations.uO, sourceTextureBoolean, roughnessMapBoolean, normalMapBoolean);
-    $gl.uniform2f($locations.uF, this._sizable.width, this._sizable.height);
+    $gl.uniform2f($locations.uF, this.$sizable.width, this.$sizable.height);
     $gl.uniform2f($locations.uG, this.offsetX, this.offsetY);
 
     this.$uploadBuffers();
 
-    this.$drawInstanced(this._batchItems);
+    this.$drawInstanced(this.$batchItems);
 
-    this._batchItems = 0;
+    this.$batchItems = 0;
   }
 
   /**
    * @ignore
    */
   $uploadBuffers() {
-    this._extensionBuffer.uploadElements(this.$gl, this._batchItems);
+    this.$extensionBuffer.uploadElements(this.$gl, this.$batchItems);
     super.$uploadBuffers();
   }
 
@@ -207,7 +207,7 @@ export class LightRenderer extends BatchRenderer {
    */
   $createBuffers() {
     super.$createBuffers();
-    this._extensionBuffer.create(this.$gl, this.$locations);
+    this.$extensionBuffer.create(this.$gl, this.$locations);
   }
 
   // prettier-ignore

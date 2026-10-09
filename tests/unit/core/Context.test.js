@@ -65,7 +65,7 @@ describe("Context", () => {
 
     expect(textureId).toBe(0);
     expect(textureInfo.use).toHaveBeenCalledWith(gl, 0, true, 12345);
-    expect(context._textureMap[0]).toBe(textureInfo);
+    expect(context.$textureMap[0]).toBe(textureInfo);
     expect(context.textureIds).toContain(0);
     expect(context.textureSizes[0]).toBe(256);
     expect(context.textureSizes[1]).toBe(128);
@@ -88,7 +88,7 @@ describe("Context", () => {
 
     // First use
     context.useTexture(textureInfo, 12345);
-    expect(context._textureMap[0]).toBe(textureInfo);
+    expect(context.$textureMap[0]).toBe(textureInfo);
 
     // Second use should reuse slot
     textureInfo.use.mockClear();
@@ -117,7 +117,7 @@ describe("Context", () => {
 
     expect(textureId).toBe(5);
     expect(textureInfo.use).toHaveBeenCalledWith(gl, 5, false, 99999);
-    expect(context._textureMap[5]).toBe(textureInfo);
+    expect(context.$textureMap[5]).toBe(textureInfo);
     expect(context.textureIds).toContain(5);
   });
 
@@ -134,7 +134,7 @@ describe("Context", () => {
       unbindTexture: vi.fn(),
     };
 
-    context._textureMap[3] = textureInfo;
+    context.$textureMap[3] = textureInfo;
 
     context.deactivateTexture(textureInfo);
 
@@ -160,8 +160,8 @@ describe("Context", () => {
 
     expect(gl.useProgram).toHaveBeenCalledWith(program);
     expect(gl.bindVertexArray).toHaveBeenCalledWith(vao);
-    expect(context._currentProgram).toBe(program);
-    expect(context._currentVertexArray).toBe(vao);
+    expect(context.$currentProgram).toBe(program);
+    expect(context.$currentVertexArray).toBe(vao);
   });
 
   it("skips program and vertex array switches if both are unchanged", async () => {
@@ -217,7 +217,7 @@ describe("Context", () => {
     expect(gl.useProgram).not.toHaveBeenCalled();
     expect(gl.bindVertexArray).toHaveBeenCalledOnce();
     expect(gl.bindVertexArray).toHaveBeenCalledWith(secondVao);
-    expect(context._currentVertexArray).toBe(secondVao);
+    expect(context.$currentVertexArray).toBe(secondVao);
   });
 
   it("switches programs independently from vertex arrays", async () => {
@@ -245,7 +245,7 @@ describe("Context", () => {
     expect(gl.useProgram).toHaveBeenCalledOnce();
     expect(gl.useProgram).toHaveBeenCalledWith(secondProgram);
     expect(gl.bindVertexArray).not.toHaveBeenCalled();
-    expect(context._currentProgram).toBe(secondProgram);
+    expect(context.$currentProgram).toBe(secondProgram);
   });
 
   it("sets canvas size", async () => {
@@ -279,8 +279,8 @@ describe("Context", () => {
 
     expect(gl.viewport).toHaveBeenCalledWith(0, 0, 800, 600);
     expect(gl.scissor).toHaveBeenCalledWith(0, 0, 800, 600);
-    expect(context._width).toBe(800);
-    expect(context._height).toBe(600);
+    expect(context.$width).toBe(800);
+    expect(context.$height).toBe(600);
   });
 
   it("skips size setting if dimensions unchanged", async () => {
@@ -328,7 +328,7 @@ describe("Context", () => {
 
     expect(gl.blendFunc).toHaveBeenCalledWith(1, 2, 3, 4);
     expect(gl.blendEquation).toHaveBeenCalledWith(5, 6);
-    expect(context._currentBlendMode).toBe(blendMode);
+    expect(context.$currentBlendMode).toBe(blendMode);
   });
 
   it("sets blend mode with callback when mode changes", async () => {
@@ -374,14 +374,14 @@ describe("Context", () => {
 
     const context = new Context({ canvas });
 
-    expect(context._loseContext).toBeDefined();
-    expect(context._restoreContext).toBeDefined();
+    expect(context.$loseContext).toBeDefined();
+    expect(context.$restoreContext).toBeDefined();
 
-    context._currentProgram = { id: "program" };
-    context._currentVertexArray = { id: "vao" };
-    context._initContext();
+    context.$currentProgram = { id: "program" };
+    context.$currentVertexArray = { id: "vao" };
+    context.$initContext();
 
-    expect(context._currentProgram).toBe(null);
-    expect(context._currentVertexArray).toBe(null);
+    expect(context.$currentProgram).toBe(null);
+    expect(context.$currentVertexArray).toBe(null);
   });
 });

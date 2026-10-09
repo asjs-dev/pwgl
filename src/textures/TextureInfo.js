@@ -43,10 +43,10 @@ export class TextureInfo {
    * @type {number}
    */
   get wrapS() {
-    return this._wrapS;
+    return this.$wrapS;
   }
   set wrapS(v) {
-    this._wrapS = v;
+    this.$wrapS = v;
     this.$updated = true;
   }
 
@@ -55,10 +55,10 @@ export class TextureInfo {
    * @type {number}
    */
   get wrapT() {
-    return this._wrapT;
+    return this.$wrapT;
   }
   set wrapT(v) {
-    this._wrapT = v;
+    this.$wrapT = v;
     this.$updated = true;
   }
 
@@ -67,10 +67,10 @@ export class TextureInfo {
    * @type {number}
    */
   get internalFormat() {
-    return this._internalFormat;
+    return this.$internalFormat;
   }
   set internalFormat(v) {
-    this._internalFormat = v;
+    this.$internalFormat = v;
     this.$updated = true;
   }
 
@@ -79,10 +79,10 @@ export class TextureInfo {
    * @type {number}
    */
   get format() {
-    return this._format;
+    return this.$format;
   }
   set format(v) {
-    this._format = v;
+    this.$format = v;
     this.$updated = true;
   }
 
@@ -91,10 +91,10 @@ export class TextureInfo {
    * @type {number}
    */
   get minFilter() {
-    return this._minFilter;
+    return this.$minFilter;
   }
   set minFilter(v) {
-    this._minFilter = v;
+    this.$minFilter = v;
     this.$updated = true;
   }
 
@@ -103,10 +103,10 @@ export class TextureInfo {
    * @type {number}
    */
   get magFilter() {
-    return this._magFilter;
+    return this.$magFilter;
   }
   set magFilter(v) {
-    this._magFilter = v;
+    this.$magFilter = v;
     this.$updated = true;
   }
 
@@ -115,10 +115,10 @@ export class TextureInfo {
    * @type {number}
    */
   get maxMipMapLevel() {
-    return this._maxMipMapLevel;
+    return this.$maxMipMapLevel;
   }
   set maxMipMapLevel(v) {
-    this._maxMipMapLevel = v;
+    this.$maxMipMapLevel = v;
     this.$updated = true;
   }
 
@@ -127,10 +127,10 @@ export class TextureInfo {
    * @type {number}
    */
   get baseMipMapLevel() {
-    return this._baseMipMapLevel;
+    return this.$baseMipMapLevel;
   }
   set baseMipMapLevel(v) {
-    this._baseMipMapLevel = v;
+    this.$baseMipMapLevel = v;
     this.$updated = true;
   }
 
@@ -139,10 +139,10 @@ export class TextureInfo {
    * @type {number}
    */
   get type() {
-    return this._type;
+    return this.$type;
   }
   set type(v) {
-    this._type = v;
+    this.$type = v;
     this.$updated = true;
   }
 
@@ -223,12 +223,12 @@ export class TextureInfo {
     gl.texImage2D(
       this.target,
       0,
-      this._internalFormat,
+      this.$internalFormat,
       this.width,
       this.height,
       0,
-      this._format,
-      this._type,
+      this.$format,
+      this.$type,
       this.$renderSource,
     );
 
@@ -241,12 +241,12 @@ export class TextureInfo {
    */
   uploadTextureInfo(gl) {
     const { target } = this;
-    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_WRAP_S, this._wrapS);
-    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_WRAP_T, this._wrapT);
-    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MIN_FILTER, this._minFilter);
-    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MAG_FILTER, this._magFilter);
-    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MAX_LEVEL, this._maxMipMapLevel);
-    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_BASE_LEVEL, this._baseMipMapLevel);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_WRAP_S, this.$wrapS);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_WRAP_T, this.$wrapT);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MIN_FILTER, this.$minFilter);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MAG_FILTER, this.$magFilter);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MAX_LEVEL, this.$maxMipMapLevel);
+    gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_BASE_LEVEL, this.$baseMipMapLevel);
     gl.generateMipmap(target);
   }
 }

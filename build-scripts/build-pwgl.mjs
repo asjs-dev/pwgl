@@ -38,13 +38,6 @@ const createConfig = ({ entry, name, fileName, format }) => ({
       formats: [format],
     },
     minify: "terser",
-    terserOptions: {
-      mangle: {
-        properties: {
-          regex: /^_/,
-        },
-      },
-    },
     emptyOutDir: false,
   },
   plugins: [

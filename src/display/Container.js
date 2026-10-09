@@ -32,9 +32,9 @@ export class Container extends Item {
   set parent(v) {
     super.parent = v;
     if (v) {
-      this._getParentPremultipliedUseTint = v.getPremultipliedUseTint.bind(v);
-      this._getParentPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
-    } else this._getParentPremultipliedUseTint = this._getParentPremultipliedAlpha = noopReturnsWith(1);
+      this.$getParentPremultipliedUseTint = v.getPremultipliedUseTint.bind(v);
+      this.$getParentPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
+    } else this.$getParentPremultipliedUseTint = this.$getParentPremultipliedAlpha = noopReturnsWith(1);
   }
 
   /**
@@ -42,7 +42,7 @@ export class Container extends Item {
    * @type {Container}
    */
   getPremultipliedUseTint() {
-    return this.useTint * this._getParentPremultipliedUseTint();
+    return this.useTint * this.$getParentPremultipliedUseTint();
   }
 
   /**
@@ -50,7 +50,7 @@ export class Container extends Item {
    * @type {Container}
    */
   getPremultipliedAlpha() {
-    return this.alpha * this._getParentPremultipliedAlpha();
+    return this.alpha * this.$getParentPremultipliedAlpha();
   }
 
   /**

@@ -25,17 +25,17 @@ export class Context {
 
     this.isLost = noopReturnsWith(1);
 
-    this._config = Utils.initContextConfig(config);
+    this.$config = Utils.initContextConfig(config);
 
-    this._onContextLost = this._onContextLost.bind(this);
-    this._initContext = this._initContext.bind(this);
+    this.$onContextLost = this.$onContextLost.bind(this);
+    this.$initContext = this.$initContext.bind(this);
 
-    const { canvas } = this._config;
+    const { canvas } = this.$config;
     this.canvas = canvas;
-    canvas.addEventListener("webglcontextlost", this._onContextLost);
-    canvas.addEventListener("webglcontextrestored", this._initContext);
+    canvas.addEventListener("webglcontextlost", this.$onContextLost);
+    canvas.addEventListener("webglcontextrestored", this.$initContext);
 
-    this._initContext();
+    this.$initContext();
   }
 
   /**
@@ -43,7 +43,7 @@ export class Context {
    * @param {BlendModeInfo} blendMode
    */
   useBlendMode(blendMode) {
-    this._currentBlendMode = blendMode;
+    this.$currentBlendMode = blendMode;
 
     const { gl } = this;
     gl[blendMode.equationName].apply(gl, blendMode.equations);
@@ -56,7 +56,7 @@ export class Context {
    * @param {function} drawCallback
    */
   setBlendMode(blendMode, drawCallback) {
-    if (this._currentBlendMode !== blendMode) {
+    if (this.$currentBlendMode !== blendMode) {
       drawCallback && drawCallback();
       this.useBlendMode(blendMode);
     }
@@ -69,10 +69,10 @@ export class Context {
     this.gl.useProgram(null);
 
     const { canvas } = this;
-    canvas.removeEventListener("webglcontextlost", this._onContextLost);
-    canvas.removeEventListener("webglcontextrestored", this._initContext);
+    canvas.removeEventListener("webglcontextlost", this.$onContextLost);
+    canvas.removeEventListener("webglcontextrestored", this.$initContext);
 
-    this._loseContext();
+    this.$loseContext();
   }
 
   /**
@@ -83,9 +83,9 @@ export class Context {
     let i = -1;
 
     while (++i < maxTextureImageUnits) {
-      this._textureMap[i] = null;
-      this._emptyTextureSlots[i] = i;
-      this._setTextureSizeAt(i, 0, 0);
+      this.$textureMap[i] = null;
+      this.$emptyTextureSlots[i] = i;
+      this.$setTextureSizeAt(i, 0, 0);
     }
 
     this.textureIds.length = this.textureSizes.length = 0;
@@ -104,13 +104,13 @@ export class Context {
       return -1;
     }
 
-    let textureId = this._textureMap.indexOf(textureInfo);
+    let textureId = this.$textureMap.indexOf(textureInfo);
     if (textureId < 0) {
-      if (!this._emptyTextureSlots.length) {
+      if (!this.$emptyTextureSlots.length) {
         callback();
         this.clearTextures();
         textureId = 0;
-      } else textureId = this._emptyTextureSlots[0];
+      } else textureId = this.$emptyTextureSlots[0];
       forceBind = true;
     }
 
@@ -128,13 +128,13 @@ export class Context {
   useTextureAt(textureInfo, textureId, renderTime, forceBind = true) {
     textureInfo.use(this.gl, textureId, forceBind, renderTime);
 
-    this._textureMap[textureId] = textureInfo;
+    this.$textureMap[textureId] = textureInfo;
 
-    this._setTextureSizeAt(textureId, textureInfo.width, textureInfo.height);
+    this.$setTextureSizeAt(textureId, textureInfo.width, textureInfo.height);
 
     !this.textureIds.includes(textureId) && this.textureIds.push(textureId);
 
-    removeFromArray(this._emptyTextureSlots, textureId);
+    removeFromArray(this.$emptyTextureSlots, textureId);
 
     return textureId;
   }
@@ -144,7 +144,7 @@ export class Context {
    * @param {TextureInfo} textureInfo
    */
   deactivateTexture(textureInfo) {
-    const textureId = this._textureMap.indexOf(textureInfo);
+    const textureId = this.$textureMap.indexOf(textureInfo);
     textureId > -1 && textureInfo.unbindTexture(this.gl, textureId);
   }
 
@@ -157,14 +157,14 @@ export class Context {
   useProgram(program, vao) {
     const { gl } = this;
 
-    if (this._currentProgram !== program) {
-      this._currentProgram = program;
+    if (this.$currentProgram !== program) {
+      this.$currentProgram = program;
       this.clearTextures();
       gl.useProgram(program);
     }
 
-    if (this._currentVertexArray !== vao) {
-      this._currentVertexArray = vao;
+    if (this.$currentVertexArray !== vao) {
+      this.$currentVertexArray = vao;
       gl.bindVertexArray(vao);
     }
   }
@@ -186,9 +186,9 @@ export class Context {
    * @param {number} height context height
    */
   setSize(width, height) {
-    if (this._width !== width || this._height !== height) {
-      this._width = width;
-      this._height = height;
+    if (this.$width !== width || this.$height !== height) {
+      this.$width = width;
+      this.$height = height;
 
       const { gl } = this;
       gl.viewport(0, 0, width, height);
@@ -199,7 +199,7 @@ export class Context {
   /**
    * @ignore
    */
-  _setTextureSizeAt(textureId, width, height) {
+  $setTextureSizeAt(textureId, width, height) {
     this.textureSizes[textureId * 2] = width;
     this.textureSizes[textureId * 2 + 1] = height;
   }
@@ -208,24 +208,24 @@ export class Context {
    * @param {Object} event
    * @ignore
    */
-  _onContextLost(event) {
+  $onContextLost(event) {
     event.preventDefault();
-    setTimeout(this._restoreContext, 1);
+    setTimeout(this.$restoreContext, 1);
   }
 
   /**
    * @ignore
    */
-  _initContext() {
-    const gl = (this.gl = this.canvas.getContext("webgl2", this._config.contextAttributes));
+  $initContext() {
+    const gl = (this.gl = this.canvas.getContext("webgl2", this.$config.contextAttributes));
 
     gl.gl_id = ++this.contextId;
 
     const loseContextExt = gl.getExtension("WEBGL_lose_context");
     if (loseContextExt) {
-      this._restoreContext = loseContextExt.restoreContext.bind(loseContextExt);
-      this._loseContext = loseContextExt.loseContext.bind(loseContextExt);
-    } else this._restoreContext = this._loseContext = noop;
+      this.$restoreContext = loseContextExt.restoreContext.bind(loseContextExt);
+      this.$loseContext = loseContextExt.loseContext.bind(loseContextExt);
+    } else this.$restoreContext = this.$loseContext = noop;
 
     this.isLost = gl.isContextLost ? gl.isContextLost.bind(gl) : noopReturnsWith(1);
 
@@ -234,22 +234,22 @@ export class Context {
     gl.blendColor(1, 1, 1, 1);
     gl.enable(WebGL2RenderingContext.SCISSOR_TEST);
 
-    this._width =
-      this._height =
-      this._currentProgram =
-      this._currentVertexArray =
-      this._currentBlendMode =
+    this.$width =
+      this.$height =
+      this.$currentProgram =
+      this.$currentVertexArray =
+      this.$currentBlendMode =
         null;
 
-    this._textureMap = [];
-    this._emptyTextureSlots = [];
+    this.$textureMap = [];
+    this.$emptyTextureSlots = [];
     this.textureIds = [];
     this.textureSizes = [];
 
     this.clearTextures();
     this.setCanvasSize(1, 1);
 
-    const { initCallback } = this._config;
+    const { initCallback } = this.$config;
     initCallback && setTimeout(initCallback, 1);
   }
 }
