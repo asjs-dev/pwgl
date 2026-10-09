@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { installWebGL2RenderingContextMock } from "../helpers/browserMocks";
+import { createMockGl, installWebGL2RenderingContextMock } from "../helpers/browserMocks";
 import { loadSrcModuleWithBrowserMocks } from "../helpers/moduleLoaders";
 
 const loadStage2DModule = () => loadSrcModuleWithBrowserMocks("../../../src/renderers/Stage2D.js");
@@ -116,5 +116,94 @@ describe("Stage2D", () => {
     expect(renderer.$dataBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
     expect(renderer.$distortionBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
     expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
+  });
+
+  it("enables distortion by default", async () => {
+    installWebGL2RenderingContextMock();
+    const { Stage2D } = await loadStage2DModule();
+    const renderer = new Stage2D({
+      context: { canvas: createCanvas() },
+      locations: [],
+    });
+
+    expect(renderer.$distortionBuffer).toBeDefined();
+
+    const vertexShader = renderer.$createVertexShader();
+    expect(vertexShader).toContain("aE");
+    expect(vertexShader).toContain("clcQd");
+    expect(vertexShader).toContain("mix(tPs,aA,aD[1].w)");
+  });
+
+  it("omits the distortion attribute, buffer and shader code when useDistortion is disabled", async () => {
+    installWebGL2RenderingContextMock();
+    const { Stage2D } = await loadStage2DModule();
+    const renderer = new Stage2D({
+      context: { canvas: createCanvas() },
+      locations: [],
+      useDistortion: false,
+    });
+
+    expect(renderer.$distortionBuffer).toBeUndefined();
+
+    const vertexShader = renderer.$createVertexShader();
+    expect(vertexShader).not.toContain("aE");
+    expect(vertexShader).not.toContain("clcQd");
+    expect(vertexShader).toContain("tPs=aA;");
+    expect(vertexShader).toContain("aA,1.)");
+
+    renderer.$gl = createMockGl();
+    renderer.$locations = { aA: 0, aB: 1, aD: 5 };
+    renderer.$createBuffers();
+    expect(renderer.$distortionBuffer).toBeUndefined();
+
+    renderer.$batchItems = 3;
+    renderer.$dataBuffer = { uploadElements: vi.fn() };
+    renderer.$matrixBuffer = { uploadElements: vi.fn() };
+    renderer.$positionBuffer = { upload: vi.fn() };
+    renderer.$elementArrayBuffer = { upload: vi.fn() };
+    expect(() => renderer.$uploadBuffers()).not.toThrow();
+  });
+
+  it("registers pointer listeners and tracks interaction targets by default", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }] = await Promise.all([loadStage2DModule(), loadImageModule()]);
+    const canvas = createCanvas();
+    const renderer = new Stage2D({
+      context: { canvas },
+      locations: [],
+    });
+
+    expect(canvas.addEventListener).toHaveBeenCalled();
+
+    const image = new Image();
+    image.interactive = true;
+    image.isContainsPoint = vi.fn(() => true);
+    renderer.$isMousePositionSet = true;
+
+    renderer.$checkMousePositionFv(image);
+
+    expect(renderer.$eventTarget).toBe(image);
+  });
+
+  it("skips pointer listener registration and interaction checks when useInteraction is disabled", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }] = await Promise.all([loadStage2DModule(), loadImageModule()]);
+    const canvas = createCanvas();
+    const renderer = new Stage2D({
+      context: { canvas },
+      locations: [],
+      useInteraction: false,
+    });
+
+    expect(canvas.addEventListener).not.toHaveBeenCalled();
+
+    const image = new Image();
+    image.interactive = true;
+    image.isContainsPoint = vi.fn(() => true);
+    renderer.$isMousePositionSet = true;
+
+    expect(() => renderer.$checkMousePositionFv(image)).not.toThrow();
+    expect(renderer.$eventTarget).toBeUndefined();
+    expect(image.isContainsPoint).not.toHaveBeenCalled();
   });
 });

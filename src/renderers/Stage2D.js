@@ -82,11 +82,13 @@ export class Stage2D extends BatchRenderer {
   constructor(config = {}) {
     config = Utils.initRendererConfig(config);
     config.useTint = config.useTint ?? true;
+    config.useInteraction = config.useInteraction ?? true;
+    const useDistortion = (config.useDistortion = config.useDistortion ?? true);
 
     // prettier-ignore
     Utils.setLocations(config, [
       "aD",
-      "aE",
+      ...(useDistortion ? ["aE"] : []),
       "uF",
     ]);
 
@@ -111,20 +113,35 @@ export class Stage2D extends BatchRenderer {
       4
     );
 
-    // prettier-ignore
-    this.$distortionBuffer = new Buffer(
-      "aE",
-      $MAX_RENDER_COUNT,
-      4,
-      2
-    );
+    this.$checkMousePositionFv =
+      this.$addDistortionDataFv =
+      this.$uploadDistortionFv =
+      this.$createDistortionFv =
+        noop;
 
-    this.$onMouseEventHandler = this.$onMouseEventHandler.bind(this);
-    const { canvas } = this.context;
+    if (useDistortion) {
+      // prettier-ignore
+      this.$distortionBuffer = new Buffer(
+        "aE",
+        $MAX_RENDER_COUNT,
+        4,
+        2
+      );
+
+      this.$addDistortionDataFv = this.$addDistortionData;
+      this.$uploadDistortionFv = this.$uploadDistortion;
+      this.$createDistortionFv = this.$createDistortion;
+    }
+
+    if (config.useInteraction) {
+      this.$checkMousePositionFv = this.$checkMousePosition;
+      const { canvas } = this.context;
+
+      this.$onMouseEventHandler = this.$onMouseEventHandler.bind(this);
+      _INTERACTION_EVENT_TYPES.forEach((type) => canvas.addEventListener(type, this.$onMouseEventHandler));
+    }
+
     const { lightRenderer } = config;
-
-    _INTERACTION_EVENT_TYPES.forEach((type) => canvas.addEventListener(type, this.$onMouseEventHandler));
-
     lightRenderer && this.attachLightRenderer(lightRenderer);
   }
 
@@ -296,18 +313,26 @@ export class Stage2D extends BatchRenderer {
     const itemParent = image.parent;
     const dataBufferData = this.$dataBuffer.data;
 
-    if (this.$isMousePositionSet && image.interactive && image.isContainsPoint(this.$mousePosition)) {
-      this.$eventTarget = image;
-    }
+    this.$checkMousePositionFv(image);
 
     arraySet(dataBufferData, image.colorCache, dataBufferId);
     arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
     dataBufferData[dataBufferId + 4] = image.alpha * itemParent.getPremultipliedAlpha();
     dataBufferData[dataBufferId + 5] = image.tintType * itemParent.getPremultipliedUseTint();
     dataBufferData[dataBufferId + 6] = this.context.useTexture(image.texture, this.$renderTime, false, this.$batchDraw);
-    dataBufferData[dataBufferId + 7] = image.distortion.distortTexture;
 
+    this.$addDistortionDataFv(dataBufferData, dataBufferId + 7, image, index);
+  }
+
+  $addDistortionData(dataBufferData, id, image, index) {
+    dataBufferData[id] = image.distortion.distortTexture;
     arraySet(this.$distortionBuffer.data, image.distortionCache, index * 8);
+  }
+
+  $checkMousePosition(image) {
+    if (this.$isMousePositionSet && image.interactive && image.isContainsPoint(this.$mousePosition)) {
+      this.$eventTarget = image;
+    }
   }
 
   /**
@@ -328,8 +353,12 @@ export class Stage2D extends BatchRenderer {
     const { $gl, $batchItems } = this;
 
     this.$dataBuffer.uploadElements($gl, $batchItems);
-    this.$distortionBuffer.uploadElements($gl, $batchItems);
+    this.$uploadDistortionFv($gl, $batchItems);
     super.$uploadBuffers();
+  }
+
+  $uploadDistortion($gl, $batchItems) {
+    this.$distortionBuffer.uploadElements($gl, $batchItems);
   }
 
   /**
@@ -339,6 +368,10 @@ export class Stage2D extends BatchRenderer {
     const { $gl, $locations } = this;
     super.$createBuffers();
     this.$dataBuffer.create($gl, $locations);
+    this.$createDistortionFv($gl, $locations);
+  }
+
+  $createDistortion($gl, $locations) {
     this.$distortionBuffer.create($gl, $locations);
   }
 
@@ -348,14 +381,16 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $createVertexShader() {
-    const { useRepeatTextures } = this.$config;
+    const { useRepeatTextures, useDistortion } = this.$config;
     const { maxTextureImageUnits } = Utils.INFO;
 
     return `${Utils.GLSL.DEFINE.Z}` +
 
     `${Utils.GLSL.BASE_VERTEX_SHADER_ATTRIBUTES}` +
-    `in mat4x2 ` +
-      `aE;` +
+    `${useDistortion
+      ? `in mat4x2 ` +
+        `aE;`
+      : ``}` +
     `in mat3x4 ` +
       `aD;` +
     `in mat4 ` +
@@ -376,42 +411,46 @@ export class Stage2D extends BatchRenderer {
       `v4` +
     `${useRepeatTextures ? `,v5`: ``};` +
 
-    `vec2 clcQd(vec2 p){` +
-      `return mix(` + 
-        `mix(` + 
-          `aE[0],` + 
-          `aE[1],` + 
-          `p.x` + 
-        `),` + 
-        `mix(` + 
-          `aE[3],` + 
-          `aE[2],` + 
-          `p.x` + 
-        `),` + 
-        `p.y` + 
-      `);` +
-    `}` +
+    `${useDistortion
+      ? `vec2 clcQd(vec2 p){` +
+          `return mix(` +
+            `mix(` +
+              `aE[0],` +
+              `aE[1],` +
+              `p.x` +
+            `),` +
+            `mix(` +
+              `aE[3],` +
+              `aE[2],` +
+              `p.x` +
+            `),` +
+            `p.y` +
+          `);` +
+        `}`
+      : ``}` +
 
     `void main(){` +
       `vec2 ` +
-        `tPs=clcQd(aA);` +
+        `tPs=${useDistortion ? `clcQd(aA)` : `aA`};` +
 
-      `gl_Position=vec4(` + 
-        `mat3(aB[0].xy,0,aB[0].zw,0,aB[1].xy,1)*` + 
-        `vec3(tPs,1.),` + 
-        `1` + 
+      `gl_Position=vec4(` +
+        `mat3(aB[0].xy,0,aB[0].zw,0,aB[1].xy,1)*` +
+        `vec3(tPs,1.),` +
+        `1` +
       `)*vec4(1.,uA,1.,1.);` +
 
-      `v0=(` + 
-          `mat3(aB[1].zw,0,aB[2].xy,0,aB[2].zw,1)*` + 
+      `v0=(` +
+          `mat3(aB[1].zw,0,aB[2].xy,0,aB[2].zw,1)*` +
           `vec3(` +
-            `mix(` + 
-              `tPs,` + 
-              `aA,` + 
-              `aD[1].w` + 
-            `),` +
+            `${useDistortion
+              ? `mix(` +
+                  `tPs,` +
+                  `aA,` +
+                  `aD[1].w` +
+                `)`
+              : `aA`},` +
             `1.` +
-          `)` + 
+          `)` +
         `).xy;` +
       `v1=aD[1].x;` +
       `v2.xy=aD[1].yz;` +
