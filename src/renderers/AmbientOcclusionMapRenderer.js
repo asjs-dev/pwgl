@@ -166,7 +166,7 @@ export class AmbientOcclusionMapRenderer extends BaseRenderer {
           `ts=v1.xy;` +
 
         `float ` +
-          `rnd=rand(v0+floor(uG)*ts),` + 
+          `rnd=rand(v0/ts+floor(uG)),` +
           `ta=RADIANS_360*rnd,` +
           `nrnd=max(v1.z,rnd),` +
           `ln=1.-nrnd;` +
