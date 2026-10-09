@@ -25,6 +25,8 @@ Comprehensive input handling for keyboard, mouse, and gamepad devices.
 Base class for tracking pressed and released states of input devices.
 - Tracks down/up/pressed state and press duration for input events
 - Provides `isDown()`, `isUp()`, `isPressed()`, `isLongPressed()`, and `getDuration()`
+- `isTapped()` stays true from the down event until the next `update()`, so a press shorter than a frame is not lost
+- `releaseAll()` releases every held id
 - Ignores repeated down events while a key/button is already held
 - Foundation for all input handler implementations
 
@@ -33,13 +35,18 @@ Handles keyboard input events and key state tracking.
 - Extends `PressState` for consistent state management
 - Tracks pressed keys in real-time
 - Optional target element for scoped event handling
+- `new Keyboard(target, { useCode: true })` identifies keys by `event.code`, the physical key, independent of layout and modifiers
+- `preventDefault: ["Space", "ArrowUp"]` stops the browser's default action, such as scrolling, for the listed ids
+- A key is released with the id it went down with, and every key is released when the window loses focus
 - Methods:
   - `destruct()` - Clean up event listeners
 
 #### **Mouse** (`src/controls/Mouse.js`)
-Tracks primary mouse/touch position and press state.
-- Position tracking (`x`, `y` coordinates)
-- Primary pointer state management through `PressState`
+Tracks mouse/touch position and button state.
+- Position tracking (`x`, `y` coordinates) and `isOver` while the pointer is over the target
+- Button state through `PressState`, by `Mouse.Button.PRIMARY`, `MIDDLE` and `SECONDARY`; touches count as primary
+- `new Mouse(target, { preventContextMenu: true })` keeps the context menu off the secondary button
+- Buttons released outside the target or while the window loses focus are released too
 - Supports mouse and touch events
 - Supports both document and element-scoped tracking
 

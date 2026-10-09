@@ -90,6 +90,8 @@
 <ul>
 <li>Tracks down/up/pressed state and press duration for input events</li>
 <li>Provides <code>isDown()</code>, <code>isUp()</code>, <code>isPressed()</code>, <code>isLongPressed()</code>, and <code>getDuration()</code></li>
+<li><code>isTapped()</code> stays true from the down event until the next <code>update()</code>, so a press shorter than a frame is not lost</li>
+<li><code>releaseAll()</code> releases every held id</li>
 <li>Ignores repeated down events while a key/button is already held</li>
 <li>Foundation for all input handler implementations</li>
 </ul>
@@ -99,6 +101,9 @@
 <li>Extends <code>PressState</code> for consistent state management</li>
 <li>Tracks pressed keys in real-time</li>
 <li>Optional target element for scoped event handling</li>
+<li><code>new Keyboard(target, { useCode: true })</code> identifies keys by <code>event.code</code>, the physical key, independent of layout and modifiers</li>
+<li><code>preventDefault: [&quot;Space&quot;, &quot;ArrowUp&quot;]</code> stops the browser's default action, such as scrolling, for the listed ids</li>
+<li>A key is released with the id it went down with, and every key is released when the window loses focus</li>
 <li>Methods:
 <ul>
 <li><code>destruct()</code> - Clean up event listeners</li>
@@ -106,10 +111,12 @@
 </li>
 </ul>
 <h4><strong>Mouse</strong> (<code>src/controls/Mouse.js</code>)</h4>
-<p>Tracks primary mouse/touch position and press state.</p>
+<p>Tracks mouse/touch position and button state.</p>
 <ul>
-<li>Position tracking (<code>x</code>, <code>y</code> coordinates)</li>
-<li>Primary pointer state management through <code>PressState</code></li>
+<li>Position tracking (<code>x</code>, <code>y</code> coordinates) and <code>isOver</code> while the pointer is over the target</li>
+<li>Button state through <code>PressState</code>, by <code>Mouse.Button.PRIMARY</code>, <code>MIDDLE</code> and <code>SECONDARY</code>; touches count as primary</li>
+<li><code>new Mouse(target, { preventContextMenu: true })</code> keeps the context menu off the secondary button</li>
+<li>Buttons released outside the target or while the window loses focus are released too</li>
 <li>Supports mouse and touch events</li>
 <li>Supports both document and element-scoped tracking</li>
 </ul>
@@ -401,7 +408,7 @@ import * as TextureAtlasParser from &quot;./dist/pwgl.extensions.texture-atlas-p
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blur">blur</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Keyboard_Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Mouse_Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blur">blur</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li></ul>
             </nav>
 
             <br class="clear">

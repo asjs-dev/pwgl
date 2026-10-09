@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { Mouse } from "../../../../extensions/src/controls/Mouse";
 import { createEventTargetMock } from "../helpers/browserAudioMocks";
 
@@ -39,6 +39,33 @@ describe("Mouse", () => {
     expect(mouse.position).toEqual({ x: 0, y: 0 });
 
     mouse.destruct();
-    expect(target.removeEventListener).toHaveBeenCalledTimes(6);
+    expect(target.removeEventListener).toHaveBeenCalledTimes(8);
+  });
+
+  it("tracks every button by its id and releases them on blur", () => {
+    const mouse = new Mouse(createEventTargetMock());
+
+    mouse._onMouseDown({ type: "mousedown", button: Mouse.Button.SECONDARY, clientX: 3, clientY: 4 });
+    expect(mouse.isDown(Mouse.Button.SECONDARY)).toBe(true);
+    expect(mouse.isDown(Mouse.Button.PRIMARY)).toBe(false);
+    expect(mouse.isTapped(Mouse.Button.SECONDARY)).toBe(true);
+    expect(mouse.position).toEqual({ x: 3, y: 4 });
+
+    mouse.releaseAll();
+    expect(mouse.isUp(Mouse.Button.SECONDARY)).toBe(true);
+  });
+
+  it("tracks whether the pointer is over the target and can prevent the context menu", () => {
+    const mouse = new Mouse(createEventTargetMock(), { preventContextMenu: true });
+    const event = { preventDefault: vi.fn() };
+
+    expect(mouse.isOver).toBe(false);
+    mouse._onMouseMove({ type: "mousemove", clientX: 1, clientY: 1 });
+    expect(mouse.isOver).toBe(true);
+    mouse._onMouseLeave();
+    expect(mouse.isOver).toBe(false);
+
+    mouse._onContextMenu(event);
+    expect(event.preventDefault).toHaveBeenCalled();
   });
 });

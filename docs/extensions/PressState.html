@@ -280,7 +280,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line58">line 58</a>
+        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line68">line 68</a>
     </li></ul></dd>
     
 
@@ -442,7 +442,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line22">line 22</a>
+        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line32">line 32</a>
     </li></ul></dd>
     
 
@@ -604,7 +604,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line49">line 49</a>
+        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line59">line 59</a>
     </li></ul></dd>
     
 
@@ -766,7 +766,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line40">line 40</a>
+        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line50">line 50</a>
     </li></ul></dd>
     
 
@@ -796,6 +796,168 @@
         
 <div class="param-desc">
     True if it was a short press, false otherwise
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="isTapped"><span class="type-signature"></span>isTapped<span class="signature">(id)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Checks if the given id went down since the last update, even if it has been released since
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The identifier to check</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line23">line 23</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    True if it was pressed since the last update, false otherwise
 </div>
 
 
@@ -928,7 +1090,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line31">line 31</a>
+        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line41">line 41</a>
     </li></ul></dd>
     
 
@@ -986,7 +1148,7 @@
     
 
     
-    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">()</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="releaseAll"><span class="type-signature"></span>releaseAll<span class="signature">()</span><span class="type-signature"></span></h4>
     
 
     
@@ -994,7 +1156,7 @@
 
 
 <div class="description">
-    Updates the press state, clearing any completed states
+    Releases every held id, for example when the window loses focus
 </div>
 
 
@@ -1038,7 +1200,95 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line66">line 66</a>
+        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line76">line 76</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="update"><span class="type-signature"></span>update<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Updates the press state, clearing any completed states and taps
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="controls_PressState.ts.html">controls/PressState.ts</a>, <a href="controls_PressState.ts.html#line85">line 85</a>
     </li></ul></dd>
     
 
@@ -1084,7 +1334,7 @@
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blur">blur</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AnimatedWater.html">AnimatedWater</a></li><li><a href="AudioItem.html">AudioItem</a></li><li><a href="AudioMixer.html">AudioMixer</a></li><li><a href="BandPassAudioFilter.html">BandPassAudioFilter</a></li><li><a href="BaseAudio.html">BaseAudio</a></li><li><a href="BaseAudioFilter.html">BaseAudioFilter</a></li><li><a href="BiquadAudioFilter.html">BiquadAudioFilter</a></li><li><a href="Gamepad.html">Gamepad</a></li><li><a href="HighPassAudioFilter.html">HighPassAudioFilter</a></li><li><a href="HighShelfAudioFilter.html">HighShelfAudioFilter</a></li><li><a href="Keyboard.html">Keyboard</a></li><li><a href="Keyboard_Keyboard.html">Keyboard</a></li><li><a href="LowPassAudioFilter.html">LowPassAudioFilter</a></li><li><a href="LowShelfAudioFilter.html">LowShelfAudioFilter</a></li><li><a href="Mouse.html">Mouse</a></li><li><a href="Mouse_Mouse.html">Mouse</a></li><li><a href="NotchAudioFilter.html">NotchAudioFilter</a></li><li><a href="PeakingAudioFilter.html">PeakingAudioFilter</a></li><li><a href="PressState.html">PressState</a></li><li><a href="SmoothLight.html">SmoothLight</a></li></ul><h3>Global</h3><ul><li><a href="global.html#blur">blur</a></li><li><a href="global.html#crossFadeAudioVolumes">crossFadeAudioVolumes</a></li><li><a href="global.html#fadeAudioVolume">fadeAudioVolume</a></li><li><a href="global.html#level">level</a></li><li><a href="global.html#render">render</a></li><li><a href="global.html#scale">scale</a></li><li><a href="global.html#setSize">setSize</a></li><li><a href="global.html#speed">speed</a></li></ul>
             </nav>
 
             <br class="clear">

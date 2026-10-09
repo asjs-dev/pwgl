@@ -51,6 +51,30 @@ describe("PressState", () => {
     timeSpy.mockRestore();
   });
 
+  it("keeps a tap until the next update, even if it was released before", () => {
+    const state = new PressState();
+
+    state.$setDownState("Space");
+    state.$setUpState("Space");
+    expect(state.isTapped("Space")).toBe(true);
+    expect(state.isDown("Space")).toBe(false);
+
+    state.update();
+    expect(state.isTapped("Space")).toBe(false);
+  });
+
+  it("releases every held id", () => {
+    const state = new PressState();
+
+    state.$setDownState("A");
+    state.$setDownState(0);
+    state.releaseAll();
+
+    expect(state.isDown("A")).toBe(false);
+    expect(state.isDown(0)).toBe(false);
+    expect(state.isUp("A")).toBe(true);
+  });
+
   it("ignores up events without a matching down state", () => {
     const state = new PressState();
 
