@@ -7,9 +7,21 @@ export { Utils } from "./core/Utils";
 export { BlendMode } from "./rendering/BlendMode";
 export { TintType } from "./rendering/TintType";
 
+export { Matrix3Utilities } from "./math/Matrix3Utilities";
+
+export { TextureInfo } from "./textures/TextureInfo";
 export { Framebuffer } from "./textures/Framebuffer";
 export { Texture } from "./textures/Texture";
 
+export { BaseTransform } from "./attributes/BaseTransform";
+export { Color } from "./attributes/Color";
+export { Distortion } from "./attributes/Distortion";
+export { ItemTransform } from "./attributes/ItemTransform";
+export { LightTransform } from "./attributes/LightTransform";
+export { TextureCrop } from "./attributes/TextureCrop";
+export { TextureTransform } from "./attributes/TextureTransform";
+
+export { StageContainer } from "./display/StageContainer";
 export { AnimatedImage } from "./display/AnimatedImage";
 export { BaseDrawable } from "./display/BaseDrawable";
 export { Container } from "./display/Container";
