@@ -35,3 +35,4 @@ run("./node_modules/jsdoc/jsdoc.js -c extensions/.jsdoc.conf.json");
 run("./node_modules/jsdoc/jsdoc.js -c debugger/.jsdoc.conf.json");
 run("node build-scripts/clean-folder.js");
 run("node build-scripts/build-examples.js");
+run("node build-scripts/build-donation.js");

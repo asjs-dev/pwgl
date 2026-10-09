@@ -1,0 +1,27 @@
+<h1 class="page-title">Support PWGL</h1>
+<section>
+  <article>
+    <h2>Thanks for considering supporting PWGL!</h2>
+    <p>Donations aren’t available yet. If enough people are interested, I’ll set up a way to support the project financially.</p>
+    <p>Click below to let me know you’d consider donating. This only records your interest — no payment or commitment is involved.</p>
+    <button id="donation-interest" type="button" hidden>I’d consider donating</button>
+    <p id="donation-status" role="status" aria-live="polite"></p>
+    <noscript><p>Enable JavaScript to register your interest.</p></noscript>
+    <p><a href="index.html">Back to the documentation</a></p>
+  </article>
+</section>
+<style>
+  #donation-interest {
+    padding: 12px 20px;
+    border: 1px solid var(--accent-primary);
+    border-radius: 8px;
+    background: var(--accent-primary);
+    color: var(--bg-main);
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  #donation-interest:hover { background: #8be8ff; }
+  #donation-interest:focus-visible { outline: 3px solid var(--text-strong); outline-offset: 4px; }
+</style>
+<script src="assets/donation.js"></script>

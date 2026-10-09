@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="156" height="36" viewBox="0 0 156 36" role="img" aria-label="Support PWGL">
+  <rect width="156" height="36" rx="6" fill="#2dd4ff"/>
+  <path d="M19 25 11 17a5 5 0 0 1 8-6 5 5 0 0 1 8 6Z" fill="#0b1220"/>
+  <text x="36" y="23" fill="#0b1220" font-family="Arial, sans-serif" font-size="14" font-weight="bold">Support PWGL</text>
+</svg>

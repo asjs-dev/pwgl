@@ -3,6 +3,8 @@
 ![PWGL](https://asjs-dev.github.io/pwgl/assets/logo.v2x0.5.png?raw=true)
 PWGL is a JavaScript framework for creating **2D WebGL2 games and applications**.
 
+[![Support PWGL](https://asjs-dev.github.io/pwgl/assets/support-pwgl.svg)](./donation/)
+
 ![Game Demo](https://asjs-dev.github.io/pwgl/assets/game.png)
 
 ---
