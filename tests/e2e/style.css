@@ -6,7 +6,7 @@
 
 * { box-sizing: border-box; }
 body { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; margin: 0; }
-aside { padding: 24px 18px; background: #171e27; border-right: 1px solid #303b49; }
+aside { position: sticky; top: 0; height: 100vh; overflow-y: auto; overscroll-behavior: contain; padding: 24px 18px; background: #171e27; border-right: 1px solid #303b49; }
 h1, h2, p { margin-top: 0; }
 #adapter { color: #91a1b5; overflow-wrap: anywhere; }
 nav { display: grid; gap: 6px; }

@@ -76,6 +76,40 @@ describe("Texture", () => {
     expect(texture.bindActiveTexture).toHaveBeenCalledWith(gl, 2);
   });
 
+  it("uploads a playing video once per render pass", async () => {
+    const { Texture } = await loadTextureModule();
+    const source = {
+      tagName: "VIDEO",
+      videoWidth: 8,
+      videoHeight: 8,
+      paused: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    };
+    const texture = new Texture(source);
+    const gl = createMockGl();
+
+    texture.useActiveTexture = vi.fn();
+    texture.bindActiveTexture = vi.fn();
+    gl.gl_id = 1;
+    gl.createTexture = vi.fn(() => ({ id: "created" }));
+
+    texture.use(gl, 0, false, 10);
+    texture.useActiveTexture.mockClear();
+
+    texture.use(gl, 0, false, 20);
+    texture.use(gl, 0, false, 20);
+    texture.use(gl, 0, false, 20);
+    expect(texture.useActiveTexture).toHaveBeenCalledTimes(1);
+
+    texture.use(gl, 0, false, 30);
+    expect(texture.useActiveTexture).toHaveBeenCalledTimes(2);
+
+    source.paused = true;
+    texture.use(gl, 0, false, 40);
+    expect(texture.useActiveTexture).toHaveBeenCalledTimes(2);
+  });
+
   it("creates helper textures from image and video urls", async () => {
     const { Texture } = await loadTextureModule();
 

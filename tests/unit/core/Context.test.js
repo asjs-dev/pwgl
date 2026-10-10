@@ -121,6 +121,69 @@ describe("Context", () => {
     expect(context.textureIds).toContain(5);
   });
 
+  it("mirrors texture slots into typed arrays and flags changes", async () => {
+    const { Context } = await loadContextModule();
+
+    const canvas = createMockDocument().createElement("canvas");
+    const gl = createMockGl();
+    canvas.getContext = vi.fn(() => gl);
+
+    const context = new Context({ canvas });
+    const first = { use: vi.fn(), width: 64, height: 32 };
+    const second = { use: vi.fn(), width: 16, height: 8 };
+
+    expect(context.$texturesChanged).toBe(true);
+    context.$texturesChanged = false;
+
+    context.useTexture(first, 1);
+    context.useTexture(second, 1);
+    expect(context.$texturesChanged).toBe(true);
+    expect(context.textureIds).toEqual([0, 1]);
+    expect(context.textureSizes).toEqual([64, 32, 16, 8]);
+    expect(Array.from(context.$textureIdData.subarray(0, 2))).toEqual([0, 1]);
+    expect(Array.from(context.$textureSizeData.subarray(0, 4))).toEqual([64, 32, 16, 8]);
+
+    context.$texturesChanged = false;
+    context.useTexture(first, 2, false);
+    expect(context.$texturesChanged).toBe(false);
+
+    first.width = 128;
+    context.useTexture(first, 3, false);
+    expect(context.$texturesChanged).toBe(true);
+    expect(context.$textureSizeData[0]).toBe(128);
+
+    context.$texturesChanged = false;
+    context.clearTextures();
+    expect(context.$texturesChanged).toBe(true);
+    expect(context.textureIds).toEqual([]);
+    expect(context.textureSizes).toEqual([]);
+  });
+
+  it("skips slot bookkeeping for an already mapped texture", async () => {
+    const { Context } = await loadContextModule();
+
+    const canvas = createMockDocument().createElement("canvas");
+    const gl = createMockGl();
+    canvas.getContext = vi.fn(() => gl);
+
+    const context = new Context({ canvas });
+    const textureInfo = { use: vi.fn(), width: 32, height: 16 };
+
+    context.useTexture(textureInfo, 1);
+    const useTextureAt = vi.spyOn(context, "useTextureAt");
+    const includes = vi.spyOn(context.textureIds, "includes");
+
+    expect(context.useTexture(textureInfo, 2, false)).toBe(0);
+    expect(textureInfo.use).toHaveBeenLastCalledWith(gl, 0, false, 2);
+    expect(useTextureAt).not.toHaveBeenCalled();
+    expect(includes).not.toHaveBeenCalled();
+    expect(context.textureIds).toEqual([0]);
+
+    textureInfo.width = 64;
+    context.useTexture(textureInfo, 3, false);
+    expect(context.textureSizes).toEqual([64, 16]);
+  });
+
   it("deactivates texture", async () => {
     const { Context } = await loadContextModule();
 

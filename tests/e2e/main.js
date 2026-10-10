@@ -1,6 +1,6 @@
 import { cases } from "./cases";
-import { runChecks, sleep } from "./checks";
-import { captureFrame, compareFrames, formatBytes, getContextMetrics, instrumentContext } from "./metrics";
+import { destroyInstance, READY_TIMEOUT, runChecks, sleep, withTimeout } from "./checks";
+import { benchmarkRenders, captureFrame, compareFrames, formatBytes, getContextMetrics, instrumentContext } from "./metrics";
 
 const $ = (selector) => document.querySelector(selector);
 const viewport = $("#viewport");
@@ -23,6 +23,7 @@ const marks = $("#marks");
 const watchSpeed = $("#watch-speed");
 const failuresOnly = $("#failures-only");
 const runAllButton = $("#run-all");
+const runBenchmarkButton = $("#run-benchmark");
 const runChecksButton = $("#run-checks");
 let activeCase;
 let activeTestCase;
@@ -31,6 +32,7 @@ let measurements = [];
 let checking = false;
 let summary = "";
 const checkResults = {};
+let benchmarkResults = [];
 const navButtons = {};
 
 // ---------- checks ----------
@@ -144,6 +146,66 @@ const runAllChecks = async () => {
   showCheckResult(activeTestCase);
 };
 
+// ---------- benchmark ----------
+
+const BENCHMARK_CALLS = [
+  "texImage2D",
+  "texSubImage2D",
+  "generateMipmap",
+  "texParameteri",
+  "bindTexture",
+  "activeTexture",
+  "uniform1iv",
+  "uniform2fv",
+  "bufferSubData",
+  "useProgram",
+];
+
+const createBenchmarkReport = () => {
+  if (!benchmarkResults.length) return [];
+  const format = (value) => (Number.isInteger(value) ? value : value.toFixed(2));
+  return [
+    "",
+    "Benchmark (per frame; median of runs, Date.now() advances 1 ms per render)",
+    ["case", "frames×runs", "medianMs", "meanMs", "hash", "draws", ...BENCHMARK_CALLS].join("\t"),
+    ...benchmarkResults.map(({ id, error, frames, runs, medianMs, meanMs, hash, drawCalls, counts }) =>
+      error
+        ? `${id}\terror: ${error}`
+        : [id, `${frames}×${runs}`, medianMs.toFixed(3), meanMs.toFixed(3), hash, format(drawCalls), ...BENCHMARK_CALLS.map((name) => format(counts[name]))].join(
+            "\t",
+          ),
+    ),
+  ];
+};
+
+// Runs every benchmark case on its own context and stores the results for the report.
+const runBenchmarks = async (options) => {
+  if (checking) return;
+  checking = true;
+  runAllButton.disabled = runChecksButton.disabled = runBenchmarkButton.disabled = true;
+  benchmarkResults = [];
+  for (const testCase of cases.filter((item) => item.benchmark)) {
+    status.textContent = `Benchmarking ${testCase.title}…`;
+    await sleep(16);
+    let instance;
+    try {
+      instance = testCase.create();
+      await withTimeout(instance.ready, READY_TIMEOUT, "ready");
+      const result = benchmarkRenders(instance.context, instance.render, { ...testCase.benchmark, ...options });
+      const { hash } = compareFrames(null, captureFrame(instance.context));
+      benchmarkResults.push({ id: testCase.id, ...result, hash });
+    } catch (error) {
+      benchmarkResults.push({ id: testCase.id, error: error?.message || String(error) });
+    }
+    destroyInstance(instance);
+  }
+  status.textContent = "Benchmark finished";
+  runAllButton.disabled = runChecksButton.disabled = runBenchmarkButton.disabled = false;
+  checking = false;
+  report.textContent = createReport();
+  return createBenchmarkReport().join("\n");
+};
+
 // ---------- metrics ----------
 
 const createChecksReport = () => {
@@ -165,6 +227,7 @@ const createReport = () => {
     `Adapter: ${$("#adapter").textContent}`,
     `Checks: ${summary}`,
     ...createChecksReport(),
+    ...createBenchmarkReport(),
     "",
     `Metrics case: ${activeTestCase ? `${activeTestCase.id} — ${activeTestCase.title}` : "-"}`,
     "phase\trenders\ttimeMs\tpixels\tcreateBuffer\tdeleteBuffer\tbindBuffer\tbufferDataCalls\tbufferDataBytes\tbufferSubDataCalls\tbufferSubDataBytes\tenableAttrib\tattribPointer\tattribDivisor\tcreateProgram\tlinkProgram\tuseProgram\tcreateVAO\tbindVAO\tdraws",
@@ -279,7 +342,7 @@ const render = (count = 1, label = count === 1 ? "Repeat" : "Stress") => {
 
 const selectCase = (testCase) => {
   // Browsers only allow a few live contexts, so the previous case gives its own back.
-  activeCase?.context.destruct();
+  destroyInstance(activeCase);
   viewport.replaceChildren();
   activeTestCase = testCase;
   activeCase = testCase.create();
@@ -315,6 +378,7 @@ cases.forEach((testCase) => {
 
 runAllButton.addEventListener("click", runAllChecks);
 runChecksButton.addEventListener("click", runSelectedChecks);
+runBenchmarkButton.addEventListener("click", () => runBenchmarks());
 failuresOnly.addEventListener("change", updateNavigation);
 $("#render-once").addEventListener("click", () => render(1, "Repeat"));
 $("#stress-render").addEventListener("click", () => render(120, "Stress"));
@@ -349,9 +413,14 @@ $("#adapter").textContent = debugInfo
   : "WebGL2 renderer information unavailable";
 probe?.getExtension("WEBGL_lose_context")?.loseContext();
 
-// Every check runs on load; `?manual` leaves them to the buttons.
+// Lets a browser automation run the suite and read the report.
+window.pwglE2E = { runAllChecks, runBenchmarks, createReport };
+
+// Every check runs on load; `?manual` leaves them to the buttons, `?benchmark` runs the benchmark.
+const parameters = new URLSearchParams(location.search);
 updateNavigation();
 checking = true;
 selectCase(cases[0]);
 checking = false;
-if (!new URLSearchParams(location.search).has("manual")) runAllChecks();
+if (parameters.has("benchmark")) runBenchmarks();
+else if (!parameters.has("manual")) runAllChecks();

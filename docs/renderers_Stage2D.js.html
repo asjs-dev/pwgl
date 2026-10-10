@@ -341,9 +341,14 @@ export class Stage2D extends BatchRenderer {
     const { $gl, $locations, context, $batchItems } = this;
 
     if ($batchItems) {
-      if (context.textureIds.length) {
-        $gl.uniform1iv($locations.uB, context.textureIds);
-        $gl.uniform2fv($locations.uF, context.textureSizes);
+      // Uniforms belong to the program; switching programs clears the textures and marks them changed.
+      if (context.$texturesChanged) {
+        context.$texturesChanged = false;
+        const textureIdCount = context.textureIds.length;
+        if (textureIdCount) {
+          $gl.uniform1iv($locations.uB, context.$textureIdData, 0, textureIdCount);
+          $gl.uniform2fv($locations.uF, context.$textureSizeData, 0, context.textureSizes.length);
+        }
       }
       this.$uploadBuffers();
       this.$drawInstanced($batchItems);

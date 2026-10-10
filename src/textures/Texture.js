@@ -85,8 +85,7 @@ export class Texture extends TextureInfo {
     } else if (
       this.$updated ||
       this.$loaded ||
-      (this.shouldUpdate && this.$currentRenderTime < renderTime) ||
-      (this.isVideo && !this.$source.paused)
+      ((this.shouldUpdate || (this.isVideo && !this.$source.paused)) && this.$currentRenderTime < renderTime)
     ) {
       this.$updated = this.$loaded = false;
       this.$currentRenderTime = renderTime;

@@ -19,6 +19,16 @@ const TRACKED_CALLS = [
   "drawArraysInstanced",
   "drawElements",
   "drawElementsInstanced",
+  "createTexture",
+  "activeTexture",
+  "bindTexture",
+  "texImage2D",
+  "texSubImage2D",
+  "texParameteri",
+  "generateMipmap",
+  "uniform1i",
+  "uniform1iv",
+  "uniform2fv",
 ];
 
 const DRAW_CALLS = ["drawArrays", "drawArraysInstanced", "drawElements", "drawElementsInstanced"];
@@ -130,6 +140,52 @@ export const compareFrames = (baseline, pixels) => {
     differentPixels,
     hash: (hash >>> 0).toString(16).padStart(8, "0"),
     match: !baseline || differentPixels === 0,
+  };
+};
+
+// Renders `frames` times per run with a frame-indexed `Date.now()`, so every render is a new
+// render pass (as with requestAnimationFrame) and per-render-time uploads stay deterministic.
+// Only CPU-side time is measured; the GPU queue is drained between runs, outside the timing.
+export const benchmarkRenders = (context, render, { frames = 100, runs = 5, warmup = 10 } = {}) => {
+  const metrics = getContextMetrics(context);
+  const originalNow = Date.now;
+  let clock = originalNow();
+  Date.now = () => clock;
+
+  const renderFrames = (count) => {
+    for (let i = 0; i < count; i++) {
+      clock++;
+      render();
+    }
+  };
+
+  const times = [];
+  let calls;
+  try {
+    renderFrames(warmup);
+    context.gl.finish();
+    for (let run = 0; run < runs; run++) {
+      const before = metrics.snapshot();
+      const startedAt = performance.now();
+      renderFrames(frames);
+      times.push((performance.now() - startedAt) / frames);
+      calls = metrics.difference(before);
+      context.gl.finish();
+    }
+  } finally {
+    Date.now = originalNow;
+  }
+
+  const sorted = [...times].sort((a, b) => a - b);
+  const perFrame = (value) => value / frames;
+  return {
+    frames,
+    runs,
+    medianMs: sorted[sorted.length >> 1],
+    meanMs: times.reduce((total, value) => total + value, 0) / runs,
+    counts: Object.fromEntries(TRACKED_CALLS.map((name) => [name, perFrame(calls.counts[name])])),
+    drawCalls: perFrame(calls.drawCalls),
+    bufferSubDataBytes: perFrame(calls.bufferSubDataBytes),
   };
 };
 

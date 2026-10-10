@@ -19,6 +19,25 @@ export const formatPixel = (pixel) => `(${Array.from(pixel).join(",")})`;
 export const near = (a, b, tolerance = 34) => a.every((value, index) => Math.abs(value - b[index]) <= tolerance);
 export const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+export const READY_TIMEOUT = 5000;
+
+// Rejects when `promise` does not settle within `ms`, so a stuck case fails instead of hanging.
+export const withTimeout = (promise, ms, label) => {
+  let timer;
+  const timeout = new Promise((_, reject) => (timer = setTimeout(() => reject(new Error(`${label} timed out after ${ms} ms`)), ms)));
+  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+};
+
+// Frees what a case instance owns: its own media first (`dispose`), then the GPU context.
+export const destroyInstance = (instance) => {
+  try {
+    instance?.dispose?.();
+  } catch {}
+  try {
+    instance?.context.destruct();
+  } catch {}
+};
+
 const readFrame = (context) => {
   const { gl, canvas } = context;
   const { width, height } = canvas;
@@ -181,9 +200,7 @@ export const runChecks = async (testCase, host, watch = null) => {
     try {
       still.getContext("2d").drawImage(canvas, 0, 0);
     } catch {}
-    try {
-      instance.context.destruct();
-    } catch {}
+    destroyInstance(instance);
   }
   host.replaceChildren(still);
 

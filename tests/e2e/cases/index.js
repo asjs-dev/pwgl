@@ -1,3 +1,4 @@
+import { benchmarkCases } from "./benchmark";
 import { bufferLifecycle } from "./bufferLifecycle";
 import { displayCases } from "./display";
 import { filterCases } from "./filters";
@@ -20,4 +21,5 @@ export const cases = [
   gamePipeline,
   bufferLifecycle,
   contextRestore,
+  ...benchmarkCases,
 ];

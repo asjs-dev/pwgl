@@ -306,7 +306,10 @@ export class TextureInfo {
     gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MAG_FILTER, this.$magFilter);
     gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_MAX_LEVEL, this.$maxMipMapLevel);
     gl.texParameteri(target, WebGL2RenderingContext.TEXTURE_BASE_LEVEL, this.$baseMipMapLevel);
-    gl.generateMipmap(target);
+    // Only mipmap min filters sample other levels; changing minFilter re-uploads the texture.
+    this.$minFilter >= WebGL2RenderingContext.NEAREST_MIPMAP_NEAREST &amp;&amp;
+      this.$minFilter &lt;= WebGL2RenderingContext.LINEAR_MIPMAP_LINEAR &amp;&amp;
+      gl.generateMipmap(target);
   }
 }
 </code></pre>

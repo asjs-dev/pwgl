@@ -149,6 +149,7 @@ export class Context {
     }
 
     this.textureIds.length = this.textureSizes.length = 0;
+    this.$texturesChanged = true;
   }
 
   /**
@@ -165,16 +166,21 @@ export class Context {
     }
 
     let textureId = this.$textureMap.indexOf(textureInfo);
-    if (textureId &lt; 0) {
-      if (!this.$emptyTextureSlots.length) {
-        callback();
-        this.clearTextures();
-        textureId = 0;
-      } else textureId = this.$emptyTextureSlots[0];
-      forceBind = true;
+
+    // A mapped texture already has its slot in textureIds and out of the empty slots.
+    if (textureId > -1) {
+      textureInfo.use(this.gl, textureId, forceBind, renderTime);
+      this.$setTextureSizeAt(textureId, textureInfo.width, textureInfo.height);
+      return textureId;
     }
 
-    return this.useTextureAt(textureInfo, textureId, renderTime, forceBind);
+    if (!this.$emptyTextureSlots.length) {
+      callback();
+      this.clearTextures();
+      textureId = 0;
+    } else textureId = this.$emptyTextureSlots[0];
+
+    return this.useTextureAt(textureInfo, textureId, renderTime, true);
   }
 
   /**
@@ -192,7 +198,12 @@ export class Context {
 
     this.$setTextureSizeAt(textureId, textureInfo.width, textureInfo.height);
 
-    !this.textureIds.includes(textureId) &amp;&amp; this.textureIds.push(textureId);
+    const { textureIds } = this;
+    if (!textureIds.includes(textureId)) {
+      this.$textureIdData[textureIds.length] = textureId;
+      textureIds.push(textureId);
+      this.$texturesChanged = true;
+    }
 
     removeFromArray(this.$emptyTextureSlots, textureId);
 
@@ -260,8 +271,14 @@ export class Context {
    * @ignore
    */
   $setTextureSizeAt(textureId, width, height) {
-    this.textureSizes[textureId * 2] = width;
-    this.textureSizes[textureId * 2 + 1] = height;
+    const { textureSizes } = this;
+    const index = textureId * 2;
+
+    if (textureSizes[index] !== width || textureSizes[index + 1] !== height) {
+      textureSizes[index] = this.$textureSizeData[index] = width;
+      textureSizes[index + 1] = this.$textureSizeData[index + 1] = height;
+      this.$texturesChanged = true;
+    }
   }
 
   /**
@@ -305,6 +322,12 @@ export class Context {
     this.$emptyTextureSlots = [];
     this.textureIds = [];
     this.textureSizes = [];
+
+    // Typed mirrors of textureIds/textureSizes for the sampler uniforms; renderers upload them
+    // only when $texturesChanged.
+    const { maxTextureImageUnits } = Utils.INFO;
+    this.$textureIdData = new Int32Array(maxTextureImageUnits);
+    this.$textureSizeData = new Float32Array(maxTextureImageUnits * 2);
 
     this.clearTextures();
 

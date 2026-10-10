@@ -1,7 +1,8 @@
-import { BlendMode, Texture, TintType } from "../../../src/exports";
+import { BlendMode, Stage2D, Texture, TintType } from "../../../src/exports";
 import {
   BACKGROUND,
   checker,
+  createCanvas,
   createSmallContext,
   createSmallStage,
   createSprite,
@@ -230,4 +231,129 @@ export const quadDistortion = {
   },
 };
 
-export const stage2dCases = [painterOrder, batchSplit, atlasCrop, tintTypes, blendModes, repeatTextures, quadDistortion];
+const filled = (size, color) =>
+  createCanvas(size, size, (context) => {
+    context.fillStyle = color;
+    context.fillRect(0, 0, size, size);
+  });
+
+export const mipmapFilters = {
+  id: "mipmap-filters",
+  group: "Stage2D",
+  title: "Mipmap min filters",
+  expectation:
+    "Three small squares from 64×64 textures: red with a mipmap filter, green switched to a mipmap filter at runtime, blue with LINEAR. None may turn black from missing mipmaps.",
+  create() {
+    const context = createSmallContext();
+    const stage = createSmallStage(context, { maxRenderCount: 4 });
+    const mipmapped = new Texture(filled(64, "#ff0000"));
+    const switched = new Texture(filled(64, "#00ff00"));
+    const linear = new Texture(filled(64, "#0000ff"));
+    [mipmapped, switched, linear].forEach((texture) => (texture.maxMipMapLevel = 6));
+    mipmapped.minFilter = WebGL2RenderingContext.LINEAR_MIPMAP_LINEAR;
+    [mipmapped, switched, linear].forEach((texture, index) => stage.container.addChild(createSprite(texture, 24 + index * 80, 56, 16, 16)));
+
+    return {
+      context,
+      render: () => stage.render(),
+      async check(t) {
+        await t.renders(2);
+        t.expectPx("mipmap filter red", 32, 64, rgba("#ff0000"));
+        t.expectPx("LINEAR green", 112, 64, rgba("#00ff00"));
+        t.expectPx("LINEAR blue", 192, 64, rgba("#0000ff"));
+        switched.minFilter = WebGL2RenderingContext.NEAREST_MIPMAP_NEAREST;
+        await t.renders(2);
+        t.expectPx("switched to mipmap filter, still green", 112, 64, rgba("#00ff00"));
+        await t.expectStable();
+      },
+    };
+  },
+};
+
+export const textureResize = {
+  id: "texture-resize",
+  group: "Stage2D",
+  title: "Texture size change",
+  expectation:
+    "A texture swaps its 8×8 red source for a 64×64 blue one with a 2 px yellow border. The border must reach the sprite edges, so the new size reached the shader.",
+  create() {
+    const context = createSmallContext();
+    const stage = createSmallStage(context, { maxRenderCount: 2 });
+    const texture = new Texture(solid("#ff0000"));
+    stage.container.addChild(createSprite(texture, 20, 20, 64, 64));
+
+    return {
+      context,
+      render: () => stage.render(),
+      async check(t) {
+        await t.renders(1);
+        t.expectPx("before swap red", 52, 52, rgba("#ff0000"));
+        texture.source = createCanvas(64, 64, (canvasContext) => {
+          canvasContext.fillStyle = "#ffff00";
+          canvasContext.fillRect(0, 0, 64, 64);
+          canvasContext.fillStyle = "#0000ff";
+          canvasContext.fillRect(2, 2, 60, 60);
+        });
+        await t.renders(1);
+        t.expectPx("after swap interior blue", 52, 52, rgba("#0000ff"));
+        t.expectPxAll(
+          "border pixels yellow",
+          [
+            ["left", 20, 52, rgba("#ffff00")],
+            ["right", 83, 52, rgba("#ffff00")],
+            ["top", 52, 20, rgba("#ffff00")],
+            ["bottom", 52, 83, rgba("#ffff00")],
+          ],
+        );
+        await t.expectStable();
+      },
+    };
+  },
+};
+
+export const sharedContextStages = {
+  id: "shared-context-stages",
+  group: "Stage2D",
+  title: "Two stages on one context",
+  expectation:
+    "Two Stage2D renderers share a context and alternate every frame: red and green tiles on the left, blue, yellow and cyan tiles on the right. Program switches must not mix up texture slots.",
+  create() {
+    const context = createSmallContext();
+    const left = createSmallStage(context, { maxRenderCount: 8 });
+    const right = new Stage2D({ context, maxRenderCount: 8 });
+    right.setSize(SMALL_WIDTH, SMALL_HEIGHT);
+    const leftColors = ["#ff0000", "#00ff00"];
+    const rightColors = ["#0000ff", "#ffff00", "#00ffff"];
+    leftColors.forEach((color, index) => left.container.addChild(createSprite(new Texture(filled(16 + index * 16, color)), 8 + index * 56, 40, 48, 64)));
+    rightColors.forEach((color, index) => right.container.addChild(createSprite(new Texture(filled(8 + index * 24, color)), 128 + index * 42, 40, 36, 64)));
+
+    return {
+      context,
+      render() {
+        left.render();
+        right.render();
+      },
+      async check(t) {
+        await t.renders(4);
+        t.expectPxAll(
+          "tiles",
+          [...leftColors.map((color, index) => [color, 32 + index * 56, 72, rgba(color)]), ...rightColors.map((color, index) => [color, 146 + index * 42, 72, rgba(color)])],
+        );
+        await t.expectStable("identical on repeated frames", 3);
+      },
+    };
+  },
+};
+
+export const stage2dCases = [
+  painterOrder,
+  batchSplit,
+  atlasCrop,
+  tintTypes,
+  blendModes,
+  repeatTextures,
+  quadDistortion,
+  mipmapFilters,
+  textureResize,
+  sharedContextStages,
+];

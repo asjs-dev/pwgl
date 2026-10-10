@@ -118,6 +118,44 @@ describe("Stage2D", () => {
     expect(renderer.$matrixBuffer.uploadElements).toHaveBeenCalledWith(gl, 5);
   });
 
+  it("uploads sampler uniforms from the typed mirrors only when the texture slots changed", async () => {
+    installWebGL2RenderingContextMock();
+    const { Stage2D } = await loadStage2DModule();
+    const context = {
+      canvas: createCanvas(),
+      textureIds: [0, 1],
+      textureSizes: [64, 32, 16, 8],
+      $textureIdData: new Int32Array([0, 1, 0, 0]),
+      $textureSizeData: new Float32Array([64, 32, 16, 8, 0, 0, 0, 0]),
+      $texturesChanged: true,
+    };
+    const renderer = new Stage2D({ context, locations: [] });
+    const gl = { uniform1iv: vi.fn(), uniform2fv: vi.fn() };
+
+    renderer.$gl = gl;
+    renderer.$locations = { uB: "uB", uF: "uF" };
+    renderer.$uploadBuffers = vi.fn();
+    renderer.$drawInstanced = vi.fn();
+
+    renderer.$batchItems = 3;
+    renderer.$batchDraw();
+    expect(gl.uniform1iv).toHaveBeenCalledWith("uB", context.$textureIdData, 0, 2);
+    expect(gl.uniform2fv).toHaveBeenCalledWith("uF", context.$textureSizeData, 0, 4);
+    expect(context.$texturesChanged).toBe(false);
+
+    renderer.$batchItems = 3;
+    renderer.$batchDraw();
+    expect(gl.uniform1iv).toHaveBeenCalledTimes(1);
+    expect(gl.uniform2fv).toHaveBeenCalledTimes(1);
+    expect(renderer.$drawInstanced).toHaveBeenCalledTimes(2);
+
+    context.$texturesChanged = true;
+    renderer.$batchItems = 0;
+    renderer.$batchDraw();
+    expect(gl.uniform1iv).toHaveBeenCalledTimes(1);
+    expect(context.$texturesChanged).toBe(true);
+  });
+
   it("enables distortion by default", async () => {
     installWebGL2RenderingContextMock();
     const { Stage2D } = await loadStage2DModule();

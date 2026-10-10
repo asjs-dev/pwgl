@@ -36,6 +36,48 @@ describe("TextureInfo", () => {
     expect(gl.bindTexture).toHaveBeenCalledWith(texture.target, texture.$baseTexture);
     expect(gl.texImage2D).toHaveBeenCalled();
     expect(gl.texParameteri).toHaveBeenCalledTimes(6);
+    expect(gl.generateMipmap).not.toHaveBeenCalled();
+  });
+
+  it("generates mipmaps only for mipmap min filters", async () => {
+    const { TextureInfo } = await loadTextureInfoModule();
+    const texture = new TextureInfo();
+    const gl = createMockGl();
+
+    gl.texParameteri = vi.fn();
+    gl.generateMipmap = vi.fn();
+
+    texture.minFilter = WebGL2RenderingContext.NEAREST;
+    texture.uploadTextureInfo(gl);
+    expect(gl.generateMipmap).not.toHaveBeenCalled();
+
+    texture.minFilter = WebGL2RenderingContext.LINEAR_MIPMAP_LINEAR;
+    texture.uploadTextureInfo(gl);
+    expect(gl.generateMipmap).toHaveBeenCalledTimes(1);
+
+    texture.minFilter = WebGL2RenderingContext.NEAREST_MIPMAP_NEAREST;
+    texture.uploadTextureInfo(gl);
+    expect(gl.generateMipmap).toHaveBeenCalledTimes(2);
+  });
+
+  it("regenerates mipmaps after switching to a mipmap min filter later", async () => {
+    const { TextureInfo } = await loadTextureInfoModule();
+    const texture = new TextureInfo();
+    const gl = createMockGl();
+
+    gl.activeTexture = vi.fn();
+    gl.bindTexture = vi.fn();
+    gl.texImage2D = vi.fn();
+    gl.texParameteri = vi.fn();
+    gl.generateMipmap = vi.fn();
+
+    texture.$updated = false;
+    texture.useActiveTexture(gl, 0);
+    expect(gl.generateMipmap).not.toHaveBeenCalled();
+
+    texture.minFilter = WebGL2RenderingContext.LINEAR_MIPMAP_NEAREST;
+    expect(texture.$updated).toBe(true);
+    texture.useActiveTexture(gl, 0);
     expect(gl.generateMipmap).toHaveBeenCalledWith(texture.target);
   });
 
