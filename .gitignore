@@ -4,3 +4,4 @@ node_modules
 .DS_Store
 ai/
 /AGENTS.md
+/CLAUDE.md
