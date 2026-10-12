@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { Container } from "../../../src/display/Container";
 import { Item } from "../../../src/display/Item";
+import { loadSrcModuleWithBrowserMocks } from "../helpers/moduleLoaders";
+
+const loadStageContainerModule = () => loadSrcModuleWithBrowserMocks("../../../src/display/StageContainer.js");
 
 const createChild = (bounds) => {
   const child = new Item();
@@ -44,6 +47,59 @@ describe("Container", () => {
 
     expect(child.getPremultipliedAlpha()).toBeCloseTo(0.1);
     expect(child.getPremultipliedUseTint()).toBeCloseTo(0.1);
+  });
+
+  it("treats a missing parent as factor 1 in the public premultiplied getters", () => {
+    const container = new Container();
+    const child = new Container();
+
+    container.alpha = 0.5;
+    container.useTint = 0.25;
+
+    expect(container.getPremultipliedAlpha()).toBe(0.5);
+    expect(container.getPremultipliedUseTint()).toBe(0.25);
+
+    container.addChild(child);
+    container.removeChild(child);
+
+    expect(child.getPremultipliedAlpha()).toBe(1);
+    expect(child.getPremultipliedUseTint()).toBe(1);
+  });
+
+  it("caches premultiplied alpha and tint from the parent cache on update", async () => {
+    const { StageContainer } = await loadStageContainerModule();
+    const stage = new StageContainer({ resized: false });
+    const middle = new Container();
+    const leaf = new Container();
+
+    stage.alpha = 0.5;
+    stage.useTint = 0.5;
+    middle.alpha = 0.4;
+    middle.useTint = false;
+    leaf.alpha = 0.25;
+    stage.addChild(middle);
+    middle.addChild(leaf);
+
+    stage.update();
+    middle.update();
+    leaf.update();
+
+    expect(leaf.$premultipliedAlpha).toBeCloseTo(0.05);
+    expect(leaf.$premultipliedUseTint).toBe(0);
+    expect(leaf.$premultipliedAlpha).toBeCloseTo(leaf.getPremultipliedAlpha());
+    expect(leaf.$premultipliedUseTint).toBe(leaf.getPremultipliedUseTint());
+
+    middle.alpha = 0.8;
+    middle.useTint = true;
+
+    expect(leaf.getPremultipliedAlpha()).toBeCloseTo(0.1);
+
+    stage.update();
+    middle.update();
+    leaf.update();
+
+    expect(leaf.$premultipliedAlpha).toBeCloseTo(0.1);
+    expect(leaf.$premultipliedUseTint).toBeCloseTo(0.5);
   });
 
   it("aggregates bounds from all children", () => {

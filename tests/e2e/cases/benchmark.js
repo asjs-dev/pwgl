@@ -1,4 +1,4 @@
-import { Stage2D, Texture, Utils } from "../../../src/exports";
+import { Container, Stage2D, Texture, Utils } from "../../../src/exports";
 import { READY_TIMEOUT, withTimeout } from "../checks";
 import { createCanvas, createContext, createSprite, HEIGHT, setRendererSize, solid, WIDTH } from "../helpers";
 
@@ -7,19 +7,45 @@ const random = (seed) => () => ((seed = Math.imul(seed ^ (seed >>> 15), 22468225
 
 const HUES = ["#ff5c5c", "#57d985", "#58a6ff", "#ffd166", "#c77dff", "#4cc9f0", "#f72585", "#b5e48c"];
 
-const createScene = (textures, count, maxRenderCount) => {
+const createStage = (maxRenderCount) => {
   const context = createContext();
   const stage = new Stage2D({ context, maxRenderCount });
-  const next = random(count);
   setRendererSize(stage);
   stage.clearBeforeRender = true;
   stage.clearColor.set(0.025, 0.04, 0.065, 1);
+  return { context, stage };
+};
 
-  for (let i = 0; i < count; i++) {
-    const size = 4 + next() * 12;
-    stage.container.addChild(
-      createSprite(textures[i % textures.length], next() * (WIDTH - size), next() * (HEIGHT - size), size, size),
-    );
+const addRandomSprite = (container, texture, next) => {
+  const size = 4 + next() * 12;
+  container.addChild(createSprite(texture, next() * (WIDTH - size), next() * (HEIGHT - size), size, size));
+};
+
+const createScene = (textures, count, maxRenderCount) => {
+  const { context, stage } = createStage(maxRenderCount);
+  const next = random(count);
+
+  for (let i = 0; i < count; i++) addRandomSprite(stage.container, textures[i % textures.length], next);
+
+  return { context, render: () => stage.render() };
+};
+
+// Chains of nested containers with sprites on every level; intermediate levels fade the alpha and
+// some disable the tint, so every sprite depends on its whole ancestor chain.
+const createDeepScene = (textures, chains, depth, spritesPerLevel, maxRenderCount) => {
+  const { context, stage } = createStage(maxRenderCount);
+  const next = random(chains * depth * spritesPerLevel);
+
+  for (let chain = 0; chain < chains; chain++) {
+    let parent = stage.container;
+    for (let level = 0; level < depth; level++) {
+      const container = new Container();
+      container.alpha = 0.92;
+      container.useTint = (chain + level) % 5 !== 0;
+      parent.addChild(container);
+      for (let i = 0; i < spritesPerLevel; i++) addRandomSprite(container, textures[(chain + i) % textures.length], next);
+      parent = container;
+    }
   }
 
   return { context, render: () => stage.render() };
@@ -85,6 +111,12 @@ export const benchmarkCases = [
     "10k sprites, 4 textures",
     "10 000 small colored squares scattered over the canvas, drawn in five batches from four textures.",
     () => createScene(HUES.slice(0, 4).map((color) => new Texture(solid(color))), 10000, 2000),
+  ),
+  benchmarkCase(
+    "benchmark-deep-tree",
+    "10k sprites in 8-level containers",
+    "10 240 small colored squares fading with depth, held by 40 chains of 8 nested containers with alpha and tint set on every level.",
+    () => createDeepScene(HUES.slice(0, 4).map((color) => new Texture(solid(color))), 40, 8, 32, 2000),
   ),
   benchmarkCase(
     "benchmark-slot-churn",

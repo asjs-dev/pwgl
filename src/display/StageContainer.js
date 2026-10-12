@@ -50,6 +50,9 @@ export class StageContainer extends Container {
   update() {
     const { color, renderer } = this;
 
+    this.$premultipliedAlpha = this.alpha;
+    this.$premultipliedUseTint = this.useTint;
+
     color.update();
 
     this.colorUpdated = color.updated;

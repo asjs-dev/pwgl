@@ -381,8 +381,8 @@ export class Stage2D extends BatchRenderer {
 
     arraySet(dataBufferData, image.colorCache, dataBufferId);
     arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
-    dataBufferData[dataBufferId + 4] = image.alpha * itemParent.getPremultipliedAlpha();
-    dataBufferData[dataBufferId + 5] = image.tintType * itemParent.getPremultipliedUseTint();
+    dataBufferData[dataBufferId + 4] = image.alpha * itemParent.$premultipliedAlpha;
+    dataBufferData[dataBufferId + 5] = image.tintType * itemParent.$premultipliedUseTint;
     dataBufferData[dataBufferId + 6] = this.context.useTexture(image.texture, this.$renderTime, false, this.$batchDraw);
 
     this.$addDistortionDataFv(dataBufferData, dataBufferId + 7, image, index);

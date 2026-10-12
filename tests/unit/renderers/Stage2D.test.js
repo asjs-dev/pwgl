@@ -4,6 +4,7 @@ import { loadSrcModuleWithBrowserMocks } from "../helpers/moduleLoaders";
 
 const loadStage2DModule = () => loadSrcModuleWithBrowserMocks("../../../src/renderers/Stage2D.js");
 const loadImageModule = () => loadSrcModuleWithBrowserMocks("../../../src/display/Image.js");
+const loadContainerModule = () => loadSrcModuleWithBrowserMocks("../../../src/display/Container.js");
 
 const createCanvas = () => ({
   width: 200,
@@ -40,6 +41,123 @@ describe("Stage2D", () => {
 
     expect(addImageData).toHaveBeenCalledWith(image, 0);
     expect(renderer.$batchItems).toBe(1);
+  });
+
+  it("writes the alpha and tint of nested images from ancestors updated in the same pass", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }, { Container }] = await Promise.all([
+      loadStage2DModule(),
+      loadImageModule(),
+      loadContainerModule(),
+    ]);
+    const renderer = new Stage2D({
+      context: {
+        canvas: createCanvas(),
+        setBlendMode: vi.fn(),
+        useTexture: vi.fn(() => -1),
+      },
+      locations: [],
+    });
+    const outer = new Container();
+    const inner = new Container();
+    const image = new Image();
+    const data = renderer.$dataBuffer.data;
+
+    renderer.container.alpha = 0.5;
+    outer.alpha = 0.5;
+    inner.alpha = 0.8;
+    inner.useTint = 0.5;
+    image.alpha = 0.5;
+    image.tintType = 2;
+    renderer.container.addChild(outer);
+    outer.addChild(inner);
+    inner.addChild(image);
+
+    renderer.$drawItem(renderer.container);
+
+    expect(data[4]).toBeCloseTo(0.1);
+    expect(data[5]).toBeCloseTo(1);
+
+    // Ancestor changes reach the next pass: each container updates before its children draw.
+    renderer.$batchItems = 0;
+    outer.alpha = 1;
+    outer.useTint = false;
+    renderer.$drawItem(renderer.container);
+
+    expect(data[4]).toBeCloseTo(0.2);
+    expect(data[5]).toBe(0);
+  });
+
+  it("uses the new parent's alpha and tint after an image is moved between passes", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }, { Container }] = await Promise.all([
+      loadStage2DModule(),
+      loadImageModule(),
+      loadContainerModule(),
+    ]);
+    const renderer = new Stage2D({
+      context: {
+        canvas: createCanvas(),
+        setBlendMode: vi.fn(),
+        useTexture: vi.fn(() => -1),
+      },
+      locations: [],
+    });
+    const faded = new Container();
+    const untinted = new Container();
+    const image = new Image();
+    const data = renderer.$dataBuffer.data;
+
+    faded.alpha = 0.25;
+    untinted.useTint = false;
+    image.tintType = 1;
+    renderer.container.addChild(faded);
+    renderer.container.addChild(untinted);
+    faded.addChild(image);
+
+    renderer.$drawItem(renderer.container);
+
+    expect(data[4]).toBeCloseTo(0.25);
+    expect(data[5]).toBe(1);
+
+    renderer.$batchItems = 0;
+    untinted.addChild(image);
+    renderer.$drawItem(renderer.container);
+
+    expect(data[4]).toBe(1);
+    expect(data[5]).toBe(0);
+  });
+
+  it("starts containers with neutral cached values until their first update", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }, { Container }] = await Promise.all([
+      loadStage2DModule(),
+      loadImageModule(),
+      loadContainerModule(),
+    ]);
+    const renderer = new Stage2D({
+      context: {
+        canvas: createCanvas(),
+        setBlendMode: vi.fn(),
+        useTexture: vi.fn(() => -1),
+      },
+      locations: [],
+    });
+    const container = new Container();
+    const image = new Image();
+
+    container.alpha = 0.5;
+    image.tintType = 1;
+    container.addChild(image);
+
+    expect(container.$premultipliedAlpha).toBe(1);
+    expect(container.$premultipliedUseTint).toBe(1);
+
+    // Drawn without the container's own update, as an item added mid-pass would be.
+    renderer.$drawImage(image);
+
+    expect(renderer.$dataBuffer.data[4]).toBe(1);
+    expect(renderer.$dataBuffer.data[5]).toBe(1);
   });
 
   it("supports externally registered rendering types and scopes", async () => {

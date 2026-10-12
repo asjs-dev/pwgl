@@ -3,6 +3,9 @@ import { loadSrcModuleWithBrowserMocks } from "../helpers/moduleLoaders";
 import { createLightRendererHarness } from "../helpers/rendererTestHarness";
 
 const loadLightRendererModule = () => loadSrcModuleWithBrowserMocks("../../../src/renderers/LightRenderer.js");
+const loadStage2DModule = () => loadSrcModuleWithBrowserMocks("../../../src/renderers/Stage2D.js");
+const loadLightModule = () => loadSrcModuleWithBrowserMocks("../../../src/display/Light.js");
+const loadContainerModule = () => loadSrcModuleWithBrowserMocks("../../../src/display/Container.js");
 
 describe("LightRenderer", () => {
   it("initializes with default values", async () => {
@@ -184,6 +187,44 @@ describe("LightRenderer", () => {
 
     expect(renderer.$useTexture).toHaveBeenCalledTimes(1); // Only heightMap
     expect(gl.uniform3f).toHaveBeenCalledWith(renderer.$locations.uO, false, false, false); // uO uniform (no textures)
+  });
+
+  it("premultiplies light alpha with ancestors updated earlier in the Stage2D pass", async () => {
+    const [{ LightRenderer }, { Stage2D }, { Light }, { Container }] = await Promise.all([
+      loadLightRendererModule(),
+      loadStage2DModule(),
+      loadLightModule(),
+      loadContainerModule(),
+    ]);
+    const { renderer } = createLightRendererHarness(LightRenderer);
+    const stage = new Stage2D({
+      context: { canvas: { width: 200, height: 100, addEventListener: vi.fn() } },
+      locations: [],
+      useInteraction: false,
+    });
+    const outer = new Container();
+    const inner = new Container();
+    const light = new Light();
+
+    stage.attachLightRenderer(renderer);
+    stage.container.alpha = 0.5;
+    outer.alpha = 0.5;
+    inner.alpha = 0.8;
+    light.alpha = 0.5;
+    stage.container.addChild(outer);
+    outer.addChild(inner);
+    inner.addChild(light);
+
+    stage.$drawItem(stage.container);
+
+    expect(renderer.$batchItems).toBe(1);
+    expect(renderer.$matrixBuffer.data[11]).toBeCloseTo(0.1);
+
+    renderer.$batchItems = 0;
+    outer.alpha = 1;
+    stage.$drawItem(stage.container);
+
+    expect(renderer.$matrixBuffer.data[11]).toBeCloseTo(0.2);
   });
 
   it("creates and uploads extension buffer", async () => {

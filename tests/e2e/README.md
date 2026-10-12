@@ -38,5 +38,5 @@ Cases must be deterministic, use the public PWGL API, avoid network assets, and 
 - Display, textures and input: text, animated frames, texture source swaps, live canvas textures, runtime resize and pointer hit-tests.
 - Filters: every filter against an unfiltered reference, framebuffer attachment and multi-pass ping-pong.
 - Lighting: light, normal map and shadow, contact shadows of thin casters with soft and flattened shadows, ambient occlusion and 400 shadow-casting lights.
-- Benchmark: 10k sprites from four textures in five batches, more textures than texture units, one live canvas texture and one playing video texture shared by 2 000 sprites.
+- Benchmark: 10k sprites from four textures in five batches, 10k sprites in 8-level nested container chains, more textures than texture units, one live canvas texture and one playing video texture shared by 2 000 sprites.
 - Renderers and lifecycle: shared-context program/VAO switching, the `webgl/sh/script.js` game pipeline, buffer allocation and context loss and restore.

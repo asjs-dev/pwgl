@@ -57,8 +57,7 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { noopReturnsWith } from "../../common/utils/noopReturnsWith";
-import { removeFromArray } from "../../common/utils/removeFromArray";
+            <pre class="prettyprint source linenums"><code>import { removeFromArray } from "../../common/utils/removeFromArray";
 import { Item } from "./Item";
 
 /**
@@ -79,21 +78,7 @@ export class Container extends Item {
 
     this.children = [];
     this.useTint = true;
-  }
-
-  /**
-   * Set/Get parent
-   * @type {Container}
-   */
-  get parent() {
-    return this.$parent;
-  }
-  set parent(v) {
-    super.parent = v;
-    if (v) {
-      this.$getParentPremultipliedUseTint = v.getPremultipliedUseTint.bind(v);
-      this.$getParentPremultipliedAlpha = v.getPremultipliedAlpha.bind(v);
-    } else this.$getParentPremultipliedUseTint = this.$getParentPremultipliedAlpha = noopReturnsWith(1);
+    this.$premultipliedAlpha = this.$premultipliedUseTint = 1;
   }
 
   /**
@@ -101,7 +86,8 @@ export class Container extends Item {
    * @type {Container}
    */
   getPremultipliedUseTint() {
-    return this.useTint * this.$getParentPremultipliedUseTint();
+    const { $parent } = this;
+    return this.useTint * ($parent ? $parent.getPremultipliedUseTint() : 1);
   }
 
   /**
@@ -109,7 +95,20 @@ export class Container extends Item {
    * @type {Container}
    */
   getPremultipliedAlpha() {
-    return this.alpha * this.$getParentPremultipliedAlpha();
+    const { $parent } = this;
+    return this.alpha * ($parent ? $parent.getPremultipliedAlpha() : 1);
+  }
+
+  /**
+   * Update color, transform and the cached premultiplied alpha and useTint values
+   */
+  update() {
+    super.update();
+
+    const { $parent } = this;
+
+    this.$premultipliedAlpha = this.alpha * $parent.$premultipliedAlpha;
+    this.$premultipliedUseTint = this.useTint * $parent.$premultipliedUseTint;
   }
 
   /**

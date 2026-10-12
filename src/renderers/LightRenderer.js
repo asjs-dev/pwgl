@@ -146,7 +146,7 @@ export class LightRenderer extends BatchRenderer {
       matrixBufferData[matrixBufferId + 6] = light.transform.width;
       matrixBufferData[matrixBufferId + 7] = light.spotAngle;
       arraySet(matrixBufferData, light.colorCache, matrixBufferId + 8);
-      matrixBufferData[matrixBufferId + 11] *= light.alpha * parent.getPremultipliedAlpha();
+      matrixBufferData[matrixBufferId + 11] *= light.alpha * parent.$premultipliedAlpha;
       matrixBufferData[matrixBufferId + 12] = light.shadowLength;
       matrixBufferData[matrixBufferId + 13] = light.angle;
       matrixBufferData[matrixBufferId + 14] = light.type;
