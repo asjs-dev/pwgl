@@ -141,8 +141,10 @@ const runCaseChecks = async (testCase) => {
 const runSelectedChecks = async () => {
   if (checking) return;
   checking = true;
+  updateScore();
   await runCaseChecks(activeTestCase);
   checking = false;
+  updateScore();
   showCheckResult(activeTestCase);
 };
 
@@ -150,6 +152,7 @@ const runAllChecks = async () => {
   if (checking) return;
   checking = true;
   runAllButton.disabled = runChecksButton.disabled = true;
+  updateScore();
   for (const testCase of cases) {
     status.textContent = `Checking ${testCase.title}…`;
     await runCaseChecks(testCase);
@@ -159,6 +162,7 @@ const runAllChecks = async () => {
   status.textContent = `All checks finished: ${failed} failing case(s)`;
   runAllButton.disabled = runChecksButton.disabled = false;
   checking = false;
+  updateScore();
   showCheckResult(activeTestCase);
 };
 
@@ -222,6 +226,13 @@ const storeBaseline = (benchmarkBaseline) => {
   }
 };
 
+// Scores the last results; an unreadable stored baseline is reported as such, not as a missing one.
+const scoreAgainstBaseline = () => {
+  const benchmarkBaseline = loadBaseline();
+  const result = scoreBenchmark(benchmarkResults, benchmarkBaseline);
+  return benchmarkBaseline === false ? { ...result, reason: "stored baseline unreadable" } : result;
+};
+
 const updateScore = () => {
   const round = (value) => Math.round(value);
   scorePanel.dataset.verdict = scored?.verdict || "";
@@ -240,7 +251,7 @@ const compareToBaseline = () => {
     status.textContent = "Run the benchmark first";
     return "";
   }
-  scored = scoreBenchmark(benchmarkResults, loadBaseline());
+  scored = scoreAgainstBaseline();
   updateScore();
   report.textContent = createReport();
   return formatScoreReport(scored).join("\n");
@@ -272,7 +283,8 @@ const exportBaseline = () => {
   link.href = URL.createObjectURL(new Blob([JSON.stringify(benchmarkBaseline, null, 2)], { type: "application/json" }));
   link.download = "pwgl-benchmark-baseline.json";
   link.click();
-  URL.revokeObjectURL(link.href);
+  // Revoking synchronously can cancel the download in some browsers.
+  setTimeout(() => URL.revokeObjectURL(link.href));
   status.textContent = "Baseline exported";
 };
 
@@ -318,7 +330,7 @@ const runBenchmarks = async (options) => {
   runAllButton.disabled = runChecksButton.disabled = runBenchmarkButton.disabled = false;
   checking = false;
   // Without a baseline this records the n/a score, so the report always ends with the score block.
-  scored = scoreBenchmark(benchmarkResults, loadBaseline());
+  scored = scoreAgainstBaseline();
   updateScore();
   report.textContent = createReport();
   return createBenchmarkReport().join("\n");
