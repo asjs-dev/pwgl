@@ -28,6 +28,9 @@ select { padding: 4px 6px; color: inherit; background: #263242; border: 1px soli
 #counts .fail b { color: #ff8f8f; }
 #counts .warn b { color: #f2c46d; }
 .suite-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; color: #aebbc9; }
+#score { padding: 6px 8px; color: #aebbc9; background: #10151c; border-radius: 4px; font-size: 12px; font-variant-numeric: tabular-nums; }
+#score[data-verdict="better"] { color: #77df9b; }
+#score[data-verdict="worse"] { color: #ff8f8f; }
 main { display: grid; grid-template-rows: auto auto auto auto; align-content: start; min-width: 0; }
 header, footer { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 24px; }
 header { border-bottom: 1px solid #303b49; }

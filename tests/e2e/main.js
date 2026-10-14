@@ -1,6 +1,17 @@
 import { cases } from "./cases";
 import { destroyInstance, READY_TIMEOUT, runChecks, sleep, withTimeout } from "./checks";
-import { benchmarkRenders, captureFrame, compareFrames, formatBytes, getContextMetrics, instrumentContext } from "./metrics";
+import {
+  benchmarkRenders,
+  captureFrame,
+  compareFrames,
+  createBaseline,
+  formatBytes,
+  formatScoreReport,
+  getContextMetrics,
+  instrumentContext,
+  parseBaseline,
+  scoreBenchmark,
+} from "./metrics";
 
 const $ = (selector) => document.querySelector(selector);
 const viewport = $("#viewport");
@@ -25,6 +36,10 @@ const failuresOnly = $("#failures-only");
 const runAllButton = $("#run-all");
 const runBenchmarkButton = $("#run-benchmark");
 const runChecksButton = $("#run-checks");
+const scorePanel = $("#score");
+const saveBaselineButton = $("#save-baseline");
+const compareBaselineButton = $("#compare-baseline");
+const baselineFile = $("#baseline-file");
 let activeCase;
 let activeTestCase;
 let baseline;
@@ -33,6 +48,7 @@ let checking = false;
 let summary = "";
 const checkResults = {};
 let benchmarkResults = [];
+let scored;
 const navButtons = {};
 
 // ---------- checks ----------
@@ -175,7 +191,104 @@ const createBenchmarkReport = () => {
             "\t",
           ),
     ),
+    ...(scored ? formatScoreReport(scored) : []),
   ];
+};
+
+// ---------- benchmark baseline ----------
+
+const getAdapter = () => $("#adapter").textContent;
+const getBaselineKey = () => `pwgl-e2e-benchmark-baseline:${getAdapter()}`;
+
+// Storage can be unavailable (private mode, blocked site data); every access reports instead of throwing.
+// Returns null without a stored baseline and false when it cannot be read.
+const loadBaseline = () => {
+  try {
+    const stored = localStorage.getItem(getBaselineKey());
+    return stored ? parseBaseline(stored) : null;
+  } catch (error) {
+    status.textContent = `Baseline unavailable: ${error?.message || error}`;
+    return false;
+  }
+};
+
+const storeBaseline = (benchmarkBaseline) => {
+  try {
+    localStorage.setItem(getBaselineKey(), JSON.stringify(benchmarkBaseline));
+    return true;
+  } catch (error) {
+    status.textContent = `Baseline not saved: ${error?.message || error}`;
+    return false;
+  }
+};
+
+const updateScore = () => {
+  const round = (value) => Math.round(value);
+  scorePanel.dataset.verdict = scored?.verdict || "";
+  if (!scored) scorePanel.textContent = "Score: run the benchmark";
+  else if (scored.score === null) scorePanel.textContent = `Score: n/a — ${scored.reason}`;
+  else
+    scorePanel.textContent =
+      `Score ${round(scored.score)} [${round(scored.low)}–${round(scored.high)}] · ${scored.verdict}` +
+      (scored.partial ? ` · partial (${scored.compared}/${scored.total})` : "");
+  saveBaselineButton.disabled = compareBaselineButton.disabled = checking || !benchmarkResults.length;
+};
+
+// Scores the last benchmark results against the baseline stored for this adapter.
+const compareToBaseline = () => {
+  if (!benchmarkResults.length) {
+    status.textContent = "Run the benchmark first";
+    return "";
+  }
+  scored = scoreBenchmark(benchmarkResults, loadBaseline());
+  updateScore();
+  report.textContent = createReport();
+  return formatScoreReport(scored).join("\n");
+};
+
+const saveBaseline = () => {
+  if (!benchmarkResults.length) {
+    status.textContent = "Run the benchmark first";
+    return null;
+  }
+  const benchmarkBaseline = createBaseline(benchmarkResults, { adapter: getAdapter(), userAgent: navigator.userAgent });
+  if (!Object.keys(benchmarkBaseline.cases).length) {
+    status.textContent = "No error-free benchmark case to save";
+    return null;
+  }
+  if (!storeBaseline(benchmarkBaseline)) return null;
+  compareToBaseline();
+  status.textContent = `Baseline saved (${Object.keys(benchmarkBaseline.cases).length} cases)`;
+  return benchmarkBaseline;
+};
+
+const exportBaseline = () => {
+  const benchmarkBaseline = loadBaseline();
+  if (!benchmarkBaseline) {
+    if (benchmarkBaseline === null) status.textContent = "No baseline saved for this adapter";
+    return;
+  }
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(new Blob([JSON.stringify(benchmarkBaseline, null, 2)], { type: "application/json" }));
+  link.download = "pwgl-benchmark-baseline.json";
+  link.click();
+  URL.revokeObjectURL(link.href);
+  status.textContent = "Baseline exported";
+};
+
+const importBaseline = async (file) => {
+  try {
+    const benchmarkBaseline = parseBaseline(await file.text());
+    if (!storeBaseline(benchmarkBaseline)) return;
+    const mismatches = [
+      benchmarkBaseline.adapter !== getAdapter() && "adapter",
+      benchmarkBaseline.userAgent !== navigator.userAgent && "user agent",
+    ].filter(Boolean);
+    if (benchmarkResults.length) compareToBaseline();
+    status.textContent = `Baseline imported${mismatches.length ? `; warning: ${mismatches.join(" and ")} differ` : ""}`;
+  } catch (error) {
+    status.textContent = `Baseline not imported: ${error?.message || error}`;
+  }
 };
 
 // Runs every benchmark case on its own context and stores the results for the report.
@@ -184,6 +297,8 @@ const runBenchmarks = async (options) => {
   checking = true;
   runAllButton.disabled = runChecksButton.disabled = runBenchmarkButton.disabled = true;
   benchmarkResults = [];
+  scored = null;
+  updateScore();
   for (const testCase of cases.filter((item) => item.benchmark)) {
     status.textContent = `Benchmarking ${testCase.title}…`;
     await sleep(16);
@@ -202,6 +317,9 @@ const runBenchmarks = async (options) => {
   status.textContent = "Benchmark finished";
   runAllButton.disabled = runChecksButton.disabled = runBenchmarkButton.disabled = false;
   checking = false;
+  // Without a baseline this records the n/a score, so the report always ends with the score block.
+  scored = scoreBenchmark(benchmarkResults, loadBaseline());
+  updateScore();
   report.textContent = createReport();
   return createBenchmarkReport().join("\n");
 };
@@ -380,6 +498,15 @@ runAllButton.addEventListener("click", runAllChecks);
 runChecksButton.addEventListener("click", runSelectedChecks);
 runBenchmarkButton.addEventListener("click", () => runBenchmarks());
 failuresOnly.addEventListener("change", updateNavigation);
+saveBaselineButton.addEventListener("click", saveBaseline);
+compareBaselineButton.addEventListener("click", compareToBaseline);
+$("#export-baseline").addEventListener("click", exportBaseline);
+$("#import-baseline").addEventListener("click", () => baselineFile.click());
+baselineFile.addEventListener("change", () => {
+  const [file] = baselineFile.files;
+  baselineFile.value = "";
+  if (file) importBaseline(file);
+});
 $("#render-once").addEventListener("click", () => render(1, "Repeat"));
 $("#stress-render").addEventListener("click", () => render(120, "Stress"));
 $("#copy-report").addEventListener("click", async () => {
@@ -414,11 +541,12 @@ $("#adapter").textContent = debugInfo
 probe?.getExtension("WEBGL_lose_context")?.loseContext();
 
 // Lets a browser automation run the suite and read the report.
-window.pwglE2E = { runAllChecks, runBenchmarks, createReport };
+window.pwglE2E = { runAllChecks, runBenchmarks, createReport, saveBaseline, compareToBaseline };
 
 // Every check runs on load; `?manual` leaves them to the buttons, `?benchmark` runs the benchmark.
 const parameters = new URLSearchParams(location.search);
 updateNavigation();
+updateScore();
 checking = true;
 selectCase(cases[0]);
 checking = false;

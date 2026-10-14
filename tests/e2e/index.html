@@ -23,6 +23,14 @@
           </select></label>
           <label><input type="checkbox" id="failures-only" /> Failures only</label>
         </div>
+        <div id="score" title="1000 = baseline; geomean of baselineMedianMs / medianMs, higher is faster"></div>
+        <div class="suite-actions">
+          <button id="save-baseline" disabled>Save baseline</button>
+          <button id="compare-baseline" disabled>Compare to baseline</button>
+          <button id="export-baseline">Export baseline</button>
+          <button id="import-baseline">Import baseline</button>
+          <input type="file" id="baseline-file" accept="application/json,.json" hidden />
+        </div>
       </div>
       <nav id="cases"></nav>
     </aside>
