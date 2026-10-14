@@ -102,6 +102,14 @@ describe("benchmark score", () => {
     expect(report).toContain("Reconfigured (frames or runs differ): d, e");
   });
 
+  it("reports score, band, verdict and count for a full comparison", () => {
+    const report = formatScoreReport(scoreBenchmark(results, baseline));
+    expect(report).toContainEqual(expect.stringMatching(/^Score: 1000 \[\d+–\d+\]$/));
+    expect(report).toContainEqual(expect.stringMatching(/^Verdict: within noise \(baseline band \[\d+–\d+\]\)$/));
+    expect(report).toContain("Compared: 2/2 cases");
+    expect(report.join("\n")).not.toMatch(/partial|Missing|New|Errored|Reconfigured|Hash changed/);
+  });
+
   it("warns about a changed hash but keeps the case in the score", () => {
     const scored = scoreBenchmark([{ ...results[0], hash: "other" }, results[1]], baseline);
     expect(scored.hashChanged).toEqual(["a"]);
