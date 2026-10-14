@@ -3,6 +3,7 @@ import { Color } from "../attributes/Color";
 import { ItemTransform } from "../attributes/ItemTransform";
 import { Matrix3Utilities } from "../math/Matrix3Utilities";
 import "../math/RectangleType";
+import { nextVersion } from "../utils/nextVersion";
 
 /**
  * Item
@@ -11,6 +12,7 @@ import "../math/RectangleType";
  * @property {Array<number>} colorCache
  * @property {boolean} interactive
  * @property {boolean} renderable
+ * @property {Container} parent
  * @property {ItemTransform} transform
  * @property {Color} color
  * @property {number} alpha
@@ -35,6 +37,8 @@ export class Item {
     this.callbackBeforeRender = this.callbackAfterRender = noop;
     this.renderable = true;
     this.$bounds = { x: 0, y: 0, width: 0, height: 0 };
+    this.$colorVersion = this.$transformVersion = nextVersion();
+    this.$parentColorVersion = this.$parentTransformVersion = -1;
   }
 
   /**
@@ -43,19 +47,7 @@ export class Item {
    * @type {StageContainer}
    */
   get stage() {
-    return this.$parent ? this.$parent.stage : null;
-  }
-
-  /**
-   * Set/Get parent
-   * @type {Container}
-   */
-  get parent() {
-    return this.$parent;
-  }
-  set parent(v) {
-    this.$parent = v;
-    this.$parentChanged = true;
+    return this.parent ? this.parent.stage : null;
   }
 
   /**
@@ -106,8 +98,8 @@ export class Item {
       callback && callback(this, target, event);
     }
 
-    const { $parent } = this;
-    $parent && $parent.callEventHandler(target, event);
+    const { parent } = this;
+    parent && parent.callEventHandler(target, event);
   }
 
   /**
@@ -121,26 +113,32 @@ export class Item {
    * Remove Item from parent
    */
   remove() {
-    const { $parent } = this;
-    $parent && $parent.removeChild(this);
+    const { parent } = this;
+    parent && parent.removeChild(this);
   }
 
   /**
-   * Update color and transform values
+   * <pre>
+   *  Update color and transform values
+   *    - A channel is recalculated only when the own attribute or the parent's version of that
+   *      channel changed since the last update, and then gets a new version for the children
+   * </pre>
    */
   update() {
-    const { transform, color, $parent, $parentChanged } = this;
-
-    this.$parentChanged = false;
+    const { transform, color, parent } = this;
+    const { $colorVersion, $transformVersion } = parent;
 
     color.update();
 
-    this.colorUpdated = $parentChanged || color.updated || $parent.colorUpdated;
+    this.colorUpdated = color.updated || $colorVersion !== this.$parentColorVersion;
 
     if (this.colorUpdated) {
       const { colorCache } = this;
       const originalColorCache = color.cache;
-      const parentColorCache = $parent.colorCache;
+      const parentColorCache = parent.colorCache;
+
+      this.$parentColorVersion = $colorVersion;
+      this.$colorVersion = nextVersion();
 
       colorCache[0] = parentColorCache[0] * originalColorCache[0];
       colorCache[1] = parentColorCache[1] * originalColorCache[1];
@@ -150,9 +148,14 @@ export class Item {
 
     transform.update();
 
-    this.transformUpdated = $parentChanged || transform.updated || $parent.transformUpdated;
+    this.transformUpdated = transform.updated || $transformVersion !== this.$parentTransformVersion;
 
-    this.transformUpdated && Matrix3Utilities.transform(this.matrixCache, $parent.matrixCache, transform);
+    if (this.transformUpdated) {
+      this.$parentTransformVersion = $transformVersion;
+      this.$transformVersion = nextVersion();
+
+      Matrix3Utilities.transform(this.matrixCache, parent.matrixCache, transform);
+    }
   }
 
   /**

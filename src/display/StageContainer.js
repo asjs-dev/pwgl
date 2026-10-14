@@ -1,6 +1,7 @@
 import { Matrix3Utilities } from "../math/Matrix3Utilities";
 import { BatchRenderer } from "../renderers/BatchRenderer";
 import { Container } from "./Container";
+import { nextVersion } from "../utils/nextVersion";
 
 /**
  * Stage container
@@ -18,7 +19,6 @@ export class StageContainer extends Container {
 
     this.renderer = renderer;
     this.colorCache = this.color.cache;
-    delete this.parent;
     delete this.transform;
   }
 
@@ -32,23 +32,11 @@ export class StageContainer extends Container {
   }
 
   /**
-   * Get premultiplied useTint value
-   * @type {Container}
+   * Update color and the projection; the projection is recalculated after a renderer resize
    */
-  getPremultipliedUseTint() {
-    return this.useTint;
-  }
-
-  /**
-   * Get premultiplied alpha
-   * @type {Container}
-   */
-  getPremultipliedAlpha() {
-    return this.alpha;
-  }
-
   update() {
     const { color, renderer } = this;
+    const { $resizeVersion } = renderer;
 
     this.$premultipliedAlpha = this.alpha;
     this.$premultipliedUseTint = this.useTint;
@@ -56,9 +44,15 @@ export class StageContainer extends Container {
     color.update();
 
     this.colorUpdated = color.updated;
+    this.colorUpdated && (this.$colorVersion = nextVersion());
 
-    this.transformUpdated = renderer.resized;
+    this.transformUpdated = $resizeVersion !== this.$parentTransformVersion;
 
-    this.transformUpdated && Matrix3Utilities.projection(this.matrixCache, renderer);
+    if (this.transformUpdated) {
+      this.$parentTransformVersion = $resizeVersion;
+      this.$transformVersion = nextVersion();
+
+      Matrix3Utilities.projection(this.matrixCache, renderer);
+    }
   }
 }

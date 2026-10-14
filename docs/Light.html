@@ -649,7 +649,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line82">line 82</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line74">line 74</a>
     </li></ul></dd>
     
 
@@ -729,7 +729,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line68">line 68</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line60">line 60</a>
     </li></ul></dd>
     
 
@@ -1041,83 +1041,6 @@
 
         
             
-<h4 class="name" id="parent"><span class="type-signature"></span>parent<span class="type-signature"> :<a href="Container.html">Container</a></span></h4>
-
-
-
-
-<div class="description">
-    Set/Get parent
-</div>
-
-
-
-    <h5>Type:</h5>
-    <ul>
-        <li>
-            
-<span class="param-type"><a href="Container.html">Container</a></span>
-
-
-        </li>
-    </ul>
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-overrides">Overrides:</dt>
-    <dd class="tag-overrides"><ul class="dummy"><li>
-        <a href="BaseDrawable.html#parent">BaseDrawable#parent</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line53">line 53</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
 <h4 class="name" id="shading"><span class="type-signature"></span>shading<span class="type-signature"> :boolean</span></h4>
 
 
@@ -1249,7 +1172,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line45">line 45</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line49">line 49</a>
     </li></ul></dd>
     
 
@@ -1592,7 +1515,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line103">line 103</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line95">line 95</a>
     </li></ul></dd>
     
 
@@ -1685,7 +1608,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line116">line 116</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line108">line 108</a>
     </li></ul></dd>
     
 
@@ -1729,7 +1652,10 @@
 
 
 <div class="description">
-    Returns with bounds
+    <pre>
+ Returns with bounds
+   - Uses the matrix cache of the last rendered frame; changes made since then are not included
+</pre>
 </div>
 
 
@@ -1778,7 +1704,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_BaseDrawable.js.html">display/BaseDrawable.js</a>, <a href="display_BaseDrawable.js.html#line30">line 30</a>
+        <a href="display_BaseDrawable.js.html">display/BaseDrawable.js</a>, <a href="display_BaseDrawable.js.html#line33">line 33</a>
     </li></ul></dd>
     
 
@@ -1889,7 +1815,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line123">line 123</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line115">line 115</a>
     </li></ul></dd>
     
 
@@ -1933,7 +1859,11 @@
 
 
 <div class="description">
-    Update color and transform values
+    <pre>
+ Update color and transform values
+   - A channel is recalculated only when the own attribute or the parent's version of that
+     channel changed since the last update, and then gets a new version for the children
+</pre>
 </div>
 
 
@@ -1982,7 +1912,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line131">line 131</a>
+        <a href="display_Item.js.html">display/Item.js</a>, <a href="display_Item.js.html#line127">line 127</a>
     </li></ul></dd>
     
 

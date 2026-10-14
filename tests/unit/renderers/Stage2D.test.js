@@ -21,6 +21,61 @@ const createCanvas = () => ({
   }),
 });
 
+const createTraversalSetup = async () => {
+  installWebGL2RenderingContextMock();
+  const [{ Stage2D }, { Image }, { Container }] = await Promise.all([
+    loadStage2DModule(),
+    loadImageModule(),
+    loadContainerModule(),
+  ]);
+  const renderer = new Stage2D({
+    context: { canvas: createCanvas() },
+    locations: [],
+  });
+  const drawn = [];
+
+  renderer.setRenderingType(Image.RENDERING_TYPE, (image) => drawn.push(image));
+
+  const drawPass = () => {
+    drawn.length = 0;
+    renderer.$drawItem(renderer.container);
+    return drawn.slice();
+  };
+
+  return { renderer, Image, Container, drawPass };
+};
+
+// One branch is hidden and shown again, its twin stays visible as the reference.
+const createHiddenBranchSetup = async () => {
+  const setup = await createTraversalSetup();
+  const { renderer, Image, Container } = setup;
+  const outer = new Container();
+  const hidden = new Container();
+  const hiddenInner = new Container();
+  const hiddenImage = new Image();
+  const visible = new Container();
+  const visibleInner = new Container();
+  const visibleImage = new Image();
+
+  renderer.container.addChild(outer);
+  outer.addChild(hidden);
+  outer.addChild(visible);
+  hidden.addChild(hiddenInner);
+  hiddenInner.addChild(hiddenImage);
+  visible.addChild(visibleInner);
+  visibleInner.addChild(visibleImage);
+  setup.drawPass();
+
+  return { ...setup, outer, hidden, hiddenImage, visibleImage };
+};
+
+const createChildren = (Image, container, count) =>
+  Array.from({ length: count }, () => {
+    const image = new Image();
+    container.addChild(image);
+    return image;
+  });
+
 describe("Stage2D", () => {
   it("allows subclasses to append per-image batch data", async () => {
     installWebGL2RenderingContextMock();
@@ -361,5 +416,377 @@ describe("Stage2D", () => {
     expect(() => renderer.$checkMousePositionFv(image)).not.toThrow();
     expect(renderer.$eventTarget).toBeUndefined();
     expect(image.isContainsPoint).not.toHaveBeenCalled();
+  });
+  describe("hidden subtrees", () => {
+    it("refreshes the children of a re-shown container with an ancestor transform changed while hidden", async () => {
+      const { outer, hidden, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+      const update = vi.spyOn(hiddenImage, "update");
+
+      hidden.renderable = false;
+      outer.transform.x = 25;
+      outer.transform.rotation = 0.5;
+      drawPass();
+      drawPass();
+
+      expect(update).not.toHaveBeenCalled();
+      expect(hiddenImage.matrixCache).not.toEqual(visibleImage.matrixCache);
+
+      hidden.renderable = true;
+      expect(drawPass()).toContain(hiddenImage);
+
+      expect(hiddenImage.matrixCache).toEqual(visibleImage.matrixCache);
+    });
+
+    it("refreshes the children of a re-shown container with an ancestor color changed while hidden", async () => {
+      const { outer, hidden, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+
+      hidden.renderable = false;
+      outer.color.r = 0.5;
+      outer.color.b = 0.25;
+      drawPass();
+
+      hidden.renderable = true;
+      drawPass();
+
+      expect(hiddenImage.colorCache).toEqual(visibleImage.colorCache);
+      expect(hiddenImage.colorCache[0]).toBeCloseTo(0.5);
+    });
+
+    it("refreshes nested hidden containers shown again one after the other", async () => {
+      const { outer, hidden, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+      const nested = hiddenImage.parent;
+
+      hidden.renderable = false;
+      nested.renderable = false;
+      outer.transform.y = 15;
+      drawPass();
+
+      hidden.renderable = true;
+      drawPass();
+      drawPass();
+
+      expect(visibleImage.matrixCache).not.toEqual(hiddenImage.matrixCache);
+
+      nested.renderable = true;
+      drawPass();
+
+      expect(hiddenImage.matrixCache).toEqual(visibleImage.matrixCache);
+    });
+
+    it("refreshes the subtree of a container hidden and shown again from its own before render callback", async () => {
+      const { outer, hidden, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+
+      hidden.callbackBeforeRender = (item) => {
+        item.renderable = false;
+      };
+      outer.transform.x = 40;
+      expect(drawPass()).not.toContain(hiddenImage);
+
+      hidden.callbackBeforeRender = (item) => {
+        item.renderable = true;
+      };
+      expect(drawPass()).toContain(hiddenImage);
+      expect(hiddenImage.matrixCache).toEqual(visibleImage.matrixCache);
+    });
+
+    it("recalculates the children of a visible container only in the frame of the change", async () => {
+      const { outer, visibleImage, drawPass } = await createHiddenBranchSetup();
+
+      outer.transform.x = 5;
+      drawPass();
+
+      expect(visibleImage.transformUpdated).toBe(true);
+
+      drawPass();
+
+      expect(outer.transformUpdated).toBeFalsy();
+      expect(visibleImage.transformUpdated).toBeFalsy();
+      expect(visibleImage.colorUpdated).toBeFalsy();
+    });
+
+    it("picks up an ancestor change after being moved into a hidden container", async () => {
+      const { outer, hidden, visibleImage, drawPass } = await createHiddenBranchSetup();
+      const moved = visibleImage;
+
+      hidden.renderable = false;
+      hidden.addChild(moved);
+      outer.transform.y = 12;
+      drawPass();
+
+      hidden.renderable = true;
+      drawPass();
+
+      expect(Array.from(moved.matrixCache)).toEqual(Array.from(hidden.children[0].children[0].matrixCache));
+    });
+
+    it("recalculates nothing when a container is shown again with nothing changed while hidden", async () => {
+      const { hidden, hiddenImage, drawPass } = await createHiddenBranchSetup();
+      const { $colorVersion, $transformVersion } = hiddenImage;
+      const matrix = hiddenImage.matrixCache.slice();
+
+      hidden.renderable = false;
+      drawPass();
+
+      hidden.renderable = true;
+      drawPass();
+
+      expect(hiddenImage.transformUpdated).toBeFalsy();
+      expect(hiddenImage.colorUpdated).toBeFalsy();
+      expect(hiddenImage.$transformVersion).toBe($transformVersion);
+      expect(hiddenImage.$colorVersion).toBe($colorVersion);
+      expect(hiddenImage.matrixCache).toEqual(matrix);
+    });
+
+    it("refreshes a container shown again after many hidden frames and several ancestor changes", async () => {
+      const { outer, hidden, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+
+      hidden.renderable = false;
+      outer.transform.x = 10;
+      for (let i = 0; i < 10; i++) drawPass();
+      outer.transform.y = 20;
+      outer.color.g = 0.5;
+      for (let i = 0; i < 5; i++) drawPass();
+
+      hidden.renderable = true;
+      drawPass();
+
+      expect(hiddenImage.matrixCache).toEqual(visibleImage.matrixCache);
+      expect(hiddenImage.colorCache).toEqual(visibleImage.colorCache);
+    });
+
+    it("recalculates only the color channel after a color-only ancestor change, even while hidden", async () => {
+      const { outer, hidden, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+      const { $transformVersion } = hiddenImage;
+
+      hidden.renderable = false;
+      outer.color.r = 0.5;
+      drawPass();
+
+      expect(visibleImage.colorUpdated).toBe(true);
+      expect(visibleImage.transformUpdated).toBeFalsy();
+
+      hidden.renderable = true;
+      drawPass();
+
+      expect(hiddenImage.colorUpdated).toBe(true);
+      expect(hiddenImage.transformUpdated).toBeFalsy();
+      expect(hiddenImage.$transformVersion).toBe($transformVersion);
+      expect(hiddenImage.colorCache[0]).toBeCloseTo(0.5);
+    });
+
+    it("recalculates only the transform channel after a transform-only ancestor change, even while hidden", async () => {
+      const { outer, hidden, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+      const { $colorVersion } = hiddenImage;
+
+      hidden.renderable = false;
+      outer.transform.x = 8;
+      drawPass();
+
+      expect(visibleImage.transformUpdated).toBe(true);
+      expect(visibleImage.colorUpdated).toBeFalsy();
+
+      hidden.renderable = true;
+      drawPass();
+
+      expect(hiddenImage.transformUpdated).toBe(true);
+      expect(hiddenImage.colorUpdated).toBeFalsy();
+      expect(hiddenImage.$colorVersion).toBe($colorVersion);
+      expect(hiddenImage.matrixCache).toEqual(visibleImage.matrixCache);
+    });
+
+    it("picks up the new parent's values after being moved under an already updated parent", async () => {
+      const { hidden, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+      const visibleInner = visibleImage.parent;
+
+      visibleInner.transform.x = 14;
+      visibleInner.color.b = 0.25;
+      drawPass();
+      drawPass();
+
+      visibleInner.addChild(hiddenImage);
+      drawPass();
+
+      expect(hidden.children[0].children).not.toContain(hiddenImage);
+      expect(hiddenImage.matrixCache).toEqual(visibleImage.matrixCache);
+      expect(hiddenImage.colorCache).toEqual(visibleImage.colorCache);
+    });
+
+    it("propagates an ancestor change consumed by an update outside the render pass", async () => {
+      const { outer, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+      const before = visibleImage.matrixCache.slice();
+
+      outer.transform.x = 9;
+      outer.color.r = 0.5;
+      outer.update();
+      drawPass();
+
+      expect(visibleImage.matrixCache).not.toEqual(before);
+      expect(visibleImage.matrixCache).toEqual(hiddenImage.matrixCache);
+      expect(visibleImage.colorCache[0]).toBeCloseTo(0.5);
+    });
+
+    it("refreshes the subtree of a re-shown stage container", async () => {
+      const { renderer, outer, hiddenImage, visibleImage, drawPass } = await createHiddenBranchSetup();
+
+      renderer.container.renderable = false;
+      outer.transform.x = 33;
+      drawPass();
+
+      renderer.container.renderable = true;
+      drawPass();
+
+      expect(hiddenImage.matrixCache).toEqual(visibleImage.matrixCache);
+      expect(visibleImage.matrixCache[4]).not.toBe(0);
+    });
+
+    it("recalculates the projection of a stage container resized while hidden", async () => {
+      const { renderer, drawPass } = await createTraversalSetup();
+      const stage = renderer.container;
+
+      drawPass();
+      const previousProjection = stage.matrixCache.slice();
+
+      stage.renderable = false;
+      renderer.width = 400;
+      renderer.height = 300;
+      renderer.$resize();
+      drawPass();
+      renderer.resized = false;
+
+      stage.renderable = true;
+      drawPass();
+
+      const { Matrix3Utilities } = await loadSrcModuleWithBrowserMocks("../../../src/math/Matrix3Utilities.js");
+      const expectedProjection = Matrix3Utilities.identity();
+      Matrix3Utilities.projection(expectedProjection, renderer);
+
+      expect(stage.matrixCache).toEqual(expectedProjection);
+      expect(stage.matrixCache).not.toEqual(previousProjection);
+    });
+  });
+
+  describe("render callbacks", () => {
+    it("runs the before render callback before the update and applies its changes in the same frame", async () => {
+      const { renderer, Image, drawPass } = await createTraversalSetup();
+      const [image] = createChildren(Image, renderer.container, 1);
+      const reference = new Image();
+      const calls = [];
+
+      drawPass();
+      vi.spyOn(image, "update").mockImplementation(function () {
+        calls.push("update");
+        return Image.prototype.update.call(this);
+      });
+      image.callbackBeforeRender = (item) => {
+        calls.push("before");
+        item.transform.x = 30;
+      };
+      image.callbackAfterRender = () => calls.push("after");
+      reference.transform.x = 30;
+      renderer.container.addChild(reference);
+
+      drawPass();
+
+      expect(calls).toEqual(["before", "update", "after"]);
+      expect(image.matrixCache).toEqual(reference.matrixCache);
+    });
+  });
+
+  describe("mid-pass child changes", () => {
+    it("neither updates nor draws a child that removes itself before render, and skips the next sibling for that frame", async () => {
+      const { renderer, Image, drawPass } = await createTraversalSetup();
+      const [a, b, c] = createChildren(Image, renderer.container, 3);
+      const update = vi.spyOn(b, "update");
+      const afterRender = vi.fn();
+
+      b.callbackBeforeRender = (item) => item.remove();
+      b.callbackAfterRender = afterRender;
+
+      expect(drawPass()).toEqual([a]);
+      expect(update).not.toHaveBeenCalled();
+      expect(afterRender).toHaveBeenCalledWith(b, renderer.$renderTime);
+      expect(drawPass()).toEqual([a, c]);
+    });
+
+    it("never draws an undefined child when children remove themselves after render", async () => {
+      const { renderer, Image, drawPass } = await createTraversalSetup();
+      const [a, b, c] = createChildren(Image, renderer.container, 3);
+      const drawItem = vi.spyOn(renderer, "$drawItem");
+
+      b.callbackAfterRender = (item) => item.remove();
+      c.callbackAfterRender = (item) => item.remove();
+
+      expect(drawPass()).toEqual([a, b]);
+      expect(drawItem.mock.calls.every(([item]) => item)).toBe(true);
+      expect(drawPass()).toEqual([a, c]);
+      expect(renderer.container.children).toEqual([a]);
+    });
+
+    it("does not draw an item moved to another container in its own callback until the next frame", async () => {
+      const { renderer, Image, Container, drawPass } = await createTraversalSetup();
+      const visited = new Container();
+      const main = new Container();
+      const afterRender = vi.fn();
+
+      renderer.container.addChild(visited);
+      renderer.container.addChild(main);
+      const [a, b, c] = createChildren(Image, main, 3);
+
+      b.callbackBeforeRender = (item) => {
+        item.callbackBeforeRender = null;
+        visited.addChild(item);
+      };
+      b.callbackAfterRender = afterRender;
+
+      expect(drawPass()).not.toContain(b);
+      expect(afterRender).toHaveBeenCalledTimes(1);
+      expect(drawPass()).toEqual([b, a, c]);
+    });
+
+    it("skips the next sibling for that frame when an already drawn sibling is removed", async () => {
+      const { renderer, Image, drawPass } = await createTraversalSetup();
+      const [a, b, c, d] = createChildren(Image, renderer.container, 4);
+
+      c.callbackBeforeRender = () => a.remove();
+
+      expect(drawPass()).toEqual([a, b, c]);
+      expect(drawPass()).toEqual([b, c, d]);
+    });
+
+    it("does not draw a sibling removed before it is reached", async () => {
+      const { renderer, Image, drawPass } = await createTraversalSetup();
+      const [a, b, c, d] = createChildren(Image, renderer.container, 4);
+
+      a.callbackAfterRender = () => c.remove();
+
+      expect(drawPass()).toEqual([a, b, d]);
+    });
+
+    it("draws a child added after the current one in the same frame", async () => {
+      const { renderer, Image, drawPass } = await createTraversalSetup();
+      const [a, b] = createChildren(Image, renderer.container, 2);
+      const added = new Image();
+
+      a.callbackAfterRender = () => {
+        a.callbackAfterRender = null;
+        renderer.container.addChild(added);
+      };
+
+      expect(drawPass()).toEqual([a, b, added]);
+    });
+
+    it("visits the current child again when a child is inserted before it", async () => {
+      const { renderer, Image, drawPass } = await createTraversalSetup();
+      const [a, b, c] = createChildren(Image, renderer.container, 3);
+      const added = new Image();
+
+      b.callbackAfterRender = () => {
+        b.callbackAfterRender = null;
+        renderer.container.addChildAt(added, 0);
+      };
+
+      expect(drawPass()).toEqual([a, b, b, c]);
+      expect(drawPass()).toEqual([added, a, b, c]);
+    });
   });
 });

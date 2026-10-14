@@ -23,33 +23,15 @@ export class Container extends Item {
   }
 
   /**
-   * Get premultipliedUseTint
-   * @type {Container}
-   */
-  getPremultipliedUseTint() {
-    const { $parent } = this;
-    return this.useTint * ($parent ? $parent.getPremultipliedUseTint() : 1);
-  }
-
-  /**
-   * Get premultipliedAlpha
-   * @type {Container}
-   */
-  getPremultipliedAlpha() {
-    const { $parent } = this;
-    return this.alpha * ($parent ? $parent.getPremultipliedAlpha() : 1);
-  }
-
-  /**
    * Update color, transform and the cached premultiplied alpha and useTint values
    */
   update() {
     super.update();
 
-    const { $parent } = this;
+    const { parent } = this;
 
-    this.$premultipliedAlpha = this.alpha * $parent.$premultipliedAlpha;
-    this.$premultipliedUseTint = this.useTint * $parent.$premultipliedUseTint;
+    this.$premultipliedAlpha = this.alpha * parent.$premultipliedAlpha;
+    this.$premultipliedUseTint = this.useTint * parent.$premultipliedUseTint;
   }
 
   /**
@@ -163,7 +145,10 @@ export class Container extends Item {
   }
 
   /**
-   * Returns with the bounds of the container
+   * <pre>
+   *  Returns with the bounds of the container
+   *    - Uses the caches of the last rendered frame; changes made since then are not included
+   * </pre>
    * @returns {Rectangle}
    */
   getBounds() {

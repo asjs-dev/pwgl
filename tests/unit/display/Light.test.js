@@ -32,7 +32,7 @@ describe("Light", () => {
     const { Light } = await loadLightModule();
     const light = new Light();
 
-    light.$parent = {
+    light.parent = {
       stage: {
         renderer: { widthHalf: 50, heightHalf: 50, height: 100 },
       },

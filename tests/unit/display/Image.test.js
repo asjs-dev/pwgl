@@ -49,4 +49,29 @@ describe("Image", () => {
     expect(image.isContainsPoint({ x: 10.5, y: 20.5 })).toBe(true);
     expect(image.isContainsPoint({ x: 12, y: 25 })).toBe(false);
   });
+
+  it("rebuilds the inverse matrix when interactive is enabled after the last transform change", async () => {
+    const { Image } = await loadImageModule();
+    const image = new Image({ id: "texture" });
+
+    image.parent = {
+      colorCache: new Float32Array([1, 1, 1, 1]),
+      matrixCache: new Float32Array([1, 0, 0, 1, 0, 0]),
+      stage: null,
+    };
+    image.transform.x = 10;
+    image.transform.y = 20;
+    image.update();
+    image.update();
+    image.interactive = true;
+
+    expect(image.isContainsPoint({ x: 10.5, y: 20.5 })).toBe(true);
+    expect(image.isContainsPoint({ x: 0.5, y: 0.5 })).toBe(false);
+
+    image.transform.x = 0;
+    image.transform.y = 0;
+    image.update();
+
+    expect(image.isContainsPoint({ x: 0.5, y: 0.5 })).toBe(true);
+  });
 });

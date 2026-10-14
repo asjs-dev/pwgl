@@ -33,39 +33,6 @@ describe("Container", () => {
     expect(childA.parent).toBe(null);
   });
 
-  it("computes premultiplied alpha and tint from the parent chain", () => {
-    const root = new Container();
-    const child = new Container();
-
-    root.parent = null;
-    root.alpha = 0.5;
-    root.useTint = 0.25;
-    child.alpha = 0.2;
-    child.useTint = 0.4;
-
-    child.parent = root;
-
-    expect(child.getPremultipliedAlpha()).toBeCloseTo(0.1);
-    expect(child.getPremultipliedUseTint()).toBeCloseTo(0.1);
-  });
-
-  it("treats a missing parent as factor 1 in the public premultiplied getters", () => {
-    const container = new Container();
-    const child = new Container();
-
-    container.alpha = 0.5;
-    container.useTint = 0.25;
-
-    expect(container.getPremultipliedAlpha()).toBe(0.5);
-    expect(container.getPremultipliedUseTint()).toBe(0.25);
-
-    container.addChild(child);
-    container.removeChild(child);
-
-    expect(child.getPremultipliedAlpha()).toBe(1);
-    expect(child.getPremultipliedUseTint()).toBe(1);
-  });
-
   it("caches premultiplied alpha and tint from the parent cache on update", async () => {
     const { StageContainer } = await loadStageContainerModule();
     const stage = new StageContainer({ resized: false });
@@ -86,13 +53,9 @@ describe("Container", () => {
 
     expect(leaf.$premultipliedAlpha).toBeCloseTo(0.05);
     expect(leaf.$premultipliedUseTint).toBe(0);
-    expect(leaf.$premultipliedAlpha).toBeCloseTo(leaf.getPremultipliedAlpha());
-    expect(leaf.$premultipliedUseTint).toBe(leaf.getPremultipliedUseTint());
 
     middle.alpha = 0.8;
     middle.useTint = true;
-
-    expect(leaf.getPremultipliedAlpha()).toBeCloseTo(0.1);
 
     stage.update();
     middle.update();

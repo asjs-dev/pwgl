@@ -115,16 +115,24 @@ export class Image extends BaseDrawable {
 
     textureTransform.update();
     textureTransform.updated &amp;&amp; Matrix3Utilities.transformLocal(this.textureMatrixCache, textureTransform);
-
-    this.interactive &amp;&amp; this.transformUpdated &amp;&amp; Matrix3Utilities.inverse(this.$inverseMatrixCache, this.matrixCache);
   }
 
   /**
-   * Returns true if the Image contains the point
+   * &lt;pre>
+   *  Returns true if the Image contains the point
+   *    - Uses the matrix cache of the last rendered frame; changes made since then are not included
+   * &lt;/pre>
    * @param {Point} point
    * @returns {boolean}
    */
   isContainsPoint(point) {
+    const { $transformVersion } = this;
+
+    if (this.$inverseVersion !== $transformVersion) {
+      this.$inverseVersion = $transformVersion;
+      Matrix3Utilities.inverse(this.$inverseMatrixCache, this.matrixCache);
+    }
+
     return Matrix3Utilities.isPointInMatrix(this.$inverseMatrixCache, point);
   }
 }

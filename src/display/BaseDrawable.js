@@ -24,7 +24,10 @@ export class BaseDrawable extends Item {
   }
 
   /**
-   * Returns with bounds
+   * <pre>
+   *  Returns with bounds
+   *    - Uses the matrix cache of the last rendered frame; changes made since then are not included
+   * </pre>
    * @returns {Rectangle}
    */
   getBounds() {

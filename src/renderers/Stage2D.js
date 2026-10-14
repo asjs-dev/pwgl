@@ -113,11 +113,7 @@ export class Stage2D extends BatchRenderer {
       4
     );
 
-    this.$checkMousePositionFv =
-      this.$addDistortionDataFv =
-      this.$uploadDistortionFv =
-      this.$createDistortionFv =
-        noop;
+    this.$checkMousePositionFv = this.$addDistortionDataFv = this.$uploadDistortionFv = this.$createDistortionFv = noop;
 
     if (useDistortion) {
       // prettier-ignore
@@ -230,15 +226,23 @@ export class Stage2D extends BatchRenderer {
   }
 
   /**
+   * Draws an item: callbackBeforeRender, then update and render, then callbackAfterRender.
+   * A non-renderable item (and so its subtree) or one no longer under `parent` (removed or moved
+   * in a callback) is neither updated nor rendered; its callbacks still run.
    * @param {Item} item
+   * @param {Container} [parent]
    * @ignore
    */
-  $drawItem(item) {
+  $drawItem(item, parent) {
     const { $renderTime } = this;
 
-    item.update($renderTime);
     item.callbackBeforeRender(item, $renderTime);
-    item.renderable && this.$renderingTypes[item.RENDERING_TYPE](item);
+
+    if (item.parent === parent && item.renderable) {
+      item.update($renderTime);
+      this.$renderingTypes[item.RENDERING_TYPE](item);
+    }
+
     item.callbackAfterRender(item, $renderTime);
   }
 
@@ -248,11 +252,10 @@ export class Stage2D extends BatchRenderer {
    */
   $drawContainer(container) {
     const { children } = container;
-    const { length } = children;
     let i = -1;
 
-    while (++i < length) {
-      this.$drawItem(children[i]);
+    while (++i < children.length) {
+      this.$drawItem(children[i], container);
     }
   }
 
