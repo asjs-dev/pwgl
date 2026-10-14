@@ -39,6 +39,7 @@ const runChecksButton = $("#run-checks");
 const scorePanel = $("#score");
 const saveBaselineButton = $("#save-baseline");
 const compareBaselineButton = $("#compare-baseline");
+const importBaselineButton = $("#import-baseline");
 const baselineFile = $("#baseline-file");
 let activeCase;
 let activeTestCase;
@@ -243,10 +244,18 @@ const updateScore = () => {
       `Score ${round(scored.score)} [${round(scored.low)}–${round(scored.high)}] · ${scored.verdict}` +
       (scored.partial ? ` · partial (${scored.compared}/${scored.total})` : "");
   saveBaselineButton.disabled = compareBaselineButton.disabled = checking || !benchmarkResults.length;
+  importBaselineButton.disabled = checking;
+};
+
+// Baseline actions would score or save partial results while checks or benchmarks run.
+const isBusy = () => {
+  if (checking) status.textContent = "Wait until the running checks or benchmarks finish";
+  return checking;
 };
 
 // Scores the last benchmark results against the baseline stored for this adapter.
 const compareToBaseline = () => {
+  if (isBusy()) return "";
   if (!benchmarkResults.length) {
     status.textContent = "Run the benchmark first";
     return "";
@@ -258,6 +267,7 @@ const compareToBaseline = () => {
 };
 
 const saveBaseline = () => {
+  if (isBusy()) return null;
   if (!benchmarkResults.length) {
     status.textContent = "Run the benchmark first";
     return null;
@@ -289,6 +299,7 @@ const exportBaseline = () => {
 };
 
 const importBaseline = async (file) => {
+  if (isBusy()) return;
   try {
     const benchmarkBaseline = parseBaseline(await file.text());
     if (!storeBaseline(benchmarkBaseline)) return;
@@ -513,7 +524,7 @@ failuresOnly.addEventListener("change", updateNavigation);
 saveBaselineButton.addEventListener("click", saveBaseline);
 compareBaselineButton.addEventListener("click", compareToBaseline);
 $("#export-baseline").addEventListener("click", exportBaseline);
-$("#import-baseline").addEventListener("click", () => baselineFile.click());
+importBaselineButton.addEventListener("click", () => baselineFile.click());
 baselineFile.addEventListener("change", () => {
   const [file] = baselineFile.files;
   baselineFile.value = "";
