@@ -1,6 +1,6 @@
 {
   "name": "pwgl",
-  "version": "10.0.0",
+  "version": "10.0.1",
   "private": true,
   "description": "WebGL2 2D framework",
   "homepage": "https://asjs-dev.github.io/pwgl/",

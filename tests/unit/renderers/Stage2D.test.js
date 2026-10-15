@@ -215,6 +215,82 @@ describe("Stage2D", () => {
     expect(renderer.$dataBuffer.data[5]).toBe(1);
   });
 
+  it("writes each image's caches to its own batch slot in the fixed buffer layout", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }] = await Promise.all([loadStage2DModule(), loadImageModule()]);
+    const renderer = new Stage2D({
+      context: {
+        canvas: createCanvas(),
+        setBlendMode: vi.fn(),
+        useTexture: vi.fn(() => 3),
+      },
+      locations: [],
+    });
+    const images = createChildren(Image, renderer.container, 2);
+    // Distinct value per cache cell and per image, so any misplaced or swapped write shows.
+    const fill = (cache, base) => cache.set(Array.from({ length: cache.length }, (_, i) => base + i));
+
+    images.forEach((image, slot) => {
+      const base = (slot + 1) * 100;
+      fill(image.matrixCache, base);
+      fill(image.textureMatrixCache, base + 10);
+      fill(image.textureCropCache, base + 20);
+      fill(image.colorCache, base + 30);
+      fill(image.textureRepeatRandomCache, base + 40);
+      fill(image.distortionCache, base + 50);
+      image.alpha = 0.5;
+      image.tintType = 2;
+      renderer.$drawImage(image);
+    });
+
+    const matrixData = renderer.$matrixBuffer.data;
+    const data = renderer.$dataBuffer.data;
+    const distortionData = renderer.$distortionBuffer.data;
+
+    expect(renderer.$batchItems).toBe(2);
+    images.forEach((image, slot) => {
+      const base = (slot + 1) * 100;
+      const range = (offset, length) => Array.from({ length }, (_, i) => base + offset + i);
+
+      expect(Array.from(matrixData.subarray(slot * 16, slot * 16 + 16))).toEqual([
+        ...range(0, 6),
+        ...range(10, 6),
+        ...range(20, 4),
+      ]);
+      expect(Array.from(data.subarray(slot * 12, slot * 12 + 12))).toEqual([
+        ...range(30, 4),
+        0.5,
+        2,
+        3,
+        Number(image.distortion.distortTexture),
+        ...range(40, 4),
+      ]);
+      expect(Array.from(distortionData.subarray(slot * 8, slot * 8 + 8))).toEqual(range(50, 8));
+    });
+  });
+
+  it("overwrites the previous image's distortion when a batch slot is reused", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }] = await Promise.all([loadStage2DModule(), loadImageModule()]);
+    const renderer = new Stage2D({
+      context: {
+        canvas: createCanvas(),
+        setBlendMode: vi.fn(),
+        useTexture: vi.fn(() => -1),
+      },
+      locations: [],
+    });
+    const [distorted, plain] = createChildren(Image, renderer.container, 2);
+    const identity = Array.from(plain.distortionCache);
+
+    distorted.distortionCache.set([1, 2, 3, 4, 5, 6, 7, 8]);
+    renderer.$drawImage(distorted);
+    renderer.$batchItems = 0;
+    renderer.$drawImage(plain);
+
+    expect(Array.from(renderer.$distortionBuffer.data.subarray(0, 8))).toEqual(identity);
+  });
+
   it("supports externally registered rendering types and scopes", async () => {
     installWebGL2RenderingContextMock();
     const { Stage2D } = await loadStage2DModule();

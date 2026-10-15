@@ -1,4 +1,4 @@
-import { Container, Stage2D, Texture, Utils } from "../../../src/exports";
+import { Container, Framebuffer, Light, LightRenderer, Stage2D, Texture, Utils } from "../../../src/exports";
 import { READY_TIMEOUT, withTimeout } from "../checks";
 import { createCanvas, createContext, createSprite, HEIGHT, setRendererSize, solid, WIDTH } from "../helpers";
 
@@ -105,6 +105,48 @@ const benchmarkCase = (id, title, expectation, create, options = {}) => ({
   },
 });
 
+// A flat floor lit by `count` point lights without shadows or a normal map; the GPU side stays cheap,
+// so the per-light CPU work (update and buffer fill) dominates.
+const createLightBenchScene = (count, radius) => {
+  const context = createContext();
+  const sceneFramebuffer = new Framebuffer();
+  // The light shader always samples the height map; an empty one keeps the floor at height 0.
+  const heightFramebuffer = new Framebuffer();
+  const light = new LightRenderer({
+    context,
+    maxRenderCount: count,
+    sourceTexture: sceneFramebuffer,
+    heightMap: heightFramebuffer,
+  });
+  const stage = new Stage2D({ context, maxRenderCount: 64, lightRenderer: light });
+  const heights = new Stage2D({ context, maxRenderCount: 1 });
+  setRendererSize(stage);
+  setRendererSize(heights);
+  heights.clearBeforeRender = true;
+  heights.clearColor.set(0, 0, 0, 1);
+  light.setSize(WIDTH, HEIGHT);
+  const next = random(count);
+  stage.container.addChild(createSprite(new Texture(solid("#9a9a9a")), 0, 0, WIDTH, HEIGHT));
+  for (let i = 0; i < count; i++) {
+    const item = new Light();
+    item.transform.x = next() * WIDTH;
+    item.transform.y = next() * HEIGHT;
+    item.transform.z = radius / 2;
+    item.transform.width = radius;
+    item.color.set(0.3 + next() * 0.7, 0.6, 1 - next() * 0.7, 0.4);
+    item.castShadow = false;
+    stage.container.addChild(item);
+  }
+  return {
+    context,
+    render() {
+      stage.renderToFramebuffer(sceneFramebuffer);
+      heights.renderToFramebuffer(heightFramebuffer);
+      light.render();
+    },
+  };
+};
+
 export const benchmarkCases = [
   benchmarkCase(
     "benchmark-sprites",
@@ -144,5 +186,17 @@ export const benchmarkCases = [
     },
     // Fewer frames: before the render-pass gate every sprite re-uploaded the video.
     { frames: 20, warmup: 2 },
+  ),
+  benchmarkCase(
+    "benchmark-lights-400",
+    "400 lights",
+    "A gray floor lit by 400 colored point lights.",
+    () => createLightBenchScene(400, 40),
+  ),
+  benchmarkCase(
+    "benchmark-lights-4k",
+    "4k small lights",
+    "A gray floor lit by 4 000 small colored point lights.",
+    () => createLightBenchScene(4000, 4),
   ),
 ];

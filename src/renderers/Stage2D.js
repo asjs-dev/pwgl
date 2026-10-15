@@ -1,4 +1,3 @@
-import { arraySet } from "../../common/utils/arraySet";
 import { noop } from "../../common/utils/noop";
 import { Buffer } from "../core/Buffer";
 import { Utils } from "../core/Utils";
@@ -269,10 +268,25 @@ export class Stage2D extends BatchRenderer {
     const { $batchItems } = this;
     const matrixBufferId = $batchItems * 16;
     const matrixBufferData = this.$matrixBuffer.data;
+    const { matrixCache, textureMatrixCache, textureCropCache } = image;
 
-    arraySet(matrixBufferData, image.matrixCache, matrixBufferId);
-    arraySet(matrixBufferData, image.textureMatrixCache, matrixBufferId + 6);
-    arraySet(matrixBufferData, image.textureCropCache, matrixBufferId + 12);
+    // Fixed-index writes: cheaper than a generic copy loop on the per-image hot path.
+    matrixBufferData[matrixBufferId] = matrixCache[0];
+    matrixBufferData[matrixBufferId + 1] = matrixCache[1];
+    matrixBufferData[matrixBufferId + 2] = matrixCache[2];
+    matrixBufferData[matrixBufferId + 3] = matrixCache[3];
+    matrixBufferData[matrixBufferId + 4] = matrixCache[4];
+    matrixBufferData[matrixBufferId + 5] = matrixCache[5];
+    matrixBufferData[matrixBufferId + 6] = textureMatrixCache[0];
+    matrixBufferData[matrixBufferId + 7] = textureMatrixCache[1];
+    matrixBufferData[matrixBufferId + 8] = textureMatrixCache[2];
+    matrixBufferData[matrixBufferId + 9] = textureMatrixCache[3];
+    matrixBufferData[matrixBufferId + 10] = textureMatrixCache[4];
+    matrixBufferData[matrixBufferId + 11] = textureMatrixCache[5];
+    matrixBufferData[matrixBufferId + 12] = textureCropCache[0];
+    matrixBufferData[matrixBufferId + 13] = textureCropCache[1];
+    matrixBufferData[matrixBufferId + 14] = textureCropCache[2];
+    matrixBufferData[matrixBufferId + 15] = textureCropCache[3];
     this.$addImageData(image, $batchItems);
 
     ++this.$batchItems === this.$MAX_RENDER_COUNT && this.$batchDraw();
@@ -323,8 +337,16 @@ export class Stage2D extends BatchRenderer {
 
     this.$checkMousePositionFv(image);
 
-    arraySet(dataBufferData, image.colorCache, dataBufferId);
-    arraySet(dataBufferData, image.textureRepeatRandomCache, dataBufferId + 8);
+    const { colorCache, textureRepeatRandomCache } = image;
+
+    dataBufferData[dataBufferId] = colorCache[0];
+    dataBufferData[dataBufferId + 1] = colorCache[1];
+    dataBufferData[dataBufferId + 2] = colorCache[2];
+    dataBufferData[dataBufferId + 3] = colorCache[3];
+    dataBufferData[dataBufferId + 8] = textureRepeatRandomCache[0];
+    dataBufferData[dataBufferId + 9] = textureRepeatRandomCache[1];
+    dataBufferData[dataBufferId + 10] = textureRepeatRandomCache[2];
+    dataBufferData[dataBufferId + 11] = textureRepeatRandomCache[3];
     dataBufferData[dataBufferId + 4] = image.alpha * itemParent.$premultipliedAlpha;
     dataBufferData[dataBufferId + 5] = image.tintType * itemParent.$premultipliedUseTint;
     dataBufferData[dataBufferId + 6] = this.context.useTexture(image.texture, this.$renderTime, false, this.$batchDraw);
@@ -334,7 +356,19 @@ export class Stage2D extends BatchRenderer {
 
   $addDistortionData(dataBufferData, id, image, index) {
     dataBufferData[id] = image.distortion.distortTexture;
-    arraySet(this.$distortionBuffer.data, image.distortionCache, index * 8);
+    // Always written: batch slots are reused, so a skipped write would keep the previous image's distortion.
+    const distortionBufferData = this.$distortionBuffer.data;
+    const { distortionCache } = image;
+    const distortionBufferId = index * 8;
+
+    distortionBufferData[distortionBufferId] = distortionCache[0];
+    distortionBufferData[distortionBufferId + 1] = distortionCache[1];
+    distortionBufferData[distortionBufferId + 2] = distortionCache[2];
+    distortionBufferData[distortionBufferId + 3] = distortionCache[3];
+    distortionBufferData[distortionBufferId + 4] = distortionCache[4];
+    distortionBufferData[distortionBufferId + 5] = distortionCache[5];
+    distortionBufferData[distortionBufferId + 6] = distortionCache[6];
+    distortionBufferData[distortionBufferId + 7] = distortionCache[7];
   }
 
   $checkMousePosition(image) {

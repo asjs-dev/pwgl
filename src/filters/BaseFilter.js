@@ -28,7 +28,7 @@ export class BaseFilter {
    *                                 - Y center of the radial fade
    * @param {number} options.size - Default value 1 <br>
    *                              - Size of the radial fade
-   * @param {number} options.roundnes - Default value 1 <br>
+   * @param {number} options.roundness - Default value 1 <br>
    *                                  - Roundness of the radial fade
    * @param {number} options.transition - Default value 1 <br>
    *                                    - Transition of the radial fade
