@@ -98,6 +98,23 @@ describe("Stage2D", () => {
     expect(renderer.$batchItems).toBe(1);
   });
 
+  it("resolves the texture unit itself when $addImageData is called without one", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }] = await Promise.all([loadStage2DModule(), loadImageModule()]);
+    const useTexture = vi.fn(() => 3);
+    const renderer = new Stage2D({
+      context: { canvas: createCanvas(), useTexture },
+      locations: [],
+    });
+    const image = new Image();
+
+    renderer.container.addChild(image);
+    renderer.$addImageData(image, 1);
+
+    expect(useTexture).toHaveBeenCalledWith(image.texture, renderer.$renderTime, false);
+    expect(renderer.$dataBuffer.data[12 + 6]).toBe(3);
+  });
+
   it("writes the alpha and tint of nested images from ancestors updated in the same pass", async () => {
     installWebGL2RenderingContextMock();
     const [{ Stage2D }, { Image }, { Container }] = await Promise.all([
