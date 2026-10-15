@@ -1,4 +1,4 @@
-import { Container, Framebuffer, Light, LightRenderer, Stage2D, Texture, Utils } from "../../../src/exports";
+import { Container, Framebuffer, Light, LightRenderer, Stage2D, Text, Texture, Utils } from "../../../src/exports";
 import { READY_TIMEOUT, withTimeout } from "../checks";
 import { createCanvas, createContext, createSprite, HEIGHT, setRendererSize, solid, WIDTH } from "../helpers";
 
@@ -147,6 +147,37 @@ const createLightBenchScene = (count, radius) => {
   };
 };
 
+// A grid of static labels whose own and parent positions are rewritten every frame; the setters mark
+// the transforms updated even for the same value, so the rendered frame stays identical.
+const createTextBenchScene = (columns, rows) => {
+  const { context, stage } = createStage(columns * rows);
+  const group = new Container();
+  const labels = [];
+  const width = WIDTH / columns;
+  const height = HEIGHT / rows;
+  stage.container.addChild(group);
+  for (let row = 0; row < rows; row++) {
+    for (let column = 0; column < columns; column++) {
+      const index = row * columns + column;
+      const label = new Text(`Label ${index}`, { fontSize: 12, fontColor: HUES[index % HUES.length], fontFamily: "Arial, sans-serif" });
+      label.transform.x = column * width;
+      label.transform.y = row * height;
+      label.transform.width = width;
+      label.transform.height = height;
+      group.addChild(label);
+      labels.push(label);
+    }
+  }
+  return {
+    context,
+    render() {
+      group.transform.x = 0;
+      for (let i = 0, l = labels.length; i < l; i++) labels[i].transform.x = (i % columns) * width;
+      stage.render();
+    },
+  };
+};
+
 export const benchmarkCases = [
   benchmarkCase(
     "benchmark-sprites",
@@ -198,5 +229,11 @@ export const benchmarkCases = [
     "4k small lights",
     "A gray floor lit by 4 000 small colored point lights.",
     () => createLightBenchScene(4000, 4),
+  ),
+  benchmarkCase(
+    "benchmark-text",
+    "Moving text × 200",
+    "A grid of 200 static colored \"Label n\" texts whose positions are rewritten every frame.",
+    () => createTextBenchScene(10, 20),
   ),
 ];

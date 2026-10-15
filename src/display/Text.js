@@ -17,7 +17,7 @@ export class Text extends Image {
   constructor(text = "", options = {}) {
     const canvas = document.createElement("canvas");
 
-    super(new Texture(canvas, true));
+    super(new Texture(canvas));
 
     this.$canvas = canvas;
     this.$ctx = canvas.getContext("2d", {
@@ -111,7 +111,13 @@ export class Text extends Image {
 
   update() {
     super.update();
-    this.transformUpdated ? this.$updateTexture() : this.$updateFv();
+
+    const { transform } = this;
+
+    // Only a size change needs a redraw; position, rotation and parent changes reuse the texture.
+    this.transformUpdated && (transform.width !== this.$drawnWidth || transform.height !== this.$drawnHeight)
+      ? this.$updateTexture()
+      : this.$updateFv();
   }
 
   $updateTexture() {
@@ -119,10 +125,10 @@ export class Text extends Image {
 
     const { $ctx, $canvas, $align, $fontSize, $lineHeight, transform } = this;
     const lineHeight = $lineHeight * $fontSize;
-    const maxWidth = transform.width;
+    const maxWidth = (this.$drawnWidth = transform.width);
 
-    $canvas.width = transform.width;
-    $canvas.height = transform.height;
+    $canvas.width = maxWidth;
+    $canvas.height = this.$drawnHeight = transform.height;
 
     $ctx.font = $fontSize + "px " + this.$fontFamily;
     $ctx.textBaseline = "top";

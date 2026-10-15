@@ -263,8 +263,12 @@ export class Stage2D extends BatchRenderer {
    * @ignore
    */
   $drawImage(image) {
-    this.context.setBlendMode(image.blendMode, this.$batchDraw);
+    const { context } = this;
 
+    context.setBlendMode(image.blendMode, this.$batchDraw);
+
+    // Resolved before the slot index: a texture that needs a unit while all are taken flushes the batch.
+    const textureId = context.useTexture(image.texture, this.$renderTime, false, this.$batchDraw);
     const { $batchItems } = this;
     const matrixBufferId = $batchItems * 16;
     const matrixBufferData = this.$matrixBuffer.data;
@@ -287,7 +291,7 @@ export class Stage2D extends BatchRenderer {
     matrixBufferData[matrixBufferId + 13] = textureCropCache[1];
     matrixBufferData[matrixBufferId + 14] = textureCropCache[2];
     matrixBufferData[matrixBufferId + 15] = textureCropCache[3];
-    this.$addImageData(image, $batchItems);
+    this.$addImageData(image, $batchItems, textureId);
 
     ++this.$batchItems === this.$MAX_RENDER_COUNT && this.$batchDraw();
   }
@@ -328,9 +332,10 @@ export class Stage2D extends BatchRenderer {
   /**
    * @param {Image} image
    * @param {number} index
+   * @param {number} [textureId] - The texture unit of the image, resolved by `$drawImage`
    * @ignore
    */
-  $addImageData(image, index) {
+  $addImageData(image, index, textureId = this.context.useTexture(image.texture, this.$renderTime, false)) {
     const dataBufferId = index * 12;
     const itemParent = image.parent;
     const dataBufferData = this.$dataBuffer.data;
@@ -349,7 +354,7 @@ export class Stage2D extends BatchRenderer {
     dataBufferData[dataBufferId + 11] = textureRepeatRandomCache[3];
     dataBufferData[dataBufferId + 4] = image.alpha * itemParent.$premultipliedAlpha;
     dataBufferData[dataBufferId + 5] = image.tintType * itemParent.$premultipliedUseTint;
-    dataBufferData[dataBufferId + 6] = this.context.useTexture(image.texture, this.$renderTime, false, this.$batchDraw);
+    dataBufferData[dataBufferId + 6] = textureId;
 
     this.$addDistortionDataFv(dataBufferData, dataBufferId + 7, image, index);
   }

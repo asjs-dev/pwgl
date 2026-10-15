@@ -227,6 +227,44 @@ describe("LightRenderer", () => {
     expect(renderer.$matrixBuffer.data[11]).toBeCloseTo(0.2);
   });
 
+  it("writes each light's caches to its own batch slot in the fixed buffer layout", async () => {
+    const { LightRenderer } = await loadLightRendererModule();
+    const { renderer } = createLightRendererHarness(LightRenderer);
+    // Values are exact in Float32, so the rows compare with toEqual.
+    const createLight = (base) => ({
+      parent: { $premultipliedAlpha: 0.5 },
+      matrixCache: new Float32Array([base, base + 1, base + 2, base + 3, base + 4, base + 5]),
+      colorCache: new Float32Array([base + 8, base + 9, base + 10, 4]),
+      alpha: 0.25,
+      transform: { width: base + 6, z: base + 21 },
+      spotAngle: base + 7,
+      shadowLength: base + 12,
+      angle: base + 13,
+      type: base + 14,
+      flags: base + 20,
+      precision: base + 22,
+      maxShadowStep: base + 23,
+      specularStrength: base + 24,
+      attenuation: base + 25,
+    });
+    const lights = [createLight(100), createLight(200)];
+
+    lights.forEach((light) => renderer.addLightForRender(light));
+
+    expect(renderer.$batchItems).toBe(2);
+    lights.forEach((light, slot) => {
+      const base = (slot + 1) * 100;
+
+      expect(Array.from(renderer.$matrixBuffer.data.subarray(slot * 16, slot * 16 + 16))).toEqual([
+        base, base + 1, base + 2, base + 3, base + 4, base + 5, base + 6, base + 7,
+        base + 8, base + 9, base + 10, 0.5, base + 12, base + 13, base + 14, 0,
+      ]);
+      expect(Array.from(renderer.$extensionBuffer.data.subarray(slot * 6, slot * 6 + 6))).toEqual([
+        base + 20, base + 21, base + 22, base + 23, base + 24, base + 25,
+      ]);
+    });
+  });
+
   it("creates and uploads extension buffer", async () => {
     const { LightRenderer } = await loadLightRendererModule();
 

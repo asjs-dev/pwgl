@@ -1,4 +1,3 @@
-import { arraySet } from "../../common/utils/arraySet";
 import { Buffer } from "../core/Buffer";
 import { Utils } from "../core/Utils";
 import { Light } from "../display/Light";
@@ -142,11 +141,20 @@ export class LightRenderer extends BatchRenderer {
       const matrixBufferData = this.$matrixBuffer.data;
       const extensionBufferData = this.$extensionBuffer.data;
 
-      arraySet(matrixBufferData, light.matrixCache, matrixBufferId);
+      const { matrixCache, colorCache } = light;
+
+      matrixBufferData[matrixBufferId] = matrixCache[0];
+      matrixBufferData[matrixBufferId + 1] = matrixCache[1];
+      matrixBufferData[matrixBufferId + 2] = matrixCache[2];
+      matrixBufferData[matrixBufferId + 3] = matrixCache[3];
+      matrixBufferData[matrixBufferId + 4] = matrixCache[4];
+      matrixBufferData[matrixBufferId + 5] = matrixCache[5];
       matrixBufferData[matrixBufferId + 6] = light.transform.width;
       matrixBufferData[matrixBufferId + 7] = light.spotAngle;
-      arraySet(matrixBufferData, light.colorCache, matrixBufferId + 8);
-      matrixBufferData[matrixBufferId + 11] *= light.alpha * parent.$premultipliedAlpha;
+      matrixBufferData[matrixBufferId + 8] = colorCache[0];
+      matrixBufferData[matrixBufferId + 9] = colorCache[1];
+      matrixBufferData[matrixBufferId + 10] = colorCache[2];
+      matrixBufferData[matrixBufferId + 11] = colorCache[3] * light.alpha * parent.$premultipliedAlpha;
       matrixBufferData[matrixBufferId + 12] = light.shadowLength;
       matrixBufferData[matrixBufferId + 13] = light.angle;
       matrixBufferData[matrixBufferId + 14] = light.type;

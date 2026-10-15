@@ -94,7 +94,7 @@ describe("Stage2D", () => {
     renderer.container.addChild(image);
     renderer.$drawItem(renderer.container);
 
-    expect(addImageData).toHaveBeenCalledWith(image, 0);
+    expect(addImageData).toHaveBeenCalledWith(image, 0, -1);
     expect(renderer.$batchItems).toBe(1);
   });
 
@@ -267,6 +267,39 @@ describe("Stage2D", () => {
       ]);
       expect(Array.from(distortionData.subarray(slot * 8, slot * 8 + 8))).toEqual(range(50, 8));
     });
+  });
+
+  it("writes an image that flushes the batch for a texture unit into the first slot of the next batch", async () => {
+    installWebGL2RenderingContextMock();
+    const [{ Stage2D }, { Image }] = await Promise.all([loadStage2DModule(), loadImageModule()]);
+    let units = 0;
+    const context = {
+      canvas: createCanvas(),
+      setBlendMode: vi.fn(),
+      // Two texture units: the third texture flushes the batch through the callback, as Context does.
+      useTexture: vi.fn((texture, renderTime, forceBind, callback) => {
+        if (units === 2) {
+          callback();
+          units = 0;
+        }
+        return units++;
+      }),
+    };
+    const renderer = new Stage2D({ context, locations: [] });
+    const images = createChildren(Image, renderer.container, 3);
+    const drawn = [];
+
+    renderer.$uploadBuffers = vi.fn();
+    renderer.$drawInstanced = vi.fn((count) => drawn.push(count));
+    images.forEach((image, index) => {
+      image.matrixCache.fill(index + 1);
+      renderer.$drawImage(image);
+    });
+
+    expect(drawn).toEqual([2]);
+    expect(renderer.$batchItems).toBe(1);
+    expect(Array.from(renderer.$matrixBuffer.data.subarray(0, 6))).toEqual([3, 3, 3, 3, 3, 3]);
+    expect(renderer.$dataBuffer.data[6]).toBe(0);
   });
 
   it("overwrites the previous image's distortion when a batch slot is reused", async () => {
