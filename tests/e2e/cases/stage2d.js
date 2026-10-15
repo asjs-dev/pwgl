@@ -231,6 +231,157 @@ export const quadDistortion = {
   },
 };
 
+// ---------- projective distortion ----------
+
+const CELLS = 8;
+const QUAD = { x: 16, y: 8, width: 224, height: 128 };
+// Trapezoid corners in the unit quad (TL, TR, BR, BL): a floor seen in perspective.
+const TRAPEZOID = [0.3, 0, 0.7, 0, 1, 1, 0, 1];
+
+const checkerGrid = (cells, size = 64) =>
+  createCanvas(size, size, (context) => {
+    const cell = size / cells;
+    context.fillStyle = "#ffffff";
+    context.fillRect(0, 0, size, size);
+    context.fillStyle = "#000000";
+    for (let j = 0; j < cells; j++) for (let i = (j + 1) % 2; i < cells; i += 2) context.fillRect(i * cell, j * cell, cell, cell);
+  });
+
+const toScreen = (corners) => corners.map((value, index) => (index % 2 ? QUAD.y + value * QUAD.height : QUAD.x + value * QUAD.width));
+
+// Unit square → quad (TL, TR, BR, BL) homography.
+const homography = ([x0, y0, x1, y1, x2, y2, x3, y3]) => {
+  const dx1 = x1 - x2;
+  const dx2 = x3 - x2;
+  const dy1 = y1 - y2;
+  const dy2 = y3 - y2;
+  const sx = x0 - x1 + x2 - x3;
+  const sy = y0 - y1 + y2 - y3;
+  const den = dx1 * dy2 - dx2 * dy1;
+  const g = (sx * dy2 - dx2 * sy) / den;
+  const h = (dx1 * sy - sx * dy1) / den;
+  return (u, v) => {
+    const w = g * u + h * v + 1;
+    return [((x1 - x0 + g * x1) * u + (x3 - x0 + h * x3) * v + x0) / w, ((y1 - y0 + g * y1) * u + (y3 - y0 + h * y3) * v + y0) / w];
+  };
+};
+
+// The texture coordinate the old per-triangle (affine) mapping gives at a screen point; the
+// triangle strip splits the quad along the TR–BL diagonal.
+const affineUv = ([x0, y0, x1, y1, x2, y2, x3, y3], [px, py]) => {
+  const triangles = [
+    [[x0, y0, 0, 0], [x1, y1, 1, 0], [x3, y3, 0, 1]],
+    [[x1, y1, 1, 0], [x3, y3, 0, 1], [x2, y2, 1, 1]],
+  ];
+  for (const [a, b, c] of triangles) {
+    const den = (b[1] - c[1]) * (a[0] - c[0]) + (c[0] - b[0]) * (a[1] - c[1]);
+    const wa = ((b[1] - c[1]) * (px - c[0]) + (c[0] - b[0]) * (py - c[1])) / den;
+    const wb = ((c[1] - a[1]) * (px - c[0]) + (a[0] - c[0]) * (py - c[1])) / den;
+    const wc = 1 - wa - wb;
+    if (wa >= 0 && wb >= 0 && wc >= 0) return [wa * a[2] + wb * b[2] + wc * c[2], wa * a[3] + wb * b[3] + wc * c[3]];
+  }
+};
+
+const lineDistance = ([ax, ay], [bx, by], [px, py]) => Math.abs((bx - ax) * (py - ay) - (by - ay) * (px - ax)) / Math.hypot(bx - ax, by - ay);
+
+const WHITE = [255, 255, 255, 255];
+const BLACK = [0, 0, 0, 255];
+const cellColor = (i, j) => ((i + j) % 2 ? BLACK : WHITE);
+
+// Probes at the projected centers of the checker cells at least 4 px away from every cell
+// edge, and how many of them the affine mapping would color wrong.
+const projectiveProbes = (screen) => {
+  const map = homography(screen);
+  const probes = [];
+  let affineMisses = 0;
+  for (let j = 0; j < CELLS; j++)
+    for (let i = 0; i < CELLS; i++) {
+      const center = map((i + 0.5) / CELLS, (j + 0.5) / CELLS);
+      const [a, b, c, d] = [
+        [i, j],
+        [i + 1, j],
+        [i + 1, j + 1],
+        [i, j + 1],
+      ].map(([u, v]) => map(u / CELLS, v / CELLS));
+      if (Math.min(...[[a, b], [b, c], [c, d], [d, a]].map(([from, to]) => lineDistance(from, to, center))) < 4) continue;
+      const [x, y] = center.map(Math.round);
+      probes.push([`cell (${i},${j})`, x, y, cellColor(i, j)]);
+      const [u, v] = affineUv(screen, center);
+      if (cellColor(Math.floor(u * CELLS), Math.floor(v * CELLS)) !== cellColor(i, j)) affineMisses++;
+    }
+  return { probes, affineMisses };
+};
+
+const createProjectiveCase = ({ id, title, repeat }) => ({
+  id,
+  group: "Stage2D",
+  title,
+  expectation: `A ${CELLS}×${CELLS} black-and-white checkerboard${
+    repeat ? " (a 4×4 texture repeated 2×2)" : ""
+  } on a trapezoid, mapped like a floor in perspective: cell edges stay straight and continuous across the quad diagonal.`,
+  create() {
+    const context = createSmallContext();
+    const stage = createSmallStage(context, { maxRenderCount: 2, useRepeatTextures: repeat });
+    const image = createSprite(new Texture(checkerGrid(repeat ? CELLS / 2 : CELLS)), QUAD.x, QUAD.y, QUAD.width, QUAD.height);
+    image.distortion.cache.set(TRAPEZOID);
+    if (repeat) image.textureTransform.repeatX = image.textureTransform.repeatY = 2;
+    stage.container.addChild(image);
+    const { probes, affineMisses } = projectiveProbes(toScreen(TRAPEZOID));
+
+    return {
+      context,
+      render: () => stage.render(),
+      async check(t) {
+        await t.renders(2);
+        t.check("an affine mapping would fail some probes", affineMisses > 0, `${affineMisses}/${probes.length}`);
+        t.expectPxAll("homography cells", probes, 60);
+        await t.expectStable();
+      },
+    };
+  },
+});
+
+export const projectiveDistortion = createProjectiveCase({
+  id: "projective-distortion",
+  title: "Projective distortion",
+  repeat: false,
+});
+
+export const projectiveRepeatDistortion = createProjectiveCase({
+  id: "projective-repeat-distortion",
+  title: "Projective distortion, repeat texture",
+  repeat: true,
+});
+
+export const concaveDistortion = {
+  id: "concave-distortion",
+  group: "Stage2D",
+  title: "Concave distortion",
+  expectation:
+    "A checkerboard whose bottom-right corner is pulled inside the quad, giving a concave arrowhead. It falls back to the affine mapping and renders without errors.",
+  create() {
+    const context = createSmallContext();
+    const stage = createSmallStage(context, { maxRenderCount: 2 });
+    const image = createSprite(new Texture(checkerGrid(CELLS)), QUAD.x, QUAD.y, QUAD.width, QUAD.height);
+    image.distortion.cache.set([0, 0, 1, 0, 0.35, 0.35, 0, 1]);
+    stage.container.addChild(image);
+    const at = (u, v) => [Math.round(QUAD.x + u * QUAD.width), Math.round(QUAD.y + v * QUAD.height)];
+
+    return {
+      context,
+      render: () => stage.render(),
+      async check(t) {
+        await t.renders(2);
+        // The TL–TR–BL triangle keeps the undistorted mapping: unit (0.06,0.06) is cell (0,0).
+        t.expectPx("top-left cell white", ...at(0.06, 0.06), WHITE, 60);
+        t.expectPx("cell (1,0) black", ...at(0.19, 0.06), BLACK, 60);
+        t.expectPx("outside the concave corner is background", ...at(0.8, 0.8), BACKGROUND);
+        await t.expectStable();
+      },
+    };
+  },
+};
+
 const filled = (size, color) =>
   createCanvas(size, size, (context) => {
     context.fillStyle = color;
@@ -353,6 +504,9 @@ export const stage2dCases = [
   blendModes,
   repeatTextures,
   quadDistortion,
+  projectiveDistortion,
+  projectiveRepeatDistortion,
+  concaveDistortion,
   mipmapFilters,
   textureResize,
   sharedContextStages,

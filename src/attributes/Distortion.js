@@ -1,8 +1,13 @@
 /**
  * <pre>
  *  Class for distortion properties
- *  It distorts the corners of the elements
- * <pre>
+ *  It moves the corners of the element. Each corner is an absolute position in the
+ *  element's unit quad: (0, 0) is the top left, (1, 1) the bottom right corner.
+ *  Defaults (no distortion): top left (0, 0), top right (1, 0),
+ *  bottom right (1, 1), bottom left (0, 1).
+ *  With distortTexture the texture is mapped projectively (perspective-correct) on
+ *  convex quads; concave or self-intersecting quads fall back to an affine mapping.
+ * </pre>
  * @property {boolean} distortTexture
  * @property {Array<number>} cache
  */
@@ -24,10 +29,10 @@ export class Distortion {
 
   /**
    * <pre>
-   *  Set/Get top left x value
+   *  Set/Get the top left corner's x position, relative to the element width
    *  Examples:
-   *    - 0 - no distortion
-   *    - 0.5 - push the top left corners x position with the half of the element width
+   *    - 0 - no distortion (default)
+   *    - 0.5 - moves it to the middle of the top edge
    * </pre>
    * @type {number}
    */
@@ -40,10 +45,10 @@ export class Distortion {
 
   /**
    * <pre>
-   *  Set/Get top left y value
+   *  Set/Get the top left corner's y position, relative to the element height
    *  Examples:
-   *    - 0 - no distortion
-   *    - 0.5 - push the top left corners y position with the half of the element height
+   *    - 0 - no distortion (default)
+   *    - 0.5 - moves it to the middle of the left edge
    * </pre>
    * @type {number}
    */
@@ -56,10 +61,10 @@ export class Distortion {
 
   /**
    * <pre>
-   *  Set/Get top right x value
+   *  Set/Get the top right corner's x position, relative to the element width
    *  Examples:
-   *    - -0 - no distortion
-   *    - -0.5 - push the top right corners x position with the half of the element width
+   *    - 1 - no distortion (default)
+   *    - 0.5 - moves it to the middle of the top edge
    * </pre>
    * @type {number}
    */
@@ -72,10 +77,10 @@ export class Distortion {
 
   /**
    * <pre>
-   *  Set/Get top right y value
+   *  Set/Get the top right corner's y position, relative to the element height
    *  Examples:
-   *    - 0 - no distortion
-   *    - 0.5 - push the top right corners y position with the half of the element height
+   *    - 0 - no distortion (default)
+   *    - 0.5 - moves it to the middle of the right edge
    * </pre>
    * @type {number}
    */
@@ -88,10 +93,10 @@ export class Distortion {
 
   /**
    * <pre>
-   *  Set/Get bottom right x value
+   *  Set/Get the bottom right corner's x position, relative to the element width
    *  Examples:
-   *    - -0 - no distortion
-   *    - -0.5 - push the bottom right corners x position with the half of the element width
+   *    - 1 - no distortion (default)
+   *    - 0.5 - moves it to the middle of the bottom edge
    * </pre>
    * @type {number}
    */
@@ -104,10 +109,10 @@ export class Distortion {
 
   /**
    * <pre>
-   *  Set/Get bottom right y value
+   *  Set/Get the bottom right corner's y position, relative to the element height
    *  Examples:
-   *    - -0 - no distortion
-   *    - -0.5 - push the bottom right corners y position with the half of the element height
+   *    - 1 - no distortion (default)
+   *    - 0.5 - moves it to the middle of the right edge
    * </pre>
    * @type {number}
    */
@@ -120,10 +125,10 @@ export class Distortion {
 
   /**
    * <pre>
-   *  Set/Get bottom left x value
+   *  Set/Get the bottom left corner's x position, relative to the element width
    *  Examples:
-   *    - 0 - no distortion
-   *    - 0.5 - push the bottom left corners x position with the half of the element width
+   *    - 0 - no distortion (default)
+   *    - 0.5 - moves it to the middle of the bottom edge
    * </pre>
    * @type {number}
    */
@@ -136,10 +141,10 @@ export class Distortion {
 
   /**
    * <pre>
-   *  Set/Get bottom left y value
+   *  Set/Get the bottom left corner's y position, relative to the element height
    *  Examples:
-   *    - -0 - no distortion
-   *    - -0.5 - push the bottom left corners y position with the half of the element height
+   *    - 1 - no distortion (default)
+   *    - 0.5 - moves it to the middle of the left edge
    * </pre>
    * @type {number}
    */

@@ -467,8 +467,34 @@ describe("Stage2D", () => {
 
     const vertexShader = renderer.$createVertexShader();
     expect(vertexShader).toContain("aE");
-    expect(vertexShader).toContain("clcQd");
+    expect(vertexShader).toContain("cI=int(aA.y*3.+aA.x*(1.-2.*aA.y));");
+    expect(vertexShader).toContain("tPs=aE[cI];");
     expect(vertexShader).toContain("mix(tPs,aA,aD[1].w)");
+  });
+
+  it("maps distorted textures projectively through a vec3 varying", async () => {
+    installWebGL2RenderingContextMock();
+    const { Stage2D } = await loadStage2DModule();
+    const renderer = new Stage2D({
+      context: { canvas: createCanvas() },
+      locations: [],
+      useRepeatTextures: true,
+    });
+
+    const vertexShader = renderer.$createVertexShader();
+    expect(vertexShader).toContain("out vec3 v0;");
+    expect(vertexShader).toContain("float gQ(vec2 p,vec2 o){");
+    expect(vertexShader).toContain("if(abs(dn)<1e-6||aE[0]+aE[2]==aE[1]+aE[3])return 1.;");
+    expect(vertexShader).toContain("q=mix(1.,gQ(tPs,aE[(cI+2)&3]),aD[1].w);");
+    expect(vertexShader).toContain("v0=vec3(tUv*q,q);");
+
+    const fragmentShader = renderer.$createFragmentShader();
+    expect(fragmentShader).toContain("in vec3 v0;");
+    expect(fragmentShader).toContain("tC=v0.xy/v0.z;");
+    expect(fragmentShader).toContain("uv=fract(tC);");
+    expect(fragmentShader).toContain("c0=floor(tC);");
+    expect(fragmentShader).toContain("uv=tC;");
+    expect(fragmentShader.indexOf("tC=v0.xy/v0.z;")).toBeLessThan(fragmentShader.indexOf("uv=fract(tC);"));
   });
 
   it("omits the distortion attribute, buffer and shader code when useDistortion is disabled", async () => {
@@ -484,9 +510,17 @@ describe("Stage2D", () => {
 
     const vertexShader = renderer.$createVertexShader();
     expect(vertexShader).not.toContain("aE");
-    expect(vertexShader).not.toContain("clcQd");
+    expect(vertexShader).not.toContain("cI");
     expect(vertexShader).toContain("tPs=aA;");
     expect(vertexShader).toContain("aA,1.)");
+    expect(vertexShader).toContain("out vec2 v0;");
+    expect(vertexShader).not.toContain("gQ");
+    expect(vertexShader).not.toContain("q=");
+
+    const fragmentShader = renderer.$createFragmentShader();
+    expect(fragmentShader).toContain("in vec2 v0;");
+    expect(fragmentShader).toContain("uv=fract(v0);");
+    expect(fragmentShader).not.toContain("tC");
 
     renderer.$gl = createMockGl();
     renderer.$locations = { aA: 0, aB: 1, aD: 5 };

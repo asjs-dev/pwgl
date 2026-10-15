@@ -507,7 +507,7 @@ export class Stage2D extends BatchRenderer {
     `uniform vec2 ` +
       `uF[${maxTextureImageUnits}];` +
 
-    `out vec2 ` +
+    `out vec${useDistortion ? 3 : 2} ` +
       `v0;` +
     `flat out float ` +
       `v1;` +
@@ -518,26 +518,36 @@ export class Stage2D extends BatchRenderer {
     `${useRepeatTextures ? `,v5`: ``};` +
 
     `${useDistortion
-      ? `vec2 clcQd(vec2 p){` +
-          `return mix(` +
-            `mix(` +
-              `aE[0],` +
-              `aE[1],` +
-              `p.x` +
-            `),` +
-            `mix(` +
-              `aE[3],` +
-              `aE[2],` +
-              `p.x` +
-            `),` +
-            `p.y` +
-          `);` +
+      ? // Projective weight of corner p (o: the opposite corner): the diagonals split at c,
+        // q=(|p-c|+|o-c|)/|o-c|. Parallelograms (also the undistorted quad) are exactly affine
+        // with q=1; concave, self-intersecting or degenerate quads fall back to it.
+        `float gQ(vec2 p,vec2 o){` +
+          `vec2 ` +
+            `d0=aE[2]-aE[0],` +
+            `d1=aE[3]-aE[1],` +
+            `e=aE[1]-aE[0];` +
+          `float ` +
+            `dn=d0.x*d1.y-d0.y*d1.x;` +
+          `if(abs(dn)&lt;1e-6||aE[0]+aE[2]==aE[1]+aE[3])return 1.;` +
+          `vec2 ` +
+            `tu=vec2(e.x*d1.y-e.y*d1.x,e.x*d0.y-e.y*d0.x)/dn;` +
+          `if(any(lessThanEqual(tu,Z.xx))||any(greaterThanEqual(tu,Z.yy)))return 1.;` +
+          `vec2 ` +
+            `c=aE[0]+tu.x*d0;` +
+          `float ` +
+            `l=length(o-c);` +
+          `return (length(p-c)+l)/l;` +
         `}`
       : ``}` +
 
     `void main(){` +
+      // aA is a unit-quad corner: (0,0) TL, (1,0) TR, (1,1) BR, (0,1) BL are aE[0..3].
+      `${useDistortion
+        ? `int ` +
+            `cI=int(aA.y*3.+aA.x*(1.-2.*aA.y));`
+        : ``}` +
       `vec2 ` +
-        `tPs=${useDistortion ? `clcQd(aA)` : `aA`};` +
+        `tPs=${useDistortion ? `aE[cI]` : `aA`};` +
 
       `gl_Position=vec4(` +
         `mat3(aB[0].xy,0,aB[0].zw,0,aB[1].xy,1)*` +
@@ -545,7 +555,7 @@ export class Stage2D extends BatchRenderer {
         `1` +
       `)*vec4(1.,uA,1.,1.);` +
 
-      `v0=(` +
+      `${useDistortion ? `vec2 tUv` : `v0`}=(` +
           `mat3(aB[1].zw,0,aB[2].xy,0,aB[2].zw,1)*` +
           `vec3(` +
             `${useDistortion
@@ -558,6 +568,11 @@ export class Stage2D extends BatchRenderer {
             `1.` +
           `)` +
         `).xy;` +
+      `${useDistortion
+        ? `float ` +
+            `q=mix(1.,gQ(tPs,aE[(cI+2)&amp;3]),aD[1].w);` +
+          `v0=vec3(tUv*q,q);`
+        : ``}` +
       `v1=aD[1].x;` +
       `v2.xy=aD[1].yz;` +
       `v2.zw=v2.y>-1.?.5/uF[int(v2.y)]:Z.yy;` +
@@ -575,14 +590,16 @@ export class Stage2D extends BatchRenderer {
   $createFragmentShader() {
     const { $config } = this;
     const { maxTextureImageUnits } = Utils.INFO;
-    const { useRepeatTextures, useTint } = $config;
+    const { useRepeatTextures, useTint, useDistortion } = $config;
+    // With distortion the varying is projective (uv*q,q), divided once in main into tC.
+    const uvName = useDistortion ? "tC" : "v0";
 
     const getSimpleTexColor = (modCoordName) => `gTxC(v2.y,v3,${modCoordName})`;
 
     return `${Utils.GLSL.DEFINE.Z}` +
     `${Utils.GLSL.DEFINE.RADIANS_360}` +
 
-    `in vec2 ` +
+    `in vec${useDistortion ? 3 : 2} ` +
       `v0;` +
     `flat in float ` +
       `v1;` +
@@ -597,6 +614,11 @@ export class Stage2D extends BatchRenderer {
 
     `out vec4 ` +
       `oCl;` +
+
+    `${useDistortion
+      ? `vec2 ` +
+          `tC;`
+      : ``}` +
 
     `vec4 gTxC(float i,vec4 s,vec2 m){` +
       `vec2 cp=${Utils.GLSL.CREATE_ATLAS_CROP({ crop: "s", uv: "m", bias: "v2.zw" })};` +
@@ -621,7 +643,7 @@ export class Stage2D extends BatchRenderer {
       ? `${Utils.GLSL.RANDOM2}` +
         `vec4 gCB(vec2 c0){` +
           `vec2 ` +
-            `uv=v0;` +
+            `uv=${uvName};` +
 
           `float ` +
             `rnd=rand2(c0/100.),` +
@@ -646,13 +668,14 @@ export class Stage2D extends BatchRenderer {
 
     `void main(){` +
       `if(v2.y>-1.){` +
+        `${useDistortion ? `tC=v0.xy/v0.z;` : ``}` +
         `vec2 ` +
-          `uv=fract(v0);` +
+          `uv=fract(${uvName});` +
 
         `${useRepeatTextures
           ? `if(v5.x>0.||v5.y>0.){` +
               `vec2 ` +
-                `c0=floor(v0);` +
+                `c0=floor(${uvName});` +
               `vec4 ` +
                 `rc=vec4(` + 
                   `gRCB(Z.xx,c0,uv),` +

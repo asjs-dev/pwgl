@@ -38,7 +38,7 @@ Cases must be deterministic, use the public PWGL API, avoid network assets, and 
 
 ## Coverage
 
-- Stage2D: painter order, batch splitting, atlas crops, tint types, blend modes, repeat textures, quad distortion, blend-mode flushes, mipmap min filters, texture size changes and two stages sharing one context.
+- Stage2D: painter order, batch splitting, atlas crops, tint types, blend modes, repeat textures, quad distortion, projective (perspective-correct) texture mapping of distorted quads with and without repeat, the concave-quad fallback, blend-mode flushes, mipmap min filters, texture size changes and two stages sharing one context.
 - Display, textures and input: text, animated frames, texture source swaps, live canvas textures, runtime resize and pointer hit-tests.
 - Filters: every filter against an unfiltered reference, framebuffer attachment and multi-pass ping-pong.
 - Lighting: light, normal map and shadow, contact shadows of thin casters with soft and flattened shadows, ambient occlusion and 400 shadow-casting lights.

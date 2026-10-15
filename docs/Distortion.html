@@ -63,8 +63,13 @@
         
             <div class="class-description"><pre>
  Class for distortion properties
- It distorts the corners of the elements
-<pre></div>
+ It moves the corners of the element. Each corner is an absolute position in the
+ element's unit quad: (0, 0) is the top left, (1, 1) the bottom right corner.
+ Defaults (no distortion): top left (0, 0), top right (1, 0),
+ bottom right (1, 1), bottom left (0, 1).
+ With distortTexture the texture is mapped projectively (perspective-correct) on
+ convex quads; concave or self-intersecting quads fall back to an affine mapping.
+</pre></div>
         
     
 </header>
@@ -206,7 +211,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line9">line 9</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line14">line 14</a>
     </li></ul></dd>
     
 
@@ -270,10 +275,10 @@
 
 <div class="description">
     <pre>
- Set/Get bottom left x value
+ Set/Get the bottom left corner's x position, relative to the element width
  Examples:
-   - 0 - no distortion
-   - 0.5 - push the bottom left corners x position with the half of the element width
+   - 0 - no distortion (default)
+   - 0.5 - moves it to the middle of the bottom edge
 </pre>
 </div>
 
@@ -322,7 +327,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line130">line 130</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line135">line 135</a>
     </li></ul></dd>
     
 
@@ -347,10 +352,10 @@
 
 <div class="description">
     <pre>
- Set/Get bottom left y value
+ Set/Get the bottom left corner's y position, relative to the element height
  Examples:
-   - -0 - no distortion
-   - -0.5 - push the bottom left corners y position with the half of the element height
+   - 1 - no distortion (default)
+   - 0.5 - moves it to the middle of the left edge
 </pre>
 </div>
 
@@ -399,7 +404,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line146">line 146</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line151">line 151</a>
     </li></ul></dd>
     
 
@@ -424,10 +429,10 @@
 
 <div class="description">
     <pre>
- Set/Get bottom right x value
+ Set/Get the bottom right corner's x position, relative to the element width
  Examples:
-   - -0 - no distortion
-   - -0.5 - push the bottom right corners x position with the half of the element width
+   - 1 - no distortion (default)
+   - 0.5 - moves it to the middle of the bottom edge
 </pre>
 </div>
 
@@ -476,7 +481,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line98">line 98</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line103">line 103</a>
     </li></ul></dd>
     
 
@@ -501,10 +506,10 @@
 
 <div class="description">
     <pre>
- Set/Get bottom right y value
+ Set/Get the bottom right corner's y position, relative to the element height
  Examples:
-   - -0 - no distortion
-   - -0.5 - push the bottom right corners y position with the half of the element height
+   - 1 - no distortion (default)
+   - 0.5 - moves it to the middle of the right edge
 </pre>
 </div>
 
@@ -553,7 +558,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line114">line 114</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line119">line 119</a>
     </li></ul></dd>
     
 
@@ -578,10 +583,10 @@
 
 <div class="description">
     <pre>
- Set/Get top left x value
+ Set/Get the top left corner's x position, relative to the element width
  Examples:
-   - 0 - no distortion
-   - 0.5 - push the top left corners x position with the half of the element width
+   - 0 - no distortion (default)
+   - 0.5 - moves it to the middle of the top edge
 </pre>
 </div>
 
@@ -630,7 +635,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line34">line 34</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line39">line 39</a>
     </li></ul></dd>
     
 
@@ -655,10 +660,10 @@
 
 <div class="description">
     <pre>
- Set/Get top left y value
+ Set/Get the top left corner's y position, relative to the element height
  Examples:
-   - 0 - no distortion
-   - 0.5 - push the top left corners y position with the half of the element height
+   - 0 - no distortion (default)
+   - 0.5 - moves it to the middle of the left edge
 </pre>
 </div>
 
@@ -707,7 +712,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line50">line 50</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -732,10 +737,10 @@
 
 <div class="description">
     <pre>
- Set/Get top right x value
+ Set/Get the top right corner's x position, relative to the element width
  Examples:
-   - -0 - no distortion
-   - -0.5 - push the top right corners x position with the half of the element width
+   - 1 - no distortion (default)
+   - 0.5 - moves it to the middle of the top edge
 </pre>
 </div>
 
@@ -784,7 +789,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line66">line 66</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line71">line 71</a>
     </li></ul></dd>
     
 
@@ -809,10 +814,10 @@
 
 <div class="description">
     <pre>
- Set/Get top right y value
+ Set/Get the top right corner's y position, relative to the element height
  Examples:
-   - 0 - no distortion
-   - 0.5 - push the top right corners y position with the half of the element height
+   - 0 - no distortion (default)
+   - 0.5 - moves it to the middle of the right edge
 </pre>
 </div>
 
@@ -861,7 +866,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line82">line 82</a>
+        <a href="attributes_Distortion.js.html">attributes/Distortion.js</a>, <a href="attributes_Distortion.js.html#line87">line 87</a>
     </li></ul></dd>
     
 
