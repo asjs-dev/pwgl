@@ -1,0 +1,65 @@
+[
+  {
+    "id": "neon-corridor",
+    "title": "Neon Corridor",
+    "description": "Fake 3D endless runner: every surface is one distorted Image with projective texture mapping.",
+    "type": "local",
+    "path": "neon-corridor"
+  },
+  {
+    "id": "ocean",
+    "title": "WebGL 2 - Ocean (2d lights & shadows)",
+    "description": "Lights, shadows and filters on a sailing boat scene.",
+    "type": "codepen",
+    "codepenId": "NWbzLaE",
+    "file": "boatDemo.html"
+  },
+  {
+    "id": "card-game",
+    "title": "WebGL 2 - Card Game",
+    "description": "Card game demo with animated sprites.",
+    "type": "codepen",
+    "codepenId": "wvELEmN",
+    "file": "cardGameDemo.html"
+  },
+  {
+    "id": "journey",
+    "title": "WebGl 2 - Journey",
+    "description": "Atmospheric journey scene.",
+    "type": "codepen",
+    "codepenId": "WNwPVde",
+    "file": "journeyDemo.html"
+  },
+  {
+    "id": "generative-art",
+    "title": "WebGl 2 - Generative art",
+    "description": "2D lights and shadows as generative art.",
+    "type": "codepen",
+    "codepenId": "vYZjoJB",
+    "file": "lightDemo.html"
+  },
+  {
+    "id": "rain-drops",
+    "title": "WebGL 2 - Rain drops",
+    "description": "Displacement filter driven rain drops.",
+    "type": "codepen",
+    "codepenId": "MWEwYww",
+    "file": "rainDropsDemo.html"
+  },
+  {
+    "id": "top-view-game",
+    "title": "WebGL 2 - Game Demo",
+    "description": "Top view game with lights and shadows.",
+    "type": "codepen",
+    "codepenId": "rNMKbWv",
+    "file": "shGameDemo.html"
+  },
+  {
+    "id": "wolfenstein",
+    "title": "WebGL 2 - Wolfenstein 3d Random Dungeon",
+    "description": "Custom renderer: Wolfenstein 3D style random dungeon.",
+    "type": "codepen",
+    "codepenId": "Kwzbbza",
+    "file": "wolfenstein.html"
+  }
+]

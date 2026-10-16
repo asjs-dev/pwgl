@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PWGL - Neon Corridor</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="main.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HZMQ56T4JS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-HZMQ56T4JS");
+    </script>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <div id="hud"><span id="score">0</span><span id="speed"></span><span id="best"></span></div>
+    <div id="overlay">
+      <h1>NEON CORRIDOR</h1>
+      <p>← → / A D &nbsp;switch lane &nbsp;·&nbsp; Space / ↑ / W &nbsp;jump</p>
+      <p>Touch: swipe left / right, tap to jump</p>
+      <p>Jump the striped barriers, dodge the crates, grab the spinning cubes</p>
+      <p id="prompt"><br />Press Space or tap to start</p>
+    </div>
+    <a id="back-link" href="../">← All demos</a>
+  </body>
+</html>

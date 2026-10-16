@@ -6,8 +6,9 @@ const { COLORS } = require("./colors");
 console.log("Building example HTML files...");
 
 try {
-  const examplesJsonPath = path.resolve("docs/assets/examples.json");
-  const examplesJson = JSON.parse(fs.readFileSync(examplesJsonPath, "utf-8"));
+  const demosJsonPath = path.resolve("docs/assets/demos.json");
+  const demosJson = JSON.parse(fs.readFileSync(demosJsonPath, "utf-8"));
+  const codepenDemos = demosJson.filter((demo) => demo.type === "codepen");
 
   const examplesTemplPath = path.resolve("docs/assets/examples.tmpl");
   const template = fs.readFileSync(examplesTemplPath, "utf-8");
@@ -17,11 +18,11 @@ try {
     fs.mkdirSync(examplesDir, { recursive: true });
   }
 
-  examplesJson.forEach((example) => {
+  codepenDemos.forEach((example) => {
     let html = template;
 
     html = html.replace(/\<\?js=\s*title\s*\?\>/g, example.title);
-    html = html.replace(/\<\?js=\s*id\s*\?\>/g, example.id);
+    html = html.replace(/\<\?js=\s*id\s*\?\>/g, example.codepenId);
 
     const filePath = path.join(examplesDir, example.file);
     fs.writeFileSync(filePath, html, "utf-8");

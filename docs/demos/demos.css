@@ -1,0 +1,80 @@
+/* Demo landing page additions on top of the docs styles (custom.css). */
+
+header.docs-header a.header-text-link {
+  float: right;
+  margin: 18px 28px 0 10px;
+  opacity: 0.75;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+#main.demos-main {
+  float: none;
+  width: auto;
+  max-width: 960px;
+  padding: 0 16px;
+  margin: 0 auto;
+}
+
+.demo-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.demo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  padding: 16px;
+  color: var(--text-main);
+  text-decoration: none;
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.demo-card:hover,
+.demo-card:focus-visible {
+  border-color: var(--accent-primary);
+  transform: translateY(-2px);
+}
+
+.demo-card strong {
+  color: var(--text-strong);
+}
+
+.demo-card span {
+  flex: 1;
+}
+
+.demo-badge {
+  align-self: flex-start;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: var(--accent-primary);
+  background: var(--accent-soft);
+}
+
+.demo-badge-codepen {
+  color: var(--text-muted);
+  background: var(--border-soft);
+}
+
+.demo-error {
+  color: #ff6b6b;
+}
+
+@media (max-width: 768px) {
+  header.docs-header a.header-text-link {
+    margin: 16px 12px 0 6px;
+  }
+
+  .demo-list {
+    grid-template-columns: 1fr;
+  }
+}

@@ -3,7 +3,7 @@
 ![PWGL](https://asjs-dev.github.io/pwgl/assets/logo.v2x0.5.png?raw=true)
 PWGL is a JavaScript framework for creating **2D WebGL2 games and applications**.
 
-[![Support PWGL](https://asjs-dev.github.io/pwgl/assets/support-pwgl.svg)](./donation/)
+[![Support PWGL](https://asjs-dev.github.io/pwgl/assets/support-pwgl.svg)](https://asjs-dev.github.io/pwgl/donation/)
 
 ![Game Demo](https://asjs-dev.github.io/pwgl/assets/game.png)
 
@@ -11,13 +11,7 @@ PWGL is a JavaScript framework for creating **2D WebGL2 games and applications**
 
 ## Demos
 
-- [Top View Game Demo](https://asjs-dev.github.io/pwgl/examples/shGameDemo.html)
-- [Custom Renderer - Wolfenstein 3D](https://asjs-dev.github.io/pwgl/examples/wolfenstein.html)
-- [Card Game Demo](https://asjs-dev.github.io/pwgl/examples/cardGameDemo.html)
-- [Displacement Filter](https://asjs-dev.github.io/pwgl/examples/rainDropsDemo.html)
-- [2D Lights and Shadows](https://asjs-dev.github.io/pwgl/examples/lightDemo.html)
-- [Lights, Shadows and Filters](https://asjs-dev.github.io/pwgl/examples/boatDemo.html)
-- [Journey](https://asjs-dev.github.io/pwgl/examples/journeyDemo.html)
+[Browse all demos](https://asjs-dev.github.io/pwgl/demos/)
 
 ---
 
