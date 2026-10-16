@@ -39,6 +39,6 @@ describe("Light", () => {
     };
     light.matrixCache = new Float32Array([1, 0, 0, 1, 0, 0]);
 
-    expect(light.getBounds()).toEqual({ x: -1, y: 0, width: 100, height: 101 });
+    expect(light.getBounds()).toEqual({ x: 0, y: 0, width: 100, height: 100 });
   });
 });

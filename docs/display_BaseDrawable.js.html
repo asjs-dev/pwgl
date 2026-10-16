@@ -86,6 +86,8 @@ export class BaseDrawable extends Item {
    * &lt;pre>
    *  Returns with bounds
    *    - Uses the matrix cache of the last rendered frame; changes made since then are not included
+   *    - Screen-space pixels: x / y are the left / top edge, width / height are the right / bottom
+   *      edge coordinates (not the size)
    * &lt;/pre>
    * @returns {Rectangle}
    */

@@ -87,8 +87,31 @@ describe("Matrix3Utilities", () => {
     expect(corners).toEqual([
       { x: 150, y: 75 },
       { x: 550, y: -225 },
-      { x: 451, y: -127 },
-      { x: 253, y: -29 },
+      { x: 450, y: -125 },
+      { x: 250, y: -25 },
+    ]);
+  });
+
+  it("maps an optional unit quad onto the corner slots", () => {
+    const corners = [
+      { x: 0, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 0 },
+      { x: 0, y: 0 },
+    ];
+    const matrix = new Float32Array([1, 0, 0, 1, 0, 0]);
+    const resolution = { widthHalf: 50, heightHalf: 50, height: 100 };
+    // TL, TR, BR, BL
+    const quad = [-0.5, 0, 1, 0.25, 1.5, 1, 0, 2];
+
+    Matrix3Utilities.calcCorners(corners, matrix, resolution, quad);
+
+    // slot order: TL, BR, BL, TR
+    expect(corners).toEqual([
+      { x: 25, y: 50 },
+      { x: 125, y: 0 },
+      { x: 50, y: -50 },
+      { x: 100, y: 37.5 },
     ]);
   });
 });

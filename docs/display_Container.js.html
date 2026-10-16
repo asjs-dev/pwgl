@@ -207,6 +207,8 @@ export class Container extends Item {
    * &lt;pre>
    *  Returns with the bounds of the container
    *    - Uses the caches of the last rendered frame; changes made since then are not included
+   *    - x / y are the left / top edge, width / height are the right / bottom edge coordinates
+   *      (not the size)
    * &lt;/pre>
    * @returns {Rectangle}
    */

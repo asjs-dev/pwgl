@@ -1,6 +1,14 @@
 import { ItemTransform } from "../attributes/ItemTransform";
 import "./PointType";
 
+// prettier-ignore
+const UNIT_QUAD = [
+  0, 0,
+  1, 0,
+  1, 1,
+  0, 1
+];
+
 /**
  * @typedef {Float32Array} Matrix3
  */
@@ -14,7 +22,7 @@ import "./PointType";
  * @property {function(Matrix3, ItemTransform, Matrix3)} transform Calculate global transformation
  * @property {function(Matrix3, Matrix3)} inverse Create inverse matrix
  * @property {function(matrix, Point):boolean} isPointInMatrix  Returns true if the point in the matrix
- * @property {function(Matrix3, array, Object)} calcCorners Calculate cornrers
+ * @property {function(Array<Point>, Matrix3, Object, Array<number>=)} calcCorners Calculate screen-space corners
  */
 export const Matrix3Utilities = {
   /**
@@ -126,24 +134,34 @@ export const Matrix3Utilities = {
   },
 
   /**
-   * Calculate cornrers
+   * <pre>
+   *  Calculate the screen-space corners of a transformed unit quad
+   *    - Corner slot order: top left (0, 0), bottom right (1, 1), bottom left (0, 1), top right (1, 0)
+   *    - Optional quad: 8 unit-quad coordinates in top left, top right, bottom right, bottom left
+   *      order (Distortion.cache layout); omitted → the undistorted unit quad
+   *    - Results are in pixels, y grows downwards
+   * </pre>
    * @param {Array<Point>} corners
    * @param {Matrix3} matrix
    * @param {Object} resolution
    * @param {number} resolution.widthHalf
    * @param {number} resolution.heightHalf
+   * @param {number} resolution.height
+   * @param {Array<number>} [quad]
    */
-  calcCorners: (corners, matrix, resolution) => {
-    const widthHalf = resolution.widthHalf;
-    const heightHalf = resolution.heightHalf;
+  calcCorners: (corners, matrix, resolution, quad = UNIT_QUAD) => {
+    const { widthHalf, heightHalf } = resolution;
+    const x = widthHalf + matrix[4] * widthHalf;
+    const y = resolution.height - (heightHalf + matrix[5] * heightHalf);
 
-    corners[0].x = widthHalf + matrix[4] * widthHalf;
-    corners[0].y = resolution.height - (heightHalf + matrix[5] * heightHalf);
-    corners[1].x = corners[0].x + (matrix[0] + matrix[2]) * widthHalf;
-    corners[1].y = corners[0].y - (matrix[1] + matrix[3]) * heightHalf;
-    corners[2].x = corners[0].x + (matrix[0] + widthHalf * matrix[2]);
-    corners[2].y = corners[0].y - (matrix[1] + heightHalf * matrix[3]);
-    corners[3].x = corners[0].x + (widthHalf * matrix[0] + matrix[2]);
-    corners[3].y = corners[0].y - (heightHalf * matrix[1] + matrix[3]);
+    const setCorner = (corner, u, v) => {
+      corner.x = x + (u * matrix[0] + v * matrix[2]) * widthHalf;
+      corner.y = y - (u * matrix[1] + v * matrix[3]) * heightHalf;
+    };
+
+    setCorner(corners[0], quad[0], quad[1]);
+    setCorner(corners[3], quad[2], quad[3]);
+    setCorner(corners[1], quad[4], quad[5]);
+    setCorner(corners[2], quad[6], quad[7]);
   },
 };

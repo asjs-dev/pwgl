@@ -9,7 +9,10 @@ import { TextureInfo } from "../textures/TextureInfo";
 import { BaseDrawable } from "./BaseDrawable";
 
 /**
- * Image class
+ * <pre>
+ *  Image class
+ *    - getBounds() includes the distortion corners, regardless of the renderer's useDistortion config
+ * </pre>
  * @extends {BaseDrawable}
  * @property {TintType} tintType
  * @property {BlendMode} blendMode
@@ -75,6 +78,14 @@ export class Image extends BaseDrawable {
     }
 
     return Matrix3Utilities.isPointInMatrix(this.$inverseMatrixCache, point);
+  }
+
+  /**
+   * @ignore
+   */
+  $calcCorners() {
+    this.stage &&
+      Matrix3Utilities.calcCorners(this.$corners, this.matrixCache, this.stage.renderer, this.distortionCache);
   }
 }
 

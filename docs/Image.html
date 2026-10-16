@@ -61,7 +61,10 @@
     
         <h2><span class="attribs"><span class="type-signature"></span></span>Image<span class="signature">(texture)</span><span class="type-signature"></span></h2>
         
-            <div class="class-description">Image class</div>
+            <div class="class-description"><pre>
+ Image class
+   - getBounds() includes the distortion corners, regardless of the renderer's useDistortion config
+</pre></div>
         
     
 </header>
@@ -436,7 +439,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line25">line 25</a>
+        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line28">line 28</a>
     </li></ul></dd>
     
 
@@ -785,7 +788,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line85">line 85</a>
+        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line96">line 96</a>
     </li></ul></dd>
     
 
@@ -1069,6 +1072,8 @@
     <pre>
  Returns with bounds
    - Uses the matrix cache of the last rendered frame; changes made since then are not included
+   - Screen-space pixels: x / y are the left / top edge, width / height are the right / bottom
+     edge coordinates (not the size)
 </pre>
 </div>
 
@@ -1118,7 +1123,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_BaseDrawable.js.html">display/BaseDrawable.js</a>, <a href="display_BaseDrawable.js.html#line33">line 33</a>
+        <a href="display_BaseDrawable.js.html">display/BaseDrawable.js</a>, <a href="display_BaseDrawable.js.html#line35">line 35</a>
     </li></ul></dd>
     
 
@@ -1276,7 +1281,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line69">line 69</a>
+        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line72">line 72</a>
     </li></ul></dd>
     
 
@@ -1480,7 +1485,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line52">line 52</a>
+        <a href="display_Image.js.html">display/Image.js</a>, <a href="display_Image.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
