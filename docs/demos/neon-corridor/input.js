@@ -44,6 +44,8 @@ export const bindInput = (target = window) => {
 
   let pointerStart = null;
   target.addEventListener("pointerdown", (event) => {
+    // Taps on links (e.g. the back link) navigate instead of controlling the game.
+    if (event.target.closest?.("a")) return;
     pointerStart = { x: event.clientX, y: event.clientY };
   });
   target.addEventListener("pointerup", (event) => {
