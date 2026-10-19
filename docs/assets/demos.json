@@ -7,6 +7,13 @@
     "path": "neon-corridor"
   },
   {
+    "id": "filter-playground",
+    "title": "Filter Playground",
+    "description": "Build a filter chain on a live scene: add, reorder, toggle and tune every PWGL filter, then copy the code.",
+    "type": "local",
+    "path": "filter-playground"
+  },
+  {
     "id": "ocean",
     "title": "WebGL 2 - Ocean (2d lights & shadows)",
     "description": "Lights, shadows and filters on a sailing boat scene.",

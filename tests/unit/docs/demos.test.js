@@ -134,6 +134,28 @@ describe("local demo modules", () => {
   });
 });
 
+describe("filter playground registry", () => {
+  const registrySource = fs.readFileSync(
+    path.join(docsDir, "demos/filter-playground/registry.js"),
+    "utf-8",
+  );
+  const concreteFilters = [
+    ...fs.readFileSync(path.join(docsDir, "assets/pwgl.es.js"), "utf-8").matchAll(/\bas (\w+Filter)[,}]/g),
+  ]
+    .map((match) => match[1])
+    .filter((name) => !name.startsWith("Base"));
+
+  it("finds the exported concrete filters", () => {
+    expect(concreteFilters.length).toBeGreaterThan(0);
+  });
+
+  it("lists every exported concrete filter", () => {
+    for (const name of concreteFilters) {
+      expect(registrySource, name).toMatch(new RegExp(`filter\\(\\s*${name},\\s*"${name}"`));
+    }
+  });
+});
+
 describe("build-docs HTML wipe", () => {
   let tempDir;
 

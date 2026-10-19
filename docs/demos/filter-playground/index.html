@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PWGL - Filter Playground</title>
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="main.js"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-HZMQ56T4JS"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-HZMQ56T4JS");
+    </script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a id="back-link" href="../">← All demos</a>
+      <h1>Filter Playground</h1>
+    </header>
+    <main class="layout">
+      <section class="viewer">
+        <div id="stage"></div>
+        <label class="animate-row"><input id="animate-toggle" type="checkbox" /> Animate source</label>
+        <section id="snippet" class="snippet">
+          <div class="snippet-head">
+            <h2>Code</h2>
+            <span id="copy-status" aria-live="polite"></span>
+            <button id="copy-button" type="button">Copy</button>
+          </div>
+          <pre><code id="snippet-code"></code></pre>
+        </section>
+      </section>
+      <aside id="controls" class="controls">
+        <div class="add-row">
+          <select id="add-select" aria-label="Filter to add"></select>
+          <button id="add-button" type="button">Add</button>
+          <span id="chain-count"></span>
+        </div>
+        <ol id="chain-list" class="chain-list"></ol>
+      </aside>
+    </main>
+  </body>
+</html>

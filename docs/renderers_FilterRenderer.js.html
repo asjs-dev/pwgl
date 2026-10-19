@@ -63,6 +63,9 @@ import { BlendMode } from "../rendering/BlendMode";
 import { Framebuffer } from "../textures/Framebuffer";
 import { BaseRenderer } from "./BaseRenderer";
 
+// Uniform data of a no-op pass: mix 0 keeps the source, size and transition stay finite.
+const _PASSTHROUGH_DATA = new Float32Array([0, 0, 0, 0, 0.5, 0.5, 0, 1, 1, 1]);
+
 /**
  * @typedef {Object} FilterRendererConfig
  * @extends {RendererConfig}
@@ -168,6 +171,10 @@ export class FilterRenderer extends BaseRenderer {
         $gl.uniform1fv($locations.uJ, filter.data);
         $gl.uniformMatrix2x4fv($locations.uL, false, filter.customData);
         $gl.uniformMatrix3fv($locations.uK, false, filter.kernels);
+      } else if (isLast) {
+        // A disabled last filter must not reuse the uniforms of the previous pass.
+        $gl.uniform1i($locations.uI, -1);
+        $gl.uniform1fv($locations.uJ, _PASSTHROUGH_DATA);
       }
 
       (useFilter || isLast) &amp;&amp; this.$drawInstanced(1);

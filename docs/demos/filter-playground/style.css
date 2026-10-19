@@ -1,0 +1,272 @@
+/* Colors follow the docs theme (docs/styles/custom.css). */
+:root {
+  --bg-main: #0b1220;
+  --bg-panel: #0f192c;
+  --bg-code: #0d1628;
+  --text-main: #a9b4c2;
+  --text-muted: #6b7c93;
+  --text-strong: #ffffff;
+  --accent-primary: #2dd4ff;
+  --accent-soft: rgba(45, 212, 255, 0.15);
+  --border-soft: rgba(255, 255, 255, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-main);
+  color: var(--text-main);
+  font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+a {
+  color: var(--accent-primary);
+}
+
+h1,
+h2 {
+  margin: 0;
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 20px;
+}
+
+h2 {
+  font-size: 15px;
+}
+
+button,
+select {
+  font: inherit;
+  color: var(--text-strong);
+  background: var(--bg-code);
+  border: 1px solid var(--border-soft);
+  border-radius: 6px;
+  padding: 6px 10px;
+  min-height: 34px;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+button:not(:disabled):hover,
+button:focus-visible,
+select:focus-visible {
+  border-color: var(--accent-primary);
+}
+
+button:disabled,
+select:disabled {
+  opacity: 0.4;
+}
+
+input[type="range"] {
+  width: 100%;
+  min-width: 0;
+  accent-color: var(--accent-primary);
+}
+
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--accent-primary);
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.viewer,
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* Checkerboard behind the canvas makes MaskFilter transparency visible. */
+#stage canvas {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 10;
+  border-radius: 8px;
+  background: repeating-conic-gradient(#1a2438 0% 25%, #121a2a 0% 50%) 0 0 / 24px 24px;
+}
+
+.animate-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.snippet,
+.filter-card {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+}
+
+.snippet-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.snippet-head h2 {
+  flex: 1;
+}
+
+#copy-status {
+  color: var(--text-muted);
+}
+
+.snippet pre {
+  margin: 0;
+  padding: 12px;
+  overflow-x: auto;
+  background: var(--bg-code);
+  border-radius: 0 0 8px 8px;
+}
+
+.snippet code {
+  font: 12px/1.5 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color: var(--text-strong);
+  user-select: text;
+}
+
+.add-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#add-select {
+  flex: 1;
+  min-width: 0;
+}
+
+#chain-count {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.chain-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.chain-empty {
+  padding: 12px;
+  color: var(--text-muted);
+  border: 1px dashed var(--border-soft);
+  border-radius: 8px;
+}
+
+.filter-card {
+  padding: 8px 12px 10px;
+}
+
+.filter-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filter-name {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon-button {
+  min-width: 34px;
+  padding: 4px 8px;
+}
+
+.param {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr) 3.5em;
+  align-items: center;
+  gap: 8px;
+  min-height: 34px;
+}
+
+.param-checkbox,
+.param-select {
+  grid-template-columns: 7.5em minmax(0, 1fr);
+}
+
+.param-checkbox input {
+  justify-self: start;
+}
+
+.param-value {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+.advanced summary {
+  padding: 6px 0;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+@media (max-width: 860px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* Canvas first, then the controls, then the code. */
+  .viewer {
+    display: contents;
+  }
+
+  #stage {
+    order: 1;
+  }
+
+  .animate-row {
+    order: 2;
+  }
+
+  .controls {
+    order: 3;
+  }
+
+  .snippet {
+    order: 4;
+    min-width: 0;
+  }
+}
