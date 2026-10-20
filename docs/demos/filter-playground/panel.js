@@ -4,7 +4,7 @@
 
 import { createControl, element } from "./controls.js";
 import { MAX_FILTERS } from "./chain.js";
-import { ADVANCED_PARAMS } from "./registry-advanced.js";
+import { ADVANCED_PARAMS, select } from "./registry-advanced.js";
 import { FILTERS } from "./registry.js";
 
 const createButton = (text, title, onClick) => {
@@ -65,9 +65,20 @@ export const createPanel = (root, chain) => {
     return header;
   };
 
+  // Texture switch as a select over the indices of the definition's `textures`.
+  const createTextureSelect = (entry) => {
+    const choices = entry.definition.textures;
+    const options = choices.map(({ label }, value) => ({ label, value }));
+    const current = choices.findIndex(({ name }) => name === entry.texture);
+    return createControl(select("texture", "Texture", options, current), current, (index) =>
+      chain.setTexture(entry.id, choices[index].name),
+    );
+  };
+
   const createCard = (entry, index) => {
     const card = element("li", "filter-card");
     card.appendChild(createHeader(entry, index));
+    if (entry.definition.textures) card.appendChild(createTextureSelect(entry));
     if (entry.definition.params.length) card.appendChild(createParams(entry, entry.definition.params));
 
     const advanced = element("details", "advanced");

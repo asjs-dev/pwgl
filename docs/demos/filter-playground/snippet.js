@@ -18,9 +18,10 @@ const codeOf = (param, value) => {
   return String(Number(formatValue(param, value)));
 };
 
-const optionsOf = ({ definition, filter }) => {
+const optionsOf = (entry) => {
+  const { definition, filter } = entry;
   const options = [];
-  if (definition.texture) options.push(`texture: ${definition.texture}Texture`);
+  if (entry.texture) options.push(`texture: ${entry.texture}Texture`);
   for (const param of [...definition.params, ...ADVANCED_PARAMS]) {
     const value = filter[param.property];
     if (!isDefault(param, value)) options.push(`${param.property}: ${codeOf(param, value)}`);

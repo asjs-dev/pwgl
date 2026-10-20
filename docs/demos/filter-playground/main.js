@@ -1,5 +1,5 @@
 // Entry point: creates the context, the source scene and the FilterRenderer, wires the
-// panel, the snippet and the Animate toggle, keeps the render size in step with the
+// panel, the snippet, the Animate toggle and the magnifier, keeps the render size in step with the
 // layout and runs the frame loop.
 
 import { Context, FilterRenderer } from "../../assets/pwgl.es.js";
@@ -8,6 +8,7 @@ import { createScene } from "./scene.js";
 import { createChain } from "./chain.js";
 import { createPanel } from "./panel.js";
 import { createSnippet } from "./snippet.js";
+import { createMagnifier } from "./magnifier.js";
 
 // Render size cap (px) and height / width ratio of the canvas (16:10).
 const MAX_RENDER_WIDTH = 1280;
@@ -34,6 +35,8 @@ const animateToggle = document.getElementById("animate-toggle");
 animateToggle.addEventListener("change", () => scene.setAnimated(animateToggle.checked));
 scene.setAnimated(animateToggle.checked);
 
+const magnifier = createMagnifier(stage, context.canvas, document.getElementById("magnifier-toggle"));
+
 // Pixel-based filters (blur, pixelate) depend on the render size, so it follows the
 // displayed size and the device pixel ratio.
 const resize = () => {
@@ -53,6 +56,7 @@ const frame = (now) => {
   last = now;
   scene.render(dt);
   filterRenderer.render();
+  magnifier.draw();
   requestAnimationFrame(frame);
 };
 requestAnimationFrame(frame);

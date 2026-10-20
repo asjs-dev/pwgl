@@ -1,7 +1,8 @@
 // Filter chain state. Each entry pairs a registry definition with a live filter instance.
 // Structural changes (add, remove, move) assign one fresh array to `filterRenderer.filters`,
-// which rebuilds the shader once; toggles and parameter edits only touch the instance,
-// because `on` is checked on the CPU and every parameter is a uniform.
+// which rebuilds the shader once; toggles, parameter edits and texture switches only touch the
+// instance, because `on` is checked on the CPU, every parameter is a uniform and the texture
+// is bound per render.
 
 import { ADVANCED_PARAMS } from "./registry-advanced.js";
 import { findFilter } from "./registry.js";
@@ -32,7 +33,7 @@ export const createChain = (filterRenderer, textures) => {
     if (definition.texture) options.texture = textures[definition.texture];
 
     const filter = new definition.Filter(options);
-    entries.push({ id: nextId++, definition, filter });
+    entries.push({ id: nextId++, definition, filter, texture: definition.texture });
     rebuild();
   };
 
@@ -66,6 +67,15 @@ export const createChain = (filterRenderer, textures) => {
     notify(false);
   };
 
+  // `name` must be one of the definition's `textures`.
+  const setTexture = (id, name) => {
+    const entry = entries[indexOf(id)];
+    if (!entry?.definition.textures?.some((texture) => texture.name === name)) return;
+    entry.texture = name;
+    entry.filter.texture = textures[name];
+    notify(false);
+  };
+
   return {
     entries,
     add,
@@ -73,6 +83,7 @@ export const createChain = (filterRenderer, textures) => {
     move,
     toggle,
     setParam,
+    setTexture,
     isFull: () => entries.length >= MAX_FILTERS,
     subscribe: (listener) => listeners.add(listener),
   };

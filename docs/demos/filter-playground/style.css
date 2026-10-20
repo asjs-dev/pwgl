@@ -115,10 +115,33 @@ input[type="checkbox"] {
   background: repeating-conic-gradient(#1a2438 0% 25%, #121a2a 0% 50%) 0 0 / 24px 24px;
 }
 
+#stage {
+  position: relative;
+}
+
+/* Pixel loupe: no smoothing, checkerboard behind transparent pixels. */
+#stage .loupe {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 176px;
+  height: 176px;
+  aspect-ratio: auto;
+  border: 2px solid var(--accent-primary);
+  border-radius: 8px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+#stage .loupe[hidden] {
+  display: none;
+}
+
 .animate-row {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 8px 20px;
 }
 
 .snippet,

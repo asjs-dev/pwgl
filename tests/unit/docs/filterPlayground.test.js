@@ -1,10 +1,15 @@
 import { describe, expect, it, vi } from "vitest";
 import { MAX_FILTERS, createChain } from "../../../docs/demos/filter-playground/chain.js";
+import { LUTS } from "../../../docs/demos/filter-playground/luts.js";
 import { ADVANCED_PARAMS } from "../../../docs/demos/filter-playground/registry-advanced.js";
-import { FILTERS, isDefault } from "../../../docs/demos/filter-playground/registry.js";
+import { FILTERS, findFilter, isDefault } from "../../../docs/demos/filter-playground/registry.js";
 import { createSnippetCode } from "../../../docs/demos/filter-playground/snippet.js";
 
-const textures = { displacement: { id: "displacement" }, mask: { id: "mask" } };
+const textures = {
+  displacement: { id: "displacement" },
+  mask: { id: "mask" },
+  ...Object.fromEntries(LUTS.map(({ name }) => [name, { id: name }])),
+};
 
 // Records every assignment to `filters`, so tests can count shader rebuilds.
 const createFilterRenderer = () => {
@@ -143,6 +148,44 @@ describe("filter playground chain", () => {
     expect(filterRenderer.assignments).toHaveLength(before);
     expect(listener.mock.calls).toEqual([[false], [false]]);
   });
+
+  it("switches the texture of the instance without rebuilding the filters", () => {
+    const { chain, filterRenderer, listener } = setup();
+    chain.add("ColorLUTFilter");
+    const [entry] = chain.entries;
+    const before = filterRenderer.assignments.length;
+    listener.mockClear();
+
+    expect(entry.filter.texture).toBe(textures.tealOrangeLut);
+    chain.setTexture(entry.id, "coldNightLut");
+    chain.setTexture(entry.id, "mask");
+
+    expect(entry.texture).toBe("coldNightLut");
+    expect(entry.filter.texture).toBe(textures.coldNightLut);
+    expect(filterRenderer.assignments).toHaveLength(before);
+    expect(listener.mock.calls).toEqual([[false]]);
+  });
+});
+
+describe("filter playground LUTs", () => {
+  it("offers every LUT to ColorLUTFilter and starts with one of them", () => {
+    const { texture, textures: choices } = findFilter("ColorLUTFilter");
+
+    expect(choices.map(({ name }) => name)).toEqual(LUTS.map(({ name }) => name));
+    expect(choices.map(({ name }) => name)).toContain(texture);
+  });
+
+  it("keeps the identity LUT an exact identity", () => {
+    const identity = LUTS.find(({ label }) => label === "Identity");
+
+    expect(identity.grade(0.1, 0.5, 0.9)).toEqual([0.1, 0.5, 0.9]);
+  });
+
+  it("changes the color with every other LUT", () => {
+    for (const { label, grade } of LUTS.filter(({ label }) => label !== "Identity")) {
+      expect(grade(0.2, 0.5, 0.8), label).not.toEqual([0.2, 0.5, 0.8]);
+    }
+  });
 });
 
 describe("filter playground snippet", () => {
@@ -191,6 +234,13 @@ describe("filter playground snippet", () => {
         "    }),",
       ].join("\n"),
     );
+  });
+
+  it("prints the selected texture", () => {
+    const chain = chainWith("ColorLUTFilter");
+    chain.setTexture(chain.entries[0].id, "vintageLut");
+
+    expect(createSnippetCode(chain.entries)).toContain("    new ColorLUTFilter({ texture: vintageLutTexture }),");
   });
 
   it("keeps short option lists on one line", () => {

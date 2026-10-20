@@ -1,6 +1,6 @@
 // Every concrete PWGL filter with its parameter descriptors. The panel, the chain and the
 // snippet are all driven by this list. `texture` names the shared procedural texture a
-// texture filter gets (see textures.js).
+// texture filter gets (see textures.js); `textures` lists the ones it can switch between.
 
 import {
   BlurFilter,
@@ -31,6 +31,7 @@ import {
   ToneMapFilter,
   ToneMapType,
 } from "../../assets/pwgl.es.js";
+import { LUTS } from "./luts.js";
 import { TEXTURE_PARAMS, range, select } from "./registry-advanced.js";
 
 const toOptions = (types, prefix) =>
@@ -56,7 +57,10 @@ export const FILTERS = [
   filter(ChromaticAberrationFilter, "ChromaticAberrationFilter", "Chromatic aberration", [
     intensity("Offset (px)", -30, 30, 0.5, 6),
   ]),
-  filter(ColorLUTFilter, "ColorLUTFilter", "Color LUT", [], { texture: "lut" }),
+  filter(ColorLUTFilter, "ColorLUTFilter", "Color LUT", [], {
+    texture: "tealOrangeLut",
+    textures: LUTS.map(({ name, label }) => ({ name, label })),
+  }),
   filter(ContrastFilter, "ContrastFilter", "Contrast", [intensity("Contrast", 0, 3, 0.01, 1.5)]),
   filter(
     DisplacementFilter,
