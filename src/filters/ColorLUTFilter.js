@@ -38,7 +38,8 @@ export class ColorLUTFilter extends BaseFilter {
    * Creates an instance of ColorLUTFilter.
    * @constructor
    * @param {object} options
-   * @param {TextureInfo} options.texture - LUT strip texture
+   * @param {TextureInfo} options.texture - Required <br>
+   *                                      - LUT strip texture, the shader samples whatever is bound without it
    * @param {number} options.lutSize - Default value 16 <br>
    *                                 - Size of one LUT slice (N)
    */

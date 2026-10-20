@@ -2,7 +2,7 @@ import { BaseFilter } from "./BaseFilter";
 
 // prettier-ignore
 const _GLSL = "float " +
-    "fgT=uL[0].y>0.?floor(mod(uF.z,1e4)*.001*uL[0].y):0.," +
+    "fgT=uL[0].y>0.?mod(floor(mod(uF.z,1e4)*.001*uL[0].y),64.):0.," +
     "fgG=rand(floor(v0.zw*ts/max(uL[0].z,1.))+vec2(fgT*17.31,uL[0].x*23.17))-.5;" +
   "oCl.rgb=clamp(oCl.rgb+fgG*v*oCl.a,0.,oCl.a);";
 
