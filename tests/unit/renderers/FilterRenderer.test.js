@@ -63,4 +63,21 @@ describe("FilterRenderer", () => {
     expect(filterIdsOf(gl)).toEqual([-1]);
     expect(renderer.$drawInstanced).toHaveBeenCalledTimes(1);
   });
+
+  it("shares one shader branch between tone map filters with different parameters", async () => {
+    const { ToneMapFilter } = await import("../../../src/filters/ToneMapFilter.js");
+    const { ToneMapType } = await import("../../../src/rendering/ToneMapType.js");
+    const { renderer } = await createHarness(({ BrightnessFilter }) => [
+      new ToneMapFilter({ intensity: 2, type: ToneMapType.REINHARD }),
+      new BrightnessFilter(),
+      new ToneMapFilter({ intensity: 0.5 }),
+    ]);
+
+    const shader = renderer.$createFragmentShader();
+    const [first, brightness, second] = renderer.filters;
+
+    expect(first.uniqueId).toBe(second.uniqueId);
+    expect(brightness.uniqueId).not.toBe(first.uniqueId);
+    expect(shader.split(first.GLSL)).toHaveLength(2);
+  });
 });

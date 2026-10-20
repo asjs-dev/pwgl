@@ -24,4 +24,25 @@ describe("PWGL exports", () => {
     expect(window.PWGL).toBeUndefined();
     expect(window.AGL).toBeUndefined();
   });
+
+  it("exports the core post-processing filters and the tone map operators", async () => {
+    vi.resetModules();
+    installWebGL2RenderingContextMock();
+    globalThis.window = globalThis;
+    globalThis.document = createMockDocument(createMockGl());
+
+    const PWGL = await import("../../../src/exports.js");
+
+    for (const name of [
+      "ColorLUTFilter",
+      "FilmGrainFilter",
+      "FXAAFilter",
+      "ScanlineFilter",
+      "ThresholdFilter",
+      "ToneMapFilter",
+    ]) {
+      expect(PWGL[name], name).toBeTypeOf("function");
+    }
+    expect(PWGL.ToneMapType).toEqual({ REINHARD: 0, ACES: 1 });
+  });
 });

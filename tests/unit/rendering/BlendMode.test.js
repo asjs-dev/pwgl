@@ -23,4 +23,11 @@ describe("BlendMode", () => {
     expect(BlendMode.LIGHTEN.equations).toHaveLength(1);
     expect(BlendMode.NONE.functions).toEqual([0, 0]);
   });
+
+  it("keeps OVERLAY as an alias of NORMAL_PM", async () => {
+    const { BlendMode } = await loadBlendModeModule();
+
+    expect(BlendMode.OVERLAY.functions).toEqual(BlendMode.NORMAL_PM.functions);
+    expect(BlendMode.OVERLAY.equations).toEqual(BlendMode.NORMAL_PM.equations);
+  });
 });

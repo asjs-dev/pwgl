@@ -21,13 +21,21 @@ const _createBlendMode = (functions, equations) => ({
  */
 
 /**
+ * <pre>
+ *  Blend modes
+ *    - OVERLAY is an alias of NORMAL_PM, not a real overlay blend
+ *    - Multiplicative modes (MULTIPLY, MULTIPLY_PM, SCREEN, SCREEN_PM, SHADOW, EXCLUSION):
+ *      textures are premultiplied, so soft (semi-transparent) edges darken or fringe;
+ *      image.alpha scales only the output alpha, so modes using DST_COLOR / SRC_COLOR
+ *      ignore it for the rgb channels
+ * </pre>
  * @typedef {Object} BlendMode
  * @property {createBlendMode} createBlendMode
  * @property {BlendModeInfo} NONE
  * @property {BlendModeInfo} NORMAL_PM
  * @property {BlendModeInfo} ADD_PM
- * @property {BlendModeInfo} MULTIPLY_PM
- * @property {BlendModeInfo} SCREEN_PM
+ * @property {BlendModeInfo} MULTIPLY_PM Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it
+ * @property {BlendModeInfo} SCREEN_PM Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it
  * @property {BlendModeInfo} ADD_NPM
  * @property {BlendModeInfo} SRC_IN
  * @property {BlendModeInfo} SRC_OUT
@@ -39,13 +47,13 @@ const _createBlendMode = (functions, equations) => ({
  * @property {BlendModeInfo} XOR
  * @property {BlendModeInfo} NORMAL
  * @property {BlendModeInfo} ADD
- * @property {BlendModeInfo} MULTIPLY
- * @property {BlendModeInfo} SCREEN
- * @property {BlendModeInfo} OVERLAY
- * @property {BlendModeInfo} EXCLUSION
+ * @property {BlendModeInfo} MULTIPLY Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it
+ * @property {BlendModeInfo} SCREEN Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it
+ * @property {BlendModeInfo} OVERLAY Alias of NORMAL_PM, not a real overlay blend
+ * @property {BlendModeInfo} EXCLUSION Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it
  * @property {BlendModeInfo} LIGHTEN
  * @property {BlendModeInfo} DARKEN
- * @property {BlendModeInfo} SHADOW
+ * @property {BlendModeInfo} SHADOW Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it
  */
 export const BlendMode = {
   createBlendMode: _createBlendMode,

@@ -6,6 +6,7 @@ export { Utils } from "./core/Utils";
 
 export { BlendMode } from "./rendering/BlendMode";
 export { TintType } from "./rendering/TintType";
+export { ToneMapType } from "./rendering/ToneMapType";
 
 export { Matrix3Utilities } from "./math/Matrix3Utilities";
 
@@ -44,9 +45,12 @@ export { BaseTextureFilter } from "./filters/BaseTextureFilter";
 export { BlurFilter } from "./filters/BlurFilter";
 export { BrightnessFilter } from "./filters/BrightnessFilter";
 export { ChromaticAberrationFilter } from "./filters/ChromaticAberrationFilter";
+export { ColorLUTFilter } from "./filters/ColorLUTFilter";
 export { ContrastFilter } from "./filters/ContrastFilter";
 export { DisplacementFilter } from "./filters/DisplacementFilter";
 export { EdgeDetectFilter } from "./filters/EdgeDetectFilter";
+export { FilmGrainFilter } from "./filters/FilmGrainFilter";
+export { FXAAFilter } from "./filters/FXAAFilter";
 export { GammaFilter } from "./filters/GammaFilter";
 export { GlowFilter } from "./filters/GlowFilter";
 export { GrayscaleFilter } from "./filters/GrayscaleFilter";
@@ -57,6 +61,9 @@ export { PixelateFilter } from "./filters/PixelateFilter";
 export { PosterizeFilter } from "./filters/PosterizeFilter";
 export { RainbowFilter } from "./filters/RainbowFilter";
 export { SaturateFilter } from "./filters/SaturateFilter";
+export { ScanlineFilter } from "./filters/ScanlineFilter";
 export { SepiaFilter } from "./filters/SepiaFilter";
 export { SharpenFilter } from "./filters/SharpenFilter";
+export { ThresholdFilter } from "./filters/ThresholdFilter";
 export { TintFilter } from "./filters/TintFilter";
+export { ToneMapFilter } from "./filters/ToneMapFilter";

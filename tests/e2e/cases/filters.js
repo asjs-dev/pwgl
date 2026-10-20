@@ -1,7 +1,19 @@
 import * as PWGL from "../../../src/exports";
 import { createCanvas, createSmallContext, createSmallStage, createSprite, SMALL_HEIGHT, SMALL_WIDTH, testCard } from "../helpers";
 
-const { BlurFilter, BrightnessFilter, FilterRenderer, Framebuffer, GlowFilter, SaturateFilter, Texture } = PWGL;
+const {
+  BlurFilter,
+  BrightnessFilter,
+  ColorLUTFilter,
+  FilterRenderer,
+  FXAAFilter,
+  Framebuffer,
+  GlowFilter,
+  SaturateFilter,
+  Texture,
+  ThresholdFilter,
+  ToneMapFilter,
+} = PWGL;
 
 const maskTexture = () =>
   new Texture(
@@ -23,6 +35,30 @@ const noiseTexture = () =>
       }
     }),
   );
+
+// ColorLUTFilter strip of 16 slices of 16 x 16 (256 x 16); `map` turns the slice rgb (0-1) into the output rgb.
+const lutTexture = (map) => () =>
+  new Texture(
+    createCanvas(256, 16, (context, width, height) => {
+      const imageData = context.createImageData(width, height);
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const rgb = map([(x % 16) / 15, y / 15, Math.floor(x / 16) / 15]).map((value) => Math.round(value * 255));
+          imageData.data.set([...rgb, 255], (y * width + x) * 4);
+        }
+      }
+      context.putImageData(imageData, 0, 0);
+    }),
+  );
+
+const identityLut = lutTexture((rgb) => rgb);
+const swapRedBlueLut = lutTexture(([r, g, b]) => [b, g, r]);
+
+const maxChannelDiff = (a, b) => {
+  let max = 0;
+  for (let i = 0; i < a.data.length; i++) max = Math.max(max, Math.abs(a.data[i] - b.data[i]));
+  return max;
+};
 
 // [title, filter class name, options, filter-specific check (t, unfiltered frame)]
 const FILTERS = [
@@ -122,10 +158,65 @@ const FILTERS = [
     },
   ],
   ["Displacement", "DisplacementFilter", { texture: noiseTexture, intensity: 20 }],
+  [
+    "Tone map",
+    "ToneMapFilter",
+    { intensity: 2 },
+    (t) => {
+      const ramp = [140, 180, 240].map((x) => t.luminance(t.px(x, 72)));
+      t.check("grey ramp stays monotonic", ramp[0] < ramp[1] && ramp[1] < ramp[2], ramp.map((v) => v.toFixed(0)).join(" < "));
+      const p = t.px(8, 36);
+      t.check("red bar stays red", p[0] > 150 && p[1] < 80 && p[2] < 80, t.formatPixel(p));
+    },
+  ],
+  [
+    "Color LUT",
+    "ColorLUTFilter",
+    { texture: swapRedBlueLut },
+    (t) => {
+      t.expectPx("red bar maps to blue", 8, 36, [0, 0, 255, 255], 40);
+      t.expectPx("blue bar maps to red", 72, 36, [255, 0, 0, 255], 40);
+      t.expectPx("green bar stays green", 40, 36, [0, 255, 0, 255], 40);
+    },
+  ],
+  [
+    "Threshold",
+    "ThresholdFilter",
+    { intensity: 0.5 },
+    (t) => {
+      t.expectPx("dark ramp end becomes low color", 140, 72, [0, 0, 0, 255], 30);
+      t.expectPx("bright ramp end becomes high color", 250, 72, [255, 255, 255, 255], 30);
+    },
+  ],
+  // fps 0 makes the grain time-independent, so the stability check below covers it.
+  ["Film grain", "FilmGrainFilter", { intensity: 0.3, fps: 0 }],
+  [
+    "Scanline",
+    "ScanlineFilter",
+    { intensity: 0.5, spacing: 4 },
+    (t) => {
+      const rows = [36, 37, 38, 39].map((y) => t.luminance(t.px(224, y)));
+      const spread = Math.max(...rows) - Math.min(...rows);
+      t.check("rows inside one line period differ", spread > 10, rows.map((v) => v.toFixed(0)).join(", "));
+      const p = t.px(1, 1);
+      t.check("no curvature keeps the corner", p[3] > 200, t.formatPixel(p));
+    },
+  ],
+  [
+    "Scanline CRT",
+    "ScanlineFilter",
+    { intensity: 0.3, curvature: 0.5, vignette: 0.5 },
+    (t) => {
+      t.expectPx("corner outside the warped area is transparent", 1, 1, [0, 0, 0, 0], 4);
+      const center = t.px(128, 72);
+      t.check("center is kept", center[3] > 200 && t.luminance(center) > 20, t.formatPixel(center));
+    },
+    "filter-ScanlineFilter-crt",
+  ],
 ];
 
-const createFilterCase = ([name, className, options, verify]) => ({
-  id: `filter-${className}`,
+const createFilterCase = ([name, className, options, verify, id = `filter-${className}`]) => ({
+  id,
   group: "Filters",
   title: `${name} filter`,
   expectation: `Test card (RGBY bars and a grey ramp) rendered to a framebuffer, then through FilterRenderer with ${className}. Output must differ from the unfiltered frame${verify ? " and pass the filter-specific check" : ""}.`,
@@ -203,4 +294,96 @@ export const filterChain = {
   },
 };
 
-export const filterCases = [...FILTERS.map(createFilterCase), filterChain];
+export const fxaaFilter = {
+  id: "filter-FXAAFilter",
+  group: "Filters",
+  title: "FXAA filter",
+  expectation:
+    "A rotated white square on a dark background (no MSAA), then FXAAFilter. Only pixels along the jagged diagonal edges change; flat areas stay as they are.",
+  create() {
+    const context = createSmallContext();
+    const stage = createSmallStage(context, { maxRenderCount: 1 });
+    const square = createSprite(new Texture(createCanvas(8, 8, (c) => ((c.fillStyle = "#fff"), c.fillRect(0, 0, 8, 8)))), 88, 32, 80, 80);
+    square.transform.rotation = 0.3;
+    stage.container.addChild(square);
+    const source = new Framebuffer();
+    const filter = new FXAAFilter();
+    const filters = new FilterRenderer({ context, sourceTexture: source, filters: [filter] });
+    filters.setSize(SMALL_WIDTH, SMALL_HEIGHT);
+
+    return {
+      context,
+      render() {
+        stage.renderToFramebuffer(source);
+        filters.render();
+      },
+      async check(t) {
+        filter.on = false;
+        await t.renders(2);
+        const reference = t.snapshot();
+        filter.on = true;
+        await t.renders(2);
+        const changed = t.diffCount(reference);
+        t.check("diagonal edges are smoothed", changed > 40, `${changed} px changed`);
+        t.check("flat areas are kept", changed < 2000, `${changed} px changed`);
+        t.expectPx("square center stays white", 114, 82, [255, 255, 255, 255], 6);
+        t.expectPx("background stays dark", 8, 8, reference.px(8, 8), 6);
+        await t.expectStable();
+      },
+    };
+  },
+};
+
+// Semi-transparent sprite on a transparent background: the framebuffer holds premultiplied color.
+export const premultipliedFilters = {
+  id: "filter-premultiplied-alpha",
+  group: "Filters",
+  title: "Color filters on premultiplied alpha",
+  expectation:
+    "The test card at alpha 0.5 on a transparent background, then ToneMap, Threshold and an identity ColorLUT one by one. Alpha must stay unchanged, and the identity LUT must reproduce the input without darkening.",
+  create() {
+    const context = createSmallContext();
+    const stage = createSmallStage(context, { maxRenderCount: 2 });
+    stage.clearColor.set(0, 0, 0, 0);
+    const card = createSprite(new Texture(testCard()), 0, 0, SMALL_WIDTH, SMALL_HEIGHT);
+    card.alpha = 0.5;
+    stage.container.addChild(card);
+    const source = new Framebuffer();
+    const toneMap = new ToneMapFilter({ intensity: 2 });
+    const threshold = new ThresholdFilter();
+    const lut = new ColorLUTFilter({ texture: identityLut() });
+    const all = [toneMap, threshold, lut];
+    const filters = new FilterRenderer({ context, sourceTexture: source, filters: all });
+    filters.setSize(SMALL_WIDTH, SMALL_HEIGHT);
+    filters.clearBeforeRender = true;
+    filters.clearColor.set(0, 0, 0, 0);
+    const only = (filter) => all.forEach((item) => (item.on = item === filter));
+
+    return {
+      context,
+      render() {
+        stage.renderToFramebuffer(source);
+        filters.render();
+      },
+      async check(t) {
+        only(null);
+        await t.renders(2);
+        const reference = t.snapshot();
+        const alpha = reference.px(40, 72)[3];
+        t.check("source is semi-transparent", alpha > 100 && alpha < 160, `alpha ${alpha}`);
+        for (const [name, filter] of [["ToneMap", toneMap], ["Threshold", threshold], ["ColorLUT", lut]]) {
+          only(filter);
+          await t.renders(2);
+          const probes = [8, 40, 72, 104, 160, 224].map((x) => [`${name} x=${x}`, x, 72, [...t.px(x, 72).slice(0, 3), reference.px(x, 72)[3]]]);
+          t.expectPxAll(`${name} alpha values`, probes, 2);
+        }
+        only(lut);
+        await t.renders(2);
+        const diff = maxChannelDiff(reference.frame, t.snapshot().frame);
+        t.check("identity LUT reproduces the input", diff <= 1, `max channel diff ${diff}`);
+      },
+    };
+  },
+};
+
+export const filterCases = [...FILTERS.map(createFilterCase), fxaaFilter, premultipliedFilters, filterChain];

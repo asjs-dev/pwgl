@@ -335,6 +335,143 @@
 
         
             
+<h4 class="name" id="ToneMapType"><span class="type-signature">(constant) </span>ToneMapType<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Tone map type
+</div>
+
+
+
+
+
+
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    
+
+<table class="props">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>REINHARD</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">output color = color / (1 + color)</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>ACES</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">output color = ACES filmic curve (Narkowicz fit), clamped to 0-1</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="rendering_ToneMapType.js.html">rendering/ToneMapType.js</a>, <a href="rendering_ToneMapType.js.html#line7">line 7</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
 <h4 class="name" id="layoutText"><span class="type-signature">(constant) </span>layoutText<span class="type-signature"></span></h4>
 
 
@@ -1017,6 +1154,17 @@
 
 
 
+<div class="description">
+    <pre>
+ Blend modes
+   - OVERLAY is an alias of NORMAL_PM, not a real overlay blend
+   - Multiplicative modes (MULTIPLY, MULTIPLY_PM, SCREEN, SCREEN_PM, SHADOW, EXCLUSION):
+     textures are premultiplied, so soft (semi-transparent) edges darken or fringe;
+     image.alpha scales only the output alpha, so modes using DST_COLOR / SRC_COLOR
+     ignore it for the rgb channels
+</pre>
+</div>
+
 
 
     <h5>Type:</h5>
@@ -1167,7 +1315,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it</td>
         </tr>
 
     
@@ -1190,7 +1338,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it</td>
         </tr>
 
     
@@ -1466,7 +1614,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it</td>
         </tr>
 
     
@@ -1489,7 +1637,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it</td>
         </tr>
 
     
@@ -1512,7 +1660,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Alias of NORMAL_PM, not a real overlay blend</td>
         </tr>
 
     
@@ -1535,7 +1683,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it</td>
         </tr>
 
     
@@ -1604,7 +1752,7 @@
 
             
 
-            <td class="description last"></td>
+            <td class="description last">Multiplicative: textures are premultiplied, so soft edges darken or fringe; image.alpha only scales the output alpha, so the DST_COLOR / SRC_COLOR factors ignore it</td>
         </tr>
 
     
@@ -4244,7 +4392,7 @@
             </div>
 
             <nav>
-                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="TintFilter.html">TintFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
+                <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AmbientOcclusionMapRenderer.html">AmbientOcclusionMapRenderer</a></li><li><a href="AnimatedImage.html">AnimatedImage</a></li><li><a href="BaseDrawable.html">BaseDrawable</a></li><li><a href="BaseFilter.html">BaseFilter</a></li><li><a href="BaseKernelFilter.html">BaseKernelFilter</a></li><li><a href="BaseRenderer.html">BaseRenderer</a></li><li><a href="BaseTextureFilter.html">BaseTextureFilter</a></li><li><a href="BaseTransform.html">BaseTransform</a></li><li><a href="BatchRenderer.html">BatchRenderer</a></li><li><a href="BlurFilter.html">BlurFilter</a></li><li><a href="BrightnessFilter.html">BrightnessFilter</a></li><li><a href="Buffer.html">Buffer</a></li><li><a href="ChromaticAberrationFilter.html">ChromaticAberrationFilter</a></li><li><a href="Color.html">Color</a></li><li><a href="ColorLUTFilter.html">ColorLUTFilter</a></li><li><a href="Container.html">Container</a></li><li><a href="Context.html">Context</a></li><li><a href="ContrastFilter.html">ContrastFilter</a></li><li><a href="DisplacementFilter.html">DisplacementFilter</a></li><li><a href="Distortion.html">Distortion</a></li><li><a href="EdgeDetectFilter.html">EdgeDetectFilter</a></li><li><a href="FXAAFilter.html">FXAAFilter</a></li><li><a href="FilmGrainFilter.html">FilmGrainFilter</a></li><li><a href="FilterRenderer.html">FilterRenderer</a></li><li><a href="Framebuffer.html">Framebuffer</a></li><li><a href="GammaFilter.html">GammaFilter</a></li><li><a href="GlowFilter.html">GlowFilter</a></li><li><a href="GrayscaleFilter.html">GrayscaleFilter</a></li><li><a href="HueRotateFilter.html">HueRotateFilter</a></li><li><a href="Image.html">Image</a></li><li><a href="InvertFilter.html">InvertFilter</a></li><li><a href="Item.html">Item</a></li><li><a href="ItemTransform.html">ItemTransform</a></li><li><a href="Light.html">Light</a></li><li><a href="LightRenderer.html">LightRenderer</a></li><li><a href="LightTransform.html">LightTransform</a></li><li><a href="MaskFilter.html">MaskFilter</a></li><li><a href="NormalMapRenderer.html">NormalMapRenderer</a></li><li><a href="PixelateFilter.html">PixelateFilter</a></li><li><a href="PosterizeFilter.html">PosterizeFilter</a></li><li><a href="RainbowFilter.html">RainbowFilter</a></li><li><a href="SaturateFilter.html">SaturateFilter</a></li><li><a href="ScanlineFilter.html">ScanlineFilter</a></li><li><a href="SepiaFilter.html">SepiaFilter</a></li><li><a href="SharpenFilter.html">SharpenFilter</a></li><li><a href="Stage2D.html">Stage2D</a></li><li><a href="StageContainer.html">StageContainer</a></li><li><a href="Text.html">Text</a></li><li><a href="Texture.html">Texture</a></li><li><a href="TextureCrop.html">TextureCrop</a></li><li><a href="TextureInfo.html">TextureInfo</a></li><li><a href="TextureTransform.html">TextureTransform</a></li><li><a href="ThresholdFilter.html">ThresholdFilter</a></li><li><a href="TintFilter.html">TintFilter</a></li><li><a href="ToneMapFilter.html">ToneMapFilter</a></li></ul><h3>Global</h3><ul><li><a href="global.html#TintType">TintType</a></li><li><a href="global.html#ToneMapType">ToneMapType</a></li><li><a href="global.html#layoutText">layoutText</a></li></ul>
             </nav>
 
             <br class="clear">

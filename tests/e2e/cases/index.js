@@ -2,7 +2,7 @@ import { benchmarkCases } from "./benchmark";
 import { bufferLifecycle } from "./bufferLifecycle";
 import { displayCases } from "./display";
 import { filterCases } from "./filters";
-import { filterPipeline } from "./filterPipeline";
+import { coreFilterChain, filterPipeline } from "./filterPipeline";
 import { gamePipeline } from "./gamePipeline";
 import { contextRestore } from "./lifecycle";
 import { lightingCases } from "./lighting";
@@ -15,6 +15,7 @@ export const cases = [
   ...stage2dCases,
   ...displayCases,
   filterPipeline,
+  coreFilterChain,
   ...filterCases,
   ...lightingCases,
   rendererSwitch,

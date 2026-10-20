@@ -101,3 +101,94 @@ describe("derived filters", () => {
     expect(filter.GLSL).toContain("oCl*=.2;");
   });
 });
+
+const loadCoreFilterModules = async () => {
+  const [
+    { ColorLUTFilter },
+    { FilmGrainFilter },
+    { FXAAFilter },
+    { ScanlineFilter },
+    { ThresholdFilter },
+    { ToneMapFilter },
+    { ToneMapType },
+  ] = await Promise.all([
+    loadSrcModuleWithBrowserMocks("../../../src/filters/ColorLUTFilter.js"),
+    loadSrcModuleWithBrowserMocks("../../../src/filters/FilmGrainFilter.js"),
+    loadSrcModuleWithBrowserMocks("../../../src/filters/FXAAFilter.js"),
+    loadSrcModuleWithBrowserMocks("../../../src/filters/ScanlineFilter.js"),
+    loadSrcModuleWithBrowserMocks("../../../src/filters/ThresholdFilter.js"),
+    loadSrcModuleWithBrowserMocks("../../../src/filters/ToneMapFilter.js"),
+    loadSrcModuleWithBrowserMocks("../../../src/rendering/ToneMapType.js"),
+  ]);
+
+  return { ColorLUTFilter, FilmGrainFilter, FXAAFilter, ScanlineFilter, ThresholdFilter, ToneMapFilter, ToneMapType };
+};
+
+// [class name, intensity default, { property: [customData index, default, custom value] }]
+const CORE_FILTER_LAYOUTS = [
+  ["ToneMapFilter", 1, { type: [0, 1, 0] }],
+  ["ColorLUTFilter", 1, { lutSize: [0, 16, 32] }],
+  ["FXAAFilter", 1, { spanMax: [0, 8, 4], reduceMul: [1, 1 / 8, 0.25], reduceMin: [2, 1 / 128, 0.0625] }],
+  [
+    "ThresholdFilter",
+    0.5,
+    {
+      lowR: [0, 0, 0.25],
+      lowG: [1, 0, 0.5],
+      lowB: [2, 0, 0.75],
+      highR: [3, 1, 0.5],
+      highG: [4, 1, 0.25],
+      highB: [5, 1, 0.125],
+      smoothness: [6, 0, 0.2],
+    },
+  ],
+  ["FilmGrainFilter", 0.1, { seed: [0, 1, 7], fps: [1, 24, 0], grainSize: [2, 1, 3] }],
+  ["ScanlineFilter", 0.3, { spacing: [0, 2, 4], curvature: [1, 0, 0.5], vignette: [2, 0, 0.75] }],
+];
+
+describe("core post-processing filters", () => {
+  it("exposes the tone map operators", async () => {
+    const { ToneMapType } = await loadCoreFilterModules();
+
+    expect(ToneMapType).toEqual({ REINHARD: 0, ACES: 1 });
+  });
+
+  it.each(CORE_FILTER_LAYOUTS)("%s uses the documented defaults", async (name, intensity, layout) => {
+    const modules = await loadCoreFilterModules();
+    const filter = new modules[name]();
+
+    expect(filter.intensity).toBeCloseTo(intensity);
+    for (const [property, [index, value]] of Object.entries(layout)) {
+      expect(filter[property], property).toBeCloseTo(value);
+      expect(filter.customData[index], property).toBeCloseTo(value);
+    }
+  });
+
+  it.each(CORE_FILTER_LAYOUTS)("%s maps options and setters to customData", async (name, _, layout) => {
+    const modules = await loadCoreFilterModules();
+    const options = Object.fromEntries(Object.entries(layout).map(([property, [, , value]]) => [property, value]));
+    const fromOptions = new modules[name]({ intensity: 2, ...options });
+    const fromSetters = new modules[name]();
+
+    expect(fromOptions.intensity).toBe(2);
+    for (const [property, [index, , value]] of Object.entries(layout)) {
+      fromSetters[property] = value;
+      expect(fromOptions.customData[index], property).toBeCloseTo(value);
+      expect(fromSetters.customData[index], property).toBeCloseTo(value);
+    }
+  });
+
+  it.each(CORE_FILTER_LAYOUTS)("%s returns the same GLSL for different parameters", async (name, _, layout) => {
+    const modules = await loadCoreFilterModules();
+    const options = Object.fromEntries(Object.entries(layout).map(([property, [, , value]]) => [property, value]));
+
+    expect(new modules[name]({ intensity: 3, ...options }).GLSL).toBe(new modules[name]().GLSL);
+  });
+
+  it("keeps the LUT texture on the filter", async () => {
+    const { ColorLUTFilter } = await loadCoreFilterModules();
+    const texture = { id: "lut" };
+
+    expect(new ColorLUTFilter({ texture }).texture).toBe(texture);
+  });
+});
