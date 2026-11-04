@@ -9,7 +9,7 @@ export class BaseFilter {
    * Creates an instance of BaseFilter.
    * @constructor
    * @param {object} options
-   * @param {number} options.on - Default value true <br>
+   * @param {boolean} options.on - Default value true <br>
    *                            - Turn on or off the filter
    * @param {number} options.intensity - Default value 1 <br>
    *                                   - Intensity of the filter <br>
@@ -28,6 +28,8 @@ export class BaseFilter {
    *                                 - X center of the radial fade
    * @param {number} options.centerY - Default value 0.5 <br>
    *                                 - Y center of the radial fade
+   * @param {boolean} options.invertRadial - Default value false|0 <br>
+   *                                      - Inverts the radial fade (filtered centre, original edges)
    * @param {number} options.size - Default value 1 <br>
    *                              - Size of the radial fade
    * @param {number} options.roundness - Default value 1 <br>
@@ -45,7 +47,7 @@ export class BaseFilter {
 
     this.on = options.on ?? true;
     this.intensity = options.intensity ?? 1;
-    this.intensityX = options.intensityX ?? options.deg ?? this.intensity;
+    this.intensityX = options.intensityX ?? this.intensity;
     this.intensityY = options.intensityY ?? this.intensity;
     this.mix = options.mix ?? 1;
     this.isRadial = options.isRadial ?? false;
@@ -71,7 +73,7 @@ export class BaseFilter {
 
   /**
    * <pre>
-   *  Set/Get intendity x
+   *  Set/Get intensity x
    *    - Same as intensity
    * </pre>
    * @type {number}
@@ -106,7 +108,7 @@ export class BaseFilter {
   }
 
   /**
-   * Set/Get is blur radial
+   * Set/Get is radial
    * @type {boolean}
    */
   get isRadial() {
