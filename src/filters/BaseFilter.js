@@ -21,7 +21,9 @@ export class BaseFilter {
    * @param {number} options.mix - Default value 1 <br>
    *                             - Mix between the original and the filtered image (0 - original, 1 - filtered image)
    * @param {number} options.isRadial - Default value false|0 <br>
-   *                                  - Radial fade between the original and filtered image
+   *                                  - Radial fade between the original and filtered image <br>
+   *                                  - The fade is measured in UV space, so on a non-square canvas
+   *                                    the shape follows the canvas aspect (an ellipse, not a circle)
    * @param {number} options.centerX - Default value 0.5 <br>
    *                                 - X center of the radial fade
    * @param {number} options.centerY - Default value 0.5 <br>
@@ -29,7 +31,8 @@ export class BaseFilter {
    * @param {number} options.size - Default value 1 <br>
    *                              - Size of the radial fade
    * @param {number} options.roundness - Default value 1 <br>
-   *                                  - Roundness of the radial fade
+   *                                  - Roundness of the radial fade <br>
+   *                                  - 0 gives an ellipse that follows the canvas aspect, 1 approaches a rectangle
    * @param {number} options.transition - Default value 1 <br>
    *                                    - Transition of the radial fade
    * @param {number} options.kernels - Default value Float32Array(9) <br>

@@ -86,7 +86,7 @@ export const FILTERS = [
     ...sampling(4),
     range("threshold", "Threshold", 0, 1, 0.01, 0.7, 0.5),
     range("knee", "Knee", 0, 1, 0.01, 1),
-    range("bloom", "Bloom", 0, 0.5, 0.005, 0.01, 0.1),
+    range("bloom", "Bloom", 0, 5, 0.05, 0.4, 1.5),
   ]),
   filter(GrayscaleFilter, "GrayscaleFilter", "Grayscale"),
   filter(HueRotateFilter, "HueRotateFilter", "Hue rotate", [intensity("Angle (rad)", -3.14, 3.14, 0.01, 1.57)]),

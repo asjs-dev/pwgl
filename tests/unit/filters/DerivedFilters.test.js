@@ -57,6 +57,37 @@ describe("derived filters", () => {
     expect(Array.from(filter.kernels)).toEqual([0, -1, 0, -1, 5, -1, 0, -1, 0]);
   });
 
+  it("clamps every neighbour tap of the kernel filters to the texture edge", async () => {
+    const { EdgeDetectFilter, SharpenFilter } = await loadFilterModules();
+
+    for (const filter of [new EdgeDetectFilter(), new SharpenFilter()]) {
+      const taps = filter.GLSL.match(/texelFetch\(uB,clamp\(f\+ivec2\(-?\d,-?\d\),ivec2\(0\),km\),0\)/g);
+      expect(taps).toHaveLength(8);
+      expect(filter.GLSL.split("texelFetch(")).toHaveLength(9);
+    }
+  });
+
+  it("interpolates the sharpen kernel from identity and keeps edge detect scaled", async () => {
+    const { EdgeDetectFilter, SharpenFilter } = await loadFilterModules();
+    const sharpen = new SharpenFilter({ intensity: 2 });
+
+    expect(sharpen.GLSL).toContain("mat3 kr=uK*v+mat3(0,0,0,0,1.-v,0,0,0,0);");
+    expect(new EdgeDetectFilter().GLSL).toContain("mat3 kr=uK*v;");
+    expect(sharpen.GLSL).not.toBe(new EdgeDetectFilter().GLSL);
+    expect(sharpen.GLSL).toBe(new SharpenFilter().GLSL);
+  });
+
+  it("uses the glow defaults and normalizes before the luminance", async () => {
+    const { GlowFilter } = await loadFilterModules();
+    const filter = new GlowFilter();
+
+    expect(filter.threshold).toBeCloseTo(0.7);
+    expect(filter.knee).toBeCloseTo(1);
+    expect(filter.bloom).toBeCloseTo(0.4);
+    expect(filter.GLSL.indexOf("oCl*=.2;")).toBeGreaterThan(-1);
+    expect(filter.GLSL.indexOf("oCl*=.2;")).toBeLessThan(filter.GLSL.indexOf("l=dot(oCl.rgb"));
+  });
+
   it("stores extra glow settings in customData", async () => {
     const { GlowFilter } = await loadFilterModules();
     const filter = new GlowFilter({ threshold: 0.6, knee: 0.2, bloom: 0.8 });
@@ -190,5 +221,21 @@ describe("core post-processing filters", () => {
     const texture = { id: "lut" };
 
     expect(new ColorLUTFilter({ texture }).texture).toBe(texture);
+  });
+});
+
+describe("filter sampling fixes", () => {
+  it("keeps the sampled alpha in chromatic aberration", async () => {
+    const { ChromaticAberrationFilter } = await loadSrcModuleWithBrowserMocks("../../../src/filters/ChromaticAberrationFilter.js");
+    const { GLSL } = new ChromaticAberrationFilter();
+
+    expect(GLSL).toContain("max(oCl.a,max(cl.a,cr.a))");
+    expect(GLSL).not.toMatch(/,1\)/);
+  });
+
+  it("samples the pixelate block centre", async () => {
+    const { PixelateFilter } = await loadSrcModuleWithBrowserMocks("../../../src/filters/PixelateFilter.js");
+
+    expect(new PixelateFilter().GLSL).toContain("(floor(v0.zw/vol)+.5)*vol");
   });
 });

@@ -10,11 +10,16 @@ export class ChromaticAberrationFilter extends BaseFilter {
     return "vec2 " +
       "am=vec2(vol.x,0);" +
 
+    "vec4 " +
+      "cl=texture(uB,v0.zw-am)," +
+      "cr=texture(uB,v0.zw+am);" +
+
+    // Keep the source alpha: the widest of the three sampled alphas.
     "oCl=vec4(" +
-      "texture(uB,v0.zw-am).r," +
+      "cl.r," +
       "oCl.g," +
-      "texture(uB,v0.zw+am).b," +
-      "1" +
+      "cr.b," +
+      "max(oCl.a,max(cl.a,cr.a))" +
     ");";
   }
 }

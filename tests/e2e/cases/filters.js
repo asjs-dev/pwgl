@@ -9,7 +9,9 @@ const {
   FXAAFilter,
   Framebuffer,
   GlowFilter,
+  HueRotateFilter,
   SaturateFilter,
+  SharpenFilter,
   Texture,
   ThresholdFilter,
   ToneMapFilter,
@@ -135,7 +137,7 @@ const FILTERS = [
       t.check("flat area becomes dark", flat < 60, `luminance ${flat.toFixed(0)}`);
     },
   ],
-  ["Glow", "GlowFilter", { intensity: 2, threshold: 0.5, bloom: 0.05 }],
+  ["Glow", "GlowFilter", { intensity: 2, threshold: 0.5, bloom: 2 }],
   ["Chromatic aberration", "ChromaticAberrationFilter", { intensity: 4 }],
   ["Rainbow", "RainbowFilter", { intensity: 1 }],
   [
@@ -272,7 +274,7 @@ export const filterChain = {
         new BrightnessFilter({ intensity: 1.1 }),
         new BlurFilter({ intensity: 2 }),
         new SaturateFilter({ intensity: 1.5 }),
-        new GlowFilter({ intensity: 1, threshold: 0.6, bloom: 0.03 }),
+        new GlowFilter({ intensity: 1, threshold: 0.6, bloom: 1.2 }),
       ],
     });
     filters.setSize(SMALL_WIDTH, SMALL_HEIGHT);
@@ -386,4 +388,71 @@ export const premultipliedFilters = {
   },
 };
 
-export const filterCases = [...FILTERS.map(createFilterCase), fxaaFilter, premultipliedFilters, filterChain];
+// Renders the test card through one FilterRenderer and hands the filters to the check.
+const createChainCase = ({ id, title, expectation, filters: createFilters, check }) => ({
+  id,
+  group: "Filters",
+  title,
+  expectation,
+  create() {
+    const context = createSmallContext();
+    const stage = createSmallStage(context, { maxRenderCount: 2 });
+    stage.container.addChild(createSprite(new Texture(testCard()), 0, 0, SMALL_WIDTH, SMALL_HEIGHT));
+    const source = new Framebuffer();
+    const list = createFilters();
+    const filters = new FilterRenderer({ context, sourceTexture: source, filters: [...list] });
+    filters.setSize(SMALL_WIDTH, SMALL_HEIGHT);
+    filters.clearBeforeRender = true;
+    filters.clearColor.set(0, 0, 0, 0);
+
+    return {
+      context,
+      render() {
+        stage.renderToFramebuffer(source);
+        filters.render();
+      },
+      check: (t) => check(t, filters, list),
+    };
+  },
+});
+
+export const sharpenPassthrough = createChainCase({
+  id: "filter-SharpenFilter-zero",
+  title: "Sharpen filter at intensity 0",
+  expectation: "SharpenFilter with intensity 0 is an identity kernel: the output must match the unfiltered frame.",
+  filters: () => [new SharpenFilter({ intensity: 0 })],
+  async check(t, _, [sharpen]) {
+    sharpen.on = false;
+    await t.renders(2);
+    const reference = t.snapshot();
+    sharpen.on = true;
+    await t.renders(2);
+    const diff = maxChannelDiff(reference.frame, t.snapshot().frame);
+    t.check("intensity 0 reproduces the source", diff <= 1, `max channel diff ${diff}`);
+  },
+});
+
+export const disabledMiddleFilter = createChainCase({
+  id: "filter-chain-disabled-middle",
+  title: "Filter chain with a disabled middle filter",
+  expectation:
+    "Brightness, a disabled Blur, Saturate and HueRotate on one FilterRenderer. The output must match the same chain without the Blur, so the passes after the disabled one never read the framebuffer they write.",
+  filters: () => [
+    new BrightnessFilter({ intensity: 1.2 }),
+    new BlurFilter({ intensity: 4, on: false }),
+    new SaturateFilter({ intensity: 1.5 }),
+    new HueRotateFilter({ intensity: 45 }),
+  ],
+  async check(t, renderer, [brightness, , saturate, hueRotate]) {
+    await t.renders(2);
+    const withDisabled = t.snapshot();
+    const { maxLuminance } = t.region(0, 0, SMALL_WIDTH, SMALL_HEIGHT);
+    t.check("output is not blank", maxLuminance > 20, `max luminance ${maxLuminance.toFixed(0)}`);
+    renderer.filters = [brightness, saturate, hueRotate];
+    await t.renders(2);
+    const diff = maxChannelDiff(t.snapshot().frame, withDisabled.frame);
+    t.check("matches the chain without the disabled filter", diff <= 1, `max channel diff ${diff}`);
+  },
+});
+
+export const filterCases = [...FILTERS.map(createFilterCase), fxaaFilter, premultipliedFilters, filterChain, sharpenPassthrough, disabledMiddleFilter];

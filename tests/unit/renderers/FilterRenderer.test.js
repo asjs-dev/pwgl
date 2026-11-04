@@ -20,7 +20,24 @@ const createHarness = async (createFilters) => {
   renderer.$attachFramebufferAndClearFv = vi.fn();
   renderer.$framebuffers = [{ unbind: vi.fn() }, { unbind: vi.fn() }];
   renderer.$drawInstanced = vi.fn();
-  return { renderer, gl };
+  return { renderer, gl, context };
+};
+
+// Records which framebuffer each pass writes and which one is bound as its source.
+const recordPasses = (renderer, context) => {
+  const [fb0, fb1] = renderer.$framebuffers;
+  const names = new Map([
+    [fb0, "fb0"],
+    [fb1, "fb1"],
+  ]);
+  const passes = [];
+  let source = "source";
+  renderer.$attachFramebufferAndClearFv = vi.fn((target) => passes.push({ target: names.get(target) ?? "final", source }));
+  context.useTextureAt.mockImplementation((texture) => {
+    if (names.has(texture)) source = names.get(texture);
+    return 0;
+  });
+  return passes;
 };
 
 const filterIdsOf = (gl) => gl.uniform1i.mock.calls.filter(([location]) => location === LOCATIONS.uI).map(([, id]) => id);
@@ -79,5 +96,49 @@ describe("FilterRenderer", () => {
     expect(first.uniqueId).toBe(second.uniqueId);
     expect(brightness.uniqueId).not.toBe(first.uniqueId);
     expect(shader.split(first.GLSL)).toHaveLength(2);
+  });
+
+  it("alternates the intermediate framebuffers by drawn pass, not by filter index", async () => {
+    const { renderer, context } = await createHarness(({ BrightnessFilter }) => [
+      new BrightnessFilter(),
+      new BrightnessFilter({ on: false }),
+      new BrightnessFilter(),
+      new BrightnessFilter(),
+    ]);
+    const passes = recordPasses(renderer, context);
+
+    renderer.$render({});
+
+    expect(passes).toEqual([
+      { target: "fb0", source: "source" },
+      { target: "fb1", source: "fb0" },
+      { target: "final", source: "fb1" },
+    ]);
+  });
+
+  it("starts with the first framebuffer when the first filter is off", async () => {
+    const { renderer, context } = await createHarness(({ BrightnessFilter }) => [
+      new BrightnessFilter({ on: false }),
+      new BrightnessFilter(),
+      new BrightnessFilter(),
+    ]);
+    const passes = recordPasses(renderer, context);
+
+    renderer.$render({});
+
+    expect(passes).toEqual([
+      { target: "fb0", source: "source" },
+      { target: "final", source: "fb0" },
+    ]);
+    passes.forEach(({ target, source }) => expect(target).not.toBe(source));
+  });
+
+  it("reads the radial centre Y only for the distance", async () => {
+    const { renderer } = await createHarness(({ BrightnessFilter }) => [new BrightnessFilter()]);
+    const shader = renderer.$createFragmentShader();
+
+    expect(shader.split("uJ[5]")).toHaveLength(2);
+    expect(shader).toContain("vec2 d=abs(v0.zw-vec2(uJ[4],uJ[5]));");
+    expect(shader).toContain("ds=pow(pow(d.x,p)+pow(d.y,p),1./p),");
   });
 });
